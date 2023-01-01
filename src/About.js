@@ -37,13 +37,13 @@ const useStyles = makeStyles(theme => ({
         justifySelf: 'center'
     },
     avatar: {
-        height: theme.spacing(8),
-        width: theme.spacing(8),
+        height: theme.spacing(20),
+        width: theme.spacing(20),
         padding: theme.spacing(2)
     },
     dp: {
-        height: theme.spacing(Math.max(dpx, 28)),
-        width: theme.spacing(Math.max(dpx, 28))
+        height: theme.spacing(Math.max(dpx, 56)),
+        width: theme.spacing(Math.max(dpx, 38))
     },
     ...iobj
 }))
@@ -61,7 +61,7 @@ export default function About() {
                     {about.description}
                 </Typography>                
             </Grid>
-            <Grid container direction="column" item xs={12} lg={6} spacing={2} justify="center" alignItems="center">
+            <Grid container direction="column" item xs={12} lg={6} spacing={3} justify="center" alignItems="center">
                 <Grid item xs={12}>
                     <Avatar variant="rounded" className={classes.dp}>
                         <Image
