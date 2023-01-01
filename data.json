@@ -11,24 +11,24 @@
         ],
         "professionalDetails": [
             {
-                "alt": "kaustubh-odak",
+                "alt": "Ömer Faruk Koç",
                 "icon": "linkedin",
-                "link": "https://www.linkedin.com/in/kaustubh-odak/"
+                "link": "https://www.linkedin.com/in/ömer-faruk-koç/"
             },
             {
-                "alt": "kausko",
+                "alt": "Ömer Faruk Koç",
                 "icon": "stackoverflow",
-                "link": "https://stackoverflow.com/users/15832433/kausko"
+                "link": "https://stackoverflow.com/users/20906128/%c3%96mer-faruk-ko%c3%a7"
             },
             {
-                "alt": "kausko",
+                "alt": "negativexq",
                 "icon": "github",
-                "link": "https://github.com/kausko"
+                "link": "https://github.com/negativexq"
             },
             {
                 "alt": "Email",
                 "icon": "gmail",
-                "link": "mailto:iam@kaustubhodak.me,kaustubhodak1@gmail.com"
+                "link": "mailto:omerfkoc98@gmail.com"
             }
         ]
     },
@@ -52,7 +52,6 @@
             "Netlify",
             "Vercel",
             "Material-UI",
-            "antdesign",
             "Bootstrap"
         ],
         "Backend, Database and Cloud": [
@@ -66,7 +65,7 @@
                 "alt": "Azure",
                 "icon": "microsoftazure"
             },
-            "Heroku",
+            "Elasticsearch",
             "Firebase"
         ],
         "Mobile": [
@@ -75,15 +74,13 @@
                 "icon": "react",
                 "backgroundColor": "#424242"
             },
-            "Expo",
-            "Android",
-            "Flutter"
+            "Android"
         ]
     },
     "projects": {
-        "baseURI": "https://api.github.com/repos/kausko/",
+        "baseURI": "https://api.github.com/repos/negativexq/",
         "repositories": [
-            "Portfolio",
+            "Voice-Biometrics-Neural-Network",
             "Genrealize",
             "cosmicom",
             "Discord-Google-Drive-Bot",
