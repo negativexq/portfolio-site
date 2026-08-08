@@ -1,22 +1,28 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+docs/PORTFOLIO_REFERENCE.md
 
-# dependencies
-/node_modules
+# Dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+build/
 
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Local configuration
+.env
+.env.*
+!.env.example
 
+# Tooling and platform output
+.codex/
+.vercel/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs and system files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Next.js
-/.next
-
-.vercel
-
-.vscode
+.pnpm-debug.log*
+.DS_Store
+*.pem
