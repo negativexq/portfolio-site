@@ -143,9 +143,9 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         const displayData = renderer?.getNodeDisplayData(nodeId);
         if (!renderer || !displayData) return;
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const nextState = { x: displayData.x, y: displayData.y, ratio: 0.32 };
+        const nextState = { x: displayData.x, y: displayData.y, ratio: 0.38 };
         if (reducedMotion) renderer.getCamera().setState(nextState);
-        else renderer.getCamera().animate(nextState, { duration: 280, easing: "quadraticOut" });
+        else renderer.getCamera().animate(nextState, { duration: 240, easing: "quadraticOut" });
       });
     }
   }, [data.nodes, updateUrlNode]);
@@ -155,7 +155,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     if (!camera) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) camera.setState({ x: 0.5, y: 0.5, ratio: 1, angle: 0 });
-    else camera.animatedReset({ duration: 260, easing: "quadraticOut" });
+    else camera.animatedReset({ duration: 220, easing: "quadraticOut" });
   }, []);
 
   const resetGraph = useCallback(() => {
@@ -187,9 +187,9 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         labelSize: 11,
         labelWeight: "600",
         labelColor: { color: "#d8ddd5" },
-        labelDensity: compactCanvas ? 0.48 : 0.68,
-        labelGridCellSize: compactCanvas ? 132 : 116,
-        labelRenderedSizeThreshold: compactCanvas ? 8.5 : 6.3,
+        labelDensity: compactCanvas ? 0.34 : 0.5,
+        labelGridCellSize: compactCanvas ? 148 : 132,
+        labelRenderedSizeThreshold: compactCanvas ? 10 : 7.5,
         hideEdgesOnMove: true,
         stagePadding: 36,
         minCameraRatio: 0.16,
@@ -349,6 +349,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             aria-label="Interactive engineering graph. Use search, filters, or the accessible list to select nodes; canvas nodes support pointer and touch exploration."
           />
           <p className="graph-onboarding">Scroll or pinch to zoom · drag to move · select a node to inspect</p>
+          {!selectedNode ? <p className="graph-selection-hint">Select a node to inspect relationships.</p> : null}
           {error ? (
             <div className="graph-fallback" role="alert">
               <strong>The interactive graph could not initialize.</strong>
@@ -363,7 +364,13 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             </div>
           ) : null}
         </div>
-        <GraphDetailPanel node={selectedNode} data={data} onClose={clearSelection} onSelectNode={focusNode} />
+        <GraphDetailPanel
+          key={selectedNode?.id ?? "graph-detail-empty"}
+          node={selectedNode}
+          data={data}
+          onClose={clearSelection}
+          onSelectNode={focusNode}
+        />
       </div>
 
       <GraphBrowseList data={data} onSelect={focusNode} />

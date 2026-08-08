@@ -9,7 +9,6 @@ import type {
   EngineeringGraphNode,
   GraphEdgeType,
   GraphNodeType,
-  GraphStatus,
 } from "./types";
 
 type ConceptSelection =
@@ -163,10 +162,15 @@ function hash(value: string) {
   return result >>> 0;
 }
 
-function statusCanvasLabel(label: string, status: GraphStatus) {
-  if (status === "learning") return `[LEARNING] ${label}`;
-  if (status === "planned") return `[PLANNED] ${label}`;
-  return label;
+const canvasLabels: Readonly<Record<string, string>> = {
+  "experience:fibabanka": "Fibabanka",
+  "domain:agent-infrastructure": "Agent Infrastructure",
+  "project:real-time-commerce-platform": "Real-Time Commerce",
+  "project:production-rag-platform": "Production RAG",
+};
+
+function canvasLabel(id: string, label: string) {
+  return canvasLabels[id] ?? label;
 }
 
 function conceptLabel(selection: ConceptSelection) {
@@ -186,7 +190,7 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     const fixed = explicitPositions[node.id];
     const next: EngineeringGraphNode = {
       ...node,
-      canvasLabel: statusCanvasLabel(node.label, node.status),
+      canvasLabel: canvasLabel(node.id, node.label),
       x: fixed?.x ?? node.x ?? 0,
       y: fixed?.y ?? node.y ?? 0,
     };

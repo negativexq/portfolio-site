@@ -16,7 +16,7 @@ export function SectionHeading({
   action,
 }: SectionHeadingProps) {
   return (
-    <header className="section-heading">
+    <header className="section-heading" data-reveal>
       <div>
         <p className="eyebrow">{eyebrow}</p>
         <h2 id={id}>{title}</h2>

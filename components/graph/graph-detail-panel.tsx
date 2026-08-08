@@ -11,20 +11,7 @@ type GraphDetailPanelProps = {
 };
 
 export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDetailPanelProps) {
-  if (!node) {
-    return (
-      <aside className="graph-detail-panel graph-detail-empty" aria-label="Selected node details">
-        <p className="detail-kicker">Explore the graph</p>
-        <h2>Select a node</h2>
-        <p>Inspect its evidence, current relationships, learning paths and planned extensions.</p>
-        <ul>
-          <li>Click or tap a node</li>
-          <li>Search by name or concept</li>
-          <li>Use <kbd>/</kbd> to focus search</li>
-        </ul>
-      </aside>
-    );
-  }
+  if (!node) return null;
 
   const connections = data.edges
     .filter((edge) => edge.source === node.id || edge.target === node.id)
@@ -39,7 +26,7 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
     : "Connected relationships";
 
   return (
-    <aside className="graph-detail-panel" aria-label={`${node.label} details`} aria-live="polite">
+    <aside className="graph-detail-panel" aria-label={`${node.label} details`} aria-live="polite" tabIndex={-1}>
       <button className="graph-detail-close" type="button" onClick={onClose} aria-label="Close node details">
         <X aria-hidden="true" size={16} />
       </button>

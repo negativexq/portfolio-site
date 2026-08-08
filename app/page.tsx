@@ -123,7 +123,7 @@ export default function Home() {
             title="Extending the platform boundary."
             description="Planned and learning items are intentionally distinct from current, evidence-backed work."
           />
-          <div className="direction-grid">
+          <div className="direction-grid" data-reveal>
             {currentDirection.map((item, index) => (
               <article key={item.id}>
                 <span className="direction-index">0{index + 1}</span>
@@ -142,7 +142,7 @@ export default function Home() {
       </section>
 
       <section className="graph-cta section-shell" aria-labelledby="graph-cta-heading">
-        <div className="container graph-cta-inner">
+        <div className="container graph-cta-inner" data-reveal>
           <div>
             <p className="eyebrow">Engineering graph</p>
             <h2 id="graph-cta-heading">See how the work connects.</h2>

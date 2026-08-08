@@ -21,6 +21,7 @@ export function GraphToolbar({ filters, onToggleFilter, onFit, onReset }: GraphT
             onClick={() => onToggleFilter(filter.id)}
           >
             {filter.label}
+            <span className="sr-only"> — {filters[filter.id] ? "shown" : "hidden"}</span>
           </button>
         ))}
       </div>
