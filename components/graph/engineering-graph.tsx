@@ -19,6 +19,14 @@ import {
   getEdgeVisual,
   getNodeVisual,
 } from "@/lib/graph/graph-styles";
+import {
+  focusedLabelRectangle,
+  resolveFocusedLabelCollisions,
+  validateFocusedLabelLayout,
+  type FocusLabelItem,
+  type FocusLabelRole,
+  type FocusViewport,
+} from "@/lib/graph/focus-layout";
 import type {
   GraphFilterGroup,
   GraphFilterState,
@@ -48,10 +56,39 @@ const focusedLabelTypePriority = {
 
 type FocusedDisplayPosition = { x: number; y: number };
 
+type FocusedCameraState = { x: number; y: number; ratio: number; angle: number };
+
+type ProjectFocusDiagnostics = {
+  initialCollisions: number;
+  finalCollisions: number;
+  clippedLabels: number;
+  minimumClearance: number;
+};
+
 type ProjectFocusLayout = {
   positions: Map<string, FocusedDisplayPosition>;
   cameraNodeIds: Set<string>;
 };
+
+const PROJECT_FOCUS_MAX_RATIO = 0.82;
+
+function constrainProjectFocusRatio(
+  calculatedRatio: number,
+  minimumRatio: number,
+  currentRatio: number,
+  hasExistingProjectFocus: boolean,
+) {
+  // Sigma ratios grow as the camera zooms out. A project focus should always
+  // enter at a readable scale, and switching projects must not regress to a
+  // wider view than the already-readable focused state.
+  const readableMaximum = hasExistingProjectFocus
+    ? Math.min(PROJECT_FOCUS_MAX_RATIO, currentRatio)
+    : PROJECT_FOCUS_MAX_RATIO;
+  const effectiveMinimum = hasExistingProjectFocus
+    ? Math.min(minimumRatio, readableMaximum)
+    : minimumRatio;
+  return Math.max(effectiveMinimum, Math.min(calculatedRatio, readableMaximum));
+}
 
 const projectFocusConceptLabels: Readonly<Record<string, readonly string[]>> = {
   "real-time-commerce-platform": ["Event-Driven Architecture", "Transactional Outbox"],
@@ -226,6 +263,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const focusedLayoutProgressRef = useRef(0);
   const layoutAnimationFrameRef = useRef<number | null>(null);
   const labelWidthCacheRef = useRef<Map<string, number>>(new Map());
+  const projectFocusDiagnosticsRef = useRef<Map<string, ProjectFocusDiagnostics>>(new Map());
   const selectionOriginRef = useRef<HTMLElement | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -365,6 +403,149 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       if (selectionOrigin?.isConnected) selectionOrigin.focus({ preventScroll: true });
     });
   }, [animateFocusedLayout, clearSelectionState, fitGraph]);
+
+  const prepareProjectFocusPresentation = useCallback((
+    nodeId: string,
+    semanticPositions: ReadonlyMap<string, FocusedDisplayPosition>,
+    tight: boolean,
+  ) => {
+    const renderer = rendererRef.current;
+    const selectedNode = nodeById.get(nodeId);
+    if (!renderer || !selectedNode) return null;
+
+    const dimensions = renderer.getDimensions();
+    const panel = containerRef.current?.closest(".graph-workspace")?.querySelector<HTMLElement>(".graph-detail-panel");
+    const inspectorWidth = panel && getComputedStyle(panel).position === "absolute"
+      ? panel.getBoundingClientRect().width
+      : 0;
+    const viewport: FocusViewport = {
+      width: dimensions.width,
+      height: dimensions.height,
+      inspectorWidth,
+      padding: 24,
+    };
+    const usableWidth = Math.max(280, dimensions.width - inspectorWidth);
+    const labelSize = renderer.getSetting("labelSize");
+    const labelWeight = renderer.getSetting("labelWeight");
+    const labelFont = renderer.getSetting("labelFont");
+    const measurementContext = document.createElement("canvas").getContext("2d");
+    if (measurementContext) measurementContext.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+
+    const labelWidth = (label: string) => {
+      const cached = labelWidthCacheRef.current.get(label);
+      if (cached !== undefined) return cached;
+      const width = measurementContext?.measureText(label).width ?? label.length * 6.2;
+      labelWidthCacheRef.current.set(label, width);
+      return width;
+    };
+    const positionFor = (id: string, positions: ReadonlyMap<string, FocusedDisplayPosition>) => (
+      positions.get(id) ?? graph.getNodeAttributes(id)
+    );
+    const neutralCamera = { x: 0.5, y: 0.5, ratio: 1, angle: 0 };
+    const rawToFramed = (position: FocusedDisplayPosition) => {
+      const viewportPoint = renderer.graphToViewport(position, { cameraState: neutralCamera });
+      return renderer.viewportToFramedGraph(viewportPoint, { cameraState: neutralCamera });
+    };
+    const labelRole = (id: string): FocusLabelRole => {
+      if (id === nodeId) return "project";
+      const type = nodeById.get(id)?.type;
+      if (type === "technology") return "technology";
+      if (type === "domain") return "domain";
+      if (type === "concept") return "concept";
+      if (type === "evidence") return "evidence";
+      return "related";
+    };
+    const displayedSize = (id: string, role: FocusLabelRole) => {
+      const size = graph.getNodeAttribute(id, "size");
+      if (role === "project") return size * 1.18;
+      if (role === "technology") return size * 1.03 * 1.14;
+      if (role === "domain") return size * 1.03 * 1.1;
+      return size * 1.03;
+    };
+    const focusIds = [...focusedCameraNodeIdsRef.current].filter((id) => forcedProjectLabelIdsRef.current.has(id));
+    if (!focusIds.includes(nodeId)) focusIds.unshift(nodeId);
+    const currentCameraRatio = renderer.getCamera().getState().ratio;
+    const hasExistingProjectFocus = focusedDisplayPositionsRef.current.size > 0
+      || focusedDisplayStartPositionsRef.current.size > 0;
+
+    const itemsFor = (
+      positions: ReadonlyMap<string, FocusedDisplayPosition>,
+      cameraState: FocusedCameraState,
+    ): FocusLabelItem[] => focusIds.map((id) => {
+      const graphNode = nodeById.get(id)!;
+      const role = labelRole(id);
+      return {
+        id,
+        role,
+        position: renderer.graphToViewport(positionFor(id, positions), { cameraState }),
+        radius: renderer.scaleSize(displayedSize(id, role), cameraState.ratio),
+        labelWidth: labelWidth(graphNode.canvasLabel),
+        labelHeight: labelSize,
+      };
+    });
+
+    const cameraFor = (positions: ReadonlyMap<string, FocusedDisplayPosition>) => {
+      const anchor = rawToFramed(positionFor(nodeId, positions));
+      const baseState: FocusedCameraState = { x: anchor.x, y: anchor.y, ratio: 1, angle: 0 };
+      const baseItems = itemsFor(positions, baseState);
+      const baseRectangles = baseItems.map((item) => focusedLabelRectangle(item));
+      const minX = Math.min(...baseRectangles.map((rectangle) => rectangle.left));
+      const maxX = Math.max(...baseRectangles.map((rectangle) => rectangle.right));
+      const minY = Math.min(...baseRectangles.map((rectangle) => rectangle.top));
+      const maxY = Math.max(...baseRectangles.map((rectangle) => rectangle.bottom));
+      const profile = focusProfile(selectedNode, focusIds.length - 1, tight);
+      const calculatedRatio = Math.max(
+        (maxX - minX + 48) / (usableWidth * profile.occupancy),
+        (maxY - minY + 48) / (dimensions.height * profile.occupancy),
+      );
+      const ratio = constrainProjectFocusRatio(
+        calculatedRatio,
+        profile.minimumRatio,
+        currentCameraRatio,
+        hasExistingProjectFocus,
+      );
+      const centeredState: FocusedCameraState = { ...baseState, ratio };
+      const targetViewport = { x: usableWidth * 0.48, y: dimensions.height * 0.5 };
+      const graphPointAtTarget = renderer.viewportToFramedGraph(targetViewport, { cameraState: centeredState });
+      return {
+        ...centeredState,
+        x: centeredState.x + anchor.x - graphPointAtTarget.x,
+        y: centeredState.y + anchor.y - graphPointAtTarget.y,
+      };
+    };
+
+    const correctedPositions = new Map(semanticPositions);
+    const cameraState = cameraFor(correctedPositions);
+    let initialCollisions = 0;
+    let finalResolution = resolveFocusedLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
+    initialCollisions = finalResolution.initialCollisions.length;
+    for (let pass = 0; pass < 2; pass += 1) {
+      for (const [id, screenPosition] of finalResolution.positions) {
+        correctedPositions.set(id, renderer.viewportToGraph(screenPosition, { cameraState }));
+      }
+      // Keep the camera fixed while resolving labels. Re-fitting from the
+      // screen-corrected graph coordinates creates a zoom-out feedback loop
+      // and invalidates the resolver's final pixel-space composition.
+      finalResolution = resolveFocusedLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
+      if (finalResolution.collisions.length === 0 && finalResolution.clippedLabels.length === 0) break;
+    }
+    for (const [id, screenPosition] of finalResolution.positions) {
+      correctedPositions.set(id, renderer.viewportToGraph(screenPosition, { cameraState }));
+    }
+    const finalItems = itemsFor(correctedPositions, cameraState);
+    const finalValidation = validateFocusedLabelLayout(
+      finalItems,
+      new Map(finalItems.map((item) => [item.id, item.position])),
+      viewport,
+    );
+    projectFocusDiagnosticsRef.current.set(nodeId, {
+      initialCollisions,
+      finalCollisions: finalValidation.collisions.length,
+      clippedLabels: finalValidation.clippedLabels.length,
+      minimumClearance: finalValidation.minimumClearance,
+    });
+    return { positions: correctedPositions, cameraState };
+  }, [graph, nodeById]);
 
   const focusNeighborhood = useCallback((nodeId: string, tight = false) => {
     const renderer = rendererRef.current;
@@ -547,14 +728,28 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
     window.requestAnimationFrame(() => {
       if (isProjectFocus) {
-        animateFocusedLayout(nextDisplayPositions, 250, () => focusNeighborhood(nodeId, cameraMode === "focus"));
+        window.requestAnimationFrame(() => {
+          const prepared = prepareProjectFocusPresentation(nodeId, nextDisplayPositions, cameraMode === "focus");
+          if (!prepared) {
+            animateFocusedLayout(nextDisplayPositions, 250, () => focusNeighborhood(nodeId, cameraMode === "focus"));
+            return;
+          }
+          animateFocusedLayout(prepared.positions, 250);
+          const camera = rendererRef.current?.getCamera();
+          if (!camera) return;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) camera.setState(prepared.cameraState);
+          else camera.animate(prepared.cameraState, {
+            duration: cameraMode === "focus" ? 260 : 250,
+            easing: "quadraticInOut",
+          });
+        });
       } else if (hasTemporaryLayout) {
         animateFocusedLayout(new Map(), 190, () => focusNeighborhood(nodeId, cameraMode === "focus"));
       } else {
         window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
       }
     });
-  }, [animateFocusedLayout, focusNeighborhood, graph, nodeById, updateUrlNode]);
+  }, [animateFocusedLayout, focusNeighborhood, graph, nodeById, prepareProjectFocusPresentation, updateUrlNode]);
 
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
