@@ -20,7 +20,7 @@ export const metrics = [
     detail: "Batch and near-real-time workloads supporting training, inference and analytics.",
   },
   {
-    value: "75% FASTER",
+    value: "75% RUNTIME REDUCTION",
     label: "Core ETL workflow",
     context: "Performance",
     detail: "Sequential Oracle ETL re-architected with modular parallel dbt: 120 → 30 min.",

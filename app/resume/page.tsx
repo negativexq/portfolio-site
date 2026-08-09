@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
 import { TagList } from "@/components/content/tag-list";
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
@@ -22,12 +22,18 @@ export default function ResumePage() {
         <h1>{profile.name}</h1>
         <p>{profile.title} — {profile.summary}</p>
         <div className="hero-actions">
-          <a className="button button-primary" href={profile.links.email}>Email</a>
+          <a
+            className="button button-primary"
+            href="/resume/omer-faruk-koc-resume.pdf"
+            download="omer-faruk-koc-resume.pdf"
+          >
+            Download Résumé <Download aria-hidden="true" size={14} />
+          </a>
+          <a className="button button-secondary" href={profile.links.email}>Email</a>
           <a className="button button-secondary" href={profile.links.linkedin} target="_blank" rel="noreferrer">
             LinkedIn <ArrowUpRight aria-hidden="true" size={14} />
           </a>
         </div>
-        <p className="resume-pdf-note">No public resume PDF is available yet. This page provides the current HTML overview.</p>
       </header>
 
       <div className="container resume-layout">
