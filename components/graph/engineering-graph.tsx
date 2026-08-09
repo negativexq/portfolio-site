@@ -81,13 +81,14 @@ function constrainProjectFocusRatio(
   minimumRatio: number,
   currentRatio: number,
   hasExistingProjectFocus: boolean,
+  maxRatio: number = PROJECT_FOCUS_MAX_RATIO,
 ) {
   // Sigma ratios grow as the camera zooms out. A project focus should always
   // enter at a readable scale, and switching projects must not regress to a
   // wider view than the already-readable focused state.
   const readableMaximum = hasExistingProjectFocus
-    ? Math.min(PROJECT_FOCUS_MAX_RATIO, currentRatio)
-    : PROJECT_FOCUS_MAX_RATIO;
+    ? Math.min(maxRatio, currentRatio)
+    : maxRatio;
   const effectiveMinimum = hasExistingProjectFocus
     ? Math.min(minimumRatio, readableMaximum)
     : minimumRatio;
@@ -480,6 +481,10 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       items.push({
         id: nodeId,
         role: attrs.nodeType,
+        // Structural anchors stay put while panning; only the denser
+        // technology/concept/evidence/learning labels move to avoid them.
+        pinned: attrs.nodeType === "person" || attrs.nodeType === "experience"
+          || attrs.nodeType === "project" || attrs.nodeType === "domain",
         position: point,
         radius,
         labelWidth: measureLabel(attrs.label),
@@ -602,6 +607,9 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       return {
         id,
         role,
+        // Only the focused project itself is pinned — every neighbor
+        // (including domains) stays free to move around it.
+        pinned: id === nodeId,
         position: renderer.graphToViewport(positionFor(id, positions), { cameraState }),
         radius: renderer.scaleSize(displayedSize(id, role), cameraState.ratio),
         labelWidth: labelWidth(graphNode.canvasLabel),
@@ -619,15 +627,27 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const minY = Math.min(...baseRectangles.map((rectangle) => rectangle.top));
       const maxY = Math.max(...baseRectangles.map((rectangle) => rectangle.bottom));
       const profile = focusProfile(selectedNode, focusIds.length - 1, tight);
+      // Denser neighborhoods need proportionally more slack: the collision
+      // resolver spreads labels apart *after* this ratio is fixed, so a
+      // flat padding under-frames projects with more neighbors (evidence,
+      // a related-project link, extra concepts) and leaves it clipping
+      // against the viewport instead of actually resolving.
+      const collisionPadding = 48 + focusIds.length * 6;
       const calculatedRatio = Math.max(
-        (maxX - minX + 48) / (usableWidth * profile.occupancy),
-        (maxY - minY + 48) / (dimensions.height * profile.occupancy),
+        (maxX - minX + collisionPadding) / (usableWidth * profile.occupancy),
+        (maxY - minY + collisionPadding) / (dimensions.height * profile.occupancy),
       );
+      // A dense neighborhood (evidence, a related-project link, more
+      // concepts) needs to be allowed to zoom out further than the default
+      // ceiling, or the labels never get enough room to actually resolve —
+      // they just clip against the viewport edge instead.
+      const densityMaxRatio = Math.min(0.95, PROJECT_FOCUS_MAX_RATIO + Math.max(0, focusIds.length - 9) * 0.025);
       const ratio = constrainProjectFocusRatio(
         calculatedRatio,
         profile.minimumRatio,
         currentCameraRatio,
         hasExistingProjectFocus,
+        densityMaxRatio,
       );
       const centeredState: FocusedCameraState = { ...baseState, ratio };
       const targetViewport = { x: usableWidth * 0.48, y: dimensions.height * 0.5 };
@@ -644,7 +664,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     let initialCollisions = 0;
     let finalResolution = resolveLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
     initialCollisions = finalResolution.initialCollisions.length;
-    for (let pass = 0; pass < 2; pass += 1) {
+    for (let pass = 0; pass < 3; pass += 1) {
       for (const [id, screenPosition] of finalResolution.positions) {
         correctedPositions.set(id, renderer.viewportToGraph(screenPosition, { cameraState }));
       }

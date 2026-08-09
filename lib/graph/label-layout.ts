@@ -19,6 +19,14 @@ export type LabelItem = {
   radius: number;
   labelWidth: number;
   labelHeight: number;
+  /**
+   * Never moves — the caller decides this, not the role. Project-focus pins
+   * only the single focused node (every neighbor, including domains, stays
+   * movable, same as before this module was generalized). The idle view
+   * pins the always-visible structural anchors (person/experience/project/
+   * domain) so they don't jitter while panning.
+   */
+  pinned?: boolean;
 };
 
 export type LabelViewport = {
@@ -48,32 +56,29 @@ export type LabelCollisionResolution = LabelLayoutValidation & {
 };
 
 /**
- * Lower = higher priority = less willing to move / gets extra clearance.
- * Anchors a viewer orients by (person, experience, project, domain) stay put;
- * denser, lower-signal labels (technology, concept, evidence) yield around them.
+ * Movement order among *non-pinned* items, and a tie-breaker for clearance —
+ * NOT a pin/no-pin decision (see `LabelItem.pinned`). Mirrors the original
+ * project-focus tiers (technology tightest, domain/concept/evidence looser)
+ * with the idle-only roles slotted alongside their closest original analog.
  */
 const rolePriority: Record<LabelRole, number> = {
+  project: 0,
   person: 0,
   experience: 0,
-  project: 0,
-  domain: 0,
-  capability: 1,
+  technology: 1,
+  domain: 2,
+  capability: 2,
   learning: 2,
   roadmap: 2,
-  technology: 3,
-  concept: 4,
-  evidence: 5,
+  concept: 3,
+  evidence: 4,
 };
 
-function isAnchorRole(role: LabelRole) {
-  return rolePriority[role] === 0;
-}
-
-export function requiredLabelClearance(first: LabelRole, second: LabelRole) {
-  if (isAnchorRole(first) || isAnchorRole(second)) return 16;
-  if (first === "evidence" || second === "evidence") return 16;
-  if (first === "technology" && second === "technology") return 10;
-  if (first === "technology" || second === "technology") return 14;
+export function requiredLabelClearance(first: LabelItem, second: LabelItem) {
+  if (first.pinned || second.pinned) return 16;
+  if (first.role === "evidence" || second.role === "evidence") return 16;
+  if (first.role === "technology" && second.role === "technology") return 10;
+  if (first.role === "technology" || second.role === "technology") return 14;
   return 12;
 }
 
@@ -87,7 +92,7 @@ export function labelRectangle(item: LabelItem, position = item.position): Scree
     right: labelLeft + item.labelWidth,
     bottom: Math.max(position.y + item.radius, labelBottom),
   };
-  if (!isAnchorRole(item.role)) return base;
+  if (!item.pinned) return base;
   return {
     left: base.left - 10,
     top: base.top - 10,
@@ -147,7 +152,7 @@ function collectValidation(
       const second = items[secondIndex];
       const firstRectangle = rectangles.get(first.id)!;
       const secondRectangle = rectangles.get(second.id)!;
-      const clearance = requiredLabelClearance(first.role, second.role);
+      const clearance = requiredLabelClearance(first, second);
       if (rectanglesConflict(firstRectangle, secondRectangle, clearance)) {
         collisions.push({ first: first.id, second: second.id, clearance });
       } else {
@@ -173,65 +178,111 @@ export function validateLabelLayout(
 }
 
 /**
- * Nudges colliding labels apart. Anchor-role labels (person/experience/project/
- * domain) never move — everything else is displaced outward from the viewport
- * center, in priority order, until clear or `maxPasses` is exhausted.
+ * Nudges colliding labels apart. `item.pinned` labels never move — everyone
+ * else is displaced outward from the viewport center, in priority order,
+ * until clear or `maxPasses` is exhausted.
  *
  * Used for both the project-focus layout (a handful of semantically placed
- * labels around one anchor) and the idle/general view (whatever labels are
- * currently visible on screen) — the two differ only in which items and
- * viewport they're called with.
+ * labels around one pinned anchor) and the idle/general view (whatever
+ * labels are currently visible on screen, with several pinned structural
+ * anchors) — the two differ only in which items/pins and viewport they're
+ * called with.
  */
 export function resolveLabelCollisions(
   items: readonly LabelItem[],
   viewport: LabelViewport,
-  maxPasses = 4,
+  maxPasses = 6,
 ): LabelCollisionResolution {
   const positions = new Map(items.map((item) => [item.id, clampToViewport(item, item.position, viewport)]));
   const initial = collectValidation(items, positions, viewport);
   const center = { x: viewport.width / 2, y: viewport.height / 2 };
+  // Pinned items must be placed before any movable item is processed —
+  // otherwise a movable item earlier in role-priority order (e.g. a
+  // technology label) never sees a later-priority pinned obstacle (e.g. a
+  // domain) as a conflict, since collisions are only checked against
+  // already-`placed` items within a pass.
   const ordered = [...items].sort((first, second) => (
-    rolePriority[first.role] - rolePriority[second.role] || first.id.localeCompare(second.id)
+    Number(!first.pinned) - Number(!second.pinned)
+    || rolePriority[first.role] - rolePriority[second.role]
+    || first.id.localeCompare(second.id)
   ));
 
   for (let pass = 0; pass < maxPasses; pass += 1) {
     const placed: LabelItem[] = [];
     let moved = false;
     for (const item of ordered) {
-      if (isAnchorRole(item.role)) {
+      if (item.pinned) {
         placed.push(item);
         continue;
       }
       let position = positions.get(item.id) ?? item.position;
-      for (let attempt = 0; attempt < 10; attempt += 1) {
+      const totalAttempts = 18;
+      for (let attempt = 0; attempt < totalAttempts; attempt += 1) {
         const rectangle = labelRectangle(item, position);
-        const conflict = placed.find((other) => {
-          const otherPosition = positions.get(other.id) ?? other.position;
-          return rectanglesConflict(
-            rectangle,
-            labelRectangle(other, otherPosition),
-            requiredLabelClearance(item.role, other.role),
-          );
-        });
-        if (!conflict) break;
+        const conflicts = placed.filter((other) => rectanglesConflict(
+          rectangle,
+          labelRectangle(other, positions.get(other.id) ?? other.position),
+          requiredLabelClearance(item, other),
+        ));
+        if (conflicts.length === 0) break;
 
-        const conflictRectangle = labelRectangle(conflict, positions.get(conflict.id) ?? conflict.position);
-        const clearance = requiredLabelClearance(item.role, conflict.role);
-        const moveUp = item.role === "domain" || item.role === "concept" || item.role === "learning" || item.role === "roadmap"
-          || (item.role === "technology" && position.y <= center.y);
-        const verticalDelta = moveUp
-          ? conflictRectangle.top - clearance - rectangle.bottom
-          : conflictRectangle.bottom + clearance - rectangle.top;
-        const verticalCandidate = clampToViewport(item, { x: position.x, y: position.y + verticalDelta }, viewport);
-        const verticalRectangle = labelRectangle(item, verticalCandidate);
-        if (!rectanglesConflict(verticalRectangle, conflictRectangle, clearance)) {
-          position = verticalCandidate;
+        // Clearing one obstacle at a time (even picking the worst overlap)
+        // can ping-pong forever when several obstacles box an item in: fix A,
+        // it lands on B; fix B, it's back on A. Spend most attempts on the
+        // precise single-worst-conflict clear (it converges fast for the
+        // common case), then fall back to a bounded step directly away from
+        // the combined center of every current conflict for the last few —
+        // enough to break a cluster without the unbounded jumps that used
+        // to overshoot into a *new* collision elsewhere.
+        const useClusterEscape = conflicts.length > 1 && attempt >= totalAttempts - 5;
+
+        if (!useClusterEscape) {
+          const conflict = conflicts.reduce((worst, candidate) => {
+            const worstRect = labelRectangle(worst, positions.get(worst.id) ?? worst.position);
+            const candidateRect = labelRectangle(candidate, positions.get(candidate.id) ?? candidate.position);
+            const overlapArea = (rect: ScreenRect) => (
+              Math.max(0, Math.min(rectangle.right, rect.right) - Math.max(rectangle.left, rect.left))
+              * Math.max(0, Math.min(rectangle.bottom, rect.bottom) - Math.max(rectangle.top, rect.top))
+            );
+            return overlapArea(candidateRect) > overlapArea(worstRect) ? candidate : worst;
+          });
+          const conflictRectangle = labelRectangle(conflict, positions.get(conflict.id) ?? conflict.position);
+          const clearance = requiredLabelClearance(item, conflict);
+          const moveUp = item.role === "domain" || item.role === "concept" || item.role === "person" || item.role === "experience"
+            || item.role === "capability" || item.role === "learning" || item.role === "roadmap"
+            || (item.role === "technology" && position.y <= center.y);
+          const verticalDelta = moveUp
+            ? conflictRectangle.top - clearance - rectangle.bottom
+            : conflictRectangle.bottom + clearance - rectangle.top;
+          const verticalCandidate = clampToViewport(item, { x: position.x, y: position.y + verticalDelta }, viewport);
+          const verticalRectangle = labelRectangle(item, verticalCandidate);
+          if (!rectanglesConflict(verticalRectangle, conflictRectangle, clearance)) {
+            position = verticalCandidate;
+          } else {
+            const moveLeft = position.x > center.x;
+            const horizontalDelta = moveLeft
+              ? conflictRectangle.left - clearance - rectangle.right
+              : conflictRectangle.right + clearance - rectangle.left;
+            position = clampToViewport(item, { x: position.x + horizontalDelta, y: position.y }, viewport);
+          }
         } else {
-          const moveLeft = position.x > center.x;
-          const horizontalDelta = moveLeft
-            ? conflictRectangle.left - clearance - rectangle.right
-            : conflictRectangle.right + clearance - rectangle.left;
-          position = clampToViewport(item, { x: position.x + horizontalDelta, y: position.y }, viewport);
+          const conflictRectangles = conflicts.map((other) => (
+            labelRectangle(other, positions.get(other.id) ?? other.position)
+          ));
+          const centroidX = conflictRectangles.reduce((sum, r) => sum + (r.left + r.right) / 2, 0) / conflictRectangles.length;
+          const centroidY = conflictRectangles.reduce((sum, r) => sum + (r.top + r.bottom) / 2, 0) / conflictRectangles.length;
+          const itemCenterX = (rectangle.left + rectangle.right) / 2;
+          const itemCenterY = (rectangle.top + rectangle.bottom) / 2;
+          let awayX = itemCenterX - centroidX;
+          let awayY = itemCenterY - centroidY;
+          const magnitude = Math.hypot(awayX, awayY) || 1;
+          awayX /= magnitude;
+          awayY /= magnitude;
+          position = clampToViewport(
+            item,
+            { x: position.x + awayX * 22, y: position.y + awayY * 22 },
+            viewport,
+          );
         }
         moved = true;
       }
