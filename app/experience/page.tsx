@@ -5,8 +5,9 @@ import { experiences } from "@/data/experience";
 import { metrics } from "@/data/metrics";
 
 export const metadata: Metadata = {
-  title: "Experience — Ömer Faruk Koç",
+  title: "Experience",
   description: "Production AI/ML, data platform and Generative AI engineering experience.",
+  alternates: { canonical: "/experience" },
 };
 
 export default function ExperiencePage() {
@@ -30,7 +31,7 @@ export default function ExperiencePage() {
         </div>
       </header>
 
-      <section className="section-shell metric-section" aria-label="Verified experience metrics">
+      <section className="section-shell metric-section" aria-label="Career experience metrics">
         <div className="container"><MetricGrid metrics={metrics} /></div>
       </section>
 

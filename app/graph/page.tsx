@@ -3,9 +3,10 @@ import { EngineeringGraphLoader } from "@/components/graph/engineering-graph-loa
 import { buildEngineeringGraph } from "@/lib/graph/build-graph";
 
 export const metadata: Metadata = {
-  title: "Engineering Graph — Ömer Faruk Koç",
+  title: "Engineering Graph",
   description:
     "An interactive map of the systems, technologies, engineering concepts and learning directions behind Ömer Faruk Koç's work.",
+  alternates: { canonical: "/graph" },
 };
 
 export default function GraphPage() {

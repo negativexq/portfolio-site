@@ -5,8 +5,9 @@ import { getProjectById } from "@/data/projects";
 import type { LearningArea } from "@/lib/content/types";
 
 export const metadata: Metadata = {
-  title: "Learning — Ömer Faruk Koç",
+  title: "Learning",
   description: "Planned and active learning directions across infrastructure, agent systems and graph systems.",
+  alternates: { canonical: "/learning" },
 };
 
 const areas: readonly {

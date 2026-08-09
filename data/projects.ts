@@ -174,7 +174,14 @@ export const projects = [
       "Task Bundles",
       "Tool Security Boundaries",
     ],
-    proofPoints: [],
+    proofPoints: [
+      {
+        label: "MCP tooling",
+        value: "38 tools",
+        qualifier:
+          "Read-only tools enabled by default across six local MCP servers.",
+      },
+    ],
     roadmap: [],
     relationships: [],
     githubUrl: "https://github.com/negativexq/repo-context-forge",

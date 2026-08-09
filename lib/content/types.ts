@@ -93,6 +93,7 @@ export type Metric = {
   value: string;
   label: string;
   context: string;
+  detail: string;
 };
 
 export type Profile = {
@@ -101,6 +102,8 @@ export type Profile = {
   positioning: string;
   summary: string;
   location: string;
+  availability: string;
+  timezone: string;
   links: {
     github: string;
     linkedin: string;
@@ -110,8 +113,6 @@ export type Profile = {
   education: {
     institution: string;
     degree: string;
-    completed: string;
-    note: string;
   };
   languages: readonly {
     language: string;

@@ -7,8 +7,9 @@ import { experiences } from "@/data/experience";
 import { profile } from "@/data/profile";
 
 export const metadata: Metadata = {
-  title: "Resume — Ömer Faruk Koç",
-  description: "Resume overview for Ömer Faruk Koç, AI/ML Platform Engineer.",
+  title: "Resume",
+  description: "Resume overview for Ömer Faruk Koç, MLOps & AI Platform Engineer.",
+  alternates: { canonical: "/resume" },
 };
 
 export default function ResumePage() {
@@ -66,8 +67,6 @@ export default function ResumePage() {
             <p className="detail-kicker">Education</p>
             <h2>{profile.education.institution}</h2>
             <p>{profile.education.degree}</p>
-            <span>{profile.education.completed}</span>
-            <small>{profile.education.note}</small>
           </section>
           <section>
             <p className="detail-kicker">Languages</p>

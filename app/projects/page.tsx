@@ -4,8 +4,9 @@ import { SectionHeading } from "@/components/content/section-heading";
 import { flagshipProjects, supportingProjects } from "@/data/projects";
 
 export const metadata: Metadata = {
-  title: "Projects — Ömer Faruk Koç",
+  title: "Projects",
   description: "Selected AI/ML platform, RAG, data and distributed systems engineering projects.",
+  alternates: { canonical: "/projects" },
 };
 
 export default function ProjectsPage() {

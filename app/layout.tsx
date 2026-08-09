@@ -7,9 +7,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://omerfkoc.dev"),
-  title: "Ömer Faruk Koç — AI/ML Platform Engineer",
+  title: {
+    default: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
+    template: "%s — Ömer Faruk Koç",
+  },
   description:
-    "AI/ML Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+    "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
   alternates: {
     canonical: "/",
   },
@@ -17,9 +20,17 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://omerfkoc.dev",
     siteName: "Ömer Faruk Koç",
-    title: "Ömer Faruk Koç — AI/ML Platform Engineer",
+    title: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
     description:
-      "AI/ML Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+      "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+    images: [{ url: "/opengraph-image", alt: "Ömer Faruk Koç — MLOps & AI Platform Engineer" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
+    description:
+      "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+    images: ["/opengraph-image"],
   },
 };
 

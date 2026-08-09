@@ -13,7 +13,10 @@ export function MetricGrid({ metrics }: MetricGridProps) {
             <span className="metric-context">{metric.context}</span>
             <span className="metric-value">{metric.value}</span>
           </dt>
-          <dd>{metric.label}</dd>
+          <dd>
+            <span>{metric.label}</span>
+            <span className="metric-detail">{metric.detail}</span>
+          </dd>
         </div>
       ))}
     </dl>

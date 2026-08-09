@@ -44,13 +44,13 @@ export default function Home() {
           </a>
         </div>
         <p className="hero-meta">
-          {profile.location} · Open to remote opportunities · AI/ML Platform · MLOps · GenAI
+          {profile.location} · Open to remote opportunities · MLOps · AI Platform · GenAI
         </p>
       </section>
 
       <section className="section-shell metric-section" aria-labelledby="proof-heading">
         <div className="container">
-          <SectionHeading id="proof-heading" eyebrow="Verified impact" title="Production proof" />
+          <SectionHeading id="proof-heading" eyebrow="Career highlights" title="At a glance." />
           <MetricGrid metrics={metrics} />
         </div>
       </section>
@@ -146,10 +146,10 @@ export default function Home() {
           <div>
             <p className="eyebrow">Engineering graph</p>
             <h2 id="graph-cta-heading">See how the work connects.</h2>
-            <p>Experience, projects, technologies, concepts and future directions—modeled as relationships rather than isolated skill lists.</p>
+            <p>88 nodes and 102 relationships across five engineering domains—connecting experience, projects, technologies, concepts and current learning directions.</p>
           </div>
           <Link className="button button-primary" href="/graph">
-            Open graph preview <ArrowRight aria-hidden="true" size={16} />
+            Explore Engineering Graph <ArrowRight aria-hidden="true" size={16} />
           </Link>
         </div>
       </section>
@@ -159,11 +159,19 @@ export default function Home() {
           <div>
             <p className="eyebrow">Contact</p>
             <h2 id="contact-heading">Have an interesting platform, data or AI infrastructure problem?</h2>
+            <p className="contact-context">Open to remote opportunities · {profile.timezone}</p>
+            <p className="contact-availability">{profile.availability}</p>
           </div>
           <div className="contact-links">
-            <a href={profile.links.email}>Email</a>
-            <a href={profile.links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
-            <a href={profile.links.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a className="button button-primary" href={profile.links.email}>Email</a>
+            <a className="button button-secondary" href={profile.links.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn <ArrowUpRight aria-hidden="true" size={14} />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            <a className="button button-secondary" href={profile.links.github} target="_blank" rel="noreferrer">
+              GitHub <ArrowUpRight aria-hidden="true" size={14} />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
           </div>
         </div>
       </section>

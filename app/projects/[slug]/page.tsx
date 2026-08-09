@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   if (!project) return {};
 
   return {
-    title: `${project.title} — Ömer Faruk Koç`,
+    title: project.title,
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
   };
