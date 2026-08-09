@@ -12,6 +12,8 @@ import {
   DIMMED_EDGE_COLOR,
   DIMMED_NODE_COLOR,
   FILTER_CONTEXT_NODE_COLOR,
+  PROJECT_CONTEXT_EDGE_COLOR,
+  PROJECT_CONTEXT_NODE_COLOR,
   SELECTED_NODE_COLOR,
   drawGraphNodeHover,
   getEdgeVisual,
@@ -44,20 +46,102 @@ const focusedLabelTypePriority = {
   evidence: 5,
 } as const;
 
-const projectFocusTechnologies: Readonly<Record<string, readonly string[]>> = {
-  "real-time-commerce-platform": ["Kafka", "PostgreSQL", "Redis", "FastAPI", "Docker Compose", "Prometheus", "Grafana"],
-  "knowledge-base-rag": ["Qdrant", "FastAPI", "Ollama", "OpenTelemetry", "Jaeger", "Streamlit", "Docker Compose"],
-  "modelops-control-plane": ["FastAPI", "SQLAlchemy", "Next.js", "TypeScript", "Locust", "Docker Compose"],
-  "repo-context-forge": ["Python", "MCP", "FastMCP", "Typer", "Docker", "Git"],
-  "dbt-feature-lineage": ["dbt Core", "sqlglot", "NetworkX", "Streamlit", "Typer", "Docker"],
+type FocusedDisplayPosition = { x: number; y: number };
+
+const projectFocusConceptLabels: Readonly<Record<string, readonly string[]>> = {
+  "real-time-commerce-platform": ["Event-Driven Architecture", "Transactional Outbox"],
+  "knowledge-base-rag": ["Hybrid Retrieval", "Citation Integrity"],
+  "modelops-control-plane": ["Canary Deployment", "Weighted Routing"],
+  "repo-context-forge": ["Repository Intelligence", "Source-Grounded Context"],
+  "dbt-feature-lineage": ["Column-Level Lineage", "Downstream Impact"],
 };
+
+function estimatedLabelWidth(label: string) {
+  return Math.max(2.8, label.length * 0.34);
+}
+
+function verticalSlots(count: number, gap: number) {
+  if (count <= 0) return [];
+  if (count === 1) return [0];
+  const negativeCount = Math.floor(count / 2);
+  const positiveCount = Math.ceil(count / 2);
+  return [
+    ...Array.from({ length: negativeCount }, (_, index) => -(negativeCount - index) * gap),
+    ...Array.from({ length: positiveCount }, (_, index) => (index + 1) * gap),
+  ];
+}
+
+function createProjectDisplayLayout(
+  project: EngineeringGraphNode,
+  neighbors: readonly EngineeringGraphNode[],
+  measureLabel: (label: string) => number = estimatedLabelWidth,
+) {
+  const positions = new Map<string, FocusedDisplayPosition>();
+  const center = { x: project.x, y: project.y };
+  const place = (node: EngineeringGraphNode, x: number, y: number) => {
+    positions.set(node.id, { x: center.x + x, y: center.y + y });
+  };
+  positions.set(project.id, center);
+
+  const technologies = project.metadata.keyTechnologies
+    ?.map((label) => neighbors.find((neighbor) => neighbor.type === "technology" && neighbor.label === label))
+    .filter((node): node is EngineeringGraphNode => Boolean(node)) ?? [];
+  const technologyIds = new Set(technologies.map((node) => node.id));
+  const remainingTechnologies = neighbors
+    .filter((neighbor) => neighbor.type === "technology" && !technologyIds.has(neighbor.id))
+    .sort((left, right) => left.label.localeCompare(right.label));
+  technologies.push(...remainingTechnologies);
+
+  const leftTechnologies = technologies.filter((_, index) => index % 2 === 0);
+  const rightTechnologies = technologies.filter((_, index) => index % 2 === 1);
+  const selectedLabelWidth = measureLabel(project.canvasLabel);
+  const leftLabelWidth = Math.max(0, ...leftTechnologies.map((node) => measureLabel(node.canvasLabel)));
+  const rightLabelWidth = Math.max(0, ...rightTechnologies.map((node) => measureLabel(node.canvasLabel)));
+  const leftX = -Math.max(7.4, leftLabelWidth + 3.1);
+  const rightX = Math.max(5.6, selectedLabelWidth + 2.2);
+  verticalSlots(leftTechnologies.length, 2.65).forEach((y, index) => place(leftTechnologies[index], leftX, y));
+  verticalSlots(rightTechnologies.length, 2.65).forEach((y, index) => place(rightTechnologies[index], rightX, y));
+
+  const domains = neighbors.filter((neighbor) => neighbor.type === "domain");
+  const domainXs = verticalSlots(domains.length, 5.2);
+  domains.forEach((node, index) => place(node, domainXs[index], -8.6));
+
+  const relatedAnchors = neighbors.filter((neighbor) => (
+    neighbor.type === "person" || neighbor.type === "experience" || neighbor.type === "project"
+  ));
+  verticalSlots(relatedAnchors.length, 2.5).forEach((y, index) => place(relatedAnchors[index], leftX, -8.2 + y));
+
+  const concepts = neighbors.filter((neighbor) => neighbor.type === "concept");
+  const conceptStartX = rightX + rightLabelWidth + 2.4;
+  const conceptColumns = [conceptStartX, conceptStartX + 2.8];
+  const conceptsPerColumn = Math.ceil(concepts.length / conceptColumns.length);
+  concepts.forEach((node, index) => {
+    const column = Math.floor(index / conceptsPerColumn);
+    const row = index % conceptsPerColumn;
+    const rows = verticalSlots(Math.min(conceptsPerColumn, concepts.length - column * conceptsPerColumn), 1.85);
+    place(node, conceptColumns[column], rows[row]);
+  });
+
+  const evidence = neighbors.filter((neighbor) => neighbor.type === "evidence");
+  const evidenceXs = verticalSlots(evidence.length, 4.2);
+  evidence.forEach((node, index) => place(node, evidenceXs[index], 9.2));
+
+  const learning = neighbors.filter((neighbor) => neighbor.type === "learning" || neighbor.type === "roadmap");
+  verticalSlots(learning.length, 2.4).forEach((y, index) => place(learning[index], conceptStartX, 8.4 + y));
+
+  const positioned = new Set(positions.keys());
+  const remaining = neighbors.filter((neighbor) => !positioned.has(neighbor.id));
+  verticalSlots(remaining.length, 2).forEach((y, index) => place(remaining[index], leftX - 2.6, y));
+  return positions;
+}
 
 function focusProfile(node: EngineeringGraphNode, neighborCount: number, tight: boolean) {
   if (node.type === "person" || node.type === "experience") {
     return { occupancy: tight ? 0.74 : 0.64, minimumRatio: tight ? 0.2 : 0.28, labelPadding: 96 };
   }
-  if (node.type === "project" && node.metadata.flagship) {
-    return { occupancy: tight ? 0.9 : 0.82, minimumRatio: tight ? 0.14 : 0.18, labelPadding: 132 };
+  if (node.type === "project") {
+    const occupancy = node.metadata.flagship ? (tight ? 0.92 : 0.88) : (tight ? 0.86 : 0.82);
+    return { occupancy, minimumRatio: tight ? 0.12 : 0.15, labelPadding: 156 };
   }
   const adaptiveOccupancy = Math.max(0.66, Math.min(0.76, 0.76 - Math.max(0, neighborCount - 5) * 0.008));
   return {
@@ -111,8 +195,12 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const hoveredRef = useRef<string | null>(null);
   const filtersRef = useRef<GraphFilterState>(DEFAULT_GRAPH_FILTERS);
   const focusedLabelIdsRef = useRef<Set<string>>(new Set());
+  const forcedProjectLabelIdsRef = useRef<Set<string>>(new Set());
   const focusedEdgeLabelIdsRef = useRef<Set<string>>(new Set());
   const focusedProjectRef = useRef<string | null>(null);
+  const focusedDisplayPositionsRef = useRef<Map<string, FocusedDisplayPosition>>(new Map());
+  const focusedLayoutProgressRef = useRef(0);
+  const layoutAnimationFrameRef = useRef<number | null>(null);
   const selectionOriginRef = useRef<HTMLElement | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -170,6 +258,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
   const clearSelectionState = useCallback(() => {
     focusedLabelIdsRef.current = new Set();
+    forcedProjectLabelIdsRef.current = new Set();
     focusedEdgeLabelIdsRef.current = new Set();
     focusedProjectRef.current = null;
     setSelectedNodeId(null);
@@ -184,15 +273,47 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     else camera.animatedReset({ duration: 220, easing: "quadraticOut" });
   }, []);
 
+  const animateProjectLayout = useCallback((target: 0 | 1, onComplete?: () => void) => {
+    if (layoutAnimationFrameRef.current !== null) cancelAnimationFrame(layoutAnimationFrameRef.current);
+    const renderer = rendererRef.current;
+    const start = focusedLayoutProgressRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!renderer || reducedMotion || Math.abs(start - target) < 0.001) {
+      focusedLayoutProgressRef.current = target;
+      renderer?.refresh();
+      onComplete?.();
+      return;
+    }
+
+    const startedAt = performance.now();
+    const duration = target === 1 ? 240 : 180;
+    const step = (time: number) => {
+      const elapsed = Math.min(1, (time - startedAt) / duration);
+      const eased = 1 - (1 - elapsed) ** 3;
+      focusedLayoutProgressRef.current = start + (target - start) * eased;
+      renderer.refresh();
+      if (elapsed < 1) layoutAnimationFrameRef.current = requestAnimationFrame(step);
+      else {
+        layoutAnimationFrameRef.current = null;
+        onComplete?.();
+      }
+    };
+    layoutAnimationFrameRef.current = requestAnimationFrame(step);
+  }, []);
+
   const exitFocusedView = useCallback(() => {
     const selectionOrigin = selectionOriginRef.current;
     selectionOriginRef.current = null;
     clearSelectionState();
     fitGraph();
+    animateProjectLayout(0, () => {
+      focusedDisplayPositionsRef.current = new Map();
+      rendererRef.current?.refresh();
+    });
     window.requestAnimationFrame(() => {
       if (selectionOrigin?.isConnected) selectionOrigin.focus({ preventScroll: true });
     });
-  }, [clearSelectionState, fitGraph]);
+  }, [animateProjectLayout, clearSelectionState, fitGraph]);
 
   const focusNeighborhood = useCallback((nodeId: string, tight = false) => {
     const renderer = rendererRef.current;
@@ -247,29 +368,56 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     }
     const group = filterGroupForNode(node.type);
     setFilters((current) => current[group] ? current : { ...current, [group]: true });
-    const neighbors = graph.neighbors(nodeId);
+    const neighbors = graph.neighbors(nodeId).filter((neighborId) => (
+      isNodeTypeVisible(graph.getNodeAttribute(neighborId, "nodeType"), filtersRef.current)
+    ));
     let prioritizedNeighbors: string[];
-    if (node.type === "project" && node.metadata.flagship && node.projectSlug) {
+    const isProjectFocus = node.type === "project";
+    const restoreProjectLayoutBeforeFocus = !isProjectFocus
+      && focusedDisplayPositionsRef.current.size > 0
+      && focusedLayoutProgressRef.current > 0;
+    if (node.type === "project" && node.projectSlug) {
       const neighborNodes = neighbors.map((id) => nodeById.get(id)).filter((item): item is EngineeringGraphNode => Boolean(item));
-      const preferredTechnologyLabels = projectFocusTechnologies[node.projectSlug] ?? [];
-      const technologies = preferredTechnologyLabels
-        .map((label) => neighborNodes.find((neighbor) => neighbor.type === "technology" && neighbor.label === label))
-        .filter((item): item is EngineeringGraphNode => Boolean(item));
+      const technologies = node.metadata.keyTechnologies
+        ?.map((label) => neighborNodes.find((neighbor) => neighbor.type === "technology" && neighbor.label === label))
+        .filter((item): item is EngineeringGraphNode => Boolean(item)) ?? [];
       const highLevel = neighborNodes
         .filter((neighbor) => neighbor.type === "domain")
         .sort((left, right) => right.importance - left.importance)
-        .slice(0, 2);
+        .slice(0, 3);
       const relatedAnchors = neighborNodes
         .filter((neighbor) => neighbor.type === "project" || neighbor.type === "experience")
         .sort((left, right) => right.importance - left.importance)
         .slice(0, 1);
-      const concepts = neighborNodes
-        .filter((neighbor) => neighbor.type === "concept")
-        .sort((left, right) => right.importance - left.importance || left.label.localeCompare(right.label))
-        .slice(0, 2);
+      const conceptNeighbors = neighborNodes.filter((neighbor) => neighbor.type === "concept");
+      const concepts = (projectFocusConceptLabels[node.projectSlug] ?? [])
+        .map((label) => conceptNeighbors.find((neighbor) => neighbor.label === label))
+        .filter((item): item is EngineeringGraphNode => Boolean(item));
+      if (concepts.length < 2) {
+        concepts.push(...conceptNeighbors
+          .filter((neighbor) => !concepts.some((concept) => concept.id === neighbor.id))
+          .sort((left, right) => right.importance - left.importance || left.label.localeCompare(right.label))
+          .slice(0, 2 - concepts.length));
+      }
       const evidence = neighborNodes.filter((neighbor) => neighbor.type === "evidence").slice(0, 1);
       prioritizedNeighbors = [...highLevel, ...technologies, ...relatedAnchors, ...concepts, ...evidence].map((neighbor) => neighbor.id);
       focusedProjectRef.current = nodeId;
+      focusedLayoutProgressRef.current = 0;
+      const measurementContext = document.createElement("canvas").getContext("2d");
+      if (measurementContext) measurementContext.font = "600 11px Geist, ui-sans-serif, system-ui, sans-serif";
+      const measureLabel = (label: string) => Math.max(
+        2.8,
+        (measurementContext?.measureText(label).width ?? label.length * 6.2) / 18,
+      );
+      focusedDisplayPositionsRef.current = createProjectDisplayLayout(node, neighborNodes, measureLabel);
+      const forceTechnologyLabels = window.matchMedia("(min-width: 821px)").matches;
+      forcedProjectLabelIdsRef.current = new Set([
+        nodeId,
+        ...highLevel.map((neighbor) => neighbor.id),
+        ...(forceTechnologyLabels ? technologies.map((neighbor) => neighbor.id) : []),
+        ...(forceTechnologyLabels ? concepts.map((neighbor) => neighbor.id) : []),
+        ...(forceTechnologyLabels ? evidence.map((neighbor) => neighbor.id) : []),
+      ]);
     } else {
       const labelBudget = window.matchMedia("(max-width: 640px)").matches ? 4 : graph.degree(nodeId) > 14 ? 7 : 9;
       prioritizedNeighbors = neighbors
@@ -282,6 +430,11 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         })
         .slice(0, labelBudget);
       focusedProjectRef.current = null;
+      forcedProjectLabelIdsRef.current = new Set();
+      if (!restoreProjectLayoutBeforeFocus) {
+        focusedDisplayPositionsRef.current = new Map();
+        focusedLayoutProgressRef.current = 0;
+      }
     }
     focusedLabelIdsRef.current = new Set([nodeId, ...prioritizedNeighbors]);
     const incidentEdges = graph.edges(nodeId);
@@ -300,16 +453,25 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     updateUrlNode(nodeId);
 
     window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
+      if (isProjectFocus) {
+        animateProjectLayout(1, () => focusNeighborhood(nodeId, cameraMode === "focus"));
+      } else if (restoreProjectLayoutBeforeFocus) {
+        animateProjectLayout(0, () => {
+          focusedDisplayPositionsRef.current = new Map();
+          rendererRef.current?.refresh();
+          focusNeighborhood(nodeId, cameraMode === "focus");
+        });
+      } else {
+        window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
+      }
     });
-  }, [focusNeighborhood, graph, nodeById, updateUrlNode]);
+  }, [animateProjectLayout, focusNeighborhood, graph, nodeById, updateUrlNode]);
 
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
     setQuery("");
-    clearSelectionState();
-    fitGraph();
-  }, [clearSelectionState, fitGraph]);
+    exitFocusedView();
+  }, [exitFocusedView]);
 
   useEffect(() => {
     selectedRef.current = selectedNodeId;
@@ -364,6 +526,15 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             };
           }
 
+          const focusedPosition = focusedDisplayPositionsRef.current.get(nodeId);
+          const layoutProgress = focusedLayoutProgressRef.current;
+          const displayAttributes = focusedPosition && layoutProgress > 0
+            ? {
+                ...attributes,
+                x: attributes.x + (focusedPosition.x - attributes.x) * layoutProgress,
+                y: attributes.y + (focusedPosition.y - attributes.y) * layoutProgress,
+              }
+            : attributes;
           const selectedNode = selectedRef.current;
           const hoveredNode = hoveredRef.current;
           const activeNode = selectedNode ?? hoveredNode;
@@ -381,8 +552,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             const showAtCloseZoom = cameraRatio <= 0.44;
             const showLabel = isHighLevel || showAtMediumZoom || showAtCloseZoom;
             return {
-              ...attributes,
-              label: showLabel ? attributes.label : "",
+              ...displayAttributes,
+              label: showLabel ? displayAttributes.label : "",
               forceLabel: isHighLevel || showAtMediumZoom,
             };
           }
@@ -393,39 +564,20 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           const isLocal = selectedNode ? isSelected || isSelectedNeighbor : nodeId === activeNode || graph.areNeighbors(nodeId, activeNode);
 
           if (!isLocal && !isHovered && !isHoveredNeighbor) {
+            const isProjectContext = Boolean(focusedProjectRef.current);
             return {
-              ...attributes,
-              color: DIMMED_NODE_COLOR,
+              ...displayAttributes,
+              color: isProjectContext ? PROJECT_CONTEXT_NODE_COLOR : DIMMED_NODE_COLOR,
               label: "",
               forceLabel: false,
-              size: Math.max(2.4, attributes.size * 0.72),
+              size: Math.max(1.8, attributes.size * (isProjectContext ? 0.46 : 0.72)),
               zIndex: 0,
             };
           }
 
-          let localAttributes = attributes;
           const isProjectFocusedNeighbor = focusedProjectRef.current === selectedNode && isSelectedNeighbor;
-          if (isProjectFocusedNeighbor && selectedNode) {
-            const selectedAttributes = graph.getNodeAttributes(selectedNode);
-            const deltaX = attributes.x - selectedAttributes.x;
-            const deltaY = attributes.y - selectedAttributes.y;
-            const distance = Math.max(0.001, Math.hypot(deltaX, deltaY));
-            const distanceRange = attributes.nodeType === "technology"
-              ? [2.8, 5.2]
-              : attributes.nodeType === "domain"
-                ? [3.2, 5.6]
-                : attributes.nodeType === "concept" || attributes.nodeType === "evidence"
-                  ? [3.8, 6.4]
-                  : [3.4, 6];
-            const focusedDistance = Math.max(distanceRange[0], Math.min(distanceRange[1], distance));
-            localAttributes = {
-              ...attributes,
-              x: selectedAttributes.x + (deltaX / distance) * focusedDistance,
-              y: selectedAttributes.y + (deltaY / distance) * focusedDistance,
-            };
-          }
-
           const showFocusedLabel = focusedLabelIdsRef.current.has(nodeId) || isHovered;
+          const forceFocusedLabel = forcedProjectLabelIdsRef.current.has(nodeId);
           const projectLabelScale = isProjectFocusedNeighbor && showFocusedLabel
             ? attributes.nodeType === "technology"
               ? 1.14
@@ -436,11 +588,11 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
                   : 1
             : 1;
           return {
-            ...localAttributes,
+            ...displayAttributes,
             highlighted: isSelected || isHovered,
             color: isSelected ? SELECTED_NODE_COLOR : attributes.color,
             label: showFocusedLabel ? attributes.label : "",
-            forceLabel: isSelected || isHovered,
+            forceLabel: isSelected || isHovered || forceFocusedLabel,
             size: attributes.size * (isSelected ? 1.18 : isHovered ? 1.1 : 1.03) * projectLabelScale,
             zIndex: isSelected ? 20 : isHovered ? 18 : isProjectFocusedNeighbor && attributes.nodeType === "technology" ? 14 : attributes.zIndex,
           };
@@ -461,7 +613,15 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           if (!activeNode) return { ...attributes, label: "", forceLabel: false };
           const isSelectedEdge = Boolean(selectedNode && (source === selectedNode || target === selectedNode));
           const isHoveredEdge = Boolean(hoveredNode && (source === hoveredNode || target === hoveredNode));
-          if (!isSelectedEdge && !isHoveredEdge) return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.22 };
+          if (!isSelectedEdge && !isHoveredEdge) {
+            const isProjectContext = Boolean(focusedProjectRef.current);
+            return {
+              ...attributes,
+              color: isProjectContext ? PROJECT_CONTEXT_EDGE_COLOR : DIMMED_EDGE_COLOR,
+              label: "",
+              size: isProjectContext ? 0.1 : 0.22,
+            };
+          }
           const showRelationshipLabel = !hoveredNode && focusedEdgeLabelIdsRef.current.has(edgeId);
           const connectedNode = selectedNode && isSelectedEdge ? (source === selectedNode ? target : source) : null;
           const connectedType = connectedNode ? graph.getNodeAttribute(connectedNode, "nodeType") : null;
@@ -505,6 +665,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       }
 
       return () => {
+        if (layoutAnimationFrameRef.current !== null) cancelAnimationFrame(layoutAnimationFrameRef.current);
         renderer.kill();
         rendererRef.current = null;
       };

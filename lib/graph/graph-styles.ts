@@ -57,6 +57,8 @@ export const SELECTED_NODE_COLOR = "#2b3d22";
 export const DIMMED_NODE_COLOR = "#29302a";
 export const FILTER_CONTEXT_NODE_COLOR = "#313832";
 export const DIMMED_EDGE_COLOR = "#1d221e";
+export const PROJECT_CONTEXT_NODE_COLOR = "#1c211d";
+export const PROJECT_CONTEXT_EDGE_COLOR = "#151916";
 
 export function getNodeVisual(
   type: GraphNodeType,
