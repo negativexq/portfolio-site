@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { Ref } from "react";
 import gsap from "gsap";
 import { profile } from "@/data/profile";
@@ -16,7 +16,13 @@ const navigation = [
   { href: "/resume", label: "Resume" },
 ];
 
-function NavigationLinks({ listRef }: { listRef?: Ref<HTMLUListElement> }) {
+function NavigationLinks({
+  listRef,
+  onLinkClick,
+}: {
+  listRef?: Ref<HTMLUListElement>;
+  onLinkClick?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -33,6 +39,7 @@ function NavigationLinks({ listRef }: { listRef?: Ref<HTMLUListElement> }) {
             className={`nav-link${isCurrent ? " nav-link-current" : ""}`}
             href={item.href}
             aria-current={isCurrent ? "page" : undefined}
+            onClick={onLinkClick}
           >
             {item.label}
           </Link>
@@ -45,6 +52,7 @@ function NavigationLinks({ listRef }: { listRef?: Ref<HTMLUListElement> }) {
           href={profile.links.github}
           target="_blank"
           rel="noreferrer"
+          onClick={onLinkClick}
         >
           GitHub <ArrowUpRight aria-hidden="true" size={14} />
           <span className="sr-only"> (opens in a new tab)</span>
@@ -55,23 +63,45 @@ function NavigationLinks({ listRef }: { listRef?: Ref<HTMLUListElement> }) {
 }
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const menuListRef = useRef<HTMLUListElement>(null);
+
+  const closeMenu = useCallback(() => {
+    const details = detailsRef.current;
+    if (details && details.open) details.open = false;
+  }, []);
+
+  // Route changed (link click already navigated, or browser back/forward) —
+  // make sure a stale open menu never survives into the next page.
+  useEffect(() => {
+    closeMenu();
+  }, [pathname, closeMenu]);
 
   useEffect(() => {
     const details = detailsRef.current;
     const menuList = menuListRef.current;
     if (!details || !menuList) return;
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !details.open) return;
+      details.open = false;
+      details.querySelector("summary")?.focus();
+    };
+    details.addEventListener("keydown", onKeyDown);
+
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
+    if (reducedMotion) {
+      return () => details.removeEventListener("keydown", onKeyDown);
+    }
 
     const onToggle = () => {
       if (details.open) {
         // Animate the ul itself (already position:absolute), not an ancestor:
         // a lingering GSAP transform on the <nav> wrapper would make it the
         // new containing block for this absolutely-positioned list and break
-        // its left:0/right:0 sizing.
+        // its left:0/right:0 sizing. Same reasoning applies if a closing
+        // animation is ever added here — clear the transform afterwards.
         gsap.from(menuList, {
           opacity: 0,
           y: -6,
@@ -81,9 +111,12 @@ export function SiteHeader() {
         });
       }
     };
-
     details.addEventListener("toggle", onToggle);
-    return () => details.removeEventListener("toggle", onToggle);
+
+    return () => {
+      details.removeEventListener("keydown", onKeyDown);
+      details.removeEventListener("toggle", onToggle);
+    };
   }, []);
 
   return (
@@ -102,7 +135,7 @@ export function SiteHeader() {
             <Menu aria-hidden="true" size={18} /> <span>Menu</span>
           </summary>
           <nav aria-label="Mobile navigation">
-            <NavigationLinks listRef={menuListRef} />
+            <NavigationLinks listRef={menuListRef} onLinkClick={closeMenu} />
           </nav>
         </details>
       </div>
