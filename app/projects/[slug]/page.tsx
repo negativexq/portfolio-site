@@ -1,22 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ComponentType } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import {
-  KnowledgeBaseRagDiagram,
-  RealTimeCommerceDiagram,
-} from "@/components/content/architecture-diagram";
+import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
+import { getProjectArchitecture } from "@/data/architectures";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
-
-const architectureDiagrams: Record<string, ComponentType> = {
-  "real-time-commerce-platform": RealTimeCommerceDiagram,
-  "knowledge-base-rag": KnowledgeBaseRagDiagram,
-};
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -71,7 +63,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     ? getProjectById(project.evolvedFrom.fromProjectId)
     : undefined;
 
-  const ArchitectureDiagram = architectureDiagrams[project.slug];
+  const projectArchitecture = getProjectArchitecture(project.id);
   const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
   const projectJsonLd = {
     "@context": "https://schema.org",
@@ -91,7 +83,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   const sections = [
     { id: "overview", navLabel: "Overview", kickerText: "Overview" },
-    ...(ArchitectureDiagram
+    ...(projectArchitecture
       ? [{ id: "architecture", navLabel: "Architecture", kickerText: "Architecture" }]
       : []),
     ...(project.evolvedFrom
@@ -146,18 +138,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <p>{project.whyItExists}</p>
           </section>
 
-          {ArchitectureDiagram ? (
+          {projectArchitecture ? (
             <section id="architecture" className="detail-section">
               <p className="detail-kicker">{kicker("architecture")}</p>
-              <h2>System flow</h2>
-              <p>
-                A high-level view of the request/event path — not every internal
-                component, just the pieces that determine correctness and failure
-                behavior.
-              </p>
-              <div className="architecture-diagram">
-                <ArchitectureDiagram />
-              </div>
+              <h2>System architecture</h2>
+              <p>{projectArchitecture.description}</p>
+              <ArchitectureDiagram architecture={projectArchitecture} />
             </section>
           ) : null}
 
