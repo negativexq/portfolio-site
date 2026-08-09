@@ -1,138 +1,22 @@
-import type { Project } from "@/lib/content/types";
+import type { Project, RoadmapItem } from "@/lib/content/types";
+
+const emptyRoadmap: readonly RoadmapItem[] = [];
 
 export const projects = [
   {
-    id: "real-time-commerce-platform",
-    slug: "real-time-commerce-platform",
-    order: 1,
-    title: "Real-Time Commerce Platform",
-    category: "Distributed Systems / Streaming",
-    status: "current",
-    flagship: true,
-    summary:
-      "Event-driven commerce platform focused on reliable at-least-once processing, transactional consistency, failure handling and measurable performance.",
-    directAnswer:
-      "Real-Time Commerce Platform is an event-driven commerce system that uses Kafka, FastAPI, PostgreSQL, Redis and a transactional outbox to make at-least-once processing, failure handling and performance measurable.",
-    whyItExists:
-      "Built to make delivery guarantees, failure paths and performance limits explicit in an event-driven commerce workflow.",
-    technologies: [
-      "Python",
-      "TypeScript",
-      "FastAPI",
-      "Next.js",
-      "Kafka",
-      "PostgreSQL",
-      "Redis",
-      "Prometheus",
-      "Grafana",
-      "Docker Compose",
-    ],
-    concepts: [
-      "Event-Driven Architecture",
-      "At-Least-Once Delivery",
-      "Idempotent Consumer",
-      "Transactional Outbox",
-      "Bounded Retry",
-      "Dead Letter Queue",
-      "Unit of Work",
-      "Consumer Groups",
-      "Partition-Scoped Ordering",
-      "Observability",
-      "Performance Engineering",
-    ],
-    proofPoints: [
-      {
-        label: "Sustainable service rate",
-        value: "~742 evt/s",
-        scope: "Isolated local benchmark",
-        qualifier:
-          "Documented isolated local Kafka → processor → persistence benchmark using 3 processor workers and 3 Kafka partitions.",
-      },
-    ],
-    roadmap: [
-      { title: "Terraform", status: "planned" },
-      { title: "Kubernetes", status: "planned" },
-      { title: "Cloud Infrastructure", status: "planned" },
-    ],
-    relationships: [],
-    githubUrl: "https://github.com/negativexq/real-time-commerce-platform",
-  },
-  {
-    id: "knowledge-base-rag",
-    slug: "knowledge-base-rag",
-    order: 2,
-    title: "Knowledge Base RAG",
-    category: "Generative AI / RAG Platform",
-    status: "current",
-    flagship: true,
-    summary:
-      "Multi-source knowledge platform with incremental synchronization, hybrid retrieval, reranking, citation integrity and distributed tracing.",
-    directAnswer:
-      "Knowledge Base RAG is a multi-source retrieval-augmented generation platform that combines incremental synchronization, hybrid retrieval, reranking, citation integrity checks and distributed tracing.",
-    whyItExists:
-      "Extends retrieval beyond a happy-path demo with source synchronization, index repair, citation validation and observable evaluation workflows.",
-    technologies: [
-      "Python",
-      "FastAPI",
-      "Qdrant",
-      "Ollama",
-      "OpenTelemetry",
-      "Jaeger",
-      "DeepEval",
-      "Streamlit",
-      "Docker Compose",
-    ],
-    concepts: [
-      "Multi-Source Ingestion",
-      "Incremental Sync",
-      "Hybrid Retrieval",
-      "Dense Retrieval",
-      "Sparse Retrieval",
-      "RRF Fusion",
-      "Cross-Encoder Reranking",
-      "Citation Integrity",
-      "Index Reconciliation",
-      "Distributed Tracing",
-      "Evaluation",
-    ],
-    proofPoints: [
-      {
-        label: "Repository test evidence",
-        value: "426 tests",
-        scope: "Repository test suite",
-        qualifier:
-          "Repository documentation emphasizes extensive real-dependency validation including SQLite, Qdrant, Jaeger and browser automation.",
-      },
-    ],
-    roadmap: [],
-    relationships: [],
-    evolvedFrom: {
-      fromProjectId: "production-rag-platform",
-      limitations: [
-        "Single-source ingestion — PyMuPDF read one PDF corpus; a new source meant a hand-rolled parser, not a configured connector",
-        "No incremental sync — the index couldn't tell when a source document changed or was removed, so staleness accumulated silently",
-        "No index reconciliation — nothing verified the vector index still matched the source of truth",
-        "Citations pointed at retrieved chunks with no integrity check tying an answer back to a still-valid source",
-      ],
-      narrative:
-        "Production RAG Platform proved the retrieval core: hybrid search, reranking and grounded generation over a single local PDF corpus. Running it past a happy-path demo surfaced four gaps — all in ingestion and trust, not retrieval quality. Knowledge Base RAG rebuilds that layer: multi-source connectors with incremental sync, index reconciliation, and citation integrity checks, while keeping the same hybrid retrieval and reranking foundation.",
-    },
-    githubUrl: "https://github.com/negativexq/knowledge-base-rag",
-  },
-  {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
-    order: 3,
+    order: 1,
     title: "ModelOps Control Plane",
     category: "MLOps / AI Platform",
     status: "current",
     flagship: true,
     summary:
-      "Controlled ML releases using canary traffic, policy-based evaluation and automated promotion or rollback.",
+      "ML release control plane with weighted canary routing, policy-driven evaluation, automated promotion and rollback, and an auditable deployment state machine.",
     directAnswer:
-      "ModelOps Control Plane is an MLOps platform that evaluates canary releases against explicit policies and then promotes, rolls back or routes them to human review.",
+      "ModelOps Control Plane is an ML release control plane that combines weighted canary routing, policy-driven evaluation and a closed-loop worker to promote, roll back or pause model deployments through an auditable state machine.",
     whyItExists:
-      "Explores how model releases can progress through explicit deployment states while policy outcomes drive promotion, rollback or a human decision.",
+      "Makes model-release decisions reproducible and inspectable through fault injection, deployment timelines, SQLAlchemy optimistic concurrency control and verification by the same worker that advances rollout state.",
     technologies: [
       "Python",
       "FastAPI",
@@ -155,60 +39,214 @@ export const projects = [
       "Automated Promotion",
       "Automated Rollback",
       "Fault Injection",
+      "Auditable Deployment Timeline",
+      "Optimistic Concurrency Control",
+      "Closed-Loop Verification",
       "Benchmarking",
     ],
     proofPoints: [
       {
-        label: "Progressive canary rollout",
+        label: "Worker-verified canary progression",
         value: "10% → 25% → 50% → 100%",
-        scope: "Configured rollout policy",
+        scope: "Real-stack CI",
         qualifier:
-          "Traffic-weighting stages enforced by the platform's policy engine, exercised with Locust load tests — not observed production traffic.",
+          "CI boots the full nine-container stack and waits for the actual worker to progress a healthy deployment through every stage; a separate injected-latency scenario verifies automatic rollback.",
+      },
+      {
+        label: "Backend validation",
+        value: "210 tests",
+        scope: "Backend test suite",
+        qualifier:
+          "The backend suite runs alongside Ruff, mypy --strict and a separate real-stack integration job.",
       },
     ],
-    roadmap: [],
+    roadmap: emptyRoadmap,
     relationships: [],
     githubUrl: "https://github.com/negativexq/modelops-control-plane",
   },
   {
+    id: "knowledge-base-rag",
+    slug: "knowledge-base-rag",
+    order: 2,
+    title: "Knowledge Base RAG",
+    category: "Generative AI / RAG Platform",
+    status: "current",
+    flagship: true,
+    summary:
+      "RAG reliability platform with multi-source ingestion, incremental synchronization, hybrid retrieval, reranking, citation integrity and observable index repair.",
+    directAnswer:
+      "Knowledge Base RAG is a multi-source RAG platform that synchronizes PDF, Markdown and Notion content incrementally, combines dense and sparse retrieval with native RRF fusion, reranks results and validates citation integrity before returning a response.",
+    whyItExists:
+      "Extends retrieval beyond the happy path with versioned re-indexing, cancellation safety, Qdrant and registry reconciliation, schema migration, DeepEval evaluation, and OpenTelemetry traces inspected in Jaeger.",
+    technologies: [
+      "Python",
+      "FastAPI",
+      "Qdrant",
+      "Ollama",
+      "OpenTelemetry",
+      "Jaeger",
+      "DeepEval",
+      "Streamlit",
+      "Docker Compose",
+    ],
+    concepts: [
+      "Multi-Source Ingestion",
+      "Incremental Sync",
+      "Hybrid Retrieval",
+      "Dense Retrieval",
+      "Sparse Retrieval",
+      "RRF Fusion",
+      "Cross-Encoder Reranking",
+      "Citation Integrity",
+      "Versioned Re-Indexing",
+      "Cancellation Safety",
+      "Index Reconciliation",
+      "Schema Migration",
+      "Distributed Tracing",
+      "Evaluation",
+    ],
+    proofPoints: [
+      {
+        label: "Repository test evidence",
+        value: "448 tests",
+        scope: "Repository test suite",
+        qualifier:
+          "The suite covers synchronization, retrieval, citation integrity, migration and real-dependency behavior across SQLite, Qdrant, Jaeger and browser paths.",
+      },
+      {
+        label: "Bilingual reranker investigation",
+        value: "8 real cells",
+        scope: "2×2 × reranker on/off",
+        qualifier:
+          "Query and document language pairing was flipped across the matrix: both cross-lingual cells regressed under reranking while both mono-lingual cells remained unchanged.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    evolvedFrom: {
+      fromProjectId: "production-rag-platform",
+      limitations: [
+        "Single-source ingestion — PyMuPDF read one PDF corpus; a new source meant a hand-rolled parser, not a configured connector",
+        "No incremental sync — the index couldn't tell when a source document changed or was removed, so staleness accumulated silently",
+        "No versioned re-indexing or reconciliation — nothing verified that the vector index still matched the registry after partial change, cancellation or deletion",
+        "Citations pointed at retrieved chunks without an integrity check tying the response to a still-valid source identity",
+      ],
+      narrative:
+        "Production RAG Platform established a focused single-PDF retrieval foundation with hybrid search, reranking, citation-aware generation, evaluation and tracing. Knowledge Base RAG evolved that foundation into a reliability-oriented platform: PDF, Markdown and Notion connectors, incremental synchronization, versioned re-indexing, cancellation safety, schema migration, Qdrant and registry reconciliation, and explicit citation-integrity validation.",
+    },
+    githubUrl: "https://github.com/negativexq/knowledge-base-rag",
+  },
+  {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 4,
+    order: 3,
     title: "Repo Context Forge",
     category: "Agent Infrastructure / Developer Tooling",
     status: "current",
     flagship: true,
     summary:
-      "Local-first MCP repository intelligence platform that produces source-grounded context for coding agents.",
+      "Local-first MCP repository intelligence and agent platform for deterministic, source-grounded code analysis within strict read-only boundaries.",
     directAnswer:
-      "Repo Context Forge is a local-first MCP repository intelligence platform that gives coding agents bounded, source-grounded context through 38 read-only tools across six local servers.",
+      "Repo Context Forge is a local-first MCP repository intelligence and agent platform with 40 configured tools across six local servers, plus a bounded source-grounded agent that uses a restricted tool subset by default.",
     whyItExists:
-      "Gives coding agents bounded, deterministic repository context through secure tool interfaces instead of relying on unsourced or unstructured context.",
-    technologies: ["Python", "MCP", "FastMCP", "Python AST", "Typer", "Docker", "Git"],
+      "Provides secure repository access, deterministic search and analysis, and reproducible context packs without executing analyzed code or relaxing filesystem, path, process and tool-argument boundaries.",
+    technologies: ["Python", "MCP", "FastMCP", "Python AST", "Typer", "Docker", "Git", "Ollama"],
     concepts: [
       "Repository Intelligence",
       "Source-Grounded Context",
+      "Deterministic Code Search",
       "Symbol Analysis",
+      "References",
       "Callers / Callees",
       "Dependency Analysis",
       "Dependency Graphs",
       "Read-Only Git Intelligence",
       "Context Packs",
       "Task Bundles",
-      "Tool Security Boundaries",
+      "Validated Tool Arguments",
+      "Filesystem / Path Containment",
+      "Read-Only Process Boundaries",
+      "Bounded Local Agent",
     ],
     proofPoints: [
       {
-        label: "MCP tooling",
-        value: "38 tools",
-        scope: "Local MCP deployment",
+        label: "Configured MCP surface",
+        value: "40 tools",
+        scope: "Six local MCP servers",
         qualifier:
-          "Read-only tools enabled by default across six local MCP servers.",
+          "The platform configures 40 tools across six servers; the read-only local agent uses a bounded subset by default.",
+      },
+      {
+        label: "Prerelease validation",
+        value: "206 tests · 87% coverage",
+        scope: "v0.2 alpha validation",
+        qualifier:
+          "Validation covers deterministic analyzers, tool arguments, context generation and filesystem, path, Git and process security boundaries.",
       },
     ],
-    roadmap: [],
+    roadmap: emptyRoadmap,
     relationships: [],
     githubUrl: "https://github.com/negativexq/repo-context-forge",
+  },
+  {
+    id: "real-time-commerce-platform",
+    slug: "real-time-commerce-platform",
+    order: 4,
+    title: "Real-Time Commerce Platform",
+    category: "Distributed Systems / Streaming",
+    status: "current",
+    flagship: true,
+    summary:
+      "Distributed commerce system focused on at-least-once correctness, transactional persistence, bounded failure handling, observability and measured performance limits.",
+    directAnswer:
+      "Real-Time Commerce Platform is a Kafka-based distributed system with idempotent consumers, PostgreSQL transactional persistence, Redis coordination, bounded retry, a DLQ and a transactional outbox under partition-scoped ordering.",
+    whyItExists:
+      "Makes event-processing guarantees and failure paths explicit while using query-plan analysis, observability and repeated boundary tests to distinguish sustainable local performance from short-lived throughput.",
+    technologies: [
+      "Python",
+      "TypeScript",
+      "FastAPI",
+      "Next.js",
+      "Kafka",
+      "PostgreSQL",
+      "Redis",
+      "Prometheus",
+      "Grafana",
+      "Docker Compose",
+    ],
+    concepts: [
+      "Event-Driven Architecture",
+      "At-Least-Once Delivery",
+      "Idempotent Consumer",
+      "Transactional Outbox",
+      "Bounded Retry",
+      "Dead Letter Queue",
+      "Unit of Work",
+      "Consumer Groups",
+      "Partition-Scoped Ordering",
+      "Query-Plan Analysis",
+      "Observability",
+      "Performance Engineering",
+    ],
+    proofPoints: [
+      {
+        label: "Sustainable service rate",
+        value: "~742 evt/s",
+        scope: "Isolated local benchmark",
+        qualifier:
+          "Measured only across Kafka → processor → Redis/PostgreSQL with three processor workers and three Kafka partitions; 775 evt/s was non-sustainable in repeated boundary tests. This is not production capacity or Demo Control throughput.",
+      },
+      {
+        label: "Recent-payment lookup",
+        value: "10.897 → 0.253 ms",
+        scope: "Query-plan-driven optimization",
+        qualifier:
+          "Measured PostgreSQL execution time for the recent-payment lookup after using query-plan evidence to optimize its access path.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/real-time-commerce-platform",
   },
   {
     id: "dbt-feature-lineage",
@@ -219,31 +257,33 @@ export const projects = [
     status: "current",
     flagship: true,
     summary:
-      "Local-first dbt analysis tool for tracing model dependencies, column-level lineage and downstream impact.",
+      "Manifest-aware dbt analysis for model dependencies, cross-model column lineage, change impact and query flow without a live warehouse.",
     directAnswer:
-      "dbt Feature Lineage is a local-first analysis tool that traces dbt model dependencies, cross-model column lineage and the downstream impact of data changes.",
+      "dbt Feature Lineage reads target/manifest.json and compiled SQL when available, falls back to static SQL analysis, and uses sqlglot and NetworkX to trace cross-model columns and downstream impact without a live warehouse connection.",
     whyItExists:
-      "Makes transformation lineage and change impact inspectable, answering where a column came from and what can break downstream.",
+      "Makes upstream and downstream lineage inspectable across manifest-aware and static modes, distinguishing direct from transitive impact while keeping query-flow visualization and interface logic on one analysis layer.",
     technologies: ["Python", "dbt Core", "sqlglot", "NetworkX", "Streamlit", "Typer", "Docker"],
     concepts: [
       "Model DAG",
       "Column-Level Lineage",
       "Upstream Trace",
       "Downstream Trace",
-      "Downstream Impact",
+      "Direct / Transitive Impact",
       "Static SQL Analysis",
       "Manifest-Aware Analysis",
+      "Compiled SQL Analysis",
       "Query Flow",
     ],
     proofPoints: [
       {
         label: "Analysis scope",
         value: "Cross-model column lineage",
-        scope: "Static manifest analysis",
-        qualifier: "Includes transitive downstream impact analysis.",
+        scope: "Manifest-aware + static analysis",
+        qualifier:
+          "Traces columns upstream and downstream and summarizes direct versus transitive downstream impact without a live warehouse connection.",
       },
     ],
-    roadmap: [],
+    roadmap: emptyRoadmap,
     relationships: [],
     githubUrl: "https://github.com/negativexq/dbt-feature-lineage",
   },
@@ -256,11 +296,11 @@ export const projects = [
     status: "current",
     flagship: false,
     summary:
-      "End-to-end RAG platform covering hybrid retrieval, reranking, grounded generation, citations, evaluation and observability.",
+      "Focused single-PDF retrieval foundation covering hybrid search, reranking, citation-aware generation, evaluation and observability.",
     directAnswer:
-      "Production RAG Platform is an end-to-end retrieval-augmented generation system that combines hybrid retrieval, reranking, grounded generation, citations, evaluation and observability over a local PDF corpus.",
+      "Production RAG Platform is a focused single-PDF retrieval system that combines hybrid retrieval, reranking, citation-aware generation, citations, evaluation and observability over a local corpus.",
     whyItExists:
-      "Established the focused retrieval and evaluation foundation that later expanded into the multi-source Knowledge Base RAG platform.",
+      "Established the focused retrieval and evaluation foundation that later evolved into the multi-source, reliability-oriented Knowledge Base RAG platform.",
     technologies: [
       "FastAPI",
       "Qdrant",
@@ -275,13 +315,13 @@ export const projects = [
       "Hybrid Retrieval",
       "RRF Fusion",
       "Cross-Encoder Reranking",
-      "Grounded Generation",
+      "Citation-Aware Generation",
       "Citations",
       "Evaluation",
       "Observability",
     ],
     proofPoints: [],
-    roadmap: [],
+    roadmap: emptyRoadmap,
     relationships: [
       {
         type: "evolved-into",

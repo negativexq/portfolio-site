@@ -289,13 +289,12 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const selectedNode = data.nodes.find((node) => node.id === selectedNodeId) ?? null;
   const visibleCount = data.nodes.filter((node) => isNodeTypeVisible(node.type, filters)).length;
   const mobileShortcuts = [
-    { id: "project:real-time-commerce-platform", label: "Commerce" },
-    { id: "project:knowledge-base-rag", label: "RAG" },
     { id: "project:modelops-control-plane", label: "ModelOps" },
+    { id: "project:knowledge-base-rag", label: "RAG" },
     { id: "project:repo-context-forge", label: "Repo Context" },
+    { id: "project:real-time-commerce-platform", label: "Commerce" },
     { id: "project:dbt-feature-lineage", label: "Lineage" },
     { id: "learning:langgraph", label: "Learning" },
-    { id: "roadmap:real-time-commerce-platform:terraform", label: "Roadmap" },
   ].filter((shortcut) => data.nodes.some((node) => node.id === shortcut.id));
 
   const searchResults = useMemo(() => {

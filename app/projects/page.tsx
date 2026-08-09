@@ -15,7 +15,7 @@ export default function ProjectsPage() {
       <header className="page-hero container">
         <p className="eyebrow">Public engineering work</p>
         <h1>Projects</h1>
-        <p>Evidence-led systems work across AI/ML platforms, retrieval, data infrastructure, distributed systems and agent tooling.</p>
+        <p>Evidence-led systems work across AI/ML platforms, retrieval, data infrastructure, distributed systems and agent tooling—with reliability, evaluation, observability and trade-offs made explicit.</p>
       </header>
 
       <section className="section-shell page-section" aria-labelledby="featured-projects">

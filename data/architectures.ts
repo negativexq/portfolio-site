@@ -148,7 +148,7 @@ const architectures = {
   "knowledge-base-rag": {
     projectId: "knowledge-base-rag",
     description:
-      "Filesystem and Notion connectors feed an incremental synchronization pipeline backed by a SQLite document registry and Qdrant hybrid index. User queries pass through FastAPI, dense and sparse retrieval with RRF fusion, cross-encoder reranking, generation, and citation validation. OpenTelemetry sends end-to-end sync and chat traces to Jaeger.",
+      "PDF, Markdown and Notion connectors feed an incremental synchronization pipeline backed by a SQLite document registry and Qdrant hybrid index. User queries pass through FastAPI, dense and sparse retrieval with native RRF fusion, cross-encoder reranking, citation-aware generation, and citation validation. OpenTelemetry sends end-to-end sync and chat traces to Jaeger.",
     paths: [
       {
         id: "sync-path",
@@ -211,7 +211,7 @@ const architectures = {
       },
       {
         id: "query-path",
-        label: "Hybrid retrieval and grounded response",
+        label: "Hybrid retrieval and citation-aware response",
         summary: "Retrieval combines two signals before reranking; generation is followed by an explicit citation-integrity check.",
         variant: "primary",
         layout: { type: "rows", rows: [3, 3, 2] },
@@ -241,7 +241,7 @@ const architectures = {
           {
             id: "generation",
             nodes: [{ id: "generation", label: "Generation", subtitle: "Ollama by default", variant: "service" }],
-            edge: { label: "grounds citations" },
+            edge: { label: "produces citations" },
           },
           {
             id: "citation-validation",
@@ -290,7 +290,7 @@ const architectures = {
   "modelops-control-plane": {
     projectId: "modelops-control-plane",
     description:
-      "An operator manages deployment state and policy through the Control Plane, which owns desired traffic allocation and pushes a derived configuration to a weighted router. Client traffic reaches stable and canary model services. A separate stateless worker evaluates policy results and advances, promotes, rolls back, or freezes an inconclusive rollout for human review.",
+      "An operator manages an auditable deployment state machine and policy through the Control Plane, which owns desired traffic allocation, uses SQLAlchemy optimistic concurrency control, and pushes a derived configuration to a weighted router. Client traffic reaches stable and canary model services. A separate stateless worker closes the verification loop by evaluating policy results and advancing, promoting, rolling back, or freezing an inconclusive rollout for human review.",
     paths: [
       {
         id: "control-plane",
@@ -373,13 +373,13 @@ const architectures = {
       },
       {
         id: "benchmark-path",
-        label: "Configured test harness",
-        summary: "Locust load and runtime fault scenarios exercise the same router and candidate services in the local benchmark stack.",
+        label: "Real-stack verification",
+        summary: "Real-stack CI, Locust load and injected runtime faults exercise the actual router, candidate services and automation worker.",
         variant: "failure",
         stages: [
           {
             id: "benchmark-harness",
-            nodes: [{ id: "benchmark-harness", label: "Benchmark Harness", subtitle: "repeatable scenarios", variant: "client" }],
+            nodes: [{ id: "benchmark-harness", label: "Real-Stack CI", subtitle: "nine-container stack", variant: "client" }],
             edge: { label: "Locust traffic", variant: "failure" },
           },
           {
@@ -395,7 +395,7 @@ const architectures = {
     ],
     notes: [
       "The Control Plane owns desired traffic allocation; router configuration is a pushed, derived cache.",
-      "10% → 25% → 50% → 100% is configured rollout policy exercised by the test harness, not observed production traffic.",
+      "Real-stack CI waits for the actual worker to progress 10% → 25% → 50% → 100%; a separate injected-latency scenario verifies rollback.",
       "INCONCLUSIVE retries are bounded; a frozen deployment remains available for manual promote or rollback.",
       "The current lightweight stack deliberately excludes Kubernetes, MLflow and Prometheus.",
     ],
@@ -470,13 +470,13 @@ const architectures = {
       "Analyzed repositories are local, individually mounted read only and never executed or imported.",
       "Git is the only subprocess boundary and is restricted to allowlisted, read-only commands.",
       "Context output uses a separate writable root with containment checks and atomic replacement.",
-      "The deterministic repository-intelligence path does not send repository content to a hosted LLM.",
+      "The platform configures 40 tools across six local MCP servers; its local Ollama agent uses a bounded read-only subset and does not send repository content to a hosted LLM.",
     ],
   },
   "dbt-feature-lineage": {
     projectId: "dbt-feature-lineage",
     description:
-      "A local dbt project is loaded either from manifest and catalog artifacts or by static SQL and YAML analysis. Both modes normalize into shared domain models. A common service layer powers model DAGs, column lineage, tracing, impact analysis, and query flow for both the Typer CLI and Streamlit UI helpers.",
+      "A local dbt project is loaded from target/manifest.json and compiled SQL when available, with static SQL and YAML analysis as a fallback. Both modes normalize into shared domain models. A common service layer powers model DAGs, column lineage, tracing, impact analysis, and query flow for both the Typer CLI and Streamlit UI helpers.",
     paths: [
       {
         id: "ingestion-modes",
@@ -492,7 +492,7 @@ const architectures = {
           {
             id: "loaders",
             nodes: [
-              { id: "manifest-mode", label: "Manifest Mode", subtitle: "manifest.json · catalog.json", variant: "service" },
+              { id: "manifest-mode", label: "Manifest Mode", subtitle: "target/manifest.json · compiled SQL", variant: "service" },
               { id: "static-mode", label: "Static Mode", subtitle: "SQL + YAML scanners / parsers", variant: "service" },
             ],
             edge: { label: "normalize", relation: "merge" },

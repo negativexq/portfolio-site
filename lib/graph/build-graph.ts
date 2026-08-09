@@ -50,8 +50,6 @@ const explicitPositions: Record<string, { x: number; y: number }> = {
   "learning:neo4j": { x: -8, y: 4.4 },
   "learning:graphrag": { x: -6.3, y: 6 },
   "learning:terraform": { x: -7.2, y: -6.3 },
-  "roadmap:real-time-commerce-platform:kubernetes": { x: -8.6, y: -7.5 },
-  "roadmap:real-time-commerce-platform:cloud-infrastructure": { x: -7.2, y: -8.7 },
 };
 
 const prominentTechnologies = new Set([
