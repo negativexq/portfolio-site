@@ -1,4 +1,7 @@
-export type FocusLabelRole = "project" | "technology" | "domain" | "related" | "concept" | "evidence";
+import type { GraphNodeType } from "./types";
+
+/** Reuses node type as the label's role — priority and clearance rules key off it. */
+export type LabelRole = GraphNodeType;
 
 export type ScreenPoint = { x: number; y: number };
 
@@ -9,58 +12,72 @@ export type ScreenRect = {
   bottom: number;
 };
 
-export type FocusLabelItem = {
+export type LabelItem = {
   id: string;
-  role: FocusLabelRole;
+  role: LabelRole;
   position: ScreenPoint;
   radius: number;
   labelWidth: number;
   labelHeight: number;
 };
 
-export type FocusViewport = {
+export type LabelViewport = {
   width: number;
   height: number;
-  inspectorWidth: number;
+  /** Width of chrome (e.g. the detail panel) reserved on the right edge, 0 when absent. */
+  panelWidth: number;
   padding: number;
 };
 
-export type FocusCollision = {
+export type LabelCollision = {
   first: string;
   second: string;
   clearance: number;
 };
 
-export type FocusLayoutValidation = {
-  collisions: FocusCollision[];
+export type LabelLayoutValidation = {
+  collisions: LabelCollision[];
   clippedLabels: string[];
   minimumClearance: number;
 };
 
-export type FocusCollisionResolution = FocusLayoutValidation & {
+export type LabelCollisionResolution = LabelLayoutValidation & {
   positions: Map<string, ScreenPoint>;
   rectangles: Map<string, ScreenRect>;
-  initialCollisions: FocusCollision[];
+  initialCollisions: LabelCollision[];
 };
 
-const rolePriority: Record<FocusLabelRole, number> = {
+/**
+ * Lower = higher priority = less willing to move / gets extra clearance.
+ * Anchors a viewer orients by (person, experience, project, domain) stay put;
+ * denser, lower-signal labels (technology, concept, evidence) yield around them.
+ */
+const rolePriority: Record<LabelRole, number> = {
+  person: 0,
+  experience: 0,
   project: 0,
-  technology: 1,
-  domain: 2,
-  related: 2,
-  concept: 3,
-  evidence: 4,
+  domain: 0,
+  capability: 1,
+  learning: 2,
+  roadmap: 2,
+  technology: 3,
+  concept: 4,
+  evidence: 5,
 };
 
-export function requiredFocusClearance(first: FocusLabelRole, second: FocusLabelRole) {
-  if (first === "project" || second === "project") return 16;
+function isAnchorRole(role: LabelRole) {
+  return rolePriority[role] === 0;
+}
+
+export function requiredLabelClearance(first: LabelRole, second: LabelRole) {
+  if (isAnchorRole(first) || isAnchorRole(second)) return 16;
   if (first === "evidence" || second === "evidence") return 16;
   if (first === "technology" && second === "technology") return 10;
   if (first === "technology" || second === "technology") return 14;
   return 12;
 }
 
-export function focusedLabelRectangle(item: FocusLabelItem, position = item.position): ScreenRect {
+export function labelRectangle(item: LabelItem, position = item.position): ScreenRect {
   const labelLeft = position.x + item.radius + 3;
   const labelTop = position.y - item.labelHeight * 0.72;
   const labelBottom = position.y + item.labelHeight * 0.46;
@@ -70,7 +87,7 @@ export function focusedLabelRectangle(item: FocusLabelItem, position = item.posi
     right: labelLeft + item.labelWidth,
     bottom: Math.max(position.y + item.radius, labelBottom),
   };
-  if (item.role !== "project") return base;
+  if (!isAnchorRole(item.role)) return base;
   return {
     left: base.left - 10,
     top: base.top - 10,
@@ -93,36 +110,36 @@ function rectangleGap(first: ScreenRect, second: ScreenRect) {
   return Math.max(horizontal, vertical);
 }
 
-function clampToViewport(item: FocusLabelItem, position: ScreenPoint, viewport: FocusViewport) {
-  const usableRight = viewport.width - viewport.inspectorWidth - viewport.padding;
+function clampToViewport(item: LabelItem, position: ScreenPoint, viewport: LabelViewport) {
+  const usableRight = viewport.width - viewport.panelWidth - viewport.padding;
   const usableBottom = viewport.height - viewport.padding;
   const next = { ...position };
-  let rectangle = focusedLabelRectangle(item, next);
+  let rectangle = labelRectangle(item, next);
   if (rectangle.left < viewport.padding) next.x += viewport.padding - rectangle.left;
   if (rectangle.right > usableRight) next.x -= rectangle.right - usableRight;
-  rectangle = focusedLabelRectangle(item, next);
+  rectangle = labelRectangle(item, next);
   if (rectangle.top < viewport.padding) next.y += viewport.padding - rectangle.top;
   if (rectangle.bottom > usableBottom) next.y -= rectangle.bottom - usableBottom;
   return next;
 }
 
 function collectValidation(
-  items: readonly FocusLabelItem[],
+  items: readonly LabelItem[],
   positions: ReadonlyMap<string, ScreenPoint>,
-  viewport: FocusViewport,
-): FocusLayoutValidation & { rectangles: Map<string, ScreenRect> } {
+  viewport: LabelViewport,
+): LabelLayoutValidation & { rectangles: Map<string, ScreenRect> } {
   const rectangles = new Map<string, ScreenRect>();
   const clippedLabels: string[] = [];
-  const usableRight = viewport.width - viewport.inspectorWidth - viewport.padding;
+  const usableRight = viewport.width - viewport.panelWidth - viewport.padding;
   const usableBottom = viewport.height - viewport.padding;
   for (const item of items) {
-    const rectangle = focusedLabelRectangle(item, positions.get(item.id) ?? item.position);
+    const rectangle = labelRectangle(item, positions.get(item.id) ?? item.position);
     rectangles.set(item.id, rectangle);
     if (rectangle.left < viewport.padding || rectangle.right > usableRight
       || rectangle.top < viewport.padding || rectangle.bottom > usableBottom) clippedLabels.push(item.id);
   }
 
-  const collisions: FocusCollision[] = [];
+  const collisions: LabelCollision[] = [];
   let minimumClearance = Number.POSITIVE_INFINITY;
   for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
     for (let secondIndex = firstIndex + 1; secondIndex < items.length; secondIndex += 1) {
@@ -130,7 +147,7 @@ function collectValidation(
       const second = items[secondIndex];
       const firstRectangle = rectangles.get(first.id)!;
       const secondRectangle = rectangles.get(second.id)!;
-      const clearance = requiredFocusClearance(first.role, second.role);
+      const clearance = requiredLabelClearance(first.role, second.role);
       if (rectanglesConflict(firstRectangle, secondRectangle, clearance)) {
         collisions.push({ first: first.id, second: second.id, clearance });
       } else {
@@ -147,60 +164,70 @@ function collectValidation(
   };
 }
 
-export function validateFocusedLabelLayout(
-  items: readonly FocusLabelItem[],
+export function validateLabelLayout(
+  items: readonly LabelItem[],
   positions: ReadonlyMap<string, ScreenPoint>,
-  viewport: FocusViewport,
+  viewport: LabelViewport,
 ) {
   return collectValidation(items, positions, viewport);
 }
 
-export function resolveFocusedLabelCollisions(
-  items: readonly FocusLabelItem[],
-  viewport: FocusViewport,
+/**
+ * Nudges colliding labels apart. Anchor-role labels (person/experience/project/
+ * domain) never move — everything else is displaced outward from the viewport
+ * center, in priority order, until clear or `maxPasses` is exhausted.
+ *
+ * Used for both the project-focus layout (a handful of semantically placed
+ * labels around one anchor) and the idle/general view (whatever labels are
+ * currently visible on screen) — the two differ only in which items and
+ * viewport they're called with.
+ */
+export function resolveLabelCollisions(
+  items: readonly LabelItem[],
+  viewport: LabelViewport,
   maxPasses = 4,
-): FocusCollisionResolution {
+): LabelCollisionResolution {
   const positions = new Map(items.map((item) => [item.id, clampToViewport(item, item.position, viewport)]));
   const initial = collectValidation(items, positions, viewport);
-  const project = items.find((item) => item.role === "project");
+  const center = { x: viewport.width / 2, y: viewport.height / 2 };
   const ordered = [...items].sort((first, second) => (
     rolePriority[first.role] - rolePriority[second.role] || first.id.localeCompare(second.id)
   ));
 
   for (let pass = 0; pass < maxPasses; pass += 1) {
-    const placed: FocusLabelItem[] = [];
+    const placed: LabelItem[] = [];
     let moved = false;
     for (const item of ordered) {
-      if (item.role === "project") {
+      if (isAnchorRole(item.role)) {
         placed.push(item);
         continue;
       }
       let position = positions.get(item.id) ?? item.position;
       for (let attempt = 0; attempt < 10; attempt += 1) {
-        const rectangle = focusedLabelRectangle(item, position);
+        const rectangle = labelRectangle(item, position);
         const conflict = placed.find((other) => {
           const otherPosition = positions.get(other.id) ?? other.position;
           return rectanglesConflict(
             rectangle,
-            focusedLabelRectangle(other, otherPosition),
-            requiredFocusClearance(item.role, other.role),
+            labelRectangle(other, otherPosition),
+            requiredLabelClearance(item.role, other.role),
           );
         });
         if (!conflict) break;
 
-        const conflictRectangle = focusedLabelRectangle(conflict, positions.get(conflict.id) ?? conflict.position);
-        const clearance = requiredFocusClearance(item.role, conflict.role);
-        const moveUp = item.role === "domain" || item.role === "related" || item.role === "concept"
-          || (item.role === "technology" && position.y <= (project?.position.y ?? viewport.height / 2));
+        const conflictRectangle = labelRectangle(conflict, positions.get(conflict.id) ?? conflict.position);
+        const clearance = requiredLabelClearance(item.role, conflict.role);
+        const moveUp = item.role === "domain" || item.role === "concept" || item.role === "learning" || item.role === "roadmap"
+          || (item.role === "technology" && position.y <= center.y);
         const verticalDelta = moveUp
           ? conflictRectangle.top - clearance - rectangle.bottom
           : conflictRectangle.bottom + clearance - rectangle.top;
         const verticalCandidate = clampToViewport(item, { x: position.x, y: position.y + verticalDelta }, viewport);
-        const verticalRectangle = focusedLabelRectangle(item, verticalCandidate);
+        const verticalRectangle = labelRectangle(item, verticalCandidate);
         if (!rectanglesConflict(verticalRectangle, conflictRectangle, clearance)) {
           position = verticalCandidate;
         } else {
-          const moveLeft = position.x > (project?.position.x ?? viewport.width / 2);
+          const moveLeft = position.x > center.x;
           const horizontalDelta = moveLeft
             ? conflictRectangle.left - clearance - rectangle.right
             : conflictRectangle.right + clearance - rectangle.left;

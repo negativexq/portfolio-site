@@ -15,18 +15,20 @@ import {
   PROJECT_CONTEXT_EDGE_COLOR,
   PROJECT_CONTEXT_NODE_COLOR,
   SELECTED_NODE_COLOR,
+  createGraphNodeLabelDrawer,
   drawGraphNodeHover,
   getEdgeVisual,
   getNodeVisual,
 } from "@/lib/graph/graph-styles";
 import {
-  focusedLabelRectangle,
-  resolveFocusedLabelCollisions,
-  validateFocusedLabelLayout,
-  type FocusLabelItem,
-  type FocusLabelRole,
-  type FocusViewport,
-} from "@/lib/graph/focus-layout";
+  labelRectangle,
+  resolveLabelCollisions,
+  validateLabelLayout,
+  type LabelItem,
+  type LabelRole,
+  type LabelViewport,
+  type ScreenPoint as LabelScreenPoint,
+} from "@/lib/graph/label-layout";
 import type {
   GraphFilterGroup,
   GraphFilterState,
@@ -71,6 +73,8 @@ type ProjectFocusLayout = {
 };
 
 const PROJECT_FOCUS_MAX_RATIO = 0.82;
+const IDLE_RECOMPUTE_DEBOUNCE_MS = 130;
+const IDLE_OFFSET_ANIMATION_DURATION = 190;
 
 function constrainProjectFocusRatio(
   calculatedRatio: number,
@@ -265,6 +269,15 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const labelWidthCacheRef = useRef<Map<string, number>>(new Map());
   const projectFocusDiagnosticsRef = useRef<Map<string, ProjectFocusDiagnostics>>(new Map());
   const selectionOriginRef = useRef<HTMLElement | null>(null);
+
+  // Idle-view label de-collision: only active while nothing is selected.
+  // Node positions never move here (unlike project-focus) — only the label
+  // draw offset does, with a leader line back to the true node position.
+  const idleLabelOffsetsRef = useRef<Map<string, LabelScreenPoint>>(new Map());
+  const idleLabelOffsetTargetsRef = useRef<Map<string, LabelScreenPoint>>(new Map());
+  const idleOffsetAnimStartRef = useRef<Map<string, LabelScreenPoint>>(new Map());
+  const idleOffsetAnimFrameRef = useRef<number | null>(null);
+  const idleRecomputeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [filters, setFilters] = useState<GraphFilterState>(DEFAULT_GRAPH_FILTERS);
@@ -388,6 +401,126 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     layoutAnimationFrameRef.current = requestAnimationFrame(step);
   }, [graph]);
 
+  const animateIdleLabelOffsets = useCallback(() => {
+    if (idleOffsetAnimFrameRef.current !== null) cancelAnimationFrame(idleOffsetAnimFrameRef.current);
+    const renderer = rendererRef.current;
+    const start = idleOffsetAnimStartRef.current;
+    const target = idleLabelOffsetTargetsRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!renderer || reducedMotion) {
+      idleLabelOffsetsRef.current = new Map(target);
+      renderer?.refresh();
+      return;
+    }
+
+    const duration = IDLE_OFFSET_ANIMATION_DURATION;
+    const startedAt = performance.now();
+    const step = (time: number) => {
+      const elapsed = Math.min(1, (time - startedAt) / duration);
+      const eased = 1 - (1 - elapsed) ** 3;
+      const ids = new Set([...start.keys(), ...target.keys()]);
+      const next = new Map<string, LabelScreenPoint>();
+      for (const id of ids) {
+        const from = start.get(id) ?? { x: 0, y: 0 };
+        const to = target.get(id) ?? { x: 0, y: 0 };
+        const x = from.x + (to.x - from.x) * eased;
+        const y = from.y + (to.y - from.y) * eased;
+        if (Math.abs(x) > 0.4 || Math.abs(y) > 0.4) next.set(id, { x, y });
+      }
+      idleLabelOffsetsRef.current = next;
+      renderer.refresh();
+      if (elapsed < 1) idleOffsetAnimFrameRef.current = requestAnimationFrame(step);
+      else idleOffsetAnimFrameRef.current = null;
+    };
+    idleOffsetAnimFrameRef.current = requestAnimationFrame(step);
+  }, []);
+
+  // Recomputes label de-collision for whatever is currently visible and
+  // on-screen in the idle (nothing-selected) view. Debounced onto the
+  // camera's "updated" event by `scheduleIdleLabelRecompute` below — never
+  // run per-frame during a pan/zoom, only once it settles.
+  const recomputeIdleLabelOffsets = useCallback(() => {
+    const renderer = rendererRef.current;
+    if (!renderer || selectedRef.current) return;
+
+    const dimensions = renderer.getDimensions();
+    const labelSize = renderer.getSetting("labelSize");
+    const labelWeight = renderer.getSetting("labelWeight");
+    const labelFont = renderer.getSetting("labelFont");
+    const threshold = renderer.getSetting("labelRenderedSizeThreshold");
+    const measurementContext = document.createElement("canvas").getContext("2d");
+    if (measurementContext) measurementContext.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+    const measureLabel = (label: string) => {
+      const cached = labelWidthCacheRef.current.get(label);
+      if (cached !== undefined) return cached;
+      const width = measurementContext?.measureText(label).width ?? label.length * 6.2;
+      labelWidthCacheRef.current.set(label, width);
+      return width;
+    };
+
+    // Only nodes whose label sigma would actually consider drawing (visible,
+    // large enough or forced) and that currently land on screen — never the
+    // full graph.
+    const margin = 80;
+    const items: LabelItem[] = [];
+    graph.forEachNode((nodeId) => {
+      // getNodeDisplayData()'s declared type is the generic NodeDisplayData
+      // shape; at runtime it's always our full SigmaNodeAttributes because
+      // nodeReducer only ever spreads and overrides that shape.
+      const attrs = renderer.getNodeDisplayData(nodeId) as
+        | (SigmaNodeAttributes & { hidden?: boolean })
+        | undefined;
+      if (!attrs || attrs.hidden || !attrs.label) return;
+      const radius = renderer.scaleSize(attrs.size);
+      if (!attrs.forceLabel && radius < threshold) return;
+      const point = renderer.graphToViewport({ x: attrs.x, y: attrs.y });
+      if (point.x < -margin || point.x > dimensions.width + margin
+        || point.y < -margin || point.y > dimensions.height + margin) return;
+      items.push({
+        id: nodeId,
+        role: attrs.nodeType,
+        position: point,
+        radius,
+        labelWidth: measureLabel(attrs.label),
+        labelHeight: labelSize,
+      });
+    });
+
+    idleOffsetAnimStartRef.current = new Map(idleLabelOffsetsRef.current);
+
+    if (items.length < 2) {
+      idleLabelOffsetTargetsRef.current = new Map();
+      animateIdleLabelOffsets();
+      return;
+    }
+
+    const panel = containerRef.current?.closest(".graph-workspace")?.querySelector<HTMLElement>(".graph-detail-panel");
+    const panelWidth = panel && getComputedStyle(panel).position === "absolute"
+      ? panel.getBoundingClientRect().width
+      : 0;
+    const viewport: LabelViewport = { width: dimensions.width, height: dimensions.height, panelWidth, padding: 16 };
+
+    const resolution = resolveLabelCollisions(items, viewport, 3);
+    const targets = new Map<string, LabelScreenPoint>();
+    for (const item of items) {
+      const resolved = resolution.positions.get(item.id) ?? item.position;
+      const dx = resolved.x - item.position.x;
+      const dy = resolved.y - item.position.y;
+      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) targets.set(item.id, { x: dx, y: dy });
+    }
+    idleLabelOffsetTargetsRef.current = targets;
+    animateIdleLabelOffsets();
+  }, [animateIdleLabelOffsets, graph]);
+
+  const scheduleIdleLabelRecompute = useCallback(() => {
+    if (idleRecomputeTimeoutRef.current !== null) clearTimeout(idleRecomputeTimeoutRef.current);
+    idleRecomputeTimeoutRef.current = setTimeout(() => {
+      idleRecomputeTimeoutRef.current = null;
+      recomputeIdleLabelOffsets();
+    }, IDLE_RECOMPUTE_DEBOUNCE_MS);
+  }, [recomputeIdleLabelOffsets]);
+
   const exitFocusedView = useCallback(() => {
     const selectionOrigin = selectionOriginRef.current;
     selectionOriginRef.current = null;
@@ -415,16 +548,16 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
     const dimensions = renderer.getDimensions();
     const panel = containerRef.current?.closest(".graph-workspace")?.querySelector<HTMLElement>(".graph-detail-panel");
-    const inspectorWidth = panel && getComputedStyle(panel).position === "absolute"
+    const panelWidth = panel && getComputedStyle(panel).position === "absolute"
       ? panel.getBoundingClientRect().width
       : 0;
-    const viewport: FocusViewport = {
+    const viewport: LabelViewport = {
       width: dimensions.width,
       height: dimensions.height,
-      inspectorWidth,
+      panelWidth,
       padding: 24,
     };
-    const usableWidth = Math.max(280, dimensions.width - inspectorWidth);
+    const usableWidth = Math.max(280, dimensions.width - panelWidth);
     const labelSize = renderer.getSetting("labelSize");
     const labelWeight = renderer.getSetting("labelWeight");
     const labelFont = renderer.getSetting("labelFont");
@@ -446,16 +579,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const viewportPoint = renderer.graphToViewport(position, { cameraState: neutralCamera });
       return renderer.viewportToFramedGraph(viewportPoint, { cameraState: neutralCamera });
     };
-    const labelRole = (id: string): FocusLabelRole => {
-      if (id === nodeId) return "project";
-      const type = nodeById.get(id)?.type;
-      if (type === "technology") return "technology";
-      if (type === "domain") return "domain";
-      if (type === "concept") return "concept";
-      if (type === "evidence") return "evidence";
-      return "related";
-    };
-    const displayedSize = (id: string, role: FocusLabelRole) => {
+    const labelRole = (id: string): LabelRole => nodeById.get(id)!.type;
+    const displayedSize = (id: string, role: LabelRole) => {
       const size = graph.getNodeAttribute(id, "size");
       if (role === "project") return size * 1.18;
       if (role === "technology") return size * 1.03 * 1.14;
@@ -471,7 +596,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     const itemsFor = (
       positions: ReadonlyMap<string, FocusedDisplayPosition>,
       cameraState: FocusedCameraState,
-    ): FocusLabelItem[] => focusIds.map((id) => {
+    ): LabelItem[] => focusIds.map((id) => {
       const graphNode = nodeById.get(id)!;
       const role = labelRole(id);
       return {
@@ -488,7 +613,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const anchor = rawToFramed(positionFor(nodeId, positions));
       const baseState: FocusedCameraState = { x: anchor.x, y: anchor.y, ratio: 1, angle: 0 };
       const baseItems = itemsFor(positions, baseState);
-      const baseRectangles = baseItems.map((item) => focusedLabelRectangle(item));
+      const baseRectangles = baseItems.map((item) => labelRectangle(item));
       const minX = Math.min(...baseRectangles.map((rectangle) => rectangle.left));
       const maxX = Math.max(...baseRectangles.map((rectangle) => rectangle.right));
       const minY = Math.min(...baseRectangles.map((rectangle) => rectangle.top));
@@ -517,7 +642,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     const correctedPositions = new Map(semanticPositions);
     const cameraState = cameraFor(correctedPositions);
     let initialCollisions = 0;
-    let finalResolution = resolveFocusedLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
+    let finalResolution = resolveLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
     initialCollisions = finalResolution.initialCollisions.length;
     for (let pass = 0; pass < 2; pass += 1) {
       for (const [id, screenPosition] of finalResolution.positions) {
@@ -526,14 +651,14 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       // Keep the camera fixed while resolving labels. Re-fitting from the
       // screen-corrected graph coordinates creates a zoom-out feedback loop
       // and invalidates the resolver's final pixel-space composition.
-      finalResolution = resolveFocusedLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
+      finalResolution = resolveLabelCollisions(itemsFor(correctedPositions, cameraState), viewport);
       if (finalResolution.collisions.length === 0 && finalResolution.clippedLabels.length === 0) break;
     }
     for (const [id, screenPosition] of finalResolution.positions) {
       correctedPositions.set(id, renderer.viewportToGraph(screenPosition, { cameraState }));
     }
     const finalItems = itemsFor(correctedPositions, cameraState);
-    const finalValidation = validateFocusedLabelLayout(
+    const finalValidation = validateLabelLayout(
       finalItems,
       new Map(finalItems.map((item) => [item.id, item.position])),
       viewport,
@@ -762,7 +887,20 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     hoveredRef.current = hoveredNodeId;
     filtersRef.current = filters;
     rendererRef.current?.refresh();
-  }, [filters, hoveredNodeId, selectedNodeId]);
+    if (selectedNodeId) {
+      // Project-focus owns label placement now (it moves nodes themselves);
+      // drop any idle-view offsets so a stale leader line can't linger.
+      if (idleOffsetAnimFrameRef.current !== null) {
+        cancelAnimationFrame(idleOffsetAnimFrameRef.current);
+        idleOffsetAnimFrameRef.current = null;
+      }
+      idleLabelOffsetsRef.current = new Map();
+      idleLabelOffsetTargetsRef.current = new Map();
+      idleOffsetAnimStartRef.current = new Map();
+    } else {
+      scheduleIdleLabelRecompute();
+    }
+  }, [filters, hoveredNodeId, selectedNodeId, scheduleIdleLabelRecompute]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -776,6 +914,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         renderLabels: true,
         renderEdgeLabels: true,
         defaultDrawNodeHover: drawGraphNodeHover,
+        defaultDrawNodeLabel: createGraphNodeLabelDrawer((nodeId) => idleLabelOffsetsRef.current.get(nodeId)),
         labelFont: "Geist, ui-sans-serif, system-ui, sans-serif",
         labelSize: 11,
         labelWeight: "600",
@@ -945,6 +1084,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         container.classList.remove("is-node-hovered");
       });
       rendererRef.current = renderer;
+      renderer.getCamera().on("updated", scheduleIdleLabelRecompute);
+      scheduleIdleLabelRecompute();
 
       const requested = new URL(window.location.href).searchParams.get("node");
       if (requested) {
@@ -954,6 +1095,9 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
       return () => {
         if (layoutAnimationFrameRef.current !== null) cancelAnimationFrame(layoutAnimationFrameRef.current);
+        if (idleOffsetAnimFrameRef.current !== null) cancelAnimationFrame(idleOffsetAnimFrameRef.current);
+        if (idleRecomputeTimeoutRef.current !== null) clearTimeout(idleRecomputeTimeoutRef.current);
+        renderer.getCamera().removeListener("updated", scheduleIdleLabelRecompute);
         renderer.kill();
         rendererRef.current = null;
       };
@@ -961,7 +1105,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const message = initializationError instanceof Error ? initializationError.message : "Unknown graph initialization error";
       queueMicrotask(() => setError(message));
     }
-  }, [data.nodes, exitFocusedView, focusNode, graph]);
+  }, [data.nodes, exitFocusedView, focusNode, graph, scheduleIdleLabelRecompute]);
 
   useEffect(() => {
     const handleKeyboard = (event: KeyboardEvent) => {

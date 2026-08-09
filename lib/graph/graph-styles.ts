@@ -1,4 +1,4 @@
-import type { NodeHoverDrawingFunction } from "sigma/rendering";
+import type { NodeHoverDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import type {
   GraphEdgeType,
   GraphNodeType,
@@ -113,6 +113,48 @@ export function getEdgeVisual(type: GraphEdgeType): SigmaEdgeAttributes {
   }
 
   return base;
+}
+
+/**
+ * Draws a node label at its de-collided screen offset (if any) instead of
+ * sigma's default fixed anchor point, with a thin leader line back to the
+ * node so the displacement stays legible. `getLabelOffset` is a stable
+ * getter (backed by a ref) rather than a closed-over value, since sigma
+ * calls this function every label-layer repaint.
+ */
+export function createGraphNodeLabelDrawer(
+  getLabelOffset: (nodeId: string) => { x: number; y: number } | undefined,
+): NodeLabelDrawingFunction<SigmaNodeAttributes, SigmaEdgeAttributes> {
+  return (context, data, settings) => {
+    if (!data.label) return;
+    const size = settings.labelSize;
+    const font = settings.labelFont;
+    const weight = settings.labelWeight;
+    const color = (settings.labelColor.attribute
+      ? (data as Record<string, unknown>)[settings.labelColor.attribute] as string ?? settings.labelColor.color
+      : settings.labelColor.color) ?? "#000";
+
+    const offset = getLabelOffset(data.key as string);
+    const baseX = data.x + data.size + 3;
+    const baseY = data.y + size / 3;
+    const labelX = baseX + (offset?.x ?? 0);
+    const labelY = baseY + (offset?.y ?? 0);
+
+    if (offset && (Math.abs(offset.x) > 0.5 || Math.abs(offset.y) > 0.5)) {
+      context.save();
+      context.strokeStyle = "rgba(208, 212, 204, 0.32)";
+      context.lineWidth = 1;
+      context.beginPath();
+      context.moveTo(data.x + data.size + 1, data.y);
+      context.lineTo(labelX - 2, labelY - size * 0.32);
+      context.stroke();
+      context.restore();
+    }
+
+    context.fillStyle = color;
+    context.font = `${weight} ${size}px ${font}`;
+    context.fillText(data.label, labelX, labelY);
+  };
 }
 
 export const drawGraphNodeHover: NodeHoverDrawingFunction<SigmaNodeAttributes, SigmaEdgeAttributes> = (
