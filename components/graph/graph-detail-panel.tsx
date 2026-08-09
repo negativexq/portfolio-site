@@ -124,6 +124,9 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
         <dl className="graph-learning-context">
           <div><dt>Current foundation</dt><dd>{node.metadata.foundation}</dd></div>
           <div><dt>Intended direction</dt><dd>{node.metadata.direction}</dd></div>
+          {node.metadata.evidenceTarget ? (
+            <div><dt>Evidence target</dt><dd>{node.metadata.evidenceTarget}</dd></div>
+          ) : null}
         </dl>
       ) : null}
 

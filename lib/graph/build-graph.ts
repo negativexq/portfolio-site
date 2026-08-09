@@ -47,9 +47,12 @@ const explicitPositions: Record<string, { x: number; y: number }> = {
   "concept:hybrid-retrieval": { x: 5.1, y: -5.2 },
   "learning:langgraph": { x: 8.5, y: 4.7 },
   "learning:agent-memory": { x: 10, y: 6.1 },
-  "learning:neo4j": { x: -8, y: 4.4 },
-  "learning:graphrag": { x: -6.3, y: 6 },
-  "learning:terraform": { x: -7.2, y: -6.3 },
+  "learning:context-engineering-rag": { x: 7.2, y: -3.8 },
+  "learning:graphrag": { x: 8.6, y: -2.3 },
+  "learning:llm-rag-evaluation": { x: 6.8, y: -5.4 },
+  "learning:terraform": { x: -1.8, y: -8.5 },
+  "learning:ai-platform-kubernetes": { x: 0.3, y: -9.2 },
+  "learning:ai-platform-observability": { x: 2.6, y: -8.3 },
 };
 
 const prominentTechnologies = new Set([
@@ -424,7 +427,12 @@ export function buildEngineeringGraph(): EngineeringGraphData {
       type: "learning",
       status: item.status,
       description: item.rationale,
-      importance: item.id === "langgraph" || item.id === "neo4j" || item.id === "terraform" ? 7 : 6,
+      importance: item.id === "langgraph"
+        || item.id === "context-engineering-rag"
+        || item.id === "terraform"
+        || item.id === "ai-platform-kubernetes"
+        ? 7
+        : 6,
       href: "/learning",
       metadata: {
         rationale: item.rationale,
@@ -432,6 +440,7 @@ export function buildEngineeringGraph(): EngineeringGraphData {
           ? connectedProjects.map((project) => project.title).join(" · ")
           : "Current lineage, retrieval and graph-oriented engineering concepts",
         direction: item.rationale,
+        evidenceTarget: item.evidenceTarget,
         connectedProject: connectedProjects.map((project) => project.title).join(" · ") || undefined,
       },
     });
@@ -459,6 +468,21 @@ export function buildEngineeringGraph(): EngineeringGraphData {
         item.status === "planned" ? "planned direction" : "learning direction",
         "extends from",
         item.status,
+      );
+    }
+  }
+
+  for (const item of learningItems) {
+    for (const connectedLearningId of item.connectedLearningIds) {
+      const target = learningItems.find((candidate) => candidate.id === connectedLearningId);
+      if (!target) throw new Error(`Learning direction references a missing item: ${item.id} -> ${connectedLearningId}`);
+      addEdge(
+        `learning:${item.id}`,
+        `learning:${target.id}`,
+        "learning-direction",
+        "extends toward",
+        "builds on",
+        target.status,
       );
     }
   }

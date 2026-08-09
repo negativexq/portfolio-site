@@ -91,7 +91,7 @@ export type EngineeringArea = {
   evidenceExperienceIds: readonly string[];
 };
 
-export type LearningArea = "Infrastructure" | "Agent Systems" | "Graph Systems";
+export type LearningArea = "Agent Systems" | "Retrieval & Evaluation" | "Platform Infrastructure";
 
 export type LearningItem = {
   id: string;
@@ -99,9 +99,12 @@ export type LearningItem = {
   status: Extract<ProjectStatus, "learning" | "planned">;
   area: LearningArea;
   rationale: string;
+  previewSummary?: string;
+  topics: readonly string[];
+  evidenceTarget: string;
   connectedProjectIds: readonly string[];
   connectedAreaIds: readonly string[];
-  themes: readonly string[];
+  connectedLearningIds: readonly string[];
 };
 
 export type Metric = {

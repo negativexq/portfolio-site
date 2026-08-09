@@ -47,6 +47,7 @@ export type GraphMetadata = {
   roadmap?: readonly string[];
   foundation?: string;
   direction?: string;
+  evidenceTarget?: string;
   connectedProject?: string;
   impactId?: string;
 };

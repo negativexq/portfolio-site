@@ -14,7 +14,7 @@ import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
 import { buildEngineeringGraph } from "@/lib/graph/build-graph";
 
-const currentDirectionIds = ["terraform", "langgraph", "graphrag"];
+const currentDirectionIds = ["langgraph", "context-engineering-rag", "terraform"];
 
 export default function Home() {
   const experience = experiences[0];
@@ -144,7 +144,7 @@ export default function Home() {
                   <h3>{item.title}</h3>
                   <StatusBadge status={item.status} />
                 </div>
-                <p>{item.rationale}</p>
+                <p>{item.previewSummary ?? item.rationale}</p>
               </article>
             ))}
           </div>

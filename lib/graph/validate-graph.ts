@@ -162,6 +162,11 @@ export function validateGraphIntegrity(data: EngineeringGraphData): GraphIntegri
       if (edgeKeySet.has(key)) learningRelationshipsValidated += 1;
       else missingLearningRelationships.push(`${areaId} -> ${item.title}`);
     }
+    for (const connectedLearningId of item.connectedLearningIds) {
+      const key = `learning-direction:${learningId}:learning:${connectedLearningId}`;
+      if (edgeKeySet.has(key)) learningRelationshipsValidated += 1;
+      else missingLearningRelationships.push(`${item.title} -> ${connectedLearningId}`);
+    }
   }
 
   const learningNodeIds = new Set(data.nodes

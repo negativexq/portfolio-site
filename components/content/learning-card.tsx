@@ -15,11 +15,21 @@ export function LearningCard({ item, projectLinks }: LearningCardProps) {
         <h3>{item.title}</h3>
         <StatusBadge status={item.status} />
       </div>
-      <p>{item.rationale}</p>
-      <TagList items={item.themes} label={`${item.title} themes`} />
+      <div className="learning-card-layer">
+        <span className="learning-card-label">Why this matters</span>
+        <p>{item.rationale}</p>
+      </div>
+      <div className="learning-card-layer learning-card-topics">
+        <span className="learning-card-label">What I&apos;m exploring</span>
+        <TagList items={item.topics} label={`${item.title} exploration topics`} />
+      </div>
+      <div className="learning-card-layer learning-card-evidence">
+        <span className="learning-card-label">Evidence target</span>
+        <p>{item.evidenceTarget}</p>
+      </div>
       {projectLinks.length > 0 ? (
         <div className="learning-connections">
-          <span>Connects to</span>
+          <span>Adjacent evidence</span>
           {projectLinks.map((project) => (
             <Link key={project.slug} href={`/projects/${project.slug}`}>
               {project.title}

@@ -6,7 +6,7 @@ import type { LearningArea } from "@/lib/content/types";
 
 export const metadata: Metadata = {
   title: "Learning",
-  description: "Planned and active learning directions across infrastructure, agent systems and graph systems.",
+  description: "An evidence-oriented engineering growth roadmap across agent systems, retrieval, evaluation and AI platform infrastructure.",
   alternates: { canonical: "/learning" },
 };
 
@@ -18,25 +18,25 @@ const areas: readonly {
   direction: string;
 }[] = [
   {
-    name: "Infrastructure",
-    index: "01",
-    description: "Reproducible infrastructure, Kubernetes deployment architecture and cloud platform evolution.",
-    foundation: "Docker Compose reference systems",
-    direction: "Terraform and reproducible cloud infrastructure",
-  },
-  {
     name: "Agent Systems",
-    index: "02",
-    description: "Stateful workflows, durable memory, tool reliability, recovery and evaluation.",
-    foundation: "MCP and source-grounded context engineering",
-    direction: "LangGraph workflows and durable agent memory",
+    index: "01",
+    description: "Orchestration makes workflow state and recovery explicit; memory governs what persists across steps and future interactions.",
+    foundation: "MCP tooling and a bounded local agent",
+    direction: "Stateful orchestration and inspectable memory",
   },
   {
-    name: "Graph Systems",
+    name: "Retrieval & Evaluation",
+    index: "02",
+    description: "Retrieval finds evidence; context engineering selects and budgets it; GraphRAG adds relationships; evaluation measures whether each change helps.",
+    foundation: "Hybrid retrieval, reranking and citation integrity",
+    direction: "Context construction, GraphRAG and repeatable evaluation",
+  },
+  {
+    name: "Platform Infrastructure",
     index: "03",
-    description: "Graph-native modeling and relationship-aware retrieval for knowledge and agent systems.",
-    foundation: "Lineage, dependency graphs and hybrid retrieval",
-    direction: "Neo4j modeling and GraphRAG exploration",
+    description: "Infrastructure provisioning, workload orchestration and observability extend containerized AI systems along distinct operational boundaries.",
+    foundation: "Containerized services and observable release workflows",
+    direction: "Terraform, Kubernetes and AI-platform signals",
   },
 ];
 
@@ -45,8 +45,8 @@ export default function LearningPage() {
     <main>
       <header className="page-hero container">
         <p className="eyebrow">Learning / building next</p>
-        <h1>Engineering direction, clearly labeled.</h1>
-        <p>Active learning and planned work are visible here without being presented as verified production experience.</p>
+        <h1>Extending the engineering boundary.</h1>
+        <p>Active exploration and planned work expand existing AI Platform and MLOps foundations without being presented as demonstrated capability before the evidence exists.</p>
       </header>
 
       <div className="learning-sections">
