@@ -48,6 +48,11 @@ const focusedLabelTypePriority = {
 
 type FocusedDisplayPosition = { x: number; y: number };
 
+type ProjectFocusLayout = {
+  positions: Map<string, FocusedDisplayPosition>;
+  cameraNodeIds: Set<string>;
+};
+
 const projectFocusConceptLabels: Readonly<Record<string, readonly string[]>> = {
   "real-time-commerce-platform": ["Event-Driven Architecture", "Transactional Outbox"],
   "knowledge-base-rag": ["Hybrid Retrieval", "Citation Integrity"],
@@ -57,31 +62,30 @@ const projectFocusConceptLabels: Readonly<Record<string, readonly string[]>> = {
 };
 
 function estimatedLabelWidth(label: string) {
-  return Math.max(2.8, label.length * 0.34);
+  return Math.max(2.8, label.length * 0.52);
 }
 
 function verticalSlots(count: number, gap: number) {
   if (count <= 0) return [];
-  if (count === 1) return [0];
-  const negativeCount = Math.floor(count / 2);
-  const positiveCount = Math.ceil(count / 2);
-  return [
-    ...Array.from({ length: negativeCount }, (_, index) => -(negativeCount - index) * gap),
-    ...Array.from({ length: positiveCount }, (_, index) => (index + 1) * gap),
-  ];
+  return Array.from({ length: count }, (_, index) => (index - (count - 1) / 2) * gap);
 }
 
 function createProjectDisplayLayout(
   project: EngineeringGraphNode,
   neighbors: readonly EngineeringGraphNode[],
+  visibleConceptIds: ReadonlySet<string>,
+  visibleEvidenceIds: ReadonlySet<string>,
   measureLabel: (label: string) => number = estimatedLabelWidth,
-) {
+): ProjectFocusLayout {
   const positions = new Map<string, FocusedDisplayPosition>();
+  const cameraNodeIds = new Set<string>([project.id]);
   const center = { x: project.x, y: project.y };
   const place = (node: EngineeringGraphNode, x: number, y: number) => {
     positions.set(node.id, { x: center.x + x, y: center.y + y });
   };
-  positions.set(project.id, center);
+  // The project remains the visual anchor. Its measured title width defines
+  // an exclusion zone that neither technology column can enter.
+  place(project, 0, 0);
 
   const technologies = project.metadata.keyTechnologies
     ?.map((label) => neighbors.find((neighbor) => neighbor.type === "technology" && neighbor.label === label))
@@ -92,47 +96,65 @@ function createProjectDisplayLayout(
     .sort((left, right) => left.label.localeCompare(right.label));
   technologies.push(...remainingTechnologies);
 
-  const leftTechnologies = technologies.filter((_, index) => index % 2 === 0);
-  const rightTechnologies = technologies.filter((_, index) => index % 2 === 1);
+  const technologySplit = Math.ceil(technologies.length / 2);
+  const leftTechnologies = technologies.slice(0, technologySplit);
+  const rightTechnologies = technologies.slice(technologySplit);
   const selectedLabelWidth = measureLabel(project.canvasLabel);
   const leftLabelWidth = Math.max(0, ...leftTechnologies.map((node) => measureLabel(node.canvasLabel)));
-  const rightLabelWidth = Math.max(0, ...rightTechnologies.map((node) => measureLabel(node.canvasLabel)));
-  const leftX = -Math.max(7.4, leftLabelWidth + 3.1);
-  const rightX = Math.max(5.6, selectedLabelWidth + 2.2);
-  verticalSlots(leftTechnologies.length, 2.65).forEach((y, index) => place(leftTechnologies[index], leftX, y));
-  verticalSlots(rightTechnologies.length, 2.65).forEach((y, index) => place(rightTechnologies[index], rightX, y));
+  const leftX = -Math.max(13.2, leftLabelWidth + 6.8);
+  const rightX = Math.max(12.8, selectedLabelWidth + 6.8);
+  verticalSlots(leftTechnologies.length, 3.65).forEach((y, index) => place(leftTechnologies[index], leftX, y));
+  verticalSlots(rightTechnologies.length, 3.65).forEach((y, index) => place(rightTechnologies[index], rightX, y));
+  technologies.forEach((node) => cameraNodeIds.add(node.id));
 
   const domains = neighbors.filter((neighbor) => neighbor.type === "domain");
-  const domainXs = verticalSlots(domains.length, 5.2);
-  domains.forEach((node, index) => place(node, domainXs[index], -8.6));
+  const domainXs = verticalSlots(domains.length, 5.6);
+  domains.forEach((node, index) => {
+    place(node, -7.8 + domainXs[index], -13.4);
+    cameraNodeIds.add(node.id);
+  });
 
   const relatedAnchors = neighbors.filter((neighbor) => (
     neighbor.type === "person" || neighbor.type === "experience" || neighbor.type === "project"
   ));
-  verticalSlots(relatedAnchors.length, 2.5).forEach((y, index) => place(relatedAnchors[index], leftX, -8.2 + y));
+  verticalSlots(relatedAnchors.length, 3.2).forEach((x, index) => {
+    place(relatedAnchors[index], -7.8 + x, -16.5);
+  });
 
   const concepts = neighbors.filter((neighbor) => neighbor.type === "concept");
-  const conceptStartX = rightX + rightLabelWidth + 2.4;
-  const conceptColumns = [conceptStartX, conceptStartX + 2.8];
-  const conceptsPerColumn = Math.ceil(concepts.length / conceptColumns.length);
-  concepts.forEach((node, index) => {
-    const column = Math.floor(index / conceptsPerColumn);
-    const row = index % conceptsPerColumn;
-    const rows = verticalSlots(Math.min(conceptsPerColumn, concepts.length - column * conceptsPerColumn), 1.85);
-    place(node, conceptColumns[column], rows[row]);
+  const visibleConcepts = concepts.filter((node) => visibleConceptIds.has(node.id));
+  const hiddenConcepts = concepts.filter((node) => !visibleConceptIds.has(node.id));
+  const conceptStartX = 5.4;
+  const visibleConceptYs = verticalSlots(visibleConcepts.length, 5.4);
+  visibleConcepts.forEach((node, index) => {
+    place(node, conceptStartX, -13.4 + visibleConceptYs[index] * 0.56);
+    cameraNodeIds.add(node.id);
+  });
+  const visibleConceptWidth = Math.max(0, ...visibleConcepts.map((node) => measureLabel(node.canvasLabel)));
+  const hiddenConceptX = Math.max(rightX + 8.4, conceptStartX + visibleConceptWidth + 4.2);
+  hiddenConcepts.forEach((node, index) => {
+    const column = Math.floor(index / 5);
+    const row = index % 5;
+    place(node, hiddenConceptX + column * 2.2, -7.2 + row * 2.25);
   });
 
   const evidence = neighbors.filter((neighbor) => neighbor.type === "evidence");
-  const evidenceXs = verticalSlots(evidence.length, 4.2);
-  evidence.forEach((node, index) => place(node, evidenceXs[index], 9.2));
+  const visibleEvidence = evidence.filter((node) => visibleEvidenceIds.has(node.id));
+  const hiddenEvidence = evidence.filter((node) => !visibleEvidenceIds.has(node.id));
+  const evidenceXs = verticalSlots(visibleEvidence.length, 5.2);
+  visibleEvidence.forEach((node, index) => {
+    place(node, evidenceXs[index], 13.4);
+    cameraNodeIds.add(node.id);
+  });
+  hiddenEvidence.forEach((node, index) => place(node, 7.2 + index * 2.2, 13.4));
 
   const learning = neighbors.filter((neighbor) => neighbor.type === "learning" || neighbor.type === "roadmap");
-  verticalSlots(learning.length, 2.4).forEach((y, index) => place(learning[index], conceptStartX, 8.4 + y));
+  verticalSlots(learning.length, 2.6).forEach((y, index) => place(learning[index], hiddenConceptX, 10.4 + y));
 
   const positioned = new Set(positions.keys());
   const remaining = neighbors.filter((neighbor) => !positioned.has(neighbor.id));
-  verticalSlots(remaining.length, 2).forEach((y, index) => place(remaining[index], leftX - 2.6, y));
-  return positions;
+  verticalSlots(remaining.length, 2.4).forEach((y, index) => place(remaining[index], leftX - 3.2, y));
+  return { positions, cameraNodeIds };
 }
 
 function focusProfile(node: EngineeringGraphNode, neighborCount: number, tight: boolean) {
@@ -199,6 +221,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const focusedEdgeLabelIdsRef = useRef<Set<string>>(new Set());
   const focusedProjectRef = useRef<string | null>(null);
   const focusedDisplayPositionsRef = useRef<Map<string, FocusedDisplayPosition>>(new Map());
+  const focusedCameraNodeIdsRef = useRef<Set<string>>(new Set());
   const focusedLayoutProgressRef = useRef(0);
   const layoutAnimationFrameRef = useRef<number | null>(null);
   const selectionOriginRef = useRef<HTMLElement | null>(null);
@@ -261,6 +284,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     forcedProjectLabelIdsRef.current = new Set();
     focusedEdgeLabelIdsRef.current = new Set();
     focusedProjectRef.current = null;
+    focusedCameraNodeIdsRef.current = new Set();
     setSelectedNodeId(null);
     updateUrlNode(null);
   }, [updateUrlNode]);
@@ -308,6 +332,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     fitGraph();
     animateProjectLayout(0, () => {
       focusedDisplayPositionsRef.current = new Map();
+      focusedCameraNodeIdsRef.current = new Set();
       rendererRef.current?.refresh();
     });
     window.requestAnimationFrame(() => {
@@ -323,7 +348,10 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     const visibleNeighbors = graph.neighbors(nodeId).filter((neighborId) => (
       isNodeTypeVisible(graph.getNodeAttribute(neighborId, "nodeType"), filtersRef.current)
     ));
-    const clusterIds = [nodeId, ...visibleNeighbors];
+    const projectCameraIds = focusedProjectRef.current === nodeId
+      ? [...focusedCameraNodeIdsRef.current]
+      : [];
+    const clusterIds = projectCameraIds.length > 0 ? projectCameraIds : [nodeId, ...visibleNeighbors];
     const cluster = clusterIds
       .map((id) => renderer.getNodeDisplayData(id))
       .filter((node): node is NonNullable<ReturnType<typeof renderer.getNodeDisplayData>> => Boolean(node));
@@ -407,9 +435,17 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       if (measurementContext) measurementContext.font = "600 11px Geist, ui-sans-serif, system-ui, sans-serif";
       const measureLabel = (label: string) => Math.max(
         2.8,
-        (measurementContext?.measureText(label).width ?? label.length * 6.2) / 18,
+        (measurementContext?.measureText(label).width ?? label.length * 6.2) / 12,
       );
-      focusedDisplayPositionsRef.current = createProjectDisplayLayout(node, neighborNodes, measureLabel);
+      const projectLayout = createProjectDisplayLayout(
+        node,
+        neighborNodes,
+        new Set(concepts.map((neighbor) => neighbor.id)),
+        new Set(evidence.map((neighbor) => neighbor.id)),
+        measureLabel,
+      );
+      focusedDisplayPositionsRef.current = projectLayout.positions;
+      focusedCameraNodeIdsRef.current = projectLayout.cameraNodeIds;
       const forceTechnologyLabels = window.matchMedia("(min-width: 821px)").matches;
       forcedProjectLabelIdsRef.current = new Set([
         nodeId,
@@ -433,6 +469,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       forcedProjectLabelIdsRef.current = new Set();
       if (!restoreProjectLayoutBeforeFocus) {
         focusedDisplayPositionsRef.current = new Map();
+        focusedCameraNodeIdsRef.current = new Set();
         focusedLayoutProgressRef.current = 0;
       }
     }
@@ -458,6 +495,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       } else if (restoreProjectLayoutBeforeFocus) {
         animateProjectLayout(0, () => {
           focusedDisplayPositionsRef.current = new Map();
+          focusedCameraNodeIdsRef.current = new Set();
           rendererRef.current?.refresh();
           focusNeighborhood(nodeId, cameraMode === "focus");
         });
