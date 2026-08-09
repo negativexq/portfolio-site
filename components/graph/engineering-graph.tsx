@@ -23,6 +23,7 @@ import type {
   SigmaEdgeAttributes,
   SigmaNodeAttributes,
   EngineeringGraphData,
+  EngineeringGraphNode,
 } from "@/lib/graph/types";
 import { GraphBrowseList } from "./graph-browse-list";
 import { GraphDetailPanel } from "./graph-detail-panel";
@@ -43,7 +44,31 @@ const focusedLabelTypePriority = {
   evidence: 5,
 } as const;
 
+const projectFocusTechnologies: Readonly<Record<string, readonly string[]>> = {
+  "real-time-commerce-platform": ["Kafka", "PostgreSQL", "Redis", "FastAPI", "Docker Compose", "Prometheus", "Grafana"],
+  "knowledge-base-rag": ["Qdrant", "FastAPI", "Ollama", "OpenTelemetry", "Jaeger", "Streamlit", "Docker Compose"],
+  "modelops-control-plane": ["FastAPI", "SQLAlchemy", "Next.js", "TypeScript", "Locust", "Docker Compose"],
+  "repo-context-forge": ["Python", "MCP", "FastMCP", "Typer", "Docker", "Git"],
+  "dbt-feature-lineage": ["dbt Core", "sqlglot", "NetworkX", "Streamlit", "Typer", "Docker"],
+};
+
+function focusProfile(node: EngineeringGraphNode, neighborCount: number, tight: boolean) {
+  if (node.type === "person" || node.type === "experience") {
+    return { occupancy: tight ? 0.74 : 0.64, minimumRatio: tight ? 0.2 : 0.28, labelPadding: 96 };
+  }
+  if (node.type === "project" && node.metadata.flagship) {
+    return { occupancy: tight ? 0.9 : 0.82, minimumRatio: tight ? 0.14 : 0.18, labelPadding: 132 };
+  }
+  const adaptiveOccupancy = Math.max(0.66, Math.min(0.76, 0.76 - Math.max(0, neighborCount - 5) * 0.008));
+  return {
+    occupancy: tight ? Math.min(0.86, adaptiveOccupancy + 0.1) : adaptiveOccupancy,
+    minimumRatio: tight ? 0.16 : 0.22,
+    labelPadding: 104,
+  };
+}
+
 export default function EngineeringGraph({ data }: { data: EngineeringGraphData }) {
+  const nodeById = useMemo(() => new Map(data.nodes.map((node) => [node.id, node])), [data.nodes]);
   const graph = useMemo(() => {
     const nextGraph = new Graph<SigmaNodeAttributes, SigmaEdgeAttributes>({
       type: "directed",
@@ -86,6 +111,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const hoveredRef = useRef<string | null>(null);
   const filtersRef = useRef<GraphFilterState>(DEFAULT_GRAPH_FILTERS);
   const focusedLabelIdsRef = useRef<Set<string>>(new Set());
+  const focusedEdgeLabelIdsRef = useRef<Set<string>>(new Set());
+  const focusedProjectRef = useRef<string | null>(null);
   const selectionOriginRef = useRef<HTMLElement | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -143,6 +170,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
   const clearSelectionState = useCallback(() => {
     focusedLabelIdsRef.current = new Set();
+    focusedEdgeLabelIdsRef.current = new Set();
+    focusedProjectRef.current = null;
     setSelectedNodeId(null);
     updateUrlNode(null);
   }, [updateUrlNode]);
@@ -167,7 +196,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
   const focusNeighborhood = useCallback((nodeId: string, tight = false) => {
     const renderer = rendererRef.current;
-    if (!renderer || !graph.hasNode(nodeId)) return;
+    const selectedNode = nodeById.get(nodeId);
+    if (!renderer || !selectedNode || !graph.hasNode(nodeId)) return;
 
     const visibleNeighbors = graph.neighbors(nodeId).filter((neighborId) => (
       isNodeTypeVisible(graph.getNodeAttribute(neighborId, "nodeType"), filtersRef.current)
@@ -190,11 +220,11 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     const usableWidth = Math.max(280, dimensions.width - panelWidth);
     const baseState = { x: center.x, y: center.y, ratio: 1, angle: 0 };
     const viewportPoints = cluster.map((node) => renderer.framedGraphToViewport(node, { cameraState: baseState }));
-    const spanX = Math.max(72, Math.max(...viewportPoints.map((point) => point.x)) - Math.min(...viewportPoints.map((point) => point.x)));
-    const spanY = Math.max(72, Math.max(...viewportPoints.map((point) => point.y)) - Math.min(...viewportPoints.map((point) => point.y)));
-    const occupancy = tight ? 0.78 : 0.66;
-    const desiredRatio = Math.max(spanX / (usableWidth * occupancy), spanY / (dimensions.height * occupancy));
-    const ratio = Math.min(tight ? 0.58 : 0.9, Math.max(tight ? 0.18 : 0.24, desiredRatio));
+    const profile = focusProfile(selectedNode, visibleNeighbors.length, tight);
+    const spanX = Math.max(72, Math.max(...viewportPoints.map((point) => point.x)) - Math.min(...viewportPoints.map((point) => point.x))) + profile.labelPadding;
+    const spanY = Math.max(72, Math.max(...viewportPoints.map((point) => point.y)) - Math.min(...viewportPoints.map((point) => point.y))) + 64;
+    const desiredRatio = Math.max(spanX / (usableWidth * profile.occupancy), spanY / (dimensions.height * profile.occupancy));
+    const ratio = Math.max(profile.minimumRatio, desiredRatio);
     const centeredState = { ...baseState, ratio };
     const targetViewport = { x: usableWidth * 0.48, y: dimensions.height * 0.5 };
     const graphPointAtTarget = renderer.viewportToFramedGraph(targetViewport, { cameraState: centeredState });
@@ -206,10 +236,10 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     const camera = renderer.getCamera();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) camera.setState(nextState);
     else camera.animate(nextState, { duration: tight ? 260 : 240, easing: "quadraticOut" });
-  }, [graph]);
+  }, [graph, nodeById]);
 
   const focusNode = useCallback((nodeId: string, cameraMode: "context" | "focus" = "context") => {
-    const node = data.nodes.find((candidate) => candidate.id === nodeId);
+    const node = nodeById.get(nodeId);
     if (!node) return;
 
     if (!selectedRef.current && document.activeElement instanceof HTMLElement) {
@@ -217,17 +247,54 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     }
     const group = filterGroupForNode(node.type);
     setFilters((current) => current[group] ? current : { ...current, [group]: true });
-    const labelBudget = window.matchMedia("(max-width: 640px)").matches ? 4 : graph.degree(nodeId) > 14 ? 7 : 9;
-    const prioritizedNeighbors = graph.neighbors(nodeId)
-      .sort((left, right) => {
-        const leftAttributes = graph.getNodeAttributes(left);
-        const rightAttributes = graph.getNodeAttributes(right);
-        return focusedLabelTypePriority[leftAttributes.nodeType] - focusedLabelTypePriority[rightAttributes.nodeType]
-          || rightAttributes.importance - leftAttributes.importance
-          || left.localeCompare(right);
-      })
-      .slice(0, labelBudget);
+    const neighbors = graph.neighbors(nodeId);
+    let prioritizedNeighbors: string[];
+    if (node.type === "project" && node.metadata.flagship && node.projectSlug) {
+      const neighborNodes = neighbors.map((id) => nodeById.get(id)).filter((item): item is EngineeringGraphNode => Boolean(item));
+      const preferredTechnologyLabels = projectFocusTechnologies[node.projectSlug] ?? [];
+      const technologies = preferredTechnologyLabels
+        .map((label) => neighborNodes.find((neighbor) => neighbor.type === "technology" && neighbor.label === label))
+        .filter((item): item is EngineeringGraphNode => Boolean(item));
+      const highLevel = neighborNodes
+        .filter((neighbor) => neighbor.type === "domain")
+        .sort((left, right) => right.importance - left.importance)
+        .slice(0, 2);
+      const relatedAnchors = neighborNodes
+        .filter((neighbor) => neighbor.type === "project" || neighbor.type === "experience")
+        .sort((left, right) => right.importance - left.importance)
+        .slice(0, 1);
+      const concepts = neighborNodes
+        .filter((neighbor) => neighbor.type === "concept")
+        .sort((left, right) => right.importance - left.importance || left.label.localeCompare(right.label))
+        .slice(0, 2);
+      const evidence = neighborNodes.filter((neighbor) => neighbor.type === "evidence").slice(0, 1);
+      prioritizedNeighbors = [...highLevel, ...technologies, ...relatedAnchors, ...concepts, ...evidence].map((neighbor) => neighbor.id);
+      focusedProjectRef.current = nodeId;
+    } else {
+      const labelBudget = window.matchMedia("(max-width: 640px)").matches ? 4 : graph.degree(nodeId) > 14 ? 7 : 9;
+      prioritizedNeighbors = neighbors
+        .sort((left, right) => {
+          const leftAttributes = graph.getNodeAttributes(left);
+          const rightAttributes = graph.getNodeAttributes(right);
+          return focusedLabelTypePriority[leftAttributes.nodeType] - focusedLabelTypePriority[rightAttributes.nodeType]
+            || rightAttributes.importance - leftAttributes.importance
+            || left.localeCompare(right);
+        })
+        .slice(0, labelBudget);
+      focusedProjectRef.current = null;
+    }
     focusedLabelIdsRef.current = new Set([nodeId, ...prioritizedNeighbors]);
+    const incidentEdges = graph.edges(nodeId);
+    const labelCounts = new Map<string, number>();
+    for (const edgeId of incidentEdges) {
+      const label = graph.getEdgeAttribute(edgeId, "label").toLocaleLowerCase("en-US");
+      labelCounts.set(label, (labelCounts.get(label) ?? 0) + 1);
+    }
+    const highValueLabels = new Set(["worked at", "evolved into", "orchestrates docker containers"]);
+    focusedEdgeLabelIdsRef.current = new Set(incidentEdges.filter((edgeId) => {
+      const label = graph.getEdgeAttribute(edgeId, "label").toLocaleLowerCase("en-US");
+      return highValueLabels.has(label) || ((labelCounts.get(label) ?? 0) === 1 && incidentEdges.length <= 7);
+    }));
     setSelectedNodeId(nodeId);
     setQuery("");
     updateUrlNode(nodeId);
@@ -235,7 +302,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
     });
-  }, [data.nodes, focusNeighborhood, graph, updateUrlNode]);
+  }, [focusNeighborhood, graph, nodeById, updateUrlNode]);
 
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
@@ -336,15 +403,46 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             };
           }
 
+          let localAttributes = attributes;
+          const isProjectFocusedNeighbor = focusedProjectRef.current === selectedNode && isSelectedNeighbor;
+          if (isProjectFocusedNeighbor && selectedNode) {
+            const selectedAttributes = graph.getNodeAttributes(selectedNode);
+            const deltaX = attributes.x - selectedAttributes.x;
+            const deltaY = attributes.y - selectedAttributes.y;
+            const distance = Math.max(0.001, Math.hypot(deltaX, deltaY));
+            const distanceRange = attributes.nodeType === "technology"
+              ? [2.8, 5.2]
+              : attributes.nodeType === "domain"
+                ? [3.2, 5.6]
+                : attributes.nodeType === "concept" || attributes.nodeType === "evidence"
+                  ? [3.8, 6.4]
+                  : [3.4, 6];
+            const focusedDistance = Math.max(distanceRange[0], Math.min(distanceRange[1], distance));
+            localAttributes = {
+              ...attributes,
+              x: selectedAttributes.x + (deltaX / distance) * focusedDistance,
+              y: selectedAttributes.y + (deltaY / distance) * focusedDistance,
+            };
+          }
+
           const showFocusedLabel = focusedLabelIdsRef.current.has(nodeId) || isHovered;
+          const projectLabelScale = isProjectFocusedNeighbor && showFocusedLabel
+            ? attributes.nodeType === "technology"
+              ? 1.14
+              : attributes.nodeType === "domain"
+                ? 1.1
+                : attributes.nodeType === "project" || attributes.nodeType === "person"
+                  ? 1.05
+                  : 1
+            : 1;
           return {
-            ...attributes,
+            ...localAttributes,
             highlighted: isSelected || isHovered,
             color: isSelected ? SELECTED_NODE_COLOR : attributes.color,
             label: showFocusedLabel ? attributes.label : "",
             forceLabel: isSelected || isHovered,
-            size: attributes.size * (isSelected ? 1.18 : isHovered ? 1.1 : 1.03),
-            zIndex: isSelected ? 20 : isHovered ? 18 : attributes.zIndex,
+            size: attributes.size * (isSelected ? 1.18 : isHovered ? 1.1 : 1.03) * projectLabelScale,
+            zIndex: isSelected ? 20 : isHovered ? 18 : isProjectFocusedNeighbor && attributes.nodeType === "technology" ? 14 : attributes.zIndex,
           };
         },
         edgeReducer: (edgeId, attributes) => {
@@ -364,14 +462,21 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           const isSelectedEdge = Boolean(selectedNode && (source === selectedNode || target === selectedNode));
           const isHoveredEdge = Boolean(hoveredNode && (source === hoveredNode || target === hoveredNode));
           if (!isSelectedEdge && !isHoveredEdge) return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.22 };
-          const showRelationshipLabel = Boolean(selectedNode)
-            && !hoveredNode
-            && graph.degree(selectedNode!) <= 7;
+          const showRelationshipLabel = !hoveredNode && focusedEdgeLabelIdsRef.current.has(edgeId);
+          const connectedNode = selectedNode && isSelectedEdge ? (source === selectedNode ? target : source) : null;
+          const connectedType = connectedNode ? graph.getNodeAttribute(connectedNode, "nodeType") : null;
+          const projectEdgeScale = focusedProjectRef.current === selectedNode && isSelectedEdge
+            ? connectedType === "technology" || connectedType === "domain"
+              ? 2.5
+              : connectedType === "concept" || connectedType === "evidence"
+                ? 1.7
+                : 1.35
+            : isSelectedEdge ? 2.2 : 1.65;
           return {
             ...attributes,
             forceLabel: showRelationshipLabel,
             label: showRelationshipLabel ? attributes.label : "",
-            size: attributes.size * (isSelectedEdge ? 2.2 : 1.65),
+            size: attributes.size * projectEdgeScale,
             zIndex: isSelectedEdge ? 10 : 8,
           };
         },
