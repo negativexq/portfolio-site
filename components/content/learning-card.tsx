@@ -10,7 +10,7 @@ type LearningCardProps = {
 
 export function LearningCard({ item, projectLinks }: LearningCardProps) {
   return (
-    <article className={`learning-card learning-card-${item.status}`}>
+    <article className={`learning-card learning-card-${item.status}`} data-hover-lift>
       <div className="learning-card-heading">
         <h3>{item.title}</h3>
         <StatusBadge status={item.status} />

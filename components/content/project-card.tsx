@@ -13,7 +13,11 @@ type ProjectCardProps = {
 
 export function ProjectCard({ project, index, compact = false }: ProjectCardProps) {
   return (
-    <article className={`project-card${compact ? " project-card-compact" : ""}`} data-reveal>
+    <article
+      className={`project-card${compact ? " project-card-compact" : ""}`}
+      data-reveal
+      data-hover-lift
+    >
       <div className="project-card-meta">
         <span>{typeof index === "number" ? `Project / ${String(index).padStart(2, "0")}` : "Supporting work"}</span>
         <StatusBadge status={project.status} />

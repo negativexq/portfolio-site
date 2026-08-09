@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { ArrowUpRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+import type { Ref } from "react";
+import gsap from "gsap";
 import { profile } from "@/data/profile";
 
 const navigation = [
@@ -13,11 +16,11 @@ const navigation = [
   { href: "/resume", label: "Resume" },
 ];
 
-function NavigationLinks() {
+function NavigationLinks({ listRef }: { listRef?: Ref<HTMLUListElement> }) {
   const pathname = usePathname();
 
   return (
-    <ul>
+    <ul ref={listRef}>
       {navigation.map((item) => {
         const isCurrent =
           item.href === "/projects"
@@ -52,6 +55,37 @@ function NavigationLinks() {
 }
 
 export function SiteHeader() {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const menuListRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const details = detailsRef.current;
+    const menuList = menuListRef.current;
+    if (!details || !menuList) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    const onToggle = () => {
+      if (details.open) {
+        // Animate the ul itself (already position:absolute), not an ancestor:
+        // a lingering GSAP transform on the <nav> wrapper would make it the
+        // new containing block for this absolutely-positioned list and break
+        // its left:0/right:0 sizing.
+        gsap.from(menuList, {
+          opacity: 0,
+          y: -6,
+          duration: 0.22,
+          ease: "power2.out",
+          clearProps: "transform",
+        });
+      }
+    };
+
+    details.addEventListener("toggle", onToggle);
+    return () => details.removeEventListener("toggle", onToggle);
+  }, []);
+
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -63,12 +97,12 @@ export function SiteHeader() {
           <NavigationLinks />
         </nav>
 
-        <details className="mobile-nav">
+        <details className="mobile-nav" ref={detailsRef}>
           <summary>
             <Menu aria-hidden="true" size={18} /> <span>Menu</span>
           </summary>
           <nav aria-label="Mobile navigation">
-            <NavigationLinks />
+            <NavigationLinks listRef={menuListRef} />
           </nav>
         </details>
       </div>

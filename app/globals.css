@@ -9,10 +9,10 @@
   --muted: #969d96;
   --border: #2a302b;
   --border-strong: #3b443c;
-  --accent: #b8f36b;
+  --accent: #a3d65a;
   --accent-soft: #27351d;
   --accent-ink: #14200b;
-  --accent-hover: #c7ff7e;
+  --accent-hover: #b4e86e;
   --subtle: #7f877f;
   --subtle-strong: #899189;
   --tag-text: #adb3ac;
@@ -25,12 +25,25 @@
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
   --section: clamp(4.5rem, 9vw, 8rem);
   --section-compact: clamp(3rem, 6vw, 5rem);
+  /* Spacing rule: section/region rhythm (page padding, section gaps, hero
+     blocks) uses the clamp() tokens above so it scales with viewport width.
+     Fixed component-internal spacing (gaps within a card, list-item
+     padding, icon offsets) uses --space-N, an 8px-base scale that does not
+     need to scale with viewport. Do not mix systems within one rule. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
   --motion-fast: 150ms;
   --motion-normal: 210ms;
   --motion-entry: 280ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: var(--font-geist-mono), "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 @media (prefers-color-scheme: light) {
@@ -44,10 +57,10 @@
     --muted: #5f685f;
     --border: #d2d8cf;
     --border-strong: #adb7ab;
-    --accent: #4f7a1f;
+    --accent: #4a7020;
     --accent-soft: #e0ecd3;
     --accent-ink: #f8fbf4;
-    --accent-hover: #426719;
+    --accent-hover: #3d5f1c;
     --subtle: #687168;
     --subtle-strong: #596359;
     --tag-text: #536053;
@@ -98,6 +111,17 @@ a {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .sr-only {
@@ -331,19 +355,6 @@ a {
     opacity: 0;
     transform: translateY(0.55rem);
   }
-}
-
-.is-reveal-ready {
-  opacity: 0;
-  transform: translateY(0.65rem);
-  transition:
-    opacity var(--motion-entry) var(--motion-ease),
-    transform var(--motion-entry) var(--motion-ease);
-}
-
-.is-reveal-ready.is-reveal-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .hero-copy {

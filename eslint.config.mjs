@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Third-party skill packages (not app source, not gitignore-excludable
+    // from lint since eslint can still be pointed at them explicitly):
+    ".claude/**",
+    ".agents/**",
+    ".codex/**",
   ]),
 ]);
 

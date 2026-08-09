@@ -125,7 +125,7 @@ export default function Home() {
           />
           <div className="direction-grid" data-reveal>
             {currentDirection.map((item, index) => (
-              <article key={item.id}>
+              <article key={item.id} data-hover-lift>
                 <span className="direction-index">0{index + 1}</span>
                 <div className="direction-heading-row">
                   <h3>{item.title}</h3>
