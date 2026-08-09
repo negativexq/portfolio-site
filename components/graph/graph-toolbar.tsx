@@ -5,11 +5,11 @@ import type { GraphFilterGroup, GraphFilterState } from "@/lib/graph/types";
 type GraphToolbarProps = {
   filters: GraphFilterState;
   onToggleFilter: (filter: GraphFilterGroup) => void;
-  onFit: () => void;
+  onOverview: () => void;
   onReset: () => void;
 };
 
-export function GraphToolbar({ filters, onToggleFilter, onFit, onReset }: GraphToolbarProps) {
+export function GraphToolbar({ filters, onToggleFilter, onOverview, onReset }: GraphToolbarProps) {
   return (
     <div className="graph-toolbar" aria-label="Graph controls">
       <div className="graph-filter-list" aria-label="Filter node types">
@@ -26,8 +26,8 @@ export function GraphToolbar({ filters, onToggleFilter, onFit, onReset }: GraphT
         ))}
       </div>
       <div className="graph-view-actions">
-        <button type="button" onClick={onFit} title="Fit graph (F)">
-          <Focus aria-hidden="true" size={14} /> Fit
+        <button type="button" onClick={onOverview} title="Back to full graph (F)">
+          <Focus aria-hidden="true" size={14} /> Full graph
         </button>
         <button type="button" onClick={onReset}>
           <RotateCcw aria-hidden="true" size={14} /> Reset

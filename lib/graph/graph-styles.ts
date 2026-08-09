@@ -54,9 +54,9 @@ const nodeSizes: Record<GraphNodeType, number> = {
 };
 
 export const SELECTED_NODE_COLOR = "#2b3d22";
-export const DIMMED_NODE_COLOR = "#3f4941";
+export const DIMMED_NODE_COLOR = "#29302a";
 export const FILTER_CONTEXT_NODE_COLOR = "#313832";
-export const DIMMED_EDGE_COLOR = "#252b26";
+export const DIMMED_EDGE_COLOR = "#1d221e";
 
 export function getNodeVisual(
   type: GraphNodeType,

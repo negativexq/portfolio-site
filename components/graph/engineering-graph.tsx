@@ -30,6 +30,19 @@ import { GraphLegend } from "./graph-legend";
 import { GraphSearch } from "./graph-search";
 import { GraphToolbar } from "./graph-toolbar";
 
+const focusedLabelTypePriority = {
+  person: 0,
+  experience: 0,
+  project: 0,
+  domain: 0,
+  capability: 1,
+  learning: 2,
+  roadmap: 2,
+  technology: 3,
+  concept: 4,
+  evidence: 5,
+} as const;
+
 export default function EngineeringGraph({ data }: { data: EngineeringGraphData }) {
   const graph = useMemo(() => {
     const nextGraph = new Graph<SigmaNodeAttributes, SigmaEdgeAttributes>({
@@ -72,6 +85,8 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const selectedRef = useRef<string | null>(null);
   const hoveredRef = useRef<string | null>(null);
   const filtersRef = useRef<GraphFilterState>(DEFAULT_GRAPH_FILTERS);
+  const focusedLabelIdsRef = useRef<Set<string>>(new Set());
+  const selectionOriginRef = useRef<HTMLElement | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [filters, setFilters] = useState<GraphFilterState>(DEFAULT_GRAPH_FILTERS);
@@ -126,38 +141,11 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
   }, []);
 
-  const clearSelection = useCallback(() => {
+  const clearSelectionState = useCallback(() => {
+    focusedLabelIdsRef.current = new Set();
     setSelectedNodeId(null);
     updateUrlNode(null);
   }, [updateUrlNode]);
-
-  const focusNode = useCallback((nodeId: string, cameraMode: "none" | "context" | "focus" = "context") => {
-    const node = data.nodes.find((candidate) => candidate.id === nodeId);
-    if (!node) return;
-
-    const group = filterGroupForNode(node.type);
-    setFilters((current) => current[group] ? current : { ...current, [group]: true });
-    setSelectedNodeId(nodeId);
-    setQuery("");
-    updateUrlNode(nodeId);
-
-    if (cameraMode !== "none") {
-      window.requestAnimationFrame(() => {
-        const renderer = rendererRef.current;
-        const displayData = renderer?.getNodeDisplayData(nodeId);
-        if (!renderer || !displayData) return;
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const currentRatio = renderer.getCamera().getState().ratio;
-        const nextState = {
-          x: displayData.x,
-          y: displayData.y,
-          ratio: cameraMode === "focus" ? 0.38 : Math.min(currentRatio, 0.72),
-        };
-        if (reducedMotion) renderer.getCamera().setState(nextState);
-        else renderer.getCamera().animate(nextState, { duration: 240, easing: "quadraticOut" });
-      });
-    }
-  }, [data.nodes, updateUrlNode]);
 
   const fitGraph = useCallback(() => {
     const camera = rendererRef.current?.getCamera();
@@ -167,12 +155,94 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     else camera.animatedReset({ duration: 220, easing: "quadraticOut" });
   }, []);
 
+  const exitFocusedView = useCallback(() => {
+    const selectionOrigin = selectionOriginRef.current;
+    selectionOriginRef.current = null;
+    clearSelectionState();
+    fitGraph();
+    window.requestAnimationFrame(() => {
+      if (selectionOrigin?.isConnected) selectionOrigin.focus({ preventScroll: true });
+    });
+  }, [clearSelectionState, fitGraph]);
+
+  const focusNeighborhood = useCallback((nodeId: string, tight = false) => {
+    const renderer = rendererRef.current;
+    if (!renderer || !graph.hasNode(nodeId)) return;
+
+    const visibleNeighbors = graph.neighbors(nodeId).filter((neighborId) => (
+      isNodeTypeVisible(graph.getNodeAttribute(neighborId, "nodeType"), filtersRef.current)
+    ));
+    const clusterIds = [nodeId, ...visibleNeighbors];
+    const cluster = clusterIds
+      .map((id) => renderer.getNodeDisplayData(id))
+      .filter((node): node is NonNullable<ReturnType<typeof renderer.getNodeDisplayData>> => Boolean(node));
+    if (cluster.length === 0) return;
+
+    const center = {
+      x: (Math.min(...cluster.map((node) => node.x)) + Math.max(...cluster.map((node) => node.x))) / 2,
+      y: (Math.min(...cluster.map((node) => node.y)) + Math.max(...cluster.map((node) => node.y))) / 2,
+    };
+    const dimensions = renderer.getDimensions();
+    const panel = containerRef.current?.closest(".graph-workspace")?.querySelector<HTMLElement>(".graph-detail-panel");
+    const panelWidth = panel && getComputedStyle(panel).position === "absolute"
+      ? panel.getBoundingClientRect().width
+      : 0;
+    const usableWidth = Math.max(280, dimensions.width - panelWidth);
+    const baseState = { x: center.x, y: center.y, ratio: 1, angle: 0 };
+    const viewportPoints = cluster.map((node) => renderer.framedGraphToViewport(node, { cameraState: baseState }));
+    const spanX = Math.max(72, Math.max(...viewportPoints.map((point) => point.x)) - Math.min(...viewportPoints.map((point) => point.x)));
+    const spanY = Math.max(72, Math.max(...viewportPoints.map((point) => point.y)) - Math.min(...viewportPoints.map((point) => point.y)));
+    const occupancy = tight ? 0.78 : 0.66;
+    const desiredRatio = Math.max(spanX / (usableWidth * occupancy), spanY / (dimensions.height * occupancy));
+    const ratio = Math.min(tight ? 0.58 : 0.9, Math.max(tight ? 0.18 : 0.24, desiredRatio));
+    const centeredState = { ...baseState, ratio };
+    const targetViewport = { x: usableWidth * 0.48, y: dimensions.height * 0.5 };
+    const graphPointAtTarget = renderer.viewportToFramedGraph(targetViewport, { cameraState: centeredState });
+    const nextState = {
+      ...centeredState,
+      x: centeredState.x + center.x - graphPointAtTarget.x,
+      y: centeredState.y + center.y - graphPointAtTarget.y,
+    };
+    const camera = renderer.getCamera();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) camera.setState(nextState);
+    else camera.animate(nextState, { duration: tight ? 260 : 240, easing: "quadraticOut" });
+  }, [graph]);
+
+  const focusNode = useCallback((nodeId: string, cameraMode: "context" | "focus" = "context") => {
+    const node = data.nodes.find((candidate) => candidate.id === nodeId);
+    if (!node) return;
+
+    if (!selectedRef.current && document.activeElement instanceof HTMLElement) {
+      selectionOriginRef.current = document.activeElement;
+    }
+    const group = filterGroupForNode(node.type);
+    setFilters((current) => current[group] ? current : { ...current, [group]: true });
+    const labelBudget = window.matchMedia("(max-width: 640px)").matches ? 4 : graph.degree(nodeId) > 14 ? 7 : 9;
+    const prioritizedNeighbors = graph.neighbors(nodeId)
+      .sort((left, right) => {
+        const leftAttributes = graph.getNodeAttributes(left);
+        const rightAttributes = graph.getNodeAttributes(right);
+        return focusedLabelTypePriority[leftAttributes.nodeType] - focusedLabelTypePriority[rightAttributes.nodeType]
+          || rightAttributes.importance - leftAttributes.importance
+          || left.localeCompare(right);
+      })
+      .slice(0, labelBudget);
+    focusedLabelIdsRef.current = new Set([nodeId, ...prioritizedNeighbors]);
+    setSelectedNodeId(nodeId);
+    setQuery("");
+    updateUrlNode(nodeId);
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
+    });
+  }, [data.nodes, focusNeighborhood, graph, updateUrlNode]);
+
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
     setQuery("");
-    clearSelection();
+    clearSelectionState();
     fitGraph();
-  }, [clearSelection, fitGraph]);
+  }, [clearSelectionState, fitGraph]);
 
   useEffect(() => {
     selectedRef.current = selectedNodeId;
@@ -227,7 +297,9 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             };
           }
 
-          const activeNode = selectedRef.current ?? hoveredRef.current;
+          const selectedNode = selectedRef.current;
+          const hoveredNode = hoveredRef.current;
+          const activeNode = selectedNode ?? hoveredNode;
           if (!activeNode) {
             const cameraRatio = rendererRef.current?.getCamera().getState().ratio ?? 1;
             const isHighLevel = attributes.nodeType === "person"
@@ -247,27 +319,32 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
               forceLabel: isHighLevel || showAtMediumZoom,
             };
           }
-          const isActive = nodeId === activeNode;
-          const isNeighbor = graph.areNeighbors(nodeId, activeNode);
+          const isSelected = nodeId === selectedNode;
+          const isSelectedNeighbor = Boolean(selectedNode && graph.areNeighbors(nodeId, selectedNode));
+          const isHovered = nodeId === hoveredNode;
+          const isHoveredNeighbor = Boolean(hoveredNode && graph.areNeighbors(nodeId, hoveredNode));
+          const isLocal = selectedNode ? isSelected || isSelectedNeighbor : nodeId === activeNode || graph.areNeighbors(nodeId, activeNode);
 
-          if (!isActive && !isNeighbor) {
+          if (!isLocal && !isHovered && !isHoveredNeighbor) {
             return {
               ...attributes,
               color: DIMMED_NODE_COLOR,
               label: "",
               forceLabel: false,
-              size: Math.max(2.5, attributes.size * 0.82),
+              size: Math.max(2.4, attributes.size * 0.72),
               zIndex: 0,
             };
           }
 
+          const showFocusedLabel = focusedLabelIdsRef.current.has(nodeId) || isHovered;
           return {
             ...attributes,
-            highlighted: isActive,
-            color: isActive ? SELECTED_NODE_COLOR : attributes.color,
-            forceLabel: true,
-            size: attributes.size * (isActive ? 1.16 : 1.04),
-            zIndex: isActive ? 20 : attributes.zIndex,
+            highlighted: isSelected || isHovered,
+            color: isSelected ? SELECTED_NODE_COLOR : attributes.color,
+            label: showFocusedLabel ? attributes.label : "",
+            forceLabel: isSelected || isHovered,
+            size: attributes.size * (isSelected ? 1.18 : isHovered ? 1.1 : 1.03),
+            zIndex: isSelected ? 20 : isHovered ? 18 : attributes.zIndex,
           };
         },
         edgeReducer: (edgeId, attributes) => {
@@ -280,29 +357,32 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.24 };
           }
 
-          const activeNode = selectedRef.current ?? hoveredRef.current;
+          const selectedNode = selectedRef.current;
+          const hoveredNode = hoveredRef.current;
+          const activeNode = selectedNode ?? hoveredNode;
           if (!activeNode) return { ...attributes, label: "", forceLabel: false };
-          const isConnected = source === activeNode || target === activeNode;
-          if (!isConnected) return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.3 };
-          const showRelationshipLabel = selectedRef.current === activeNode
-            && !hoveredRef.current
-            && graph.degree(activeNode) <= 7;
+          const isSelectedEdge = Boolean(selectedNode && (source === selectedNode || target === selectedNode));
+          const isHoveredEdge = Boolean(hoveredNode && (source === hoveredNode || target === hoveredNode));
+          if (!isSelectedEdge && !isHoveredEdge) return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.22 };
+          const showRelationshipLabel = Boolean(selectedNode)
+            && !hoveredNode
+            && graph.degree(selectedNode!) <= 7;
           return {
             ...attributes,
             forceLabel: showRelationshipLabel,
             label: showRelationshipLabel ? attributes.label : "",
-            size: attributes.size * 2,
-            zIndex: 10,
+            size: attributes.size * (isSelectedEdge ? 2.2 : 1.65),
+            zIndex: isSelectedEdge ? 10 : 8,
           };
         },
       });
 
-      renderer.on("clickNode", ({ node }) => focusNode(node, "none"));
+      renderer.on("clickNode", ({ node }) => focusNode(node, "context"));
       renderer.on("doubleClickNode", ({ node, preventSigmaDefault }) => {
         preventSigmaDefault();
         focusNode(node, "focus");
       });
-      renderer.on("clickStage", clearSelection);
+      renderer.on("clickStage", exitFocusedView);
       renderer.on("enterNode", ({ node }) => {
         setHoveredNodeId(node);
         container.classList.add("is-node-hovered");
@@ -327,7 +407,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const message = initializationError instanceof Error ? initializationError.message : "Unknown graph initialization error";
       queueMicrotask(() => setError(message));
     }
-  }, [clearSelection, data.nodes, focusNode, graph]);
+  }, [data.nodes, exitFocusedView, focusNode, graph]);
 
   useEffect(() => {
     const handleKeyboard = (event: KeyboardEvent) => {
@@ -337,16 +417,16 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         event.preventDefault();
         searchRef.current?.focus();
       } else if (event.key === "Escape") {
-        clearSelection();
+        exitFocusedView();
         setQuery("");
       } else if (event.key.toLocaleLowerCase("en-US") === "f" && !isTyping) {
         event.preventDefault();
-        fitGraph();
+        exitFocusedView();
       }
     };
     window.addEventListener("keydown", handleKeyboard);
     return () => window.removeEventListener("keydown", handleKeyboard);
-  }, [clearSelection, fitGraph]);
+  }, [exitFocusedView]);
 
   const toggleFilter = (filter: GraphFilterGroup) => {
     const selected = data.nodes.find((node) => node.id === selectedNodeId);
@@ -356,7 +436,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       && filters[filter],
     );
     setFilters((current) => ({ ...current, [filter]: !current[filter] }));
-    if (hidesSelection) clearSelection();
+    if (hidesSelection) exitFocusedView();
   };
 
   return (
@@ -377,7 +457,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         <GraphLegend />
       </div>
 
-      <GraphToolbar filters={filters} onToggleFilter={toggleFilter} onFit={fitGraph} onReset={resetGraph} />
+      <GraphToolbar filters={filters} onToggleFilter={toggleFilter} onOverview={exitFocusedView} onReset={resetGraph} />
 
       <nav className="graph-mobile-shortcuts" aria-label="Quick graph exploration">
         <span>Explore</span>
@@ -398,7 +478,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             role="img"
             aria-label="Interactive source-grounded engineering graph. Use search, category filters, or the accessible list to inspect professional experience, public projects, technologies, concepts, evidence, and learning directions."
           />
-          <p className="graph-onboarding">Scroll or pinch to zoom · select to inspect · double-click to focus</p>
+          <p className="graph-onboarding">Scroll or pinch to zoom · select to focus and inspect · double-click for a tighter view</p>
           {!selectedNode ? <p className="graph-selection-hint">Select a node to inspect relationships.</p> : null}
           <p className="sr-only" aria-live="polite">
             {selectedNode ? `${selectedNode.label} selected. ${selectedNode.description}` : "No graph node selected."}
@@ -421,7 +501,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           key={selectedNode?.id ?? "graph-detail-empty"}
           node={selectedNode}
           data={data}
-          onClose={clearSelection}
+          onClose={exitFocusedView}
           onSelectNode={focusNode}
         />
       </div>
