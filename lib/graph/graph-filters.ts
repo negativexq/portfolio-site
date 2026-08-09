@@ -12,8 +12,9 @@ export const GRAPH_FILTERS: readonly {
   { id: "technologies", label: "Technologies" },
   { id: "concepts", label: "Concepts" },
   { id: "experience", label: "Experience" },
-  { id: "learning", label: "Learning / roadmap" },
-  { id: "domains", label: "Domains / proof" },
+  { id: "evidence", label: "Evidence" },
+  { id: "learning", label: "Learning" },
+  { id: "domains", label: "Domains" },
 ];
 
 export const DEFAULT_GRAPH_FILTERS: GraphFilterState = {
@@ -21,6 +22,7 @@ export const DEFAULT_GRAPH_FILTERS: GraphFilterState = {
   technologies: true,
   concepts: true,
   experience: true,
+  evidence: true,
   learning: true,
   domains: true,
 };
@@ -28,13 +30,14 @@ export const DEFAULT_GRAPH_FILTERS: GraphFilterState = {
 const typeGroups: Record<GraphNodeType, GraphFilterGroup> = {
   person: "experience",
   experience: "experience",
+  capability: "experience",
   project: "projects",
   technology: "technologies",
   concept: "concepts",
   learning: "learning",
   roadmap: "learning",
   domain: "domains",
-  metric: "domains",
+  evidence: "evidence",
 };
 
 export function isNodeTypeVisible(

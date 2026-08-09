@@ -8,7 +8,7 @@ type ExperienceStoryProps = {
 
 export function ExperienceStory({ impact, index }: ExperienceStoryProps) {
   return (
-    <article className="experience-story">
+    <article id={impact.id} className="experience-story">
       <p className="story-index">Impact / {String(index).padStart(2, "0")}</p>
       <h3>{impact.title}</h3>
       <p className="story-summary">{impact.summary}</p>

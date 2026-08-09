@@ -31,7 +31,7 @@ export default function GraphPage() {
             </div>
             <div>
               <p>Search, filter or select a node to inspect sourced relationships. Learning and roadmap directions remain explicitly labeled.</p>
-              <p className="graph-model-stats">{graphData.nodes.length} curated nodes · {graphData.edges.length} sourced relationships</p>
+              <p className="graph-model-stats">{graphData.nodes.length} source-grounded nodes · {graphData.edges.length} validated relationships</p>
             </div>
           </header>
           <EngineeringGraphLoader data={graphData} />

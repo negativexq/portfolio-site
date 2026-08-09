@@ -33,15 +33,22 @@ function BrowseGroup({
 }
 
 export function GraphBrowseList({ data, onSelect }: GraphBrowseListProps) {
+  const groups = [
+    { title: "Professional experience", nodes: data.nodes.filter((node) => node.type === "experience" || node.type === "capability") },
+    { title: "Projects", nodes: data.nodes.filter((node) => node.type === "project") },
+    { title: "Technologies", nodes: data.nodes.filter((node) => node.type === "technology") },
+    { title: "Concepts & domains", nodes: data.nodes.filter((node) => node.type === "concept" || node.type === "domain") },
+    { title: "Evidence", nodes: data.nodes.filter((node) => node.type === "evidence") },
+    { title: "Learning & roadmap", nodes: data.nodes.filter((node) => node.type === "learning" || node.type === "roadmap") },
+  ];
+
   return (
     <details className="graph-browse-list">
       <summary>Browse as an accessible list</summary>
       <div>
-        <BrowseGroup title="Projects" nodes={data.nodes.filter((node) => node.type === "project")} onSelect={onSelect} />
-        <BrowseGroup title="Experience" nodes={data.nodes.filter((node) => node.type === "experience")} onSelect={onSelect} />
-        <BrowseGroup title="Domains" nodes={data.nodes.filter((node) => node.type === "domain")} onSelect={onSelect} />
-        <BrowseGroup title="Learning" nodes={data.nodes.filter((node) => node.type === "learning")} onSelect={onSelect} />
-        <BrowseGroup title="Roadmap" nodes={data.nodes.filter((node) => node.type === "roadmap")} onSelect={onSelect} />
+        {groups.map((group) => (
+          <BrowseGroup key={group.title} title={group.title} nodes={group.nodes} onSelect={onSelect} />
+        ))}
       </div>
     </details>
   );

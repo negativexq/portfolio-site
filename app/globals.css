@@ -1691,6 +1691,7 @@ a {
   min-width: 0;
   border-bottom: 1px solid var(--border);
   padding-block: clamp(1.8rem, 4vw, 3.2rem);
+  scroll-margin-top: 6rem;
 }
 
 .story-index {
@@ -2013,6 +2014,7 @@ a {
 .graph-search-results button {
   display: grid;
   width: 100%;
+  min-height: 2.75rem;
   cursor: pointer;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
@@ -2055,7 +2057,10 @@ a {
 
 .graph-legend summary,
 .graph-browse-list summary {
+  display: inline-flex;
+  min-height: 2.75rem;
   cursor: pointer;
+  align-items: center;
   color: var(--text);
   font: 650 0.7rem/1.3 var(--mono);
   letter-spacing: 0.06em;
@@ -2076,10 +2081,17 @@ a {
 
 .graph-legend-content > div {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.7rem 1rem;
   color: var(--text);
   font-size: 0.7rem;
+}
+
+.graph-legend-categories > span,
+.graph-legend-statuses > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .graph-legend-content > div + div {
@@ -2102,12 +2114,16 @@ a {
   margin-right: 0.25rem;
   border-radius: 50%;
   background: #a8afa7;
+  box-shadow: inset 0 0 0 1px rgb(240 240 232 / 18%);
+  font-style: normal;
 }
 
-.graph-legend-node-person { width: 0.85rem; height: 0.85rem; background: var(--accent); }
-.graph-legend-node-project { width: 0.75rem; height: 0.75rem; background: #d8e3d0; }
-.graph-legend-node-domain { width: 0.68rem; height: 0.68rem; background: #a9c68f; }
-.graph-legend-node-metric { background: var(--accent); }
+.graph-legend-node-experience { width: 0.78rem; height: 0.78rem; background: #72856f; }
+.graph-legend-node-project { width: 0.72rem; height: 0.72rem; background: #789071; }
+.graph-legend-node-technology { background: #647068; }
+.graph-legend-node-concept { background: #4f5c52; }
+.graph-legend-node-evidence { background: #6e795d; }
+.graph-legend-node-learning { border: 1px dashed #a3ad99; background: #565e56; }
 
 .graph-legend-status {
   border-left: 2px solid var(--accent);
@@ -2136,7 +2152,7 @@ a {
 
 .graph-toolbar button {
   display: inline-flex;
-  min-height: 2.2rem;
+  min-height: 2.75rem;
   cursor: pointer;
   align-items: center;
   gap: 0.35rem;
@@ -2257,8 +2273,8 @@ a {
   top: 1rem;
   right: 1rem;
   display: inline-grid;
-  width: 2rem;
-  height: 2rem;
+  width: 2.75rem;
+  height: 2.75rem;
   cursor: pointer;
   place-items: center;
   border: 1px solid var(--border);
@@ -2451,6 +2467,22 @@ a {
   display: grid;
 }
 
+.graph-connection-group + .graph-connection-group {
+  margin-top: 1rem;
+}
+
+.graph-connection-group h4 {
+  margin: 0 0 0.25rem;
+  color: var(--subtle-strong);
+  font: 600 0.54rem/1.3 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.graph-connection-group > div {
+  display: grid;
+}
+
 .graph-connections button {
   display: grid;
   cursor: pointer;
@@ -2458,7 +2490,8 @@ a {
   gap: 0.18rem 0.8rem;
   border: 0;
   border-top: 1px solid var(--border);
-  padding: 0.7rem 0;
+  min-height: 3.25rem;
+  padding: 0.65rem 0;
   background: transparent;
   color: var(--foreground);
   text-align: left;
@@ -3319,7 +3352,7 @@ a {
   }
 
   .graph-mobile-shortcuts button {
-    min-height: 2.4rem;
+    min-height: 2.75rem;
     flex: 0 0 auto;
     cursor: pointer;
     border: 1px solid var(--border);
@@ -3335,7 +3368,7 @@ a {
   }
 
   .graph-toolbar button {
-    min-height: 2.5rem;
+    min-height: 2.75rem;
   }
 
   .graph-canvas-shell {
@@ -3507,16 +3540,16 @@ a {
     background: #657066;
   }
 
-  .graph-legend-node-person {
-    background: var(--accent);
-  }
-
-  .graph-legend-node-project {
+  .graph-legend-node-experience {
     background: #526752;
   }
 
-  .graph-legend-node-domain {
-    background: #698549;
+  .graph-legend-node-project {
+    background: #5e7757;
+  }
+
+  .graph-legend-node-learning {
+    background: #5d6557;
   }
 
   .graph-legend-status.is-learning {

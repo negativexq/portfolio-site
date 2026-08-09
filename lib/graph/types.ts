@@ -1,11 +1,12 @@
 export type GraphNodeType =
   | "person"
   | "experience"
+  | "capability"
   | "project"
   | "technology"
   | "domain"
   | "concept"
-  | "metric"
+  | "evidence"
   | "learning"
   | "roadmap";
 
@@ -17,12 +18,13 @@ export type GraphEdgeType =
   | "uses"
   | "implements"
   | "supports"
-  | "measured-by"
+  | "evidence-for"
   | "evolved-into"
   | "related-to"
-  | "learning"
+  | "learning-direction"
   | "planned-for"
-  | "applied-at";
+  | "part-of"
+  | "built-on";
 
 export type GraphMetadata = {
   category?: string;
@@ -46,6 +48,7 @@ export type GraphMetadata = {
   foundation?: string;
   direction?: string;
   connectedProject?: string;
+  impactId?: string;
 };
 
 export type EngineeringGraphNode = {
@@ -59,6 +62,7 @@ export type EngineeringGraphNode = {
   x: number;
   y: number;
   projectSlug?: string;
+  href?: string;
   metadata: GraphMetadata;
 };
 
@@ -68,6 +72,7 @@ export type EngineeringGraphEdge = {
   target: string;
   type: GraphEdgeType;
   label: string;
+  inverseLabel: string;
   status?: Extract<GraphStatus, "learning" | "planned">;
 };
 
@@ -81,6 +86,7 @@ export type GraphFilterGroup =
   | "technologies"
   | "concepts"
   | "experience"
+  | "evidence"
   | "learning"
   | "domains";
 
@@ -106,5 +112,6 @@ export type SigmaEdgeAttributes = {
   type: "line" | "arrow";
   label: string;
   edgeType: GraphEdgeType;
+  forceLabel?: boolean;
   status?: Extract<GraphStatus, "learning" | "planned">;
 };

@@ -3,97 +3,22 @@ import { experiences } from "@/data/experience";
 import { learningItems } from "@/data/learning";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
+import {
+  canonicalTechnologyLabel,
+  conceptNodeId,
+  graphSlug,
+  technologyNodeId,
+} from "./canonical";
+import { experienceTopicKind } from "./source-model";
 import type {
   EngineeringGraphData,
   EngineeringGraphEdge,
   EngineeringGraphNode,
   GraphEdgeType,
   GraphNodeType,
+  GraphStatus,
 } from "./types";
-
-type ConceptSelection =
-  | string
-  | {
-      label: string;
-      sources: readonly string[];
-      description: string;
-    };
-
-type ProjectGraphSelection = {
-  technologies: readonly string[];
-  concepts: readonly ConceptSelection[];
-};
-
-const projectSelections: Record<string, ProjectGraphSelection> = {
-  "real-time-commerce-platform": {
-    technologies: ["Kafka", "Redis", "PostgreSQL", "Prometheus", "Grafana", "Docker Compose"],
-    concepts: [
-      "Event-Driven Architecture",
-      "At-Least-Once Delivery",
-      "Idempotent Consumer",
-      "Transactional Outbox",
-      {
-        label: "Retry & DLQ",
-        sources: ["Bounded Retry", "Dead Letter Queue"],
-        description: "Bounded failure handling through explicit retry limits and dead-letter routing.",
-      },
-      "Observability",
-      "Performance Engineering",
-    ],
-  },
-  "knowledge-base-rag": {
-    technologies: ["Qdrant", "Ollama", "OpenTelemetry", "Jaeger", "DeepEval", "Streamlit"],
-    concepts: [
-      "Incremental Sync",
-      "Hybrid Retrieval",
-      "RRF Fusion",
-      "Cross-Encoder Reranking",
-      "Citation Integrity",
-      "Index Reconciliation",
-      "Evaluation",
-      "Distributed Tracing",
-    ],
-  },
-  "production-rag-platform": {
-    technologies: ["Qdrant", "Ollama", "OpenTelemetry"],
-    concepts: ["Hybrid Retrieval", "Cross-Encoder Reranking", "Citations", "Evaluation", "Observability"],
-  },
-  "modelops-control-plane": {
-    technologies: ["FastAPI", "Locust"],
-    concepts: [
-      "Canary Deployment",
-      "Weighted Routing",
-      "Policy Engine",
-      {
-        label: "Automated Promotion / Rollback",
-        sources: ["Automated Promotion", "Automated Rollback"],
-        description: "Policy-driven progression or reversal of a model release.",
-      },
-      "Fault Injection",
-      "Benchmarking",
-    ],
-  },
-  "repo-context-forge": {
-    technologies: ["MCP", "FastMCP", "Python AST", "Docker"],
-    concepts: [
-      "Repository Intelligence",
-      "Source-Grounded Context",
-      "Symbol Analysis",
-      "Dependency Analysis",
-      {
-        label: "Git Intelligence",
-        sources: ["Read-Only Git Intelligence"],
-        description: "Read-only, source-grounded repository history and change context.",
-      },
-      "Context Packs",
-      "Tool Security Boundaries",
-    ],
-  },
-  "dbt-feature-lineage": {
-    technologies: ["dbt Core", "sqlglot", "NetworkX", "Streamlit", "Docker"],
-    concepts: ["Model DAG", "Column-Level Lineage", "Downstream Impact", "Static SQL Analysis"],
-  },
-};
+import { assertGraphIntegrity } from "./validate-graph";
 
 const projectAnchors: Record<string, { x: number; y: number }> = {
   "real-time-commerce-platform": { x: -5.2, y: -3.5 },
@@ -120,37 +45,40 @@ const explicitPositions: Record<string, { x: number; y: number }> = {
   "technology:mcp": { x: 7, y: 1.3 },
   "technology:dbt-core": { x: -6.8, y: 1.3 },
   "concept:hybrid-retrieval": { x: 5.1, y: -5.2 },
-  "concept:context-engineering": { x: 7.4, y: 3.4 },
   "learning:langgraph": { x: 8.5, y: 4.7 },
   "learning:agent-memory": { x: 10, y: 6.1 },
   "learning:neo4j": { x: -8, y: 4.4 },
   "learning:graphrag": { x: -6.3, y: 6 },
-  "roadmap:real-time-commerce-platform:terraform": { x: -7.2, y: -6.3 },
+  "learning:terraform": { x: -7.2, y: -6.3 },
   "roadmap:real-time-commerce-platform:kubernetes": { x: -8.6, y: -7.5 },
   "roadmap:real-time-commerce-platform:cloud-infrastructure": { x: -7.2, y: -8.7 },
 };
 
-const secondaryAnchors = new Set([
+const prominentTechnologies = new Set([
   "Kafka",
+  "FastAPI",
+  "Docker",
+  "Docker Compose",
   "Qdrant",
+  "Ollama",
   "MCP",
   "dbt Core",
-  "Hybrid Retrieval",
-  "Context Engineering",
-  "ML lifecycle",
+  "Feature Store",
 ]);
 
-const strategicProjectMetrics = new Set([
-  "real-time-commerce-platform",
-  "knowledge-base-rag",
-  "modelops-control-plane",
-]);
+const canvasLabels: Readonly<Record<string, string>> = {
+  "experience:fibabanka": "Fibabanka",
+  "domain:agent-infrastructure": "Agent Infrastructure",
+  "project:real-time-commerce-platform": "Real-Time Commerce",
+  "project:production-rag-platform": "Production RAG",
+  "evidence:experience:data-platform:120-min-30-min-75-reduction": "120 → 30 min",
+  "evidence:experience:ml-platform:10-production-ml-models": "10+ ML Models",
+  "evidence:experience:data-scale:9m-records-day": "~9M Records / Day",
+  "evidence:experience:call-center-intelligence:9-000-recordings-day": "~9,000 / Day",
+};
 
-function slug(value: string) {
-  return value
-    .toLocaleLowerCase("en-US")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+function canvasLabel(id: string, label: string) {
+  return canvasLabels[id] ?? label;
 }
 
 function hash(value: string) {
@@ -162,31 +90,64 @@ function hash(value: string) {
   return result >>> 0;
 }
 
-const canvasLabels: Readonly<Record<string, string>> = {
-  "experience:fibabanka": "Fibabanka",
-  "domain:agent-infrastructure": "Agent Infrastructure",
-  "project:real-time-commerce-platform": "Real-Time Commerce",
-  "project:production-rag-platform": "Production RAG",
-};
-
-function canvasLabel(id: string, label: string) {
-  return canvasLabels[id] ?? label;
+function statusPriority(status: GraphStatus) {
+  return status === "verified" ? 4 : status === "current" ? 3 : status === "learning" ? 2 : 1;
 }
 
-function conceptLabel(selection: ConceptSelection) {
-  return typeof selection === "string" ? selection : selection.label;
-}
+function relaxNodeCollisions(nodes: readonly EngineeringGraphNode[]) {
+  const positioned = nodes.map((node) => ({ ...node }));
+  const fixed = new Set(positioned
+    .filter((node) => explicitPositions[node.id] || ["person", "experience", "project", "domain", "capability"].includes(node.type))
+    .map((node) => node.id));
 
-function conceptSources(selection: ConceptSelection) {
-  return typeof selection === "string" ? [selection] : selection.sources;
+  for (let iteration = 0; iteration < 14; iteration += 1) {
+    for (let leftIndex = 0; leftIndex < positioned.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < positioned.length; rightIndex += 1) {
+        const left = positioned[leftIndex];
+        const right = positioned[rightIndex];
+        let deltaX = right.x - left.x;
+        let deltaY = right.y - left.y;
+        let distance = Math.hypot(deltaX, deltaY);
+        const minimum = 0.42 + Math.min(0.38, (left.importance + right.importance) * 0.025);
+        if (distance >= minimum || (fixed.has(left.id) && fixed.has(right.id))) continue;
+
+        if (distance < 0.001) {
+          const angle = ((hash(`${left.id}:${right.id}`) % 360) * Math.PI) / 180;
+          deltaX = Math.cos(angle) * 0.01;
+          deltaY = Math.sin(angle) * 0.01;
+          distance = 0.01;
+        }
+
+        const correction = (minimum - distance) / distance;
+        const shiftX = deltaX * correction * 0.5;
+        const shiftY = deltaY * correction * 0.5;
+        if (!fixed.has(left.id)) {
+          left.x -= shiftX;
+          left.y -= shiftY;
+        }
+        if (!fixed.has(right.id)) {
+          right.x += shiftX;
+          right.y += shiftY;
+        }
+      }
+    }
+  }
+
+  return positioned;
 }
 
 export function buildEngineeringGraph(): EngineeringGraphData {
   const nodeMap = new Map<string, EngineeringGraphNode>();
-  const edges: EngineeringGraphEdge[] = [];
+  const edgeMap = new Map<string, EngineeringGraphEdge>();
 
   const addNode = (node: Omit<EngineeringGraphNode, "x" | "y" | "canvasLabel"> & { x?: number; y?: number }) => {
-    if (nodeMap.has(node.id)) return nodeMap.get(node.id)!;
+    const existing = nodeMap.get(node.id);
+    if (existing) {
+      if (statusPriority(node.status) > statusPriority(existing.status)) existing.status = node.status;
+      existing.importance = Math.max(existing.importance, node.importance);
+      return existing;
+    }
+
     const fixed = explicitPositions[node.id];
     const next: EngineeringGraphNode = {
       ...node,
@@ -203,18 +164,39 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     target: string,
     type: GraphEdgeType,
     label: string,
+    inverseLabel: string,
     status?: EngineeringGraphEdge["status"],
   ) => {
-    if (!nodeMap.has(source) || !nodeMap.has(target)) return;
-    edges.push({
-      id: `${type}:${source}:${target}:${edges.length}`,
-      source,
-      target,
-      type,
+    if (!nodeMap.has(source) || !nodeMap.has(target)) {
+      throw new Error(`Graph edge references a missing node: ${source} -> ${target}`);
+    }
+    const id = `${type}:${source}:${target}`;
+    if (edgeMap.has(id)) return;
+    edgeMap.set(id, { id, source, target, type, label, inverseLabel, status });
+  };
+
+  const addTechnology = (technology: string, status: GraphStatus = "current") => {
+    const label = canonicalTechnologyLabel(technology);
+    return addNode({
+      id: technologyNodeId(label),
       label,
+      type: "technology",
       status,
+      description: "Technology explicitly documented in a public project stack or professional impact record.",
+      importance: prominentTechnologies.has(label) ? 6 : 4,
+      metadata: {},
     });
   };
+
+  const addConcept = (concept: string, status: GraphStatus = "current") => addNode({
+    id: conceptNodeId(concept),
+    label: concept,
+    type: "concept",
+    status,
+    description: "Engineering concept explicitly documented by a public project or professional impact record.",
+    importance: concept === "Hybrid Retrieval" || concept === "Feature Store" ? 6 : 3,
+    metadata: {},
+  });
 
   const personId = "person:omer-faruk-koc";
   addNode({
@@ -236,13 +218,14 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     status: "verified",
     description: experience.summary,
     importance: 9,
+    href: "/experience",
     metadata: {
       company: experience.company,
       role: experience.role,
       period: experience.period,
     },
   });
-  addEdge(personId, experienceId, "worked-at", "Worked at");
+  addEdge(personId, experienceId, "worked-at", "worked at", "professional experience of");
 
   for (const area of engineeringAreas) {
     const id = `domain:${area.id}`;
@@ -257,207 +240,245 @@ export function buildEngineeringGraph(): EngineeringGraphData {
       ...domainAnchors[area.id],
     });
     if (area.evidenceExperienceIds.includes(experience.id)) {
-      addEdge(experienceId, id, "applied-at", "Applied professionally");
+      addEdge(experienceId, id, "supports", "demonstrates domain", "supported by professional evidence");
     }
   }
 
   for (const project of projects) {
-    const projectId = `project:${project.id}`;
-    const selection = projectSelections[project.id];
-    const keyTechnologies = selection.technologies.filter((technology) => project.technologies.includes(technology));
-    const keyConcepts = selection.concepts
-      .filter((concept) => conceptSources(concept).every((source) => project.concepts.includes(source)))
-      .map(conceptLabel);
-
     addNode({
-      id: projectId,
+      id: `project:${project.id}`,
       label: project.title,
       type: "project",
       status: "current",
       description: project.summary,
       importance: project.flagship ? 9 : 7,
       projectSlug: project.slug,
+      href: `/projects/${project.slug}`,
       metadata: {
         category: project.category,
         githubUrl: project.githubUrl,
         flagship: project.flagship,
-        keyTechnologies,
-        keyConcepts,
+        keyTechnologies: project.technologies.map(canonicalTechnologyLabel),
+        keyConcepts: project.concepts,
         proofPoints: project.proofPoints,
         roadmap: project.roadmap.map((item) => item.title),
       },
       ...projectAnchors[project.id],
     });
-    addEdge(personId, projectId, "built", "Built as public work");
+  }
+
+  for (const project of projects) {
+    const projectId = `project:${project.id}`;
+    addEdge(personId, projectId, "built", "built as public work", "built by");
 
     for (const area of engineeringAreas.filter((candidate) => candidate.evidenceProjectIds.includes(project.id))) {
-      addEdge(projectId, `domain:${area.id}`, "supports", "Demonstrates domain");
+      addEdge(projectId, `domain:${area.id}`, "supports", "demonstrates domain", "demonstrated by");
     }
 
-    for (const technology of keyTechnologies) {
-      const technologyId = `technology:${slug(technology)}`;
+    for (const technology of project.technologies) {
+      const technologyNode = addTechnology(technology);
+      addEdge(projectId, technologyNode.id, "uses", "uses", "used by");
+    }
+
+    for (const concept of project.concepts) {
+      const conceptNode = addConcept(concept);
+      addEdge(projectId, conceptNode.id, "implements", "implements", "implemented by");
+    }
+
+    for (const proof of project.proofPoints) {
+      const evidenceId = `evidence:project:${project.id}:${graphSlug(proof.value)}`;
       addNode({
-        id: technologyId,
-        label: technology,
-        type: "technology",
-        status: "current",
-        description: "Strategic implementation technology represented in the public project graph.",
-        importance: secondaryAnchors.has(technology) ? 6 : 4,
-        metadata: {},
+        id: evidenceId,
+        label: proof.value,
+        type: "evidence",
+        status: "verified",
+        description: proof.label,
+        importance: project.flagship ? 5 : 4,
+        projectSlug: project.slug,
+        href: `/projects/${project.slug}#evidence`,
+        metadata: { qualifier: proof.qualifier, scope: proof.scope },
       });
-      addEdge(projectId, technologyId, "uses", "Uses");
-    }
-
-    for (const concept of selection.concepts) {
-      const sources = conceptSources(concept);
-      if (!sources.every((source) => project.concepts.includes(source))) continue;
-      const label = conceptLabel(concept);
-      const conceptId = `concept:${slug(label)}`;
-      addNode({
-        id: conceptId,
-        label,
-        type: "concept",
-        status: "current",
-        description: typeof concept === "string"
-          ? "High-signal engineering concept demonstrated by one or more public projects."
-          : concept.description,
-        importance: secondaryAnchors.has(label) ? 6 : 3,
-        metadata: {},
-      });
-      addEdge(projectId, conceptId, "implements", "Implements");
-    }
-
-    if (strategicProjectMetrics.has(project.id)) {
-      for (const proof of project.proofPoints) {
-        const metricId = `metric:${project.id}:${slug(proof.value)}`;
-        addNode({
-          id: metricId,
-          label: proof.value,
-          type: "metric",
-          status: "verified",
-          description: proof.label,
-          importance: 6,
-          projectSlug: project.slug,
-          metadata: { qualifier: proof.qualifier, scope: proof.scope },
-        });
-        addEdge(projectId, metricId, "measured-by", "Measured by");
-      }
+      addEdge(evidenceId, projectId, "evidence-for", "evidence for", "supported by evidence");
     }
 
     let roadmapSource = projectId;
     for (const item of project.roadmap) {
-      const roadmapId = `roadmap:${project.id}:${slug(item.title)}`;
       const learningSource = learningItems.find((candidate) => candidate.title === item.title);
+      const roadmapId = learningSource
+        ? `learning:${learningSource.id}`
+        : `roadmap:${project.id}:${graphSlug(item.title)}`;
       addNode({
         id: roadmapId,
         label: item.title,
-        type: "roadmap",
+        type: learningSource ? "learning" : "roadmap",
         status: "planned",
         description: learningSource?.rationale ?? `Planned next phase for ${project.title}; not part of the current implementation.`,
         importance: item.title === "Terraform" ? 7 : 6,
         projectSlug: project.slug,
+        href: "/learning",
         metadata: {
           rationale: learningSource?.rationale,
           connectedProject: project.title,
+          direction: learningSource?.rationale,
         },
       });
-      addEdge(roadmapSource, roadmapId, "planned-for", roadmapSource === projectId ? "Planned for" : "Planned progression", "planned");
+      addEdge(
+        roadmapSource,
+        roadmapId,
+        "planned-for",
+        roadmapSource === projectId ? "planned direction" : "progresses toward",
+        roadmapSource === projectId ? "planned for" : "follows",
+        "planned",
+      );
       roadmapSource = roadmapId;
     }
   }
 
   for (const project of projects) {
     for (const relationship of project.relationships) {
+      const type = relationship.type === "evolved-into" ? "evolved-into" : "related-to";
       addEdge(
         `project:${project.id}`,
         `project:${relationship.targetProjectId}`,
-        relationship.type === "evolved-into" ? "evolved-into" : "related-to",
-        relationship.label,
+        type,
+        relationship.label.toLocaleLowerCase("en-US"),
+        type === "evolved-into" ? "evolved from" : relationship.label.toLocaleLowerCase("en-US"),
       );
     }
   }
 
-  const experienceMetricSelections = [
-    { impactId: "data-platform", label: "120 → 30 min" },
-    { impactId: "ml-platform", label: "10+ ML Models" },
-    { impactId: "data-scale", label: "~9M Records / Day" },
-  ] as const;
-
-  for (const selection of experienceMetricSelections) {
-    const impact = experience.impacts.find((candidate) => candidate.id === selection.impactId);
-    if (!impact) continue;
-    const metricId = `metric:experience:${slug(selection.label)}`;
+  experience.impacts.forEach((impact, impactIndex) => {
+    const capabilityId = `capability:${experience.id}:${impact.id}`;
+    const angle = (impactIndex / experience.impacts.length) * Math.PI * 2 + Math.PI / 8;
     addNode({
-      id: metricId,
-      label: selection.label,
-      type: "metric",
+      id: capabilityId,
+      label: impact.title,
+      type: "capability",
       status: "verified",
       description: impact.summary,
       importance: 6,
-      metadata: { qualifier: impact.proof },
+      href: `/experience#${impact.id}`,
+      metadata: { company: experience.company, impactId: impact.id },
+      x: Math.cos(angle) * 2.6,
+      y: 7.5 + Math.sin(angle) * 2.1,
     });
-    addEdge(experienceId, metricId, "measured-by", "Verified by");
-  }
+    addEdge(experienceId, capabilityId, "part-of", "professional capability", "built at");
 
-  const experienceSignals: readonly { label: string; type: GraphNodeType; description: string }[] = [
-    { label: "Kubernetes", type: "technology", description: "Professional ML lifecycle and platform experience; not the current Commerce project stack." },
-    { label: "Airflow", type: "technology", description: "Professional data orchestration and delivery workflows." },
-    { label: "dbt", type: "technology", description: "Professional modular data transformation work." },
-    { label: "ML lifecycle", type: "concept", description: "Validation, versioning, promotion, serving, retraining and monitoring." },
-    { label: "Feature Store", type: "concept", description: "Centralized reusable features supporting production ML models." },
-    { label: "On-Prem GPU", type: "concept", description: "Private open-source model serving on on-premises GPU infrastructure." },
-    { label: "Data Quality", type: "concept", description: "Production data quality and model validation workflows." },
-  ];
+    for (const topic of impact.topics) {
+      if (experienceTopicKind(topic) === "technology") {
+        const technologyNode = addTechnology(topic, "verified");
+        addEdge(capabilityId, technologyNode.id, "uses", "uses", "used in professional capability");
+      } else {
+        const conceptNode = addConcept(topic, "verified");
+        addEdge(capabilityId, conceptNode.id, "implements", "demonstrates", "demonstrated by");
+      }
+    }
 
-  for (const signal of experienceSignals) {
-    const signalId = `${signal.type}:${slug(signal.label)}`;
-    addNode({
-      id: signalId,
-      label: signal.label,
-      type: signal.type,
-      status: "verified",
-      description: signal.description,
-      importance: secondaryAnchors.has(signal.label) ? 6 : 4,
-      metadata: {},
-    });
-    addEdge(experienceId, signalId, "applied-at", "Applied professionally");
-  }
-
-  addNode({
-    id: "concept:context-engineering",
-    label: "Context Engineering",
-    type: "concept",
-    status: "current",
-    description: "Source-grounded, bounded context construction for reliable coding-agent workflows.",
-    importance: 6,
-    metadata: {},
+    if (impact.proof) {
+      const evidenceId = `evidence:experience:${impact.id}:${graphSlug(impact.proof)}`;
+      addNode({
+        id: evidenceId,
+        label: impact.proof,
+        type: "evidence",
+        status: "verified",
+        description: `${impact.title}: ${impact.summary}`,
+        importance: 5,
+        href: `/experience#${impact.id}`,
+        metadata: { qualifier: impact.proof, impactId: impact.id, company: experience.company },
+      });
+      addEdge(evidenceId, capabilityId, "evidence-for", "evidence for", "supported by evidence");
+    }
   });
-  addEdge("technology:mcp", "concept:context-engineering", "supports", "Supports");
 
-  for (const item of learningItems.filter((candidate) => candidate.status === "learning")) {
-    const connectedProject = projects.find((project) => item.connectedProjectIds.includes(project.id));
+  for (const evidenceImpact of experience.impacts.filter((impact) => impact.proof)) {
+    const evidenceId = `evidence:experience:${evidenceImpact.id}:${graphSlug(evidenceImpact.proof!)}`;
+    for (const supportedImpact of experience.impacts) {
+      if (supportedImpact.id === evidenceImpact.id) continue;
+      if (!supportedImpact.summary.toLocaleLowerCase("en-US").includes(evidenceImpact.proof!.toLocaleLowerCase("en-US"))) continue;
+      addEdge(
+        evidenceId,
+        `capability:${experience.id}:${supportedImpact.id}`,
+        "evidence-for",
+        "evidence for",
+        "supported by evidence",
+      );
+    }
+  }
+
+  const dockerComposeId = technologyNodeId("Docker Compose");
+  const dockerId = technologyNodeId("Docker");
+  if (nodeMap.has(dockerComposeId) && nodeMap.has(dockerId)) {
+    addEdge(dockerComposeId, dockerId, "built-on", "orchestrates Docker containers", "orchestrated with Docker Compose");
+  }
+
+  const fastMcpId = technologyNodeId("FastMCP");
+  const mcpId = technologyNodeId("MCP");
+  if (nodeMap.has(fastMcpId) && nodeMap.has(mcpId)) {
+    addEdge(fastMcpId, mcpId, "built-on", "implements MCP", "implemented by FastMCP");
+  }
+
+  for (const item of learningItems) {
+    const itemId = `learning:${item.id}`;
+    const connectedProjects = projects.filter((project) => item.connectedProjectIds.includes(project.id));
     addNode({
-      id: `learning:${item.id}`,
+      id: itemId,
       label: item.title,
       type: "learning",
-      status: "learning",
+      status: item.status,
       description: item.rationale,
-      importance: item.id === "langgraph" || item.id === "neo4j" ? 7 : 6,
+      importance: item.id === "langgraph" || item.id === "neo4j" || item.id === "terraform" ? 7 : 6,
+      href: "/learning",
       metadata: {
         rationale: item.rationale,
-        foundation: connectedProject ? `${connectedProject.title} and its current engineering foundation` : "Current lineage, retrieval and graph-oriented engineering concepts",
+        foundation: connectedProjects.length
+          ? connectedProjects.map((project) => project.title).join(" · ")
+          : "Current lineage, retrieval and graph-oriented engineering concepts",
         direction: item.rationale,
-        connectedProject: connectedProject?.title,
+        connectedProject: connectedProjects.map((project) => project.title).join(" · ") || undefined,
       },
     });
+
+    for (const projectId of item.connectedProjectIds) {
+      const sourceId = `project:${projectId}`;
+      const plannedEdgeId = `planned-for:${sourceId}:${itemId}`;
+      if (!edgeMap.has(plannedEdgeId)) {
+        addEdge(
+          sourceId,
+          itemId,
+          "learning-direction",
+          item.status === "planned" ? "planned direction" : "learning direction",
+          "extends from",
+          item.status,
+        );
+      }
+    }
+
+    for (const areaId of item.connectedAreaIds) {
+      addEdge(
+        `domain:${areaId}`,
+        itemId,
+        "learning-direction",
+        item.status === "planned" ? "planned direction" : "learning direction",
+        "extends from",
+        item.status,
+      );
+    }
   }
 
-  addEdge("concept:context-engineering", "learning:langgraph", "learning", "Learning direction", "learning");
-  addEdge("learning:langgraph", "learning:agent-memory", "learning", "Extends toward", "learning");
-  addEdge("concept:model-dag", "learning:neo4j", "learning", "Learning direction", "learning");
-  addEdge("learning:neo4j", "learning:graphrag", "learning", "Extends toward", "learning");
+  const edges = Array.from(edgeMap.values());
+  for (const node of nodeMap.values()) {
+    if (node.type !== "technology" && node.type !== "concept") continue;
+    const sourceLabels = edges
+      .filter((edge) => edge.target === node.id && (edge.type === "uses" || edge.type === "implements"))
+      .map((edge) => nodeMap.get(edge.source))
+      .filter((source): source is EngineeringGraphNode => Boolean(source))
+      .map((source) => source.label);
+    if (sourceLabels.length > 0) {
+      node.description = `${node.label} is explicitly documented in ${sourceLabels.join(", ")}.`;
+    }
+  }
 
-  const anchorTypes = new Set<GraphNodeType>(["person", "experience", "project", "domain"]);
+  const anchorTypes = new Set<GraphNodeType>(["person", "experience", "project", "domain", "capability"]);
   const positionedNodes = Array.from(nodeMap.values()).map((node) => {
     if (explicitPositions[node.id] || anchorTypes.has(node.type)) return node;
 
@@ -474,7 +495,7 @@ export function buildEngineeringGraph(): EngineeringGraphData {
         }
       : { x: 0, y: 0 };
     const angle = ((hash(node.id) % 360) * Math.PI) / 180;
-    const radius = node.type === "metric" ? 1.45 : node.type === "technology" ? 1.9 : 2.45;
+    const radius = node.type === "evidence" ? 1.35 : node.type === "technology" ? 2.2 : 2.75;
 
     return {
       ...node,
@@ -483,5 +504,7 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     };
   });
 
-  return { nodes: positionedNodes, edges };
+  const data = { nodes: relaxNodeCollisions(positionedNodes), edges } satisfies EngineeringGraphData;
+  assertGraphIntegrity(data);
+  return data;
 }

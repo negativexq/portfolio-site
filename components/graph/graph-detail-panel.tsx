@@ -1,7 +1,26 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { NODE_TYPE_LABELS, STATUS_LABELS } from "@/lib/graph/graph-styles";
 import type { EngineeringGraphData, EngineeringGraphNode } from "@/lib/graph/types";
+
+const relationshipGroups = [
+  { title: "Professional experience", types: ["experience", "capability", "person"] },
+  { title: "Projects", types: ["project"] },
+  { title: "Technologies", types: ["technology"] },
+  { title: "Engineering concepts", types: ["concept", "domain"] },
+  { title: "Evidence", types: ["evidence"] },
+  { title: "Learning directions", types: ["learning", "roadmap"] },
+] as const;
+
+function actionLabel(node: EngineeringGraphNode) {
+  if (node.type === "project" || node.projectSlug) return "Open project";
+  if (node.type === "experience" || node.type === "capability") return "Open experience";
+  if (node.type === "learning" || node.type === "roadmap") return "Open learning item";
+  return "Open source page";
+}
 
 type GraphDetailPanelProps = {
   node: EngineeringGraphNode | null;
@@ -11,22 +30,33 @@ type GraphDetailPanelProps = {
 };
 
 export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDetailPanelProps) {
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (node) panelRef.current?.focus({ preventScroll: true });
+  }, [node]);
+
   if (!node) return null;
 
   const connections = data.edges
     .filter((edge) => edge.source === node.id || edge.target === node.id)
     .map((edge) => {
-      const connectedId = edge.source === node.id ? edge.target : edge.source;
-      return { edge, node: data.nodes.find((candidate) => candidate.id === connectedId) };
+      const isOutgoing = edge.source === node.id;
+      const connectedId = isOutgoing ? edge.target : edge.source;
+      return {
+        edge,
+        relationship: isOutgoing ? edge.label : edge.inverseLabel,
+        node: data.nodes.find((candidate) => candidate.id === connectedId),
+      };
     })
-    .filter((item): item is { edge: (typeof data.edges)[number]; node: EngineeringGraphNode } => Boolean(item.node));
-  const connectedProjects = connections.filter((item) => item.node.type === "project");
-  const connectionHeading = node.type === "technology" || node.type === "concept"
-    ? "Connected projects"
-    : "Connected relationships";
+    .filter((item): item is {
+      edge: (typeof data.edges)[number];
+      relationship: string;
+      node: EngineeringGraphNode;
+    } => Boolean(item.node));
 
   return (
-    <aside className="graph-detail-panel" aria-label={`${node.label} details`} aria-live="polite" tabIndex={-1}>
+    <aside ref={panelRef} className="graph-detail-panel" aria-label={`${node.label} details`} aria-live="polite" tabIndex={-1}>
       <button className="graph-detail-close" type="button" onClick={onClose} aria-label="Close node details">
         <X aria-hidden="true" size={16} />
       </button>
@@ -114,25 +144,37 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
 
       {connections.length > 0 ? (
         <div className="graph-connections">
-          <h3>{connectionHeading}</h3>
-          <div>
-            {(connectedProjects.length > 0 ? connectedProjects : connections).slice(0, 12).map(({ edge, node: connectedNode }) => (
-              <button key={edge.id} type="button" onClick={() => onSelectNode(connectedNode.id)}>
-                <span>{edge.label}</span>
-                <strong>{connectedNode.label}</strong>
-                <small>{NODE_TYPE_LABELS[connectedNode.type]}</small>
-              </button>
-            ))}
-          </div>
-          {connections.length > 12 ? <p>Showing the highest-signal direct relationships.</p> : null}
+          <h3>Direct relationships</h3>
+          {relationshipGroups.map((group) => {
+            const groupedConnections = connections.filter(({ node: connectedNode }) => (
+              (group.types as readonly string[]).includes(connectedNode.type)
+            ));
+            if (groupedConnections.length === 0) return null;
+            return (
+              <section className="graph-connection-group" key={group.title}>
+                <h4>{group.title}</h4>
+                <div>
+                  {groupedConnections.map(({ edge, relationship, node: connectedNode }) => (
+                    <button key={edge.id} type="button" onClick={() => onSelectNode(connectedNode.id)}>
+                      <span>{relationship}</span>
+                      <strong>{connectedNode.label}</strong>
+                      <small>{NODE_TYPE_LABELS[connectedNode.type]}</small>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       ) : null}
 
-      {node.projectSlug ? (
+      {node.href || node.metadata.githubUrl ? (
         <div className="graph-detail-actions">
-          <Link href={`/projects/${node.projectSlug}`}>
-            View project <ArrowRight aria-hidden="true" size={14} />
-          </Link>
+          {node.href ? (
+            <Link href={node.href}>
+              {actionLabel(node)} <ArrowRight aria-hidden="true" size={14} />
+            </Link>
+          ) : null}
           {node.metadata.githubUrl ? (
             <a href={node.metadata.githubUrl} target="_blank" rel="noreferrer">
               GitHub <ArrowUpRight aria-hidden="true" size={14} />

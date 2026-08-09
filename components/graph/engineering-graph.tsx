@@ -11,6 +11,9 @@ import {
 import {
   DIMMED_EDGE_COLOR,
   DIMMED_NODE_COLOR,
+  FILTER_CONTEXT_NODE_COLOR,
+  SELECTED_NODE_COLOR,
+  drawGraphNodeHover,
   getEdgeVisual,
   getNodeVisual,
 } from "@/lib/graph/graph-styles";
@@ -96,11 +99,12 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       experience: 1,
       person: 1,
       domain: 2,
+      capability: 2,
       learning: 3,
       roadmap: 3,
       technology: 4,
       concept: 5,
-      metric: 6,
+      evidence: 6,
     } as const;
     return data.nodes
       .filter((node) => `${node.label} ${node.description}`.toLocaleLowerCase("en-US").includes(normalized))
@@ -127,7 +131,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     updateUrlNode(null);
   }, [updateUrlNode]);
 
-  const focusNode = useCallback((nodeId: string, moveCamera = true) => {
+  const focusNode = useCallback((nodeId: string, cameraMode: "none" | "context" | "focus" = "context") => {
     const node = data.nodes.find((candidate) => candidate.id === nodeId);
     if (!node) return;
 
@@ -137,13 +141,18 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     setQuery("");
     updateUrlNode(nodeId);
 
-    if (moveCamera) {
+    if (cameraMode !== "none") {
       window.requestAnimationFrame(() => {
         const renderer = rendererRef.current;
         const displayData = renderer?.getNodeDisplayData(nodeId);
         if (!renderer || !displayData) return;
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const nextState = { x: displayData.x, y: displayData.y, ratio: 0.38 };
+        const currentRatio = renderer.getCamera().getState().ratio;
+        const nextState = {
+          x: displayData.x,
+          y: displayData.y,
+          ratio: cameraMode === "focus" ? 0.38 : Math.min(currentRatio, 0.72),
+        };
         if (reducedMotion) renderer.getCamera().setState(nextState);
         else renderer.getCamera().animate(nextState, { duration: 240, easing: "quadraticOut" });
       });
@@ -182,57 +191,82 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         defaultNodeType: "circle",
         defaultEdgeType: "line",
         renderLabels: true,
-        renderEdgeLabels: false,
-        labelFont: "Inter, ui-sans-serif, system-ui, sans-serif",
+        renderEdgeLabels: true,
+        defaultDrawNodeHover: drawGraphNodeHover,
+        labelFont: "Geist, ui-sans-serif, system-ui, sans-serif",
         labelSize: 11,
         labelWeight: "600",
-        labelColor: { color: "#d8ddd5" },
-        labelDensity: compactCanvas ? 0.34 : 0.5,
-        labelGridCellSize: compactCanvas ? 148 : 132,
-        labelRenderedSizeThreshold: compactCanvas ? 10 : 7.5,
+        labelColor: { color: "#d0d4cc" },
+        edgeLabelFont: "Geist Mono, ui-monospace, monospace",
+        edgeLabelSize: 9,
+        edgeLabelWeight: "600",
+        edgeLabelColor: { color: "#aeb7aa" },
+        labelDensity: compactCanvas ? 0.26 : 0.32,
+        labelGridCellSize: compactCanvas ? 172 : 150,
+        labelRenderedSizeThreshold: compactCanvas ? 11 : 8.5,
         hideEdgesOnMove: true,
-        stagePadding: 36,
+        stagePadding: compactCanvas ? 28 : 52,
         minCameraRatio: 0.16,
         maxCameraRatio: 2.2,
         enableCameraRotation: false,
         zIndex: true,
         nodeReducer: (nodeId, attributes) => {
           const visible = isNodeTypeVisible(attributes.nodeType, filtersRef.current);
-          if (!visible) return { ...attributes, hidden: true };
-
-          const activeNode = selectedRef.current ?? hoveredRef.current;
-          if (!activeNode) return attributes;
-          const isActive = nodeId === activeNode;
-          const isNeighbor = graph.areNeighbors(nodeId, activeNode);
-          const isSecondDegree = !isActive && !isNeighbor && graph
-            .neighbors(activeNode)
-            .some((neighbor) => graph.areNeighbors(nodeId, neighbor));
-
-          if (!isActive && !isNeighbor && !isSecondDegree) {
+          if (!visible) {
+            const preservesContext = graph.neighbors(nodeId).some((neighbor) => (
+              isNodeTypeVisible(graph.getNodeAttribute(neighbor, "nodeType"), filtersRef.current)
+            ));
+            if (!preservesContext) return { ...attributes, hidden: true };
             return {
               ...attributes,
-              color: DIMMED_NODE_COLOR,
+              color: FILTER_CONTEXT_NODE_COLOR,
+              forceLabel: false,
               label: "",
-              size: Math.max(2.2, attributes.size * 0.58),
+              size: Math.max(2.4, attributes.size * 0.48),
               zIndex: 0,
             };
           }
 
-          if (isSecondDegree) {
+          const activeNode = selectedRef.current ?? hoveredRef.current;
+          if (!activeNode) {
+            const cameraRatio = rendererRef.current?.getCamera().getState().ratio ?? 1;
+            const isHighLevel = attributes.nodeType === "person"
+              || attributes.nodeType === "experience"
+              || attributes.nodeType === "project"
+              || attributes.nodeType === "domain";
+            const showAtMediumZoom = cameraRatio <= 0.72
+              && attributes.importance >= 6
+              && (attributes.nodeType === "technology"
+                || attributes.nodeType === "capability"
+                || attributes.nodeType === "learning");
+            const showAtCloseZoom = cameraRatio <= 0.44;
+            const showLabel = isHighLevel || showAtMediumZoom || showAtCloseZoom;
             return {
               ...attributes,
-              color: "#475047",
+              label: showLabel ? attributes.label : "",
+              forceLabel: isHighLevel || showAtMediumZoom,
+            };
+          }
+          const isActive = nodeId === activeNode;
+          const isNeighbor = graph.areNeighbors(nodeId, activeNode);
+
+          if (!isActive && !isNeighbor) {
+            return {
+              ...attributes,
+              color: DIMMED_NODE_COLOR,
               label: "",
-              size: Math.max(2.4, attributes.size * 0.78),
-              zIndex: 1,
+              forceLabel: false,
+              size: Math.max(2.5, attributes.size * 0.82),
+              zIndex: 0,
             };
           }
 
           return {
             ...attributes,
             highlighted: isActive,
+            color: isActive ? SELECTED_NODE_COLOR : attributes.color,
             forceLabel: true,
-            size: attributes.size * (isActive ? 1.22 : 1.05),
+            size: attributes.size * (isActive ? 1.16 : 1.04),
             zIndex: isActive ? 20 : attributes.zIndex,
           };
         },
@@ -241,17 +275,33 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           const target = graph.target(edgeId);
           const sourceVisible = isNodeTypeVisible(graph.getNodeAttribute(source, "nodeType"), filtersRef.current);
           const targetVisible = isNodeTypeVisible(graph.getNodeAttribute(target, "nodeType"), filtersRef.current);
-          if (!sourceVisible || !targetVisible) return { hidden: true };
+          if (!sourceVisible && !targetVisible) return { hidden: true };
+          if (!sourceVisible || !targetVisible) {
+            return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.24 };
+          }
 
           const activeNode = selectedRef.current ?? hoveredRef.current;
-          if (!activeNode) return attributes;
+          if (!activeNode) return { ...attributes, label: "", forceLabel: false };
           const isConnected = source === activeNode || target === activeNode;
-          if (!isConnected) return { ...attributes, color: DIMMED_EDGE_COLOR, size: 0.32 };
-          return { ...attributes, size: attributes.size * 2, zIndex: 10 };
+          if (!isConnected) return { ...attributes, color: DIMMED_EDGE_COLOR, label: "", size: 0.3 };
+          const showRelationshipLabel = selectedRef.current === activeNode
+            && !hoveredRef.current
+            && graph.degree(activeNode) <= 7;
+          return {
+            ...attributes,
+            forceLabel: showRelationshipLabel,
+            label: showRelationshipLabel ? attributes.label : "",
+            size: attributes.size * 2,
+            zIndex: 10,
+          };
         },
       });
 
-      renderer.on("clickNode", ({ node }) => focusNode(node, false));
+      renderer.on("clickNode", ({ node }) => focusNode(node, "none"));
+      renderer.on("doubleClickNode", ({ node, preventSigmaDefault }) => {
+        preventSigmaDefault();
+        focusNode(node, "focus");
+      });
       renderer.on("clickStage", clearSelection);
       renderer.on("enterNode", ({ node }) => {
         setHoveredNodeId(node);
@@ -266,7 +316,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const requested = new URL(window.location.href).searchParams.get("node");
       if (requested) {
         const match = data.nodes.find((node) => node.id === requested || node.id.endsWith(`:${requested}`));
-        if (match) window.requestAnimationFrame(() => focusNode(match.id));
+        if (match) window.requestAnimationFrame(() => focusNode(match.id, "context"));
       }
 
       return () => {
@@ -346,10 +396,13 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             ref={containerRef}
             className="graph-canvas"
             role="img"
-            aria-label="Interactive engineering graph. Use search, filters, or the accessible list to select nodes; canvas nodes support pointer and touch exploration."
+            aria-label="Interactive source-grounded engineering graph. Use search, category filters, or the accessible list to inspect professional experience, public projects, technologies, concepts, evidence, and learning directions."
           />
-          <p className="graph-onboarding">Scroll or pinch to zoom · drag to move · select a node to inspect</p>
+          <p className="graph-onboarding">Scroll or pinch to zoom · select to inspect · double-click to focus</p>
           {!selectedNode ? <p className="graph-selection-hint">Select a node to inspect relationships.</p> : null}
+          <p className="sr-only" aria-live="polite">
+            {selectedNode ? `${selectedNode.label} selected. ${selectedNode.description}` : "No graph node selected."}
+          </p>
           {error ? (
             <div className="graph-fallback" role="alert">
               <strong>The interactive graph could not initialize.</strong>
@@ -375,7 +428,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
       <GraphBrowseList data={data} onSelect={focusNode} />
       <p className="graph-data-summary">
-        {data.nodes.length} curated nodes · {data.edges.length} sourced relationships · no external API data
+        {data.nodes.length} source-grounded nodes · {data.edges.length} validated relationships · no external API data
       </p>
     </div>
   );

@@ -12,11 +12,13 @@ import { learningItems } from "@/data/learning";
 import { metrics } from "@/data/metrics";
 import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
+import { buildEngineeringGraph } from "@/lib/graph/build-graph";
 
 const currentDirectionIds = ["terraform", "langgraph", "graphrag"];
 
 export default function Home() {
   const experience = experiences[0];
+  const graphData = buildEngineeringGraph();
   const currentDirection = currentDirectionIds
     .map((id) => learningItems.find((item) => item.id === id))
     .filter((item) => item !== undefined);
@@ -157,7 +159,7 @@ export default function Home() {
           <div>
             <p className="eyebrow">Engineering graph</p>
             <h2 id="graph-cta-heading">See how the work connects.</h2>
-            <p>88 nodes and 102 relationships across five engineering domains—connecting experience, projects, technologies, concepts and current learning directions.</p>
+            <p>{graphData.nodes.length} source-grounded nodes and {graphData.edges.length} validated relationships across experience, projects, technologies, concepts, evidence and current learning directions.</p>
           </div>
           <Link className="button button-primary" href="/graph">
             Explore Engineering Graph <ArrowRight aria-hidden="true" size={16} />
