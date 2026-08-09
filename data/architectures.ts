@@ -11,6 +11,7 @@ const architectures = {
         label: "Scenario to durable processing",
         summary: "The interactive demo reaches the same Kafka and processor path used by generated commerce events.",
         variant: "primary",
+        layout: { type: "rows", rows: [3, 3] },
         stages: [
           {
             id: "browser",
@@ -24,6 +25,7 @@ const architectures = {
           {
             id: "demo-api",
             nodes: [{ id: "demo-api", label: "Demo Control API", subtitle: "FastAPI", variant: "service" }],
+            edge: { label: "starts scenario" },
           },
           {
             id: "scenario-runner",
@@ -50,16 +52,23 @@ const architectures = {
           {
             id: "processor",
             nodes: [{ id: "processor-state-source", label: "Event Processor", subtitle: "terminal handling", variant: "service" }],
-            edge: { label: "coordinates / commits", variant: "control" },
+            edge: { variant: "control", relation: "branch" },
           },
           {
             id: "state-stores",
             nodes: [
-              { id: "redis", label: "Redis", subtitle: "leases · completion markers", variant: "storage" },
+              {
+                id: "redis",
+                label: "Redis",
+                subtitle: "leases · completion markers",
+                relationLabel: "coordinates",
+                variant: "storage",
+              },
               {
                 id: "postgres",
                 label: "PostgreSQL",
                 subtitle: "durable system of record",
+                relationLabel: "commits durable effects",
                 variant: "storage",
                 items: ["business + fraud state", "processed identity + outbox"],
               },
@@ -146,6 +155,7 @@ const architectures = {
         label: "Incremental sync and indexing",
         summary: "Source-aware connectors reconcile registry state before versioned parsing, embedding and indexing.",
         variant: "async",
+        layout: { type: "rows", rows: [3, 3] },
         stages: [
           {
             id: "sources",
@@ -162,7 +172,7 @@ const architectures = {
           {
             id: "sync-manager",
             nodes: [{ id: "sync-manager", label: "Sync Manager", subtitle: "diff · delete · reconcile", variant: "control" }],
-            edge: { label: "content hash" },
+            edge: { label: "content hash registry" },
           },
           {
             id: "registry",
@@ -191,7 +201,7 @@ const architectures = {
               { id: "manual-sync", label: "FastAPI", subtitle: "manual sync trigger", variant: "client" },
               { id: "scheduler", label: "Sync Scheduler", subtitle: "per-connector interval", variant: "control" },
             ],
-            edge: { label: "triggers", variant: "control" },
+            edge: { label: "triggers", variant: "control", relation: "merge" },
           },
           {
             id: "shared-manager",
@@ -204,6 +214,7 @@ const architectures = {
         label: "Hybrid retrieval and grounded response",
         summary: "Retrieval combines two signals before reranking; generation is followed by an explicit citation-integrity check.",
         variant: "primary",
+        layout: { type: "rows", rows: [3, 3, 2] },
         stages: [
           {
             id: "user-ui",
@@ -217,6 +228,7 @@ const architectures = {
           {
             id: "qdrant-query",
             nodes: [{ id: "qdrant-query", label: "Qdrant", subtitle: "dense + sparse candidates", variant: "storage" }],
+            edge: { label: "RRF fusion" },
           },
           {
             id: "hybrid",
@@ -229,6 +241,7 @@ const architectures = {
           {
             id: "generation",
             nodes: [{ id: "generation", label: "Generation", subtitle: "Ollama by default", variant: "service" }],
+            edge: { label: "grounds citations" },
           },
           {
             id: "citation-validation",
@@ -321,7 +334,7 @@ const architectures = {
           {
             id: "weighted-router",
             nodes: [{ id: "weighted-router", label: "Weighted Router", subtitle: "stable / canary split", variant: "service" }],
-            edge: { label: "routes by weight" },
+            edge: { label: "routes by weight", relation: "branch" },
           },
           {
             id: "models",
@@ -346,7 +359,7 @@ const architectures = {
           {
             id: "policy-engine",
             nodes: [{ id: "policy-engine", label: "Policy Engine", subtitle: "windowed comparison", variant: "analyzer" }],
-            edge: { label: "verdict", variant: "async" },
+            edge: { label: "verdict", variant: "async", relation: "branch" },
           },
           {
             id: "verdicts",
@@ -404,7 +417,7 @@ const architectures = {
               { id: "typer", label: "Typer CLI", subtitle: "local commands", variant: "client" },
               { id: "fastmcp", label: "MCP Clients", subtitle: "FastMCP tool adapters", variant: "client" },
             ],
-            edge: { label: "adapters" },
+            edge: { label: "adapters", relation: "merge" },
           },
           {
             id: "factories",
@@ -482,7 +495,7 @@ const architectures = {
               { id: "manifest-mode", label: "Manifest Mode", subtitle: "manifest.json · catalog.json", variant: "service" },
               { id: "static-mode", label: "Static Mode", subtitle: "SQL + YAML scanners / parsers", variant: "service" },
             ],
-            edge: { label: "normalize" },
+            edge: { label: "normalize", relation: "merge" },
           },
           {
             id: "domain-models",
@@ -510,7 +523,7 @@ const architectures = {
               variant: "analyzer",
               items: ["Model DAG", "Column lineage", "Up/downstream trace", "Impact analysis", "Query flow"],
             }],
-            edge: { label: "serve", variant: "control" },
+            edge: { label: "serve", variant: "control", relation: "branch" },
           },
           {
             id: "consumers",

@@ -120,7 +120,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         </a>
       </header>
 
-      <div className="container detail-layout">
+      <div className={`container detail-layout${projectArchitecture ? " detail-layout--architecture" : ""}`}>
         <aside className="detail-index" aria-label="Page sections">
           <span>Case study</span>
           {sections.map((section) => (
