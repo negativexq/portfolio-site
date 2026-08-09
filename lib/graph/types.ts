@@ -30,6 +30,7 @@ export type GraphMetadata = {
   role?: string;
   period?: string;
   qualifier?: string;
+  scope?: string;
   rationale?: string;
   githubUrl?: string;
   flagship?: boolean;
@@ -38,6 +39,7 @@ export type GraphMetadata = {
   proofPoints?: readonly {
     label: string;
     value: string;
+    scope?: string;
     qualifier?: string;
   }[];
   roadmap?: readonly string[];

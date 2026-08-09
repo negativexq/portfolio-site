@@ -11,6 +11,10 @@ export type ProjectCategory =
 export type ProofPoint = {
   label: string;
   value: string;
+  /** Short caps/mono tag naming where the number comes from (benchmark,
+   * test suite, static analysis, …) so it can't be mistaken for a
+   * production-traffic claim at a glance. */
+  scope?: string;
   qualifier?: string;
 };
 
@@ -30,6 +34,14 @@ export type RoadmapItem = {
   status: Extract<ProjectStatus, "planned">;
 };
 
+export type ProjectEvolution = {
+  fromProjectId: string;
+  /** What the earlier project couldn't do — the concrete gaps that forced the rebuild. */
+  limitations: readonly string[];
+  /** Short narrative connecting the limitations to what this project changed. */
+  narrative: string;
+};
+
 export type Project = {
   id: string;
   slug: string;
@@ -45,6 +57,7 @@ export type Project = {
   proofPoints: readonly ProofPoint[];
   roadmap: readonly RoadmapItem[];
   relationships: readonly ProjectRelationship[];
+  evolvedFrom?: ProjectEvolution;
   githubUrl: string;
 };
 

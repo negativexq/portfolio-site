@@ -46,6 +46,8 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
         </dl>
       ) : null}
 
+      {node.metadata.scope ? <p className="proof-scope">{node.metadata.scope}</p> : null}
+
       {node.metadata.qualifier ? (
         <div className="graph-detail-proof">
           <span>Context / qualifier</span>
@@ -74,6 +76,7 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
             <div key={`${proof.label}-${proof.value}`}>
               <strong>{proof.value}</strong>
               <span>{proof.label}</span>
+              {proof.scope ? <p className="proof-scope">{proof.scope}</p> : null}
               {proof.qualifier ? <p>{proof.qualifier}</p> : null}
             </div>
           ))}

@@ -42,6 +42,7 @@ export const projects = [
       {
         label: "Sustainable service rate",
         value: "~742 evt/s",
+        scope: "Isolated local benchmark",
         qualifier:
           "Documented isolated local Kafka → processor → persistence benchmark using 3 processor workers and 3 Kafka partitions.",
       },
@@ -94,12 +95,24 @@ export const projects = [
       {
         label: "Repository test evidence",
         value: "426 tests",
+        scope: "Repository test suite",
         qualifier:
           "Repository documentation emphasizes extensive real-dependency validation including SQLite, Qdrant, Jaeger and browser automation.",
       },
     ],
     roadmap: [],
     relationships: [],
+    evolvedFrom: {
+      fromProjectId: "production-rag-platform",
+      limitations: [
+        "Single-source ingestion — PyMuPDF read one PDF corpus; a new source meant a hand-rolled parser, not a configured connector",
+        "No incremental sync — the index couldn't tell when a source document changed or was removed, so staleness accumulated silently",
+        "No index reconciliation — nothing verified the vector index still matched the source of truth",
+        "Citations pointed at retrieved chunks with no integrity check tying an answer back to a still-valid source",
+      ],
+      narrative:
+        "Production RAG Platform proved the retrieval core: hybrid search, reranking and grounded generation over a single local PDF corpus. Running it past a happy-path demo surfaced four gaps — all in ingestion and trust, not retrieval quality. Knowledge Base RAG rebuilds that layer: multi-source connectors with incremental sync, index reconciliation, and citation integrity checks, while keeping the same hybrid retrieval and reranking foundation.",
+    },
     githubUrl: "https://github.com/negativexq/knowledge-base-rag",
   },
   {
@@ -142,7 +155,9 @@ export const projects = [
       {
         label: "Progressive canary rollout",
         value: "10% → 25% → 50% → 100%",
-        qualifier: "Progressive canary rollout path.",
+        scope: "Configured rollout policy",
+        qualifier:
+          "Traffic-weighting stages enforced by the platform's policy engine, exercised with Locust load tests — not observed production traffic.",
       },
     ],
     roadmap: [],
@@ -178,6 +193,7 @@ export const projects = [
       {
         label: "MCP tooling",
         value: "38 tools",
+        scope: "Local MCP deployment",
         qualifier:
           "Read-only tools enabled by default across six local MCP servers.",
       },
@@ -213,6 +229,7 @@ export const projects = [
       {
         label: "Analysis scope",
         value: "Cross-model column lineage",
+        scope: "Static manifest analysis",
         qualifier: "Includes transitive downstream impact analysis.",
       },
     ],

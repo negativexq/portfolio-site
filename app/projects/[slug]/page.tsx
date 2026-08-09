@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ComponentType } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  KnowledgeBaseRagDiagram,
+  RealTimeCommerceDiagram,
+} from "@/components/content/architecture-diagram";
 import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
+
+const architectureDiagrams: Record<string, ComponentType> = {
+  "real-time-commerce-platform": RealTimeCommerceDiagram,
+  "knowledge-base-rag": KnowledgeBaseRagDiagram,
+};
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -46,6 +56,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const incoming = projects.flatMap((candidate) =>
     candidate.relationships
       .filter((relationship) => relationship.targetProjectId === project.id)
+      // Already told as a full narrative in the Evolution section above —
+      // skip it here so the case study doesn't say the same thing twice.
+      .filter(() => candidate.id !== project.evolvedFrom?.fromProjectId)
       .map((relationship) => ({
         project: candidate,
         label: relationship.type === "evolved-into" ? "Evolved from" : relationship.label,
@@ -53,6 +66,32 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   );
 
   const relatedProjects = [...outgoing, ...incoming];
+  const evolvedFromProject = project.evolvedFrom
+    ? getProjectById(project.evolvedFrom.fromProjectId)
+    : undefined;
+
+  const ArchitectureDiagram = architectureDiagrams[project.slug];
+
+  const sections = [
+    { id: "overview", navLabel: "Overview", kickerText: "Overview" },
+    ...(ArchitectureDiagram
+      ? [{ id: "architecture", navLabel: "Architecture", kickerText: "Architecture" }]
+      : []),
+    ...(project.evolvedFrom
+      ? [{ id: "evolution", navLabel: "Evolution", kickerText: "Project evolution" }]
+      : []),
+    { id: "concepts", navLabel: "Concepts", kickerText: "Engineering concepts" },
+    { id: "evidence", navLabel: "Evidence", kickerText: "Proof & evidence" },
+    { id: "stack", navLabel: "Stack", kickerText: "Technology stack" },
+    ...(project.roadmap.length > 0
+      ? [{ id: "roadmap", navLabel: "Roadmap", kickerText: "Next phase" }]
+      : []),
+  ];
+  const kicker = (id: string) => {
+    const index = sections.findIndex((section) => section.id === id);
+    const section = sections[index];
+    return `${String(index + 1).padStart(2, "0")} / ${section.kickerText}`;
+  };
 
   return (
     <main>
@@ -74,28 +113,61 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <div className="container detail-layout">
         <aside className="detail-index" aria-label="Page sections">
           <span>Case study</span>
-          <a href="#overview">Overview</a>
-          <a href="#concepts">Concepts</a>
-          <a href="#evidence">Evidence</a>
-          <a href="#stack">Stack</a>
-          {project.roadmap.length > 0 ? <a href="#roadmap">Roadmap</a> : null}
+          {sections.map((section) => (
+            <a key={section.id} href={`#${section.id}`}>
+              {section.navLabel}
+            </a>
+          ))}
         </aside>
 
         <div className="detail-content">
           <section id="overview" className="detail-section">
-            <p className="detail-kicker">01 / Overview</p>
+            <p className="detail-kicker">{kicker("overview")}</p>
             <h2>Why it exists</h2>
             <p>{project.whyItExists}</p>
           </section>
 
+          {ArchitectureDiagram ? (
+            <section id="architecture" className="detail-section">
+              <p className="detail-kicker">{kicker("architecture")}</p>
+              <h2>System flow</h2>
+              <p>
+                A high-level view of the request/event path — not every internal
+                component, just the pieces that determine correctness and failure
+                behavior.
+              </p>
+              <div className="architecture-diagram">
+                <ArchitectureDiagram />
+              </div>
+            </section>
+          ) : null}
+
+          {project.evolvedFrom && evolvedFromProject ? (
+            <section id="evolution" className="detail-section">
+              <p className="detail-kicker">{kicker("evolution")}</p>
+              <h2>
+                {evolvedFromProject.title} → {project.title}
+              </h2>
+              <p>{project.evolvedFrom.narrative}</p>
+              <ul className="evolution-limitations">
+                {project.evolvedFrom.limitations.map((limitation) => (
+                  <li key={limitation}>{limitation}</li>
+                ))}
+              </ul>
+              <Link className="text-link" href={`/projects/${evolvedFromProject.slug}`}>
+                View {evolvedFromProject.title} <ArrowRight aria-hidden="true" size={15} />
+              </Link>
+            </section>
+          ) : null}
+
           <section id="concepts" className="detail-section">
-            <p className="detail-kicker">02 / Engineering concepts</p>
+            <p className="detail-kicker">{kicker("concepts")}</p>
             <h2>System concerns made explicit</h2>
             <TagList items={project.concepts} label={`${project.title} engineering concepts`} />
           </section>
 
           <section id="evidence" className="detail-section">
-            <p className="detail-kicker">03 / Proof & evidence</p>
+            <p className="detail-kicker">{kicker("evidence")}</p>
             <h2>Measured or reproducible signals</h2>
             {project.proofPoints.length > 0 ? (
               <div className="proof-grid">
@@ -109,7 +181,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </section>
 
           <section id="stack" className="detail-section">
-            <p className="detail-kicker">04 / Technology stack</p>
+            <p className="detail-kicker">{kicker("stack")}</p>
             <h2>Current implementation</h2>
             <TagList items={project.technologies} label={`${project.title} technology stack`} />
           </section>
@@ -118,7 +190,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <section id="roadmap" className="detail-section roadmap-section">
               <div className="roadmap-heading">
                 <div>
-                  <p className="detail-kicker">05 / Next phase</p>
+                  <p className="detail-kicker">{kicker("roadmap")}</p>
                   <h2>Infrastructure evolution</h2>
                 </div>
                 <StatusBadge status="planned" />

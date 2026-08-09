@@ -338,7 +338,7 @@ export function buildEngineeringGraph(): EngineeringGraphData {
           description: proof.label,
           importance: 6,
           projectSlug: project.slug,
-          metadata: { qualifier: proof.qualifier },
+          metadata: { qualifier: proof.qualifier, scope: proof.scope },
         });
         addEdge(projectId, metricId, "measured-by", "Measured by");
       }
