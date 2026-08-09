@@ -220,10 +220,12 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const forcedProjectLabelIdsRef = useRef<Set<string>>(new Set());
   const focusedEdgeLabelIdsRef = useRef<Set<string>>(new Set());
   const focusedProjectRef = useRef<string | null>(null);
+  const focusedDisplayStartPositionsRef = useRef<Map<string, FocusedDisplayPosition>>(new Map());
   const focusedDisplayPositionsRef = useRef<Map<string, FocusedDisplayPosition>>(new Map());
   const focusedCameraNodeIdsRef = useRef<Set<string>>(new Set());
   const focusedLayoutProgressRef = useRef(0);
   const layoutAnimationFrameRef = useRef<number | null>(null);
+  const labelWidthCacheRef = useRef<Map<string, number>>(new Map());
   const selectionOriginRef = useRef<HTMLElement | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -297,40 +299,64 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     else camera.animatedReset({ duration: 220, easing: "quadraticOut" });
   }, []);
 
-  const animateProjectLayout = useCallback((target: 0 | 1, onComplete?: () => void) => {
+  const animateFocusedLayout = useCallback((
+    nextPositions: ReadonlyMap<string, FocusedDisplayPosition>,
+    duration: number,
+    onComplete?: () => void,
+  ) => {
     if (layoutAnimationFrameRef.current !== null) cancelAnimationFrame(layoutAnimationFrameRef.current);
     const renderer = rendererRef.current;
-    const start = focusedLayoutProgressRef.current;
+    const previousStart = focusedDisplayStartPositionsRef.current;
+    const previousTarget = focusedDisplayPositionsRef.current;
+    const previousProgress = focusedLayoutProgressRef.current;
+    const transitioningNodeIds = new Set([...previousStart.keys(), ...previousTarget.keys(), ...nextPositions.keys()]);
+    const startPositions = new Map<string, FocusedDisplayPosition>();
+    for (const nodeId of transitioningNodeIds) {
+      if (!graph.hasNode(nodeId)) continue;
+      const original = graph.getNodeAttributes(nodeId);
+      const from = previousStart.get(nodeId) ?? original;
+      const to = previousTarget.get(nodeId) ?? original;
+      startPositions.set(nodeId, {
+        x: from.x + (to.x - from.x) * previousProgress,
+        y: from.y + (to.y - from.y) * previousProgress,
+      });
+    }
+    focusedDisplayStartPositionsRef.current = startPositions;
+    focusedDisplayPositionsRef.current = new Map(nextPositions);
+    focusedLayoutProgressRef.current = 0;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!renderer || reducedMotion || Math.abs(start - target) < 0.001) {
-      focusedLayoutProgressRef.current = target;
+    if (!renderer || reducedMotion || duration === 0) {
+      focusedLayoutProgressRef.current = 1;
+      focusedDisplayStartPositionsRef.current = new Map();
       renderer?.refresh();
       onComplete?.();
       return;
     }
 
     const startedAt = performance.now();
-    const duration = target === 1 ? 240 : 180;
     const step = (time: number) => {
       const elapsed = Math.min(1, (time - startedAt) / duration);
-      const eased = 1 - (1 - elapsed) ** 3;
-      focusedLayoutProgressRef.current = start + (target - start) * eased;
+      const eased = elapsed < 0.5 ? 4 * elapsed ** 3 : 1 - (-2 * elapsed + 2) ** 3 / 2;
+      focusedLayoutProgressRef.current = eased;
       renderer.refresh();
       if (elapsed < 1) layoutAnimationFrameRef.current = requestAnimationFrame(step);
       else {
         layoutAnimationFrameRef.current = null;
+        focusedLayoutProgressRef.current = 1;
+        focusedDisplayStartPositionsRef.current = new Map();
         onComplete?.();
       }
     };
     layoutAnimationFrameRef.current = requestAnimationFrame(step);
-  }, []);
+  }, [graph]);
 
   const exitFocusedView = useCallback(() => {
     const selectionOrigin = selectionOriginRef.current;
     selectionOriginRef.current = null;
     clearSelectionState();
     fitGraph();
-    animateProjectLayout(0, () => {
+    animateFocusedLayout(new Map(), 180, () => {
+      focusedDisplayStartPositionsRef.current = new Map();
       focusedDisplayPositionsRef.current = new Map();
       focusedCameraNodeIdsRef.current = new Set();
       rendererRef.current?.refresh();
@@ -338,7 +364,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     window.requestAnimationFrame(() => {
       if (selectionOrigin?.isConnected) selectionOrigin.focus({ preventScroll: true });
     });
-  }, [animateProjectLayout, clearSelectionState, fitGraph]);
+  }, [animateFocusedLayout, clearSelectionState, fitGraph]);
 
   const focusNeighborhood = useCallback((nodeId: string, tight = false) => {
     const renderer = rendererRef.current;
@@ -353,14 +379,18 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       : [];
     const clusterIds = projectCameraIds.length > 0 ? projectCameraIds : [nodeId, ...visibleNeighbors];
     const cluster = clusterIds
-      .map((id) => renderer.getNodeDisplayData(id))
-      .filter((node): node is NonNullable<ReturnType<typeof renderer.getNodeDisplayData>> => Boolean(node));
+      .map((id) => ({ id, node: renderer.getNodeDisplayData(id) }))
+      .filter((entry): entry is { id: string; node: NonNullable<ReturnType<typeof renderer.getNodeDisplayData>> } => Boolean(entry.node));
     if (cluster.length === 0) return;
 
-    const center = {
-      x: (Math.min(...cluster.map((node) => node.x)) + Math.max(...cluster.map((node) => node.x))) / 2,
-      y: (Math.min(...cluster.map((node) => node.y)) + Math.max(...cluster.map((node) => node.y))) / 2,
-    };
+    const isProjectCamera = focusedProjectRef.current === nodeId;
+    const projectAnchor = isProjectCamera ? renderer.getNodeDisplayData(nodeId) : null;
+    const center = projectAnchor
+      ? { x: projectAnchor.x, y: projectAnchor.y }
+      : {
+          x: (Math.min(...cluster.map(({ node }) => node.x)) + Math.max(...cluster.map(({ node }) => node.x))) / 2,
+          y: (Math.min(...cluster.map(({ node }) => node.y)) + Math.max(...cluster.map(({ node }) => node.y))) / 2,
+        };
     const dimensions = renderer.getDimensions();
     const panel = containerRef.current?.closest(".graph-workspace")?.querySelector<HTMLElement>(".graph-detail-panel");
     const panelWidth = panel && getComputedStyle(panel).position === "absolute"
@@ -368,10 +398,38 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       : 0;
     const usableWidth = Math.max(280, dimensions.width - panelWidth);
     const baseState = { x: center.x, y: center.y, ratio: 1, angle: 0 };
-    const viewportPoints = cluster.map((node) => renderer.framedGraphToViewport(node, { cameraState: baseState }));
+    const measurementContext = document.createElement("canvas").getContext("2d");
+    const labelSize = renderer.getSetting("labelSize");
+    const labelWeight = renderer.getSetting("labelWeight");
+    const labelFont = renderer.getSetting("labelFont");
+    if (measurementContext) measurementContext.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+    const viewportEntries = cluster.map(({ id, node }) => ({
+      id,
+      node,
+      point: renderer.framedGraphToViewport(node, { cameraState: baseState }),
+    }));
     const profile = focusProfile(selectedNode, visibleNeighbors.length, tight);
-    const spanX = Math.max(72, Math.max(...viewportPoints.map((point) => point.x)) - Math.min(...viewportPoints.map((point) => point.x))) + profile.labelPadding;
-    const spanY = Math.max(72, Math.max(...viewportPoints.map((point) => point.y)) - Math.min(...viewportPoints.map((point) => point.y))) + 64;
+    let minX = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
+    for (const { id, node: displayNode, point } of viewportEntries) {
+      const radius = renderer.scaleSize(displayNode.size, 1);
+      const includeLabel = isProjectCamera && forcedProjectLabelIdsRef.current.has(id);
+      const graphNode = nodeById.get(id);
+      let labelWidth = 0;
+      if (includeLabel && graphNode) {
+        const cached = labelWidthCacheRef.current.get(graphNode.canvasLabel);
+        labelWidth = cached ?? measurementContext?.measureText(graphNode.canvasLabel).width ?? graphNode.canvasLabel.length * 6.2;
+        if (cached === undefined) labelWidthCacheRef.current.set(graphNode.canvasLabel, labelWidth);
+      }
+      minX = Math.min(minX, point.x - radius);
+      maxX = Math.max(maxX, point.x + radius + (includeLabel ? 3 + labelWidth : 0));
+      minY = Math.min(minY, point.y - Math.max(radius, includeLabel ? labelSize * 0.8 : 0));
+      maxY = Math.max(maxY, point.y + Math.max(radius, includeLabel ? labelSize * 0.65 : 0));
+    }
+    const spanX = Math.max(72, maxX - minX) + (isProjectCamera ? 48 : profile.labelPadding);
+    const spanY = Math.max(72, maxY - minY) + (isProjectCamera ? 48 : 64);
     const desiredRatio = Math.max(spanX / (usableWidth * profile.occupancy), spanY / (dimensions.height * profile.occupancy));
     const ratio = Math.max(profile.minimumRatio, desiredRatio);
     const centeredState = { ...baseState, ratio };
@@ -384,7 +442,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     };
     const camera = renderer.getCamera();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) camera.setState(nextState);
-    else camera.animate(nextState, { duration: tight ? 260 : 240, easing: "quadraticOut" });
+    else camera.animate(nextState, { duration: tight ? 260 : 240, easing: "quadraticInOut" });
   }, [graph, nodeById]);
 
   const focusNode = useCallback((nodeId: string, cameraMode: "context" | "focus" = "context") => {
@@ -400,10 +458,10 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       isNodeTypeVisible(graph.getNodeAttribute(neighborId, "nodeType"), filtersRef.current)
     ));
     let prioritizedNeighbors: string[];
+    let nextDisplayPositions = new Map<string, FocusedDisplayPosition>();
     const isProjectFocus = node.type === "project";
-    const restoreProjectLayoutBeforeFocus = !isProjectFocus
-      && focusedDisplayPositionsRef.current.size > 0
-      && focusedLayoutProgressRef.current > 0;
+    const hasTemporaryLayout = focusedDisplayPositionsRef.current.size > 0
+      || focusedDisplayStartPositionsRef.current.size > 0;
     if (node.type === "project" && node.projectSlug) {
       const neighborNodes = neighbors.map((id) => nodeById.get(id)).filter((item): item is EngineeringGraphNode => Boolean(item));
       const technologies = node.metadata.keyTechnologies
@@ -430,13 +488,15 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       const evidence = neighborNodes.filter((neighbor) => neighbor.type === "evidence").slice(0, 1);
       prioritizedNeighbors = [...highLevel, ...technologies, ...relatedAnchors, ...concepts, ...evidence].map((neighbor) => neighbor.id);
       focusedProjectRef.current = nodeId;
-      focusedLayoutProgressRef.current = 0;
       const measurementContext = document.createElement("canvas").getContext("2d");
       if (measurementContext) measurementContext.font = "600 11px Geist, ui-sans-serif, system-ui, sans-serif";
-      const measureLabel = (label: string) => Math.max(
-        2.8,
-        (measurementContext?.measureText(label).width ?? label.length * 6.2) / 12,
-      );
+      const measureLabel = (label: string) => {
+        const cached = labelWidthCacheRef.current.get(label);
+        if (cached !== undefined) return Math.max(2.8, cached / 12);
+        const width = measurementContext?.measureText(label).width ?? label.length * 6.2;
+        labelWidthCacheRef.current.set(label, width);
+        return Math.max(2.8, width / 12);
+      };
       const projectLayout = createProjectDisplayLayout(
         node,
         neighborNodes,
@@ -444,7 +504,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         new Set(evidence.map((neighbor) => neighbor.id)),
         measureLabel,
       );
-      focusedDisplayPositionsRef.current = projectLayout.positions;
+      nextDisplayPositions = projectLayout.positions;
       focusedCameraNodeIdsRef.current = projectLayout.cameraNodeIds;
       const forceTechnologyLabels = window.matchMedia("(min-width: 821px)").matches;
       forcedProjectLabelIdsRef.current = new Set([
@@ -467,11 +527,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         .slice(0, labelBudget);
       focusedProjectRef.current = null;
       forcedProjectLabelIdsRef.current = new Set();
-      if (!restoreProjectLayoutBeforeFocus) {
-        focusedDisplayPositionsRef.current = new Map();
-        focusedCameraNodeIdsRef.current = new Set();
-        focusedLayoutProgressRef.current = 0;
-      }
+      focusedCameraNodeIdsRef.current = new Set();
     }
     focusedLabelIdsRef.current = new Set([nodeId, ...prioritizedNeighbors]);
     const incidentEdges = graph.edges(nodeId);
@@ -491,19 +547,14 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
     window.requestAnimationFrame(() => {
       if (isProjectFocus) {
-        animateProjectLayout(1, () => focusNeighborhood(nodeId, cameraMode === "focus"));
-      } else if (restoreProjectLayoutBeforeFocus) {
-        animateProjectLayout(0, () => {
-          focusedDisplayPositionsRef.current = new Map();
-          focusedCameraNodeIdsRef.current = new Set();
-          rendererRef.current?.refresh();
-          focusNeighborhood(nodeId, cameraMode === "focus");
-        });
+        animateFocusedLayout(nextDisplayPositions, 250, () => focusNeighborhood(nodeId, cameraMode === "focus"));
+      } else if (hasTemporaryLayout) {
+        animateFocusedLayout(new Map(), 190, () => focusNeighborhood(nodeId, cameraMode === "focus"));
       } else {
         window.requestAnimationFrame(() => focusNeighborhood(nodeId, cameraMode === "focus"));
       }
     });
-  }, [animateProjectLayout, focusNeighborhood, graph, nodeById, updateUrlNode]);
+  }, [animateFocusedLayout, focusNeighborhood, graph, nodeById, updateUrlNode]);
 
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
@@ -564,13 +615,17 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
             };
           }
 
+          const focusedStartPosition = focusedDisplayStartPositionsRef.current.get(nodeId);
           const focusedPosition = focusedDisplayPositionsRef.current.get(nodeId);
           const layoutProgress = focusedLayoutProgressRef.current;
-          const displayAttributes = focusedPosition && layoutProgress > 0
+          const hasTemporaryPosition = Boolean(focusedStartPosition || focusedPosition);
+          const displayStart = focusedStartPosition ?? attributes;
+          const displayTarget = focusedPosition ?? attributes;
+          const displayAttributes = hasTemporaryPosition
             ? {
                 ...attributes,
-                x: attributes.x + (focusedPosition.x - attributes.x) * layoutProgress,
-                y: attributes.y + (focusedPosition.y - attributes.y) * layoutProgress,
+                x: displayStart.x + (displayTarget.x - displayStart.x) * layoutProgress,
+                y: displayStart.y + (displayTarget.y - displayStart.y) * layoutProgress,
               }
             : attributes;
           const selectedNode = selectedRef.current;
