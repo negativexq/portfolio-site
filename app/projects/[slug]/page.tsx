@@ -7,6 +7,7 @@ import {
   KnowledgeBaseRagDiagram,
   RealTimeCommerceDiagram,
 } from "@/components/content/architecture-diagram";
+import { JsonLd } from "@/components/content/json-ld";
 import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
@@ -71,6 +72,22 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     : undefined;
 
   const ArchitectureDiagram = architectureDiagrams[project.slug];
+  const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "@id": `${projectUrl}#software-source-code`,
+    name: project.title,
+    description: project.directAnswer,
+    url: projectUrl,
+    codeRepository: project.githubUrl,
+    programmingLanguage: project.technologies,
+    author: {
+      "@type": "Person",
+      "@id": "https://omerfkoc.dev/#person",
+      name: "Ömer Faruk Koç",
+    },
+  };
 
   const sections = [
     { id: "overview", navLabel: "Overview", kickerText: "Overview" },
@@ -95,6 +112,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   return (
     <main>
+      <JsonLd data={projectJsonLd} />
       <header className="project-detail-hero container">
         <Link className="back-link" href="/projects">
           <ArrowLeft aria-hidden="true" size={14} /> All projects
@@ -124,6 +142,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           <section id="overview" className="detail-section">
             <p className="detail-kicker">{kicker("overview")}</p>
             <h2>Why it exists</h2>
+            <p>{project.directAnswer}</p>
             <p>{project.whyItExists}</p>
           </section>
 

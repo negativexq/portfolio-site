@@ -3,18 +3,31 @@ import { projects } from "@/data/projects";
 
 const BASE_URL = "https://omerfkoc.dev";
 
+// These dates track the latest content-affecting commit for each route.
+// Update the relevant entry whenever published page content changes.
+const routeLastModified = {
+  home: "2026-08-09",
+  projects: "2026-08-09",
+  experience: "2026-08-09",
+  graph: "2026-08-09",
+  learning: "2026-08-09",
+  resume: "2026-08-09",
+  projectCaseStudies: "2026-08-09",
+} as const;
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
-    { url: `${BASE_URL}/projects`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/experience`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/graph`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/learning`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/resume`, changeFrequency: "monthly", priority: 0.6 },
+    { url: BASE_URL, lastModified: routeLastModified.home, changeFrequency: "monthly", priority: 1 },
+    { url: `${BASE_URL}/projects`, lastModified: routeLastModified.projects, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/experience`, lastModified: routeLastModified.experience, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE_URL}/graph`, lastModified: routeLastModified.graph, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE_URL}/learning`, lastModified: routeLastModified.learning, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/resume`, lastModified: routeLastModified.resume, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
     url: `${BASE_URL}/projects/${project.slug}`,
+    lastModified: routeLastModified.projectCaseStudies,
     changeFrequency: "monthly",
     priority: project.flagship ? 0.8 : 0.5,
   }));

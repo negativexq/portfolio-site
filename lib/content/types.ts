@@ -51,6 +51,8 @@ export type Project = {
   status: ProjectStatus;
   flagship: boolean;
   summary: string;
+  /** A complete, self-contained sentence answering "What is this project?". */
+  directAnswer: string;
   whyItExists: string;
   technologies: readonly string[];
   concepts: readonly string[];

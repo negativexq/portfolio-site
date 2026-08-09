@@ -11,6 +11,8 @@ export const projects = [
     flagship: true,
     summary:
       "Event-driven commerce platform focused on reliable at-least-once processing, transactional consistency, failure handling and measurable performance.",
+    directAnswer:
+      "Real-Time Commerce Platform is an event-driven commerce system that uses Kafka, FastAPI, PostgreSQL, Redis and a transactional outbox to make at-least-once processing, failure handling and performance measurable.",
     whyItExists:
       "Built to make delivery guarantees, failure paths and performance limits explicit in an event-driven commerce workflow.",
     technologies: [
@@ -65,6 +67,8 @@ export const projects = [
     flagship: true,
     summary:
       "Multi-source knowledge platform with incremental synchronization, hybrid retrieval, reranking, citation integrity and distributed tracing.",
+    directAnswer:
+      "Knowledge Base RAG is a multi-source retrieval-augmented generation platform that combines incremental synchronization, hybrid retrieval, reranking, citation integrity checks and distributed tracing.",
     whyItExists:
       "Extends retrieval beyond a happy-path demo with source synchronization, index repair, citation validation and observable evaluation workflows.",
     technologies: [
@@ -125,6 +129,8 @@ export const projects = [
     flagship: true,
     summary:
       "Controlled ML releases using canary traffic, policy-based evaluation and automated promotion or rollback.",
+    directAnswer:
+      "ModelOps Control Plane is an MLOps platform that evaluates canary releases against explicit policies and then promotes, rolls back or routes them to human review.",
     whyItExists:
       "Explores how model releases can progress through explicit deployment states while policy outcomes drive promotion, rollback or a human decision.",
     technologies: [
@@ -174,6 +180,8 @@ export const projects = [
     flagship: true,
     summary:
       "Local-first MCP repository intelligence platform that produces source-grounded context for coding agents.",
+    directAnswer:
+      "Repo Context Forge is a local-first MCP repository intelligence platform that gives coding agents bounded, source-grounded context through 38 read-only tools across six local servers.",
     whyItExists:
       "Gives coding agents bounded, deterministic repository context through secure tool interfaces instead of relying on unsourced or unstructured context.",
     technologies: ["Python", "MCP", "FastMCP", "Python AST", "Typer", "Docker", "Git"],
@@ -212,6 +220,8 @@ export const projects = [
     flagship: true,
     summary:
       "Local-first dbt analysis tool for tracing model dependencies, column-level lineage and downstream impact.",
+    directAnswer:
+      "dbt Feature Lineage is a local-first analysis tool that traces dbt model dependencies, cross-model column lineage and the downstream impact of data changes.",
     whyItExists:
       "Makes transformation lineage and change impact inspectable, answering where a column came from and what can break downstream.",
     technologies: ["Python", "dbt Core", "sqlglot", "NetworkX", "Streamlit", "Typer", "Docker"],
@@ -247,6 +257,8 @@ export const projects = [
     flagship: false,
     summary:
       "End-to-end RAG platform covering hybrid retrieval, reranking, grounded generation, citations, evaluation and observability.",
+    directAnswer:
+      "Production RAG Platform is an end-to-end retrieval-augmented generation system that combines hybrid retrieval, reranking, grounded generation, citations, evaluation and observability over a local PDF corpus.",
     whyItExists:
       "Established the focused retrieval and evaluation foundation that later expanded into the multi-source Knowledge Base RAG platform.",
     technologies: [
