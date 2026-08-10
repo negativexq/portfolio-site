@@ -27,6 +27,7 @@ const projectAnchors: Record<string, { x: number; y: number }> = {
   "modelops-control-plane": { x: 0.2, y: -6.7 },
   "repo-context-forge": { x: 5.3, y: 1.4 },
   "dbt-feature-lineage": { x: -5.3, y: 1.4 },
+  "terraform-docker-infrastructure-lab": { x: -2.8, y: -4.5 },
 };
 
 const domainAnchors: Record<string, { x: number; y: number }> = {
@@ -65,6 +66,7 @@ const prominentTechnologies = new Set([
   "MCP",
   "dbt Core",
   "Feature Store",
+  "Terraform",
 ]);
 
 const canvasLabels: Readonly<Record<string, string>> = {

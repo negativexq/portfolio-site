@@ -541,6 +541,98 @@ const architectures = {
       "The demo and static-analysis path require no live data warehouse connection.",
     ],
   },
+  "terraform-docker-infrastructure-lab": {
+    projectId: "terraform-docker-infrastructure-lab",
+    description:
+      "Terraform owns the local Docker network, application layer and observability layer through a root module and three child modules. Browser or curl traffic enters through Nginx, reaches FastAPI and PostgreSQL, while Prometheus, Grafana, Alertmanager and Mailpit provide local monitoring and alert delivery.",
+    paths: [
+      {
+        id: "terraform-boundaries",
+        label: "Terraform ownership and module boundaries",
+        summary: "The root module wires reusable child modules for the network, application and observability layers.",
+        variant: "control",
+        stages: [
+          {
+            id: "terraform-root",
+            nodes: [{ id: "terraform-root", label: "Terraform root module", subtitle: "providers · variables · outputs", variant: "control" }],
+            edge: { label: "provisions", variant: "control", relation: "branch" },
+          },
+          {
+            id: "terraform-modules",
+            nodes: [
+              { id: "network-module", label: "modules/network", subtitle: "Docker network + port checks", variant: "service", relationLabel: "owns" },
+              { id: "application-module", label: "modules/application", subtitle: "FastAPI · PostgreSQL · Nginx", variant: "service", relationLabel: "owns" },
+              { id: "observability-module", label: "modules/observability", subtitle: "Prometheus · Grafana · alerts", variant: "observability", relationLabel: "owns" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "application-flow",
+        label: "Application request flow",
+        summary: "Only Nginx is the public application entry point; FastAPI and PostgreSQL communicate over the dedicated Docker network.",
+        variant: "primary",
+        stages: [
+          {
+            id: "client",
+            nodes: [{ id: "browser-curl", label: "Browser / curl", subtitle: "local request", variant: "client" }],
+            edge: { label: "HTTP" },
+          },
+          {
+            id: "nginx",
+            nodes: [{ id: "nginx", label: "Nginx", subtitle: "reverse proxy", variant: "boundary" }],
+            edge: { label: "proxy" },
+          },
+          {
+            id: "fastapi",
+            nodes: [{ id: "fastapi", label: "FastAPI", subtitle: "API + metrics", variant: "service" }],
+            edge: { label: "queries" },
+          },
+          {
+            id: "postgresql",
+            nodes: [{ id: "postgresql", label: "PostgreSQL", subtitle: "database + volume", variant: "storage" }],
+          },
+        ],
+      },
+      {
+        id: "observability-flow",
+        label: "Metrics and alert lifecycle",
+        summary: "FastAPI metrics are scraped by Prometheus, visualized in Grafana, and evaluated into alerts delivered through Alertmanager to Mailpit.",
+        variant: "observability",
+        stages: [
+          {
+            id: "metrics-source",
+            nodes: [{ id: "metrics-source", label: "FastAPI /metrics", subtitle: "request + latency metrics", variant: "service" }],
+            edge: { label: "scrapes", variant: "observability", relation: "branch" },
+          },
+          {
+            id: "observability-services",
+            nodes: [
+              { id: "prometheus", label: "Prometheus", subtitle: "scrape + alert rules", variant: "observability", relationLabel: "queries / alerts" },
+              { id: "grafana", label: "Grafana", subtitle: "PromQL dashboard", variant: "observability", relationLabel: "visualizes" },
+            ],
+            edge: { label: "routes", variant: "observability" },
+          },
+          {
+            id: "alertmanager",
+            nodes: [{ id: "alertmanager", label: "Alertmanager", subtitle: "group + route", variant: "control" }],
+            edge: { label: "SMTP", variant: "observability" },
+          },
+          {
+            id: "mailpit",
+            nodes: [{ id: "mailpit", label: "Mailpit", subtitle: "local notification sink", variant: "output" }],
+          },
+        ],
+      },
+    ],
+    notes: [
+      "moved blocks preserve resource identities while the original root resources move into child modules.",
+      "Application and monitoring configuration hashes drive deterministic replacement when meaningful inputs change.",
+      "Native terraform test plans use mocked Docker providers; they do not provision real Docker infrastructure.",
+      "GitHub Actions runs Terraform formatting, initialization, validation and tests, with TFLint, Trivy, Gitleaks and Hadolint security gates; CI does not run terraform apply.",
+      "k6 exercises local load and controlled error, latency and API-down alert lifecycles end to end.",
+    ],
+  },
 } satisfies Record<string, ArchitectureDefinition>;
 
 export function getProjectArchitecture(projectId: string) {

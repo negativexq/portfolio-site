@@ -36,7 +36,7 @@ const areas: readonly {
     index: "03",
     description: "Infrastructure provisioning, workload orchestration and observability extend containerized AI systems along distinct operational boundaries.",
     foundation: "Containerized services and observable release workflows",
-    direction: "Terraform, Kubernetes and AI-platform signals",
+    direction: "Remote state, cloud infrastructure and workload orchestration",
   },
 ];
 

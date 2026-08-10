@@ -331,6 +331,66 @@ export const projects = [
     ],
     githubUrl: "https://github.com/negativexq/production-rag-platform",
   },
+  {
+    id: "terraform-docker-infrastructure-lab",
+    slug: "terraform-docker-infrastructure-lab",
+    order: 7,
+    title: "Terraform Docker Infrastructure Lab",
+    category: "Infrastructure as Code / Platform Engineering",
+    status: "current",
+    flagship: false,
+    summary:
+      "Modular Terraform infrastructure lab with state-safe refactoring, native IaC tests, CI security gates, observability, and end-to-end failure validation.",
+    directAnswer:
+      "Terraform Docker Infrastructure Lab provisions a local FastAPI, PostgreSQL, Nginx and observability stack through reusable Terraform modules, with native Terraform tests, state-safe moved blocks, CI validation and security scanning.",
+    whyItExists:
+      "Explores infrastructure lifecycle and platform engineering beyond basic provisioning by making module boundaries, state migration, configuration-driven replacement, failure testing and infrastructure validation explicit.",
+    technologies: [
+      "Terraform",
+      "Docker",
+      "FastAPI",
+      "PostgreSQL",
+      "Nginx",
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "k6",
+      "GitHub Actions",
+    ],
+    concepts: [
+      "Infrastructure as Code",
+      "Terraform Modules",
+      "Terraform State",
+      "State Migration",
+      "Moved Blocks",
+      "Native Terraform Tests",
+      "Provider Mocking",
+      "Configuration Hashing",
+      "Infrastructure Validation",
+      "DevSecOps",
+      "Observability",
+      "Alert Lifecycle Testing",
+    ],
+    proofPoints: [
+      {
+        label: "State-safe module refactor",
+        value: "0 add · 0 change · 0 destroy",
+        scope: "Verified Terraform migration",
+        qualifier:
+          "The original root resources were reorganized into network, application and observability modules through explicit Terraform moved blocks while preserving managed resource identities and avoiding infrastructure recreation.",
+      },
+      {
+        label: "Infrastructure validation",
+        value: "Native Terraform tests",
+        scope: "Mock-provider test suite",
+        qualifier:
+          "Root and child-module contracts are exercised with terraform test and mocked Docker providers, validating naming, outputs, resource wiring and failure conditions without provisioning real Docker infrastructure.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/terraform-docker-infrastructure-lab",
+  },
 ] satisfies readonly Project[];
 
 export const flagshipProjects = projects.filter((project) => project.flagship);

@@ -6,7 +6,8 @@ export type ProjectCategory =
   | "MLOps / AI Platform"
   | "Agent Infrastructure / Developer Tooling"
   | "Data Engineering / Lineage"
-  | "Generative AI / Retrieval";
+  | "Generative AI / Retrieval"
+  | "Infrastructure as Code / Platform Engineering";
 
 export type ProofPoint = {
   label: string;
@@ -31,7 +32,7 @@ export type ProjectRelationship = {
 
 export type RoadmapItem = {
   title: string;
-  status: Extract<ProjectStatus, "planned">;
+  status: Extract<ProjectStatus, "learning" | "planned">;
 };
 
 export type ProjectEvolution = {
