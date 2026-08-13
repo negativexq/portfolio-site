@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
+import { ProjectProof } from "@/components/content/project-proof";
 import { TagList } from "@/components/content/tag-list";
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
 import { profile } from "@/data/profile";
+import { flagshipProjects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Resume",
@@ -14,6 +16,8 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   const experience = experiences[0];
+  const featuredImpacts = experience.impacts.filter((impact) => impact.proof).slice(0, 4);
+  const featuredProject = flagshipProjects[0];
 
   return (
     <main>
@@ -46,11 +50,23 @@ export default function ResumePage() {
             </div>
             <p>{experience.summary}</p>
             <ul className="resume-impact-list">
-              {experience.impacts.slice(0, 4).map((impact) => (
-                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.proof?.value ?? impact.summary}</span></li>
+              {featuredImpacts.map((impact) => (
+                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.proof?.value}</span></li>
               ))}
             </ul>
             <Link className="section-link" href="/experience">Full experience <ArrowRight aria-hidden="true" size={14} /></Link>
+          </section>
+
+          <section className="resume-section">
+            <p className="detail-kicker">Featured project</p>
+            <div className="resume-role-heading">
+              <div><h2>{featuredProject.title}</h2><p>{featuredProject.category}</p></div>
+            </div>
+            <p>{featuredProject.summary}</p>
+            <ProjectProof proof={featuredProject.proofPoints[0]} compact />
+            <Link className="section-link" href={`/projects/${featuredProject.slug}`}>
+              Project detail <ArrowRight aria-hidden="true" size={14} />
+            </Link>
           </section>
 
           <section className="resume-section">
