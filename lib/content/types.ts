@@ -68,8 +68,12 @@ export type Project = {
 export type ExperienceImpact = {
   id: string;
   title: string;
+  /** One sentence on the situation that made this work necessary. */
+  context: string;
   summary: string;
-  proof?: string;
+  /** Same scoped shape as project evidence: professional numbers have to be
+   * as inspectable as the public ones, not bare strings. */
+  proof?: ProofPoint;
   topics: readonly string[];
 };
 

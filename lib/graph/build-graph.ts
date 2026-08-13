@@ -79,10 +79,12 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "project:agentic-customer-service-platform": "Agentic Customer Service",
   "evidence:project:agentic-customer-service-platform:0-unsafe-executions-0-confirmation-bypasses": "0 unsafe · 0 bypass",
   "evidence:project:agentic-customer-service-platform:baseline-retained": "Baseline retained",
-  "evidence:experience:data-platform:120-min-30-min-75-reduction": "120 → 30 min",
+  "evidence:experience:data-platform:120-30-min": "120 → 30 min",
   "evidence:experience:ml-platform:10-production-ml-models": "10+ ML Models",
-  "evidence:experience:data-scale:9m-records-day": "~9M Records / Day",
+  "evidence:experience:data-scale:9m-customers": "~9M Customers",
   "evidence:experience:call-center-intelligence:9-000-recordings-day": "~9,000 / Day",
+  "evidence:experience:feature-platform:one-definition-per-feature": "Shared Features",
+  "evidence:experience:quality-monitoring:checks-in-the-pipeline-not-the-report": "Pipeline Gates",
 };
 
 function canvasLabel(id: string, label: string) {
@@ -383,26 +385,31 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     }
 
     if (impact.proof) {
-      const evidenceId = `evidence:experience:${impact.id}:${graphSlug(impact.proof)}`;
+      const evidenceId = `evidence:experience:${impact.id}:${graphSlug(impact.proof.value)}`;
       addNode({
         id: evidenceId,
-        label: impact.proof,
+        label: impact.proof.value,
         type: "evidence",
         status: "verified",
-        description: `${impact.title}: ${impact.summary}`,
+        description: `${impact.title}: ${impact.proof.label}`,
         importance: 5,
         href: `/experience#${impact.id}`,
-        metadata: { qualifier: impact.proof, impactId: impact.id, company: experience.company },
+        metadata: {
+          qualifier: impact.proof.qualifier,
+          scope: impact.proof.scope,
+          impactId: impact.id,
+          company: experience.company,
+        },
       });
       addEdge(evidenceId, capabilityId, "evidence-for", "evidence for", "supported by evidence");
     }
   });
 
   for (const evidenceImpact of experience.impacts.filter((impact) => impact.proof)) {
-    const evidenceId = `evidence:experience:${evidenceImpact.id}:${graphSlug(evidenceImpact.proof!)}`;
+    const evidenceId = `evidence:experience:${evidenceImpact.id}:${graphSlug(evidenceImpact.proof!.value)}`;
     for (const supportedImpact of experience.impacts) {
       if (supportedImpact.id === evidenceImpact.id) continue;
-      if (!supportedImpact.summary.toLocaleLowerCase("en-US").includes(evidenceImpact.proof!.toLocaleLowerCase("en-US"))) continue;
+      if (!supportedImpact.summary.toLocaleLowerCase("en-US").includes(evidenceImpact.proof!.value.toLocaleLowerCase("en-US"))) continue;
       addEdge(
         evidenceId,
         `capability:${experience.id}:${supportedImpact.id}`,

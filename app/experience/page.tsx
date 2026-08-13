@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { ExperienceStory } from "@/components/content/experience-story";
+import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
 import { experiences } from "@/data/experience";
 import { metrics } from "@/data/metrics";
+import { profile } from "@/data/profile";
 
 export const metadata: Metadata = {
   title: "Experience",
@@ -12,9 +14,26 @@ export const metadata: Metadata = {
 
 export default function ExperiencePage() {
   const experience = experiences[0];
+  // Occupation only: the role ended in Mar 2026, so a present-tense
+  // `worksFor` would assert an employer relationship that no longer holds.
+  const occupationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${profile.links.website}/#person`,
+    name: profile.name,
+    url: profile.links.website,
+    jobTitle: profile.title,
+    hasOccupation: {
+      "@type": "Occupation",
+      name: experience.role,
+      occupationLocation: { "@type": "Place", name: experience.location },
+      skills: experience.impacts.flatMap((impact) => impact.topics),
+    },
+  };
 
   return (
     <main>
+      <JsonLd data={occupationJsonLd} />
       <header className="page-hero container experience-hero">
         <p className="eyebrow">Professional experience</p>
         <div className="experience-title-row">

@@ -47,7 +47,7 @@ export default function ResumePage() {
             <p>{experience.summary}</p>
             <ul className="resume-impact-list">
               {experience.impacts.slice(0, 4).map((impact) => (
-                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.proof ?? impact.summary}</span></li>
+                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.proof?.value ?? impact.summary}</span></li>
               ))}
             </ul>
             <Link className="section-link" href="/experience">Full experience <ArrowRight aria-hidden="true" size={14} /></Link>

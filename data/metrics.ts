@@ -14,10 +14,10 @@ export const metrics = [
     detail: "Production ML lifecycle ownership across multiple analytics use cases.",
   },
   {
-    value: "~9M RECORDS / DAY",
-    label: "Data pipelines",
+    value: "~9M CUSTOMERS",
+    label: "Customer-level tables",
     context: "Scale",
-    detail: "Batch and near-real-time workloads supporting training, inference and analytics.",
+    detail: "Batch and near-real-time pipelines consolidating many source tables into customer-level training, inference and analytics tables.",
   },
   {
     value: "75% RUNTIME REDUCTION",

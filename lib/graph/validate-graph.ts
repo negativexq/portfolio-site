@@ -122,7 +122,7 @@ export function validateGraphIntegrity(data: EngineeringGraphData): GraphIntegri
       }
 
       if (impact.proof) {
-        const evidenceId = `evidence:experience:${impact.id}:${graphSlug(impact.proof)}`;
+        const evidenceId = `evidence:experience:${impact.id}:${graphSlug(impact.proof.value)}`;
         const key = `evidence-for:${evidenceId}:${capabilityId}`;
         if (edgeKeySet.has(key)) {
           experienceRelationshipsValidated += 1;
@@ -132,15 +132,15 @@ export function validateGraphIntegrity(data: EngineeringGraphData): GraphIntegri
     }
 
     for (const evidenceImpact of experience.impacts.filter((impact) => impact.proof)) {
-      const evidenceId = `evidence:experience:${evidenceImpact.id}:${graphSlug(evidenceImpact.proof!)}`;
+      const evidenceId = `evidence:experience:${evidenceImpact.id}:${graphSlug(evidenceImpact.proof!.value)}`;
       for (const supportedImpact of experience.impacts) {
         if (supportedImpact.id === evidenceImpact.id) continue;
-        if (!supportedImpact.summary.toLocaleLowerCase("en-US").includes(evidenceImpact.proof!.toLocaleLowerCase("en-US"))) continue;
+        if (!supportedImpact.summary.toLocaleLowerCase("en-US").includes(evidenceImpact.proof!.value.toLocaleLowerCase("en-US"))) continue;
         const key = `evidence-for:${evidenceId}:capability:${experience.id}:${supportedImpact.id}`;
         if (edgeKeySet.has(key)) {
           experienceRelationshipsValidated += 1;
           evidenceRelationshipsValidated += 1;
-        } else missingExperienceRelationships.push(`${evidenceImpact.proof} -> ${supportedImpact.title}`);
+        } else missingExperienceRelationships.push(`${evidenceImpact.proof!.value} -> ${supportedImpact.title}`);
       }
     }
   }

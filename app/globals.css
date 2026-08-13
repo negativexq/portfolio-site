@@ -1706,21 +1706,31 @@ a {
   letter-spacing: -0.045em;
 }
 
-.story-summary {
+/* Column 3 stacks the narrative and its evidence, matching how a project
+   card keeps summary and proof together in its body column. */
+.story-body {
+  display: grid;
   grid-column: 3;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.story-context {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.story-summary {
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.7;
 }
 
-.story-proof {
-  grid-column: 2;
-  margin: 0.25rem 0 0;
-  color: var(--foreground);
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  font-weight: 750;
-  letter-spacing: -0.03em;
+.story-body .project-proof {
+  margin-top: 0.35rem;
 }
 
 .experience-story .tag-list {
@@ -3326,8 +3336,7 @@ a {
 
   .story-index,
   .experience-story h3,
-  .story-summary,
-  .story-proof,
+  .story-body,
   .experience-story .tag-list {
     grid-column: 1;
     grid-row: auto;
