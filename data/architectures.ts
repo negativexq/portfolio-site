@@ -1,6 +1,164 @@
 import type { ArchitectureDefinition } from "@/components/content/architecture-diagram";
 
 const architectures = {
+  "agentic-customer-service-platform": {
+    projectId: "agentic-customer-service-platform",
+    description:
+      "Authentication resolves a typed principal before the server derives an ExecutionContext that request bodies and model output cannot replace. The LangGraph runtime proposes a structured decision, but deterministic policy, confirmation and typed tools stand between that proposal and any business mutation. PostgreSQL owns business records, idempotency receipts, persistent memory and durable checkpoints; Qdrant serves the configured retrieval path; OpenTelemetry and the evaluation harness observe behavior without becoming authorization inputs.",
+    paths: [
+      {
+        id: "request-boundary",
+        label: "Authenticated request boundary",
+        summary: "Identity and customer scope are resolved server-side before any agent work begins.",
+        variant: "primary",
+        stages: [
+          {
+            id: "caller",
+            nodes: [{ id: "caller", label: "Customer / Operator", subtitle: "chat or console request", variant: "client" }],
+            edge: { label: "authenticated call" },
+          },
+          {
+            id: "api",
+            nodes: [{ id: "api", label: "FastAPI", subtitle: "HTTP boundary", variant: "service" }],
+            edge: { label: "resolves principal" },
+          },
+          {
+            id: "auth",
+            nodes: [{ id: "auth", label: "Authentication · RBAC", subtitle: "typed principal", variant: "control" }],
+            edge: { label: "derives" },
+          },
+          {
+            id: "context",
+            nodes: [
+              {
+                id: "execution-context",
+                label: "ExecutionContext",
+                subtitle: "server-owned identity + scope",
+                variant: "control",
+                items: ["actor · customer scope", "request + conversation ID"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "decision-path",
+        label: "Proposal to authorized execution",
+        summary: "The model proposes; typed validation, deterministic policy and confirmation decide whether a mutation is allowed.",
+        variant: "control",
+        layout: { type: "rows", rows: [3, 3] },
+        stages: [
+          {
+            id: "graph",
+            nodes: [{ id: "graph", label: "LangGraph Runtime", subtitle: "typed state · deterministic routing", variant: "service" }],
+            edge: { label: "structured decision" },
+          },
+          {
+            id: "understand",
+            nodes: [{ id: "understand", label: "Understand · Select Tool", subtitle: "Pydantic-validated proposal", variant: "analyzer" }],
+            edge: { label: "validates arguments" },
+          },
+          {
+            id: "validate",
+            nodes: [{ id: "validate", label: "Typed Tool Validation", subtitle: "ownership + schema checks", variant: "control" }],
+            edge: { label: "evaluates risk", variant: "control" },
+          },
+          {
+            id: "policy",
+            nodes: [{ id: "policy", label: "Policy Engine", subtitle: "deterministic · fail-closed", variant: "control" }],
+            edge: { label: "routes by risk", variant: "control", relation: "branch" },
+          },
+          {
+            id: "outcomes",
+            nodes: [
+              { id: "allow", label: "Allow", subtitle: "risk-0 / risk-1 execution", relationLabel: "permits", variant: "service" },
+              { id: "confirm", label: "Confirmation", subtitle: "durable pending action", relationLabel: "holds", variant: "control" },
+              { id: "human", label: "Human Escalation", subtitle: "high-risk handoff", relationLabel: "escalates", variant: "output" },
+            ],
+            edge: { label: "revalidates live state then executes", variant: "control", relation: "merge" },
+          },
+          {
+            id: "execute",
+            nodes: [
+              {
+                id: "tools",
+                label: "Typed Business Tools",
+                subtitle: "idempotent writes",
+                variant: "service",
+                items: ["request-scoped keys", "one receipt per action"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "state-boundaries",
+        label: "State ownership",
+        summary: "Durable identity, business effects, memory and checkpoints share one database boundary; retrieval stays separate.",
+        variant: "async",
+        stages: [
+          {
+            id: "state-source",
+            nodes: [{ id: "runtime-state", label: "Agent Runtime", subtitle: "context · memory · retrieval", variant: "service" }],
+            edge: { variant: "async", relation: "branch" },
+          },
+          {
+            id: "stores",
+            nodes: [
+              {
+                id: "postgres",
+                label: "PostgreSQL",
+                subtitle: "system of record",
+                relationLabel: "commits + checkpoints",
+                variant: "storage",
+                items: ["business records + receipts", "persistent memory", "LangGraph checkpoints"],
+              },
+              {
+                id: "qdrant",
+                label: "Qdrant",
+                subtitle: "versioned hybrid index",
+                relationLabel: "retrieves citations",
+                variant: "storage",
+                items: ["immutable snapshots", "atomic alias activation"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "observation",
+        label: "Observation and evaluation",
+        summary: "Telemetry and evaluation observe behavior without becoming authorization inputs.",
+        variant: "observability",
+        stages: [
+          {
+            id: "signal-sources",
+            nodes: [
+              { id: "api-spans", label: "HTTP boundary", subtitle: "safe metadata", variant: "service" },
+              { id: "graph-spans", label: "Agent runtime", subtitle: "run + tool spans", variant: "service" },
+            ],
+            edge: { label: "emits", variant: "observability", relation: "branch" },
+          },
+          {
+            id: "sinks",
+            nodes: [
+              { id: "otel", label: "OpenTelemetry / Jaeger", subtitle: "trace inspection", relationLabel: "traces", variant: "observability" },
+              { id: "console", label: "Operator Console", subtitle: "metadata-only projections", relationLabel: "projects", variant: "output" },
+              { id: "eval", label: "Evaluation Harness", subtitle: "deterministic + live suites", relationLabel: "scores", variant: "analyzer" },
+            ],
+          },
+        ],
+      },
+    ],
+    notes: [
+      "Model output is an untrusted proposal: it cannot select an actor, widen customer scope, confirm its own action or override live business state.",
+      "Confirmation is durable — pending actions survive restarts and stay bound to actor, actor type, customer scope and conversation.",
+      "Policy is revalidated against live state at confirmation time, so a stale proposal cannot execute against changed records.",
+      "Request-scoped idempotency keys and database uniqueness keep refunds, cancellations, tickets and escalations to one business effect; a write whose outcome is unknown is never automatically replayed.",
+      "Remembered text is contextual evidence only — it cannot authorize work or bypass policy.",
+      "Static bearer credentials keep local development simple; the authenticator, persistence, retrieval and provider abstractions are replaceable rather than a complete deployment environment.",
+    ],
+  },
   "real-time-commerce-platform": {
     projectId: "real-time-commerce-platform",
     description:

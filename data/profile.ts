@@ -4,9 +4,9 @@ export const profile = {
   name: "Ömer Faruk Koç",
   title: "MLOps & AI Platform Engineer",
   positioning:
-    "Building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+    "Building production AI/ML platforms, agentic systems, retrieval infrastructure and reliable data systems.",
   summary:
-    "3+ years building and operating production machine learning, data and Generative AI systems.",
+    "3+ years building and operating production ML, data and GenAI systems, with current work focused on agent reliability, evaluation, observability and platform control.",
   location: "Türkiye",
   availability: "Available for new opportunities",
   timezone: "UTC+3 / Istanbul",

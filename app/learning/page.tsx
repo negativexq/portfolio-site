@@ -20,9 +20,9 @@ const areas: readonly {
   {
     name: "Agent Systems",
     index: "01",
-    description: "Orchestration makes workflow state and recovery explicit; memory governs what persists across steps and future interactions.",
-    foundation: "MCP tooling and a bounded local agent",
-    direction: "Stateful orchestration and inspectable memory",
+    description: "Orchestration, deterministic policy and durable confirmation are implemented and evaluated; memory governs what persists across steps and future interactions.",
+    foundation: "Stateful LangGraph orchestration, deterministic policy and persistent memory",
+    direction: "Measured memory relevance, retention and compaction at scale",
   },
   {
     name: "Retrieval & Evaluation",

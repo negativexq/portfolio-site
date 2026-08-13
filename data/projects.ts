@@ -2,11 +2,98 @@ import type { Project, RoadmapItem } from "@/lib/content/types";
 
 const emptyRoadmap: readonly RoadmapItem[] = [];
 
-export const projects = [
+const projectRecords = [
+  {
+    id: "agentic-customer-service-platform",
+    slug: "agentic-customer-service-platform",
+    order: 1,
+    title: "Agentic Customer Service Platform",
+    category: "Agent Systems / AI Platform",
+    status: "current",
+    flagship: true,
+    summary:
+      "Production-oriented agent platform with deterministic policy controls, durable confirmation workflows, idempotent business actions, versioned hybrid RAG, operator observability and live-model evaluation.",
+    directAnswer:
+      "Agentic Customer Service Platform is a production-oriented LangGraph system that separates probabilistic model decisions from deterministic authorization, confirmation and execution. It combines durable workflow state, idempotent business writes, policy and execution audit trails, versioned hybrid RAG, persistent memory, operator projections and bilingual live-model evaluation.",
+    whyItExists:
+      "Explores how business-action-capable agents can remain inspectable and safe when the underlying model is probabilistic. The system treats model output as an untrusted proposal, then applies typed validation, deterministic policy, confirmation, live-state revalidation, idempotency and durable audit before protected mutations are allowed.",
+    technologies: [
+      "Python",
+      "FastAPI",
+      "LangGraph",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "Alembic",
+      "Qdrant",
+      "OpenTelemetry",
+      "Ollama",
+      "React",
+      "TypeScript",
+      "Docker Compose",
+    ],
+    concepts: [
+      "Agent Orchestration",
+      "Typed Structured Decisions",
+      "Deterministic Policy Engine",
+      "Human-in-the-Loop",
+      "Durable Checkpointing",
+      "Risk-Based Tool Execution",
+      "Confirmation Revalidation",
+      "Idempotent Business Writes",
+      "Exactly-Once Business Effects",
+      "Policy Audit Trail",
+      "Execution Audit Lifecycle",
+      "Agent Run Projections",
+      "Run / Action Identity",
+      "Failure Taxonomy",
+      "Hybrid RAG",
+      "Immutable Knowledge Snapshots",
+      "Atomic Alias Activation",
+      "Snapshot Rollback",
+      "Persistent Memory",
+      "Live Model Evaluation",
+      "Multilingual Evaluation",
+      "Prompt Injection Resistance",
+      "Observability",
+    ],
+    proofPoints: [
+      {
+        label: "Bilingual live-model evaluation",
+        value: "84 attempts",
+        scope: "28 EN/TR cases · 3 runs/case",
+        qualifier:
+          "qwen2.5:7b-instruct was evaluated through the real OpenAI-compatible provider using the versioned live_eval_v1 case set and live_scoring_v2 scoring contract. The benchmark separates model proposal quality from deterministic runtime safety.",
+      },
+      {
+        label: "Runtime safety boundary",
+        value: "0 unsafe executions · 0 confirmation bypasses",
+        scope: "Live Layer B safety scenarios",
+        qualifier:
+          "Across the live runtime safety suite, unsafe model proposals did not bypass deterministic policy or confirmation controls. Risk-2 cancellation flows preserved stable action identity, distinct invocation identities, one business mutation, one idempotency receipt and replay safety.",
+      },
+      {
+        label: "Deterministic evaluation",
+        value: "110 / 110",
+        scope: "Full deterministic agent evaluation suite",
+        qualifier:
+          "Additional dedicated safety and resilience suites run separately at 40/40 and 28/28.",
+      },
+      {
+        label: "Evaluated model selection",
+        value: "Baseline retained",
+        scope: "Three-model live comparison · 30s budget",
+        qualifier:
+          "A larger non-thinking candidate improved clarification and unsafe-proposal behavior but exceeded the unchanged 30-second serving budget and regressed tool selection; a smaller one stayed within budget but regressed tool selection further. The existing baseline was kept, so model choice stays an evaluated deployment decision rather than an assumption that newer or larger is better.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/agentic-customer-service-platform",
+  },
   {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
-    order: 1,
+    order: 2,
     title: "ModelOps Control Plane",
     category: "MLOps / AI Platform",
     status: "current",
@@ -67,7 +154,7 @@ export const projects = [
   {
     id: "knowledge-base-rag",
     slug: "knowledge-base-rag",
-    order: 2,
+    order: 3,
     title: "Knowledge Base RAG",
     category: "Generative AI / RAG Platform",
     status: "current",
@@ -137,58 +224,6 @@ export const projects = [
     githubUrl: "https://github.com/negativexq/knowledge-base-rag",
   },
   {
-    id: "repo-context-forge",
-    slug: "repo-context-forge",
-    order: 3,
-    title: "Repo Context Forge",
-    category: "Agent Infrastructure / Developer Tooling",
-    status: "current",
-    flagship: true,
-    summary:
-      "Local-first MCP repository intelligence and agent platform for deterministic, source-grounded code analysis within strict read-only boundaries.",
-    directAnswer:
-      "Repo Context Forge is a local-first MCP repository intelligence and agent platform with 40 configured tools across six local servers, plus a bounded source-grounded agent that uses a restricted tool subset by default.",
-    whyItExists:
-      "Provides secure repository access, deterministic search and analysis, and reproducible context packs without executing analyzed code or relaxing filesystem, path, process and tool-argument boundaries.",
-    technologies: ["Python", "MCP", "FastMCP", "Python AST", "Typer", "Docker", "Git", "Ollama"],
-    concepts: [
-      "Repository Intelligence",
-      "Source-Grounded Context",
-      "Deterministic Code Search",
-      "Symbol Analysis",
-      "References",
-      "Callers / Callees",
-      "Dependency Analysis",
-      "Dependency Graphs",
-      "Read-Only Git Intelligence",
-      "Context Packs",
-      "Task Bundles",
-      "Validated Tool Arguments",
-      "Filesystem / Path Containment",
-      "Read-Only Process Boundaries",
-      "Bounded Local Agent",
-    ],
-    proofPoints: [
-      {
-        label: "Configured MCP surface",
-        value: "40 tools",
-        scope: "Six local MCP servers",
-        qualifier:
-          "The platform configures 40 tools across six servers; the read-only local agent uses a bounded subset by default.",
-      },
-      {
-        label: "Prerelease validation",
-        value: "206 tests · 87% coverage",
-        scope: "v0.2 alpha validation",
-        qualifier:
-          "Validation covers deterministic analyzers, tool arguments, context generation and filesystem, path, Git and process security boundaries.",
-      },
-    ],
-    roadmap: emptyRoadmap,
-    relationships: [],
-    githubUrl: "https://github.com/negativexq/repo-context-forge",
-  },
-  {
     id: "real-time-commerce-platform",
     slug: "real-time-commerce-platform",
     order: 4,
@@ -249,13 +284,65 @@ export const projects = [
     githubUrl: "https://github.com/negativexq/real-time-commerce-platform",
   },
   {
+    id: "repo-context-forge",
+    slug: "repo-context-forge",
+    order: 5,
+    title: "Repo Context Forge",
+    category: "Agent Infrastructure / Developer Tooling",
+    status: "current",
+    flagship: false,
+    summary:
+      "Local-first MCP repository intelligence and agent platform for deterministic, source-grounded code analysis within strict read-only boundaries.",
+    directAnswer:
+      "Repo Context Forge is a local-first MCP repository intelligence and agent platform with 40 configured tools across six local servers, plus a bounded source-grounded agent that uses a restricted tool subset by default.",
+    whyItExists:
+      "Provides secure repository access, deterministic search and analysis, and reproducible context packs without executing analyzed code or relaxing filesystem, path, process and tool-argument boundaries.",
+    technologies: ["Python", "MCP", "FastMCP", "Python AST", "Typer", "Docker", "Git", "Ollama"],
+    concepts: [
+      "Repository Intelligence",
+      "Source-Grounded Context",
+      "Deterministic Code Search",
+      "Symbol Analysis",
+      "References",
+      "Callers / Callees",
+      "Dependency Analysis",
+      "Dependency Graphs",
+      "Read-Only Git Intelligence",
+      "Context Packs",
+      "Task Bundles",
+      "Validated Tool Arguments",
+      "Filesystem / Path Containment",
+      "Read-Only Process Boundaries",
+      "Bounded Local Agent",
+    ],
+    proofPoints: [
+      {
+        label: "Configured MCP surface",
+        value: "40 tools",
+        scope: "Six local MCP servers",
+        qualifier:
+          "The platform configures 40 tools across six servers; the read-only local agent uses a bounded subset by default.",
+      },
+      {
+        label: "Prerelease validation",
+        value: "206 tests · 87% coverage",
+        scope: "v0.2 alpha validation",
+        qualifier:
+          "Validation covers deterministic analyzers, tool arguments, context generation and filesystem, path, Git and process security boundaries.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/repo-context-forge",
+  },
+  {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 5,
+    order: 6,
     title: "dbt Feature Lineage",
     category: "Data Engineering / Lineage",
     status: "current",
-    flagship: true,
+    flagship: false,
     summary:
       "Manifest-aware dbt analysis for model dependencies, cross-model column lineage, change impact and query flow without a live warehouse.",
     directAnswer:
@@ -290,7 +377,7 @@ export const projects = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 6,
+    order: 7,
     title: "Production RAG Platform",
     category: "Generative AI / Retrieval",
     status: "current",
@@ -334,7 +421,7 @@ export const projects = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 7,
+    order: 8,
     title: "Terraform Docker Infrastructure Lab",
     category: "Infrastructure as Code / Platform Engineering",
     status: "current",
@@ -392,6 +479,10 @@ export const projects = [
     githubUrl: "https://github.com/negativexq/terraform-docker-infrastructure-lab",
   },
 ] satisfies readonly Project[];
+
+// `order` is the single source of truth for presentation sequence, so array
+// position and the field can never silently diverge.
+export const projects: readonly Project[] = [...projectRecords].sort((left, right) => left.order - right.order);
 
 export const flagshipProjects = projects.filter((project) => project.flagship);
 export const supportingProjects = projects.filter((project) => !project.flagship);

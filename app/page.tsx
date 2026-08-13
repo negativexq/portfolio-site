@@ -14,7 +14,11 @@ import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
 import { buildEngineeringGraph } from "@/lib/graph/build-graph";
 
-const currentDirectionIds = ["langgraph", "context-engineering-rag", "terraform"];
+const currentDirectionIds = [
+  "context-engineering-rag",
+  "ai-platform-observability",
+  "ai-platform-kubernetes",
+];
 
 export default function Home() {
   const experience = experiences[0];
@@ -74,7 +78,7 @@ export default function Home() {
             id="selected-work-heading"
             eyebrow="Selected work"
             title="Systems, not demos."
-            description="Public engineering projects built around reliability, evaluation, observability and explicit trade-offs."
+            description="Public engineering projects built around control boundaries, reliability, evaluation, observability and explicit trade-offs."
             action={
               <Link className="section-link" href="/projects">
                 All projects <ArrowRight aria-hidden="true" size={15} />

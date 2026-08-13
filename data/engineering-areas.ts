@@ -16,7 +16,11 @@ export const engineeringAreas = [
     description:
       "Retrieval, reranking, citation integrity, evaluation and private open-source model serving.",
     technologies: ["Qdrant", "Ollama", "OpenTelemetry", "DeepEval", "LangChain"],
-    evidenceProjectIds: ["knowledge-base-rag", "production-rag-platform"],
+    evidenceProjectIds: [
+      "knowledge-base-rag",
+      "agentic-customer-service-platform",
+      "production-rag-platform",
+    ],
     evidenceExperienceIds: ["fibabanka"],
   },
   {
@@ -39,11 +43,11 @@ export const engineeringAreas = [
   },
   {
     id: "agent-infrastructure",
-    title: "Agent Infrastructure / Developer Tooling",
+    title: "Agent Systems / Agent Infrastructure",
     description:
-      "Secure tool interfaces and source-grounded repository context for coding agents.",
-    technologies: ["MCP", "FastMCP", "Python AST", "Typer", "Git"],
-    evidenceProjectIds: ["repo-context-forge"],
+      "Stateful agent workflows with deterministic control boundaries, confirmation and recovery, secure tool interfaces, evaluation and observability.",
+    technologies: ["LangGraph", "MCP", "FastMCP", "PostgreSQL", "OpenTelemetry"],
+    evidenceProjectIds: ["agentic-customer-service-platform", "repo-context-forge"],
     evidenceExperienceIds: [],
   },
 ] satisfies readonly EngineeringArea[];

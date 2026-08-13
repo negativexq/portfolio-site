@@ -25,6 +25,7 @@ const projectAnchors: Record<string, { x: number; y: number }> = {
   "knowledge-base-rag": { x: 4.5, y: -3.4 },
   "production-rag-platform": { x: 7.3, y: -5.1 },
   "modelops-control-plane": { x: 0.2, y: -6.7 },
+  "agentic-customer-service-platform": { x: 5.6, y: 4.4 },
   "repo-context-forge": { x: 5.3, y: 1.4 },
   "dbt-feature-lineage": { x: -5.3, y: 1.4 },
   "terraform-docker-infrastructure-lab": { x: -2.8, y: -4.5 },
@@ -46,8 +47,8 @@ const explicitPositions: Record<string, { x: number; y: number }> = {
   "technology:mcp": { x: 7, y: 1.3 },
   "technology:dbt-core": { x: -6.8, y: 1.3 },
   "concept:hybrid-retrieval": { x: 5.1, y: -5.2 },
-  "learning:langgraph": { x: 8.5, y: 4.7 },
-  "learning:agent-memory": { x: 10, y: 6.1 },
+  "technology:langgraph": { x: 7.8, y: 5.2 },
+  "learning:agent-memory": { x: 9.4, y: 5.6 },
   "learning:context-engineering-rag": { x: 7.2, y: -3.8 },
   "learning:graphrag": { x: 8.6, y: -2.3 },
   "learning:llm-rag-evaluation": { x: 6.8, y: -5.4 },
@@ -63,6 +64,7 @@ const prominentTechnologies = new Set([
   "Docker Compose",
   "Qdrant",
   "Ollama",
+  "LangGraph",
   "MCP",
   "dbt Core",
   "Feature Store",
@@ -71,9 +73,12 @@ const prominentTechnologies = new Set([
 
 const canvasLabels: Readonly<Record<string, string>> = {
   "experience:fibabanka": "Fibabanka",
-  "domain:agent-infrastructure": "Agent Infrastructure",
+  "domain:agent-infrastructure": "Agent Systems",
   "project:real-time-commerce-platform": "Real-Time Commerce",
   "project:production-rag-platform": "Production RAG",
+  "project:agentic-customer-service-platform": "Agentic Customer Service",
+  "evidence:project:agentic-customer-service-platform:0-unsafe-executions-0-confirmation-bypasses": "0 unsafe · 0 bypass",
+  "evidence:project:agentic-customer-service-platform:baseline-retained": "Baseline retained",
   "evidence:experience:data-platform:120-min-30-min-75-reduction": "120 → 30 min",
   "evidence:experience:ml-platform:10-production-ml-models": "10+ ML Models",
   "evidence:experience:data-scale:9m-records-day": "~9M Records / Day",
@@ -429,8 +434,8 @@ export function buildEngineeringGraph(): EngineeringGraphData {
       type: "learning",
       status: item.status,
       description: item.rationale,
-      importance: item.id === "langgraph"
-        || item.id === "context-engineering-rag"
+      importance: item.id === "context-engineering-rag"
+        || item.id === "ai-platform-observability"
         || item.id === "terraform"
         || item.id === "ai-platform-kubernetes"
         ? 7

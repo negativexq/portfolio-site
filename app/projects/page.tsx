@@ -5,7 +5,7 @@ import { flagshipProjects, supportingProjects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Selected AI/ML platform, RAG, data and distributed systems engineering projects.",
+  description: "Selected AI platform, agent systems, RAG, data and distributed systems engineering projects.",
   alternates: { canonical: "/projects" },
 };
 
@@ -15,7 +15,7 @@ export default function ProjectsPage() {
       <header className="page-hero container">
         <p className="eyebrow">Public engineering work</p>
         <h1>Projects</h1>
-        <p>Evidence-led systems work across AI/ML platforms, retrieval, data infrastructure, distributed systems and agent tooling—with reliability, evaluation, observability and trade-offs made explicit.</p>
+        <p>Evidence-led systems work across AI platforms, agent systems, retrieval, data infrastructure and distributed systems—with reliability, evaluation, observability and trade-offs made explicit.</p>
       </header>
 
       <section className="section-shell page-section" aria-labelledby="featured-projects">
@@ -24,7 +24,7 @@ export default function ProjectsPage() {
             id="featured-projects"
             eyebrow="Featured work"
             title="Flagship systems"
-            description="Five current projects selected for depth, engineering evidence and relevance to platform work."
+            description="Four current projects selected for depth, engineering evidence and relevance to AI platform work."
           />
           <div className="project-grid">
             {flagshipProjects.map((project, index) => (
@@ -39,8 +39,8 @@ export default function ProjectsPage() {
           <SectionHeading
             id="supporting-projects"
             eyebrow="Supporting / evolution"
-            title="Earlier foundations"
-            description="Projects that show architectural iteration and how focused systems evolved into broader platforms."
+            title="Supporting work"
+            description="Focused tools and earlier foundations that show architectural iteration and how narrower systems evolved into broader platforms."
           />
           <div className="supporting-grid">
             {supportingProjects.map((project) => (

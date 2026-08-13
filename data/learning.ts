@@ -2,51 +2,27 @@ import type { LearningItem } from "@/lib/content/types";
 
 export const learningItems = [
   {
-    id: "langgraph",
-    title: "LangGraph",
-    status: "learning",
-    area: "Agent Systems",
-    rationale:
-      "Exploring how stateful agent workflows can make branching, retries, failure recovery and human intervention explicit rather than hiding them inside prompt-driven control flow.",
-    previewSummary:
-      "Stateful agent workflows with explicit branching, retries, checkpointing and recovery.",
-    topics: [
-      "Stateful workflows",
-      "Branching",
-      "Retries",
-      "Failure recovery",
-      "Human-in-the-loop",
-      "Tool execution",
-      "Checkpointing",
-      "Workflow observability",
-    ],
-    evidenceTarget:
-      "Build and validate a production-style agent workflow with explicit state transitions, tracing and reproducible failure scenarios.",
-    connectedProjectIds: ["repo-context-forge"],
-    connectedAreaIds: ["agent-infrastructure"],
-    connectedLearningIds: [],
-  },
-  {
     id: "agent-memory",
     title: "Agentic Memory",
     status: "learning",
     area: "Agent Systems",
     rationale:
-      "Investigating how short-term workflow state and persistent memory can be separated, retrieved and compacted while keeping agent behavior inspectable and bounded.",
+      "Customer-scoped persistent memory with consent, TTL and deletion already runs in the agentic platform, where remembered text is contextual evidence and cannot authorize work. The open question is how memory behaves as it grows: which entries stay worth retrieving, how retention and compaction should be decided, and how relevance is measured rather than assumed.",
+    previewSummary:
+      "Measuring retrieval relevance, retention and compaction as persistent agent memory grows.",
     topics: [
-      "Short-term state",
-      "Long-term memory",
       "Episodic memory",
       "Semantic memory",
       "Memory retrieval",
+      "Relevance measurement",
       "Memory compaction",
       "Retention policies",
       "Memory lifecycle",
-      "Relevance filtering",
+      "Conflict handling",
     ],
     evidenceTarget:
-      "Add persistent memory to an agent workflow and evaluate retrieval relevance, retention behavior, compaction and failure cases.",
-    connectedProjectIds: ["repo-context-forge"],
+      "Extend the existing persistent-memory implementation with a repeatable benchmark for retrieval relevance, retention behavior, compaction and conflict cases as memory volume grows.",
+    connectedProjectIds: ["agentic-customer-service-platform"],
     connectedAreaIds: ["agent-infrastructure"],
     connectedLearningIds: [],
   },
@@ -163,6 +139,8 @@ export const learningItems = [
     area: "Platform Infrastructure",
     rationale:
       "Extending containerized AI platform work toward production orchestration, with emphasis on model serving, rollout control, resource isolation, scaling and observability.",
+    previewSummary:
+      "Moving model serving and rollout control onto orchestrated, resource-isolated infrastructure.",
     topics: [
       "Model serving",
       "Application workloads",
@@ -190,6 +168,8 @@ export const learningItems = [
     area: "Platform Infrastructure",
     rationale:
       "Extending existing OpenTelemetry, Jaeger, Prometheus, Grafana and rollout-verification work toward AI-platform-specific signals across model serving, retrieval, agent execution and release automation.",
+    previewSummary:
+      "AI-specific signals and explicit SLIs across model serving, retrieval and agent execution.",
     topics: [
       "Distributed tracing",
       "Model-serving metrics",
@@ -205,7 +185,11 @@ export const learningItems = [
     ],
     evidenceTarget:
       "Define and validate an observable AI service workflow with end-to-end traces, platform metrics, failure classification and a small set of explicit SLIs.",
-    connectedProjectIds: ["modelops-control-plane", "knowledge-base-rag"],
+    connectedProjectIds: [
+      "modelops-control-plane",
+      "knowledge-base-rag",
+      "agentic-customer-service-platform",
+    ],
     connectedAreaIds: ["ai-ml-platform", "generative-ai-rag"],
     connectedLearningIds: [],
   },
