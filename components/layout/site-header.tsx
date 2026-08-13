@@ -5,7 +5,6 @@ import { ArrowUpRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 import type { Ref } from "react";
-import gsap from "gsap";
 import { profile } from "@/data/profile";
 
 const navigation = [
@@ -65,7 +64,6 @@ function NavigationLinks({
 export function SiteHeader() {
   const pathname = usePathname();
   const detailsRef = useRef<HTMLDetailsElement>(null);
-  const menuListRef = useRef<HTMLUListElement>(null);
 
   const closeMenu = useCallback(() => {
     const details = detailsRef.current;
@@ -80,43 +78,16 @@ export function SiteHeader() {
 
   useEffect(() => {
     const details = detailsRef.current;
-    const menuList = menuListRef.current;
-    if (!details || !menuList) return;
+    if (!details) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || !details.open) return;
       details.open = false;
       details.querySelector("summary")?.focus();
     };
+
     details.addEventListener("keydown", onKeyDown);
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      return () => details.removeEventListener("keydown", onKeyDown);
-    }
-
-    const onToggle = () => {
-      if (details.open) {
-        // Animate the ul itself (already position:absolute), not an ancestor:
-        // a lingering GSAP transform on the <nav> wrapper would make it the
-        // new containing block for this absolutely-positioned list and break
-        // its left:0/right:0 sizing. Same reasoning applies if a closing
-        // animation is ever added here — clear the transform afterwards.
-        gsap.from(menuList, {
-          opacity: 0,
-          y: -6,
-          duration: 0.22,
-          ease: "power2.out",
-          clearProps: "transform",
-        });
-      }
-    };
-    details.addEventListener("toggle", onToggle);
-
-    return () => {
-      details.removeEventListener("keydown", onKeyDown);
-      details.removeEventListener("toggle", onToggle);
-    };
+    return () => details.removeEventListener("keydown", onKeyDown);
   }, []);
 
   return (
@@ -135,7 +106,7 @@ export function SiteHeader() {
             <Menu aria-hidden="true" size={18} /> <span>Menu</span>
           </summary>
           <nav aria-label="Mobile navigation">
-            <NavigationLinks listRef={menuListRef} onLinkClick={closeMenu} />
+            <NavigationLinks onLinkClick={closeMenu} />
           </nav>
         </details>
       </div>

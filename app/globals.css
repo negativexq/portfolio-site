@@ -3003,6 +3003,19 @@ a {
     border-bottom: 1px solid var(--border);
     padding: 0.7rem var(--gutter) 1rem;
     background: var(--background);
+    /* Animation, not transition: <details> has no transitionable open state.
+       Applied to the list itself — animating an ancestor would leave it as the
+       containing block for this absolutely-positioned list and break its
+       left:0/right:0 sizing. The global prefers-reduced-motion rule collapses
+       the duration. */
+    animation: mobile-nav-open var(--motion-normal) var(--motion-ease) both;
+  }
+
+  @keyframes mobile-nav-open {
+    from {
+      opacity: 0;
+      transform: translateY(-0.375rem);
+    }
   }
 
   .mobile-nav li + li {

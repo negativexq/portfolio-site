@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
-import { flagshipProjects, supportingProjects } from "@/data/projects";
+import { MotionController } from "@/components/motion/motion-controller";
+import { flagshipProjects, projects, supportingProjects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -10,8 +12,25 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": "https://omerfkoc.dev/projects#project-list",
+    name: "Public engineering projects",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: projects.length,
+    itemListElement: projects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `https://omerfkoc.dev/projects/${project.slug}`,
+      name: project.title,
+    })),
+  };
+
   return (
     <main>
+      <MotionController />
+      <JsonLd data={itemListJsonLd} />
       <header className="page-hero container">
         <p className="eyebrow">Public engineering work</p>
         <h1>Projects</h1>

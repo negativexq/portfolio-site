@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { MotionController } from "@/components/motion/motion-controller";
+import { profile } from "@/data/profile";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,31 +18,33 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+// Derived from the profile so the hero, search snippet and social card can
+// never drift apart again — positioning lives in data/profile.ts only.
+const siteTitle = `${profile.name} — ${profile.title}`;
+const siteDescription = `${profile.title}. ${profile.positioning}`;
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://omerfkoc.dev"),
+  metadataBase: new URL(profile.links.website),
   title: {
-    default: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
-    template: "%s — Ömer Faruk Koç",
+    default: siteTitle,
+    template: `%s — ${profile.name}`,
   },
-  description:
-    "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+  description: siteDescription,
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
-    url: "https://omerfkoc.dev",
-    siteName: "Ömer Faruk Koç",
-    title: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
-    description:
-      "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
-    images: [{ url: "/opengraph-image", alt: "Ömer Faruk Koç — MLOps & AI Platform Engineer" }],
+    url: profile.links.website,
+    siteName: profile.name,
+    title: siteTitle,
+    description: siteDescription,
+    images: [{ url: "/opengraph-image", alt: siteTitle }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ömer Faruk Koç — MLOps & AI Platform Engineer",
-    description:
-      "MLOps & AI Platform Engineer building production ML platforms, RAG systems, data pipelines and event-driven applications.",
+    title: siteTitle,
+    description: siteDescription,
     images: ["/opengraph-image"],
   },
 };
@@ -51,7 +53,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <MotionController />
         <a className="skip-link" href="#main-content">
           Skip to main content
         </a>

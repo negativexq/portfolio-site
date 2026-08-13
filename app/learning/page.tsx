@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LearningCard } from "@/components/content/learning-card";
+import { MotionController } from "@/components/motion/motion-controller";
 import { learningItems } from "@/data/learning";
 import { getProjectById } from "@/data/projects";
 import type { LearningArea } from "@/lib/content/types";
@@ -43,6 +44,7 @@ const areas: readonly {
 export default function LearningPage() {
   return (
     <main>
+      <MotionController />
       <header className="page-hero container">
         <p className="eyebrow">Learning / building next</p>
         <h1>Extending the engineering boundary.</h1>

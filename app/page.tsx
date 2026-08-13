@@ -6,6 +6,7 @@ import { MetricGrid } from "@/components/content/metric-grid";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
 import { StatusBadge } from "@/components/content/status-badge";
+import { MotionController } from "@/components/motion/motion-controller";
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
 import { learningItems } from "@/data/learning";
@@ -38,6 +39,7 @@ export default function Home() {
 
   return (
     <main>
+      <MotionController />
       <JsonLd data={personJsonLd} />
       <section className="hero container" aria-labelledby="hero-title">
         <p className="hero-name">{profile.name}</p>
