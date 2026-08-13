@@ -156,6 +156,8 @@ const architectures = {
       "Policy is revalidated against live state at confirmation time, so a stale proposal cannot execute against changed records.",
       "Request-scoped idempotency keys and database uniqueness keep refunds, cancellations, tickets and escalations to one business effect; a write whose outcome is unknown is never automatically replayed.",
       "Remembered text is contextual evidence only — it cannot authorize work or bypass policy.",
+      "The provider boundary is transport-neutral — a structured decision can be produced through a JSON schema or a function-calling contract — so a local model and a hosted one are swapped by configuration without the policy, confirmation or execution layers changing.",
+      "Because those layers never move, every candidate model is measured on the same runtime: the benchmark compares proposal quality, and the deterministic boundary is what keeps an unsafe proposal from becoming an unsafe action.",
       "Static bearer credentials keep local development simple; the authenticator, persistence, retrieval and provider abstractions are replaceable rather than a complete deployment environment.",
     ],
   },

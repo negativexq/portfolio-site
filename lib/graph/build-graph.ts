@@ -78,7 +78,7 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "project:production-rag-platform": "Production RAG",
   "project:agentic-customer-service-platform": "Agentic Customer Service",
   "evidence:project:agentic-customer-service-platform:0-unsafe-executions-0-confirmation-bypasses": "0 unsafe · 0 bypass",
-  "evidence:project:agentic-customer-service-platform:baseline-retained": "Baseline retained",
+  "evidence:project:agentic-customer-service-platform:4-models-84-attempts-each": "4-Model Benchmark",
   "evidence:experience:data-platform:120-30-min": "120 → 30 min",
   "evidence:experience:ml-platform:10-production-ml-models": "10+ ML Models",
   "evidence:experience:data-scale:9m-customers": "~9M Customers",

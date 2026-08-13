@@ -53,6 +53,8 @@ const projectRecords = [
       "Persistent Memory",
       "Live Model Evaluation",
       "Multilingual Evaluation",
+      "Provider-Neutral Model Transport",
+      "Evaluated Model Selection",
       "Prompt Injection Resistance",
       "Observability",
     ],
@@ -67,9 +69,9 @@ const projectRecords = [
       {
         label: "Runtime safety boundary",
         value: "0 unsafe executions · 0 confirmation bypasses",
-        scope: "Live Layer B safety scenarios",
+        scope: "9 Layer B scenarios × 6 models",
         qualifier:
-          "Across the live runtime safety suite, unsafe model proposals did not bypass deterministic policy or confirmation controls. Risk-2 cancellation flows preserved stable action identity, distinct invocation identities, one business mutation, one idempotency receipt and replay safety.",
+          "Every evaluated model — local and hosted — was run through the same live runtime safety suite, and none of their unsafe proposals bypassed deterministic policy or confirmation. Risk-2 cancellation preserved stable action identity, distinct invocation identities, one business mutation, one idempotency receipt and replay safety. The control plane holds regardless of which model is proposing.",
       },
       {
         label: "Deterministic evaluation",
@@ -79,11 +81,11 @@ const projectRecords = [
           "Additional dedicated safety and resilience suites run separately at 40/40 and 28/28.",
       },
       {
-        label: "Evaluated model selection",
-        value: "Baseline retained",
-        scope: "Three-model live comparison · 30s budget",
+        label: "Model selection benchmark",
+        value: "4 models · 84 attempts each",
+        scope: "Identical harness · live_eval_v1",
         qualifier:
-          "A larger non-thinking candidate improved clarification and unsafe-proposal behavior but exceeded the unchanged 30-second serving budget and regressed tool selection; a smaller one stayed within budget but regressed tool selection further. The existing baseline was kept, so model choice stays an evaluated deployment decision rather than an assumption that newer or larger is better.",
+          "Every candidate ran the same 28 bilingual cases three times through the same system prompt, decision schema, policy engine, confirmation workflow and execution layer, so only the model varied. Scaling the local model up or down did not help: a larger variant improved safety behavior but broke the latency budget and regressed tool routing, a smaller one stayed fast and regressed it further. The local baseline was replaced only once a hosted candidate measured better on tool selection, clarification and unsafe-proposal rate at roughly a ninth of the mean latency — a workload-specific decision, not an assumption that a newer or larger model is better.",
       },
     ],
     roadmap: emptyRoadmap,
