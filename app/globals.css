@@ -701,7 +701,12 @@ a {
 }
 
 .proof-qualifier {
-  max-width: 48rem;
+  /* In ch, not rem: this text carries the measurement methodology and is the
+     smallest type on the site, so it needs the shortest measure — and the
+     compact variant renders a step smaller again. A fixed rem width gave 93
+     and 86 characters per line for the two sizes; ch tracks the element's own
+     font-size and lands both near the 65–75 target. */
+  max-width: 72ch;
   margin: 0.75rem 0 0;
   color: var(--muted);
   font-size: 0.78rem;
@@ -2921,6 +2926,33 @@ a {
 
 .footer-links a:hover {
   color: var(--foreground);
+}
+
+/* Touch targets.
+   Keyed on pointer type rather than a width breakpoint: a 1024px tablet is
+   still touch-operated, and a narrow desktop window is still a mouse. These
+   links are 18–24px tall by design on a pointer device, which is fine for a
+   cursor but half the 44px minimum for a finger. The extra height is added
+   with padding and pulled back out with a negative margin, so the surrounding
+   layout keeps the spacing it was designed with. */
+@media (pointer: coarse) {
+  .brand,
+  .footer-links a,
+  .project-card-actions a,
+  .mobile-nav summary {
+    min-height: 44px;
+  }
+
+  .footer-links a,
+  .project-card-actions a {
+    padding-block: 0.75rem;
+    margin-block: -0.75rem;
+  }
+
+  .mobile-nav summary {
+    padding-inline: 0.5rem;
+    margin-inline: -0.5rem;
+  }
 }
 
 @media (max-width: 1100px) {
