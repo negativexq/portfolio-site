@@ -895,6 +895,22 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
     });
   }, [animateFocusedLayout, focusNeighborhood, graph, nodeById, prepareProjectFocusPresentation, updateUrlNode]);
 
+  // Only for selections made from the accessible list: the user has
+  // scrolled past the canvas to reach it, so bring the canvas back into
+  // view. focusNode() itself must stay scroll-free — it's also triggered by
+  // direct node clicks, search, the detail panel and mobile shortcuts, none
+  // of which should yank the page.
+  const handleBrowseSelect = useCallback((nodeId: string) => {
+    focusNode(nodeId);
+    window.requestAnimationFrame(() => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      containerRef.current?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
+    });
+  }, [focusNode]);
+
   const resetGraph = useCallback(() => {
     setFilters(DEFAULT_GRAPH_FILTERS);
     setQuery("");
@@ -1223,7 +1239,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         />
       </div>
 
-      <GraphBrowseList data={data} onSelect={focusNode} />
+      <GraphBrowseList data={data} onSelect={handleBrowseSelect} />
       <p className="graph-data-summary">
         {data.nodes.length} source-grounded nodes · {data.edges.length} validated relationships · no external API data
       </p>
