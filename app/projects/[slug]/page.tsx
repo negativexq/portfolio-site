@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
+import { MetricGrid } from "@/components/content/metric-grid";
 import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
@@ -83,6 +84,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   const sections = [
     { id: "overview", navLabel: "Overview", kickerText: "Overview" },
+    ...(project.highlights && project.highlights.length > 0
+      ? [{ id: "highlights", navLabel: "Highlights", kickerText: "Engineering highlights" }]
+      : []),
     ...(projectArchitecture
       ? [{ id: "architecture", navLabel: "Architecture", kickerText: "Architecture" }]
       : []),
@@ -118,6 +122,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
           View repository <ArrowUpRight aria-hidden="true" size={15} />
         </a>
+        {project.heroMetrics && project.heroMetrics.length > 0 ? (
+          <MetricGrid metrics={project.heroMetrics} />
+        ) : null}
       </header>
 
       <div className={`container detail-layout${projectArchitecture ? " detail-layout--architecture" : ""}`}>
@@ -137,6 +144,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <p>{project.directAnswer}</p>
             <p>{project.whyItExists}</p>
           </section>
+
+          {project.highlights && project.highlights.length > 0 ? (
+            <section id="highlights" className="detail-section">
+              <p className="detail-kicker">{kicker("highlights")}</p>
+              <h2>What makes this different</h2>
+              <div className="highlight-grid">
+                {project.highlights.map((highlight) => (
+                  <article key={highlight.title}>
+                    <h3>{highlight.title}</h3>
+                    <p>{highlight.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           {projectArchitecture ? (
             <section id="architecture" className="detail-section">

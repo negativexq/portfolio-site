@@ -44,6 +44,11 @@ export type ProjectEvolution = {
   narrative: string;
 };
 
+export type ProjectHighlight = {
+  title: string;
+  description: string;
+};
+
 export type Project = {
   id: string;
   slug: string;
@@ -59,6 +64,10 @@ export type Project = {
   technologies: readonly string[];
   concepts: readonly string[];
   proofPoints: readonly ProofPoint[];
+  /** Optional headline stat strip for the hero — scoped, evidence-backed numbers only. */
+  heroMetrics?: readonly Metric[];
+  /** Optional short, scannable engineering claims for the top of the case study. */
+  highlights?: readonly ProjectHighlight[];
   roadmap: readonly RoadmapItem[];
   relationships: readonly ProjectRelationship[];
   evolvedFrom?: ProjectEvolution;

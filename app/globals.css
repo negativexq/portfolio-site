@@ -981,6 +981,10 @@ a {
   padding-block: clamp(3rem, 7vw, 5.5rem) clamp(4.5rem, 9vw, 7rem);
 }
 
+.project-detail-hero .metric-grid {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
 .back-link {
   margin-bottom: clamp(3.5rem, 8vw, 6rem);
   color: var(--muted);
@@ -1080,6 +1084,38 @@ a {
   display: grid;
   gap: 1.5rem;
   max-width: 50rem;
+}
+
+.highlight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.highlight-grid article {
+  min-width: 0;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.highlight-grid h3,
+.highlight-grid p {
+  margin: 0;
+}
+
+.highlight-grid h3 {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.highlight-grid p {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
 }
 
 .architecture-visual {
@@ -3468,7 +3504,8 @@ a {
 
   .resume-impact-list li,
   .resume-area-list,
-  .resume-sidebar {
+  .resume-sidebar,
+  .highlight-grid {
     grid-template-columns: 1fr;
   }
 

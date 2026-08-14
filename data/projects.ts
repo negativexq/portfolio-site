@@ -12,11 +12,69 @@ const projectRecords = [
     status: "current",
     flagship: true,
     summary:
-      "Production-oriented agent platform with deterministic policy controls, durable confirmation workflows, idempotent business actions, versioned hybrid RAG, operator observability and live-model evaluation.",
+      "A production-oriented agentic customer service platform where LLM output is treated as an untrusted proposal, and every real-world action passes through deterministic grounding, authorization, policy, confirmation, idempotency and audit before it can execute.",
     directAnswer:
-      "Agentic Customer Service Platform is a production-oriented LangGraph system that separates probabilistic model decisions from deterministic authorization, confirmation and execution. It combines durable workflow state, idempotent business writes, policy and execution audit trails, versioned hybrid RAG, persistent memory, operator projections and bilingual live-model evaluation.",
+      "Agentic Customer Service Platform is a production-oriented LangGraph system built around one principle: the LLM proposes, deterministic software decides what is allowed to execute. Model output for a request type, target and semantic intent is untrusted input; typed validation, a deterministic policy engine, durable confirmation, live-state revalidation, idempotent writes and audit trails sit between that proposal and any business mutation.",
     whyItExists:
-      "Explores how business-action-capable agents can remain inspectable and safe when the underlying model is probabilistic. The system treats model output as an untrusted proposal, then applies typed validation, deterministic policy, confirmation, live-state revalidation, idempotency and durable audit before protected mutations are allowed.",
+      "LLMs are probabilistic; business actions are not. This project explores how an agent can operate against real customer accounts — refunds, cancellations, escalations — without giving the model direct authority over destructive actions. A prospective live evaluation (M6.15B) found unsafe model proposals that survived the deterministic controls of that time; rather than prompt-tuning around the failures, the fix was architectural — semantic grounding and destructive-target admissibility checks added to the control plane itself. The next frozen evaluation (M6.20B) measured the same failure class again and found executable, confirmation-required survivors down from 15 to 3, an 80% reduction, with zero unsafe executions in both runs. The remaining three are tracked as an open containment gap, not a closed result.",
+    heroMetrics: [
+      {
+        value: "540 RUNS",
+        label: "Prospective evaluation",
+        context: "Scale",
+        detail: "180 bilingual scenarios × 3 repetitions, M6.20B, frozen live_eval_v2.",
+      },
+      {
+        value: "0 UNSAFE EXECUTIONS",
+        label: "Deterministic containment",
+        context: "Safety",
+        detail: "No unsafe model proposal reached execution across the full M6.20B run.",
+      },
+      {
+        value: "15 → 3",
+        label: "Unsafe executable survivors",
+        context: "Hardening",
+        detail: "An 80% reduction after adding deterministic semantic grounding and destructive-target admissibility guards.",
+      },
+      {
+        value: "0 BYPASSES",
+        label: "Confirmation compliance",
+        context: "Safety",
+        detail: "Every confirmation-required action was revalidated before executing; none bypassed the confirmation boundary.",
+      },
+    ],
+    highlights: [
+      {
+        title: "Deterministic agent safety",
+        description:
+          "Explicit identifiers must be grounded in the user's current request before destructive actions can proceed. Symbolic or model-invented targets are blocked or routed to clarification instead of executing.",
+      },
+      {
+        title: "Transaction-safe business actions",
+        description:
+          "Writes use actor- and request-scoped idempotency keys, database uniqueness constraints and durable receipts. A write whose outcome is unknown is never automatically replayed.",
+      },
+      {
+        title: "Human-in-the-loop that survives restarts",
+        description:
+          "Confirmation is bound to a durable pending action rather than a regenerated model response. Ownership, arguments and current business state are revalidated before it executes.",
+      },
+      {
+        title: "Production-oriented RAG",
+        description:
+          "Hybrid dense + sparse retrieval with reciprocal-rank fusion and optional reranking, versioned snapshots with atomic alias activation, and bounded fallback when the reranker fails.",
+      },
+      {
+        title: "Evaluation as a first-class system",
+        description:
+          "Frozen bilingual scenarios, source-bound approvals, immutable hashes and explicit budgets run across deterministic regression, safety and resilience suites, plus an approval-gated prospective live run.",
+      },
+      {
+        title: "Operational visibility",
+        description:
+          "OpenTelemetry traces cover agent, tool, policy, RAG, memory and resilience stages while excluding raw customer prompts and sensitive tool arguments from labels.",
+      },
+    ],
     technologies: [
       "Python",
       "FastAPI",
