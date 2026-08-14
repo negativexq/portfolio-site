@@ -8,15 +8,15 @@ const projectRecords = [
     slug: "agentic-customer-service-platform",
     order: 1,
     title: "Agentic Customer Service Platform",
-    category: "Agent Systems / AI Platform",
+    category: "AI Reliability / Execution Infrastructure",
     status: "current",
     flagship: true,
     summary:
-      "A production-oriented agentic customer service platform where LLM output is treated as an untrusted proposal, and every real-world action passes through deterministic grounding, authorization, policy, confirmation, idempotency and audit before it can execute.",
+      "Reliable execution infrastructure built around a nondeterministic component: every LLM output is treated as an untrusted proposal, and deterministic grounding, authorization, policy, confirmation, idempotency and audit decide what is actually allowed to reach a real customer account.",
     directAnswer:
-      "Agentic Customer Service Platform is a production-oriented LangGraph system built around one principle: the LLM proposes, deterministic software decides what is allowed to execute. Model output for a request type, target and semantic intent is untrusted input; typed validation, a deterministic policy engine, durable confirmation, live-state revalidation, idempotent writes and audit trails sit between that proposal and any business mutation.",
+      "Agentic Customer Service Platform is a case study in designing reliable execution infrastructure around a nondeterministic system. A LangGraph agent proposes actions against real customer accounts, but a deterministic control plane — typed validation, policy, durable confirmation, live-state revalidation, idempotent writes and audit — decides what is actually allowed to execute. Customer service is the proving ground; the infrastructure pattern, not the chat surface, is the point.",
     whyItExists:
-      "LLMs are probabilistic; business actions are not. This project explores how an agent can operate against real customer accounts — refunds, cancellations, escalations — without giving the model direct authority over destructive actions. A prospective live evaluation (M6.15B) found unsafe model proposals that survived the deterministic controls of that time; rather than prompt-tuning around the failures, the fix was architectural — semantic grounding and destructive-target admissibility checks added to the control plane itself. The next frozen evaluation (M6.20B) measured the same failure class again and found executable, confirmation-required survivors down from 15 to 3, an 80% reduction, with zero unsafe executions in both runs. The remaining three are tracked as an open containment gap, not a closed result.",
+      "LLMs are probabilistic; business actions are not. This project is not agent feature development — it's an investigation into how to build execution infrastructure that stays correct when the component proposing the work cannot be trusted. A prospective live evaluation (M6.15B) found unsafe model proposals that survived the deterministic controls of that time; rather than prompt-tuning around the failures, the fix was architectural — semantic grounding and destructive-target admissibility checks added to the control plane itself. The next frozen evaluation (M6.20B) measured the same failure class again and found executable, confirmation-required survivors down from 15 to 3, an 80% reduction, with zero unsafe executions in both runs. The remaining three are tracked as an open containment gap, not a closed result.",
     heroMetrics: [
       {
         value: "540 RUNS",
@@ -90,6 +90,7 @@ const projectRecords = [
       "Docker Compose",
     ],
     concepts: [
+      "Reliable Execution Infrastructure",
       "Agent Orchestration",
       "Typed Structured Decisions",
       "Deterministic Policy Engine",

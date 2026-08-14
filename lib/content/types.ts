@@ -1,6 +1,7 @@
 export type ProjectStatus = "current" | "learning" | "planned" | "archived";
 
 export type ProjectCategory =
+  | "AI Reliability / Execution Infrastructure"
   | "Agent Systems / AI Platform"
   | "Distributed Systems / Streaming"
   | "Generative AI / RAG Platform"
