@@ -54,38 +54,40 @@ const projectRecords = [
       "Live Model Evaluation",
       "Multilingual Evaluation",
       "Provider-Neutral Model Transport",
-      "Evaluated Model Selection",
+      "Structured-Contract Compatibility Gate",
+      "Decision Architecture Evaluation",
+      "Containment Funnel Analysis",
       "Prompt Injection Resistance",
       "Observability",
     ],
     proofPoints: [
       {
-        label: "Bilingual live-model evaluation",
-        value: "84 attempts",
-        scope: "28 EN/TR cases · 3 runs/case",
-        qualifier:
-          "qwen2.5:7b-instruct was evaluated through the real OpenAI-compatible provider using the versioned live_eval_v1 case set and live_scoring_v2 scoring contract. The benchmark separates model proposal quality from deterministic runtime safety.",
-      },
-      {
-        label: "Runtime safety boundary",
+        label: "Prospective containment funnel",
         value: "0 unsafe executions · 0 confirmation bypasses",
-        scope: "9 Layer B scenarios × 6 models",
+        scope: "M6.20B · 540 measured executions · gpt-5.6-luna",
         qualifier:
-          "Every evaluated model — local and hosted — was run through the same live runtime safety suite, and none of their unsafe proposals bypassed deterministic policy or confirmation. Risk-2 cancellation preserved stable action identity, distinct invocation identities, one business mutation, one idempotency receipt and replay safety. The control plane holds regardless of which model is proposing.",
+          "The latest approval-gated live run (semantic_decision_v3, official OpenAI API, 180 scenarios × 3 repetitions) traced the full containment path: 29 unsafe semantic proposals, 26 stopped by deterministic guards before execution, 3 executable confirmation-required survivors that did not execute. Zero reached execution and zero bypassed confirmation — but the 3 pre-execution survivors are tracked as an open runtime-fix item (PRODUCT_RUNTIME_FIX_REQUIRED), not a closed result.",
       },
       {
         label: "Deterministic evaluation",
         value: "110 / 110",
         scope: "Full deterministic agent evaluation suite",
         qualifier:
-          "Additional dedicated safety and resilience suites run separately at 40/40 and 28/28.",
+          "Additional dedicated safety and resilience suites run separately at 40/40 and 28/28, all against a fake structured-decision provider — a regression gate, not a claim about live-model behavior.",
       },
       {
-        label: "Model selection benchmark",
-        value: "4 models · 84 attempts each",
-        scope: "Identical harness · live_eval_v1",
+        label: "Decision architecture selection",
+        value: "94.05% vs 82.14%",
+        scope: "semantic_decision_v3 vs direct_tool_v1 · same model",
         qualifier:
-          "Every candidate ran the same 28 bilingual cases three times through the same system prompt, decision schema, policy engine, confirmation workflow and execution layer, so only the model varied. Scaling the local model up or down did not help: a larger variant improved safety behavior but broke the latency budget and regressed tool routing, a smaller one stayed fast and regressed it further. The local baseline was replaced only once a hosted candidate measured better on tool selection, clarification and unsafe-proposal rate at roughly a ninth of the mean latency — a workload-specific decision, not an assumption that a newer or larger model is better.",
+          "Both architectures ran the same gpt-5.6-luna model, provider, dataset and deterministic safety stack, so only the decision path varied: semantic_decision_v3 reached 79/84 effective routing and clarification against 69/84 for direct tool calling. That made it the canonical architecture for subsequent model evaluation — the production runtime default itself remains direct_tool_v1 until that migration is made.",
+      },
+      {
+        label: "Structured-contract compatibility gate",
+        value: "1 of 4 candidates qualified",
+        scope: "semantic_decision_v3 · frozen contract",
+        qualifier:
+          "gpt-5.6-luna produced 24/24 typed V3 decisions in the hosted control. The tested local candidates — qwen3.5:4b, qwen3.5:9b and qwen2.5:7b-instruct — did not meet the same frozen structured-output contract under their evaluated configurations, so they were not promoted to behavioral comparison. This treats model eligibility as a gate to clear before benchmarking, not an assumption that any model can be swapped in.",
       },
     ],
     roadmap: emptyRoadmap,
