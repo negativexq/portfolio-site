@@ -1483,7 +1483,10 @@ a {
   right: 0.35rem;
   bottom: 0.35rem;
   width: max-content;
-  max-width: calc(var(--architecture-gap) - 0.6rem);
+  /* A tight connector gap (e.g. a 4-column row) must never shrink this
+     below a readable width — that's what collapses text to one character
+     per line instead of wrapping normally across 2-3 lines. */
+  max-width: max(6.5rem, calc(var(--architecture-gap) - 0.6rem));
   padding: 0.1rem 0.25rem;
   background: var(--background);
   color: var(--muted);

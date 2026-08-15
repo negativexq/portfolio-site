@@ -458,15 +458,17 @@ const architectures = {
         label: "Prediction / traffic path",
         summary: "The router owns the version → host mapping; an unhealthy selected target returns an error rather than silently failing over.",
         variant: "primary",
+        layout: { type: "rows", rows: [3, 1] },
         stages: [
           {
             id: "client-traffic",
             nodes: [{ id: "client-traffic", label: "Client Traffic", subtitle: "prediction request", variant: "client" }],
+            edge: { label: "requests" },
           },
           {
             id: "weighted-router",
-            nodes: [{ id: "weighted-router", label: "Weighted Router", subtitle: "owns version → host mapping", variant: "service" }],
-            edge: { label: "{version, weight} only", relation: "branch" },
+            nodes: [{ id: "weighted-router", label: "Weighted Router", subtitle: "owns version → host mapping ({version, weight} only, never host/port)", variant: "service" }],
+            edge: { label: "routes", relation: "branch" },
           },
           {
             id: "models",
@@ -474,11 +476,11 @@ const architectures = {
               { id: "stable-model", label: "Stable Model", subtitle: "current version", variant: "service" },
               { id: "canary-model", label: "Canary Model", subtitle: "candidate version, no fallback", variant: "service" },
             ],
+            edge: { label: "emits", variant: "async" },
           },
           {
             id: "metrics-emit",
-            nodes: [{ id: "metrics-sink", label: "Control Plane", subtitle: "prediction_id-tagged metric", variant: "control" }],
-            edge: { label: "POST /metrics (fire-and-forget)", variant: "async" },
+            nodes: [{ id: "metrics-sink", label: "Control Plane", subtitle: "prediction_id-tagged metric, via POST /metrics (fire-and-forget)", variant: "control" }],
           },
         ],
       },
@@ -487,20 +489,21 @@ const architectures = {
         label: "Delayed ground-truth / quality path",
         summary: "Label and metric writes are independent; a GroundTruthLabel is durable even before its matching PredictionMetric arrives.",
         variant: "async",
+        layout: { type: "rows", rows: [2, 2] },
         stages: [
           {
             id: "label-source",
-            nodes: [{ id: "label-source", label: "Delayed Label Source", subtitle: "synthetic ground truth, real ingestion path", variant: "boundary" }],
-            edge: { label: "POST /api/labels(/batch)", variant: "async" },
+            nodes: [{ id: "label-source", label: "Delayed Label Source", subtitle: "synthetic ground truth, via POST /api/labels(/batch)", variant: "boundary" }],
+            edge: { label: "ingests", variant: "async" },
           },
           {
             id: "ground-truth-table",
             nodes: [{ id: "ground-truth-table", label: "GroundTruthLabel", subtitle: "written unconditionally, durable", variant: "storage" }],
-            edge: { label: "read-time join by prediction_id" },
+            edge: { label: "join by prediction_id" },
           },
           {
             id: "quality-join",
-            nodes: [{ id: "quality-join", label: "Quality Aggregation", subtitle: "joins against PredictionMetric", variant: "analyzer" }],
+            nodes: [{ id: "quality-join", label: "Quality Aggregation", subtitle: "joined against PredictionMetric at read time", variant: "analyzer" }],
             edge: { label: "summarizes" },
           },
           {
@@ -514,11 +517,12 @@ const architectures = {
         label: "Policy / automated rollout loop",
         summary: "A separate stateless worker acts only through the same Control Plane endpoints available to an operator.",
         variant: "control",
+        layout: { type: "rows", rows: [2, 2] },
         stages: [
           {
             id: "worker",
             nodes: [{ id: "worker", label: "Automation Worker", subtitle: "restart-safe polling loop", variant: "service" }],
-            edge: { label: "evaluate", variant: "control" },
+            edge: { label: "evaluates", variant: "control" },
           },
           {
             id: "windows",
@@ -533,9 +537,9 @@ const architectures = {
           {
             id: "verdicts",
             nodes: [
-              { id: "pass", label: "PASS", subtitle: "10% → 25% → 50% → 100%", relationLabel: "advances traffic", variant: "control" },
-              { id: "fail", label: "FAIL", subtitle: "automated rollback", relationLabel: "rolls back", variant: "control" },
-              { id: "inconclusive", label: "INCONCLUSIVE", subtitle: "freeze for human review", relationLabel: "freezes", variant: "control" },
+              { id: "pass", label: "PASS", subtitle: "advance · 10% → 25% → 50% → 100%", variant: "control" },
+              { id: "fail", label: "FAIL", subtitle: "automatic rollback", variant: "control" },
+              { id: "inconclusive", label: "INCONCLUSIVE", subtitle: "freeze for manual review", variant: "control" },
             ],
           },
         ],
@@ -545,21 +549,22 @@ const architectures = {
         label: "Desired / observed reconciliation",
         summary: "The database's desired state commits first; the router push is best-effort and repaired on drift, not assumed to always land.",
         variant: "control",
+        layout: { type: "rows", rows: [2, 2] },
         stages: [
           {
             id: "desired-state",
-            nodes: [{ id: "desired-state", label: "Deployment + TrafficAllocation", subtitle: "durable desired state, model-scoped generation", variant: "storage" }],
-            edge: { label: "commits first" },
+            nodes: [{ id: "desired-state", label: "Deployment + TrafficAllocation", subtitle: "durable desired state, model-scoped generation — commits before router push", variant: "storage" }],
+            edge: { label: "pushes" },
           },
           {
             id: "router-push",
             nodes: [{ id: "router-push", label: "Best-Effort Router Push", subtitle: "PUT /router/config", variant: "control" }],
-            edge: { label: "push", variant: "async" },
+            edge: { label: "updates", variant: "async" },
           },
           {
             id: "router-observed",
             nodes: [{ id: "router-observed", label: "Router Observed Config", subtitle: "in-memory, restart-losable, rejects stale generation", variant: "service" }],
-            edge: { label: "diffs against desired", variant: "async" },
+            edge: { label: "reconciles", variant: "async" },
           },
           {
             id: "reconciler",
@@ -576,11 +581,11 @@ const architectures = {
           {
             id: "dashboard",
             nodes: [{ id: "dashboard", label: "Dashboard", subtitle: "pause / resume / promote / rollback", variant: "client" }],
-            edge: { label: "same endpoints as worker" },
+            edge: { label: "calls" },
           },
           {
             id: "control-plane-api",
-            nodes: [{ id: "control-plane-api", label: "Control Plane API", subtitle: "manual or automated actor", variant: "control" }],
+            nodes: [{ id: "control-plane-api", label: "Control Plane API", subtitle: "manual or automated actor, same endpoints as the worker", variant: "control" }],
             edge: { label: "records" },
           },
           {

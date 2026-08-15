@@ -90,10 +90,16 @@ function describeRelationships(path: ArchitecturePath) {
     const source = stage.nodes.map((node) => node.label).join(" and ");
     const targets = path.stages[index + 1].nodes;
 
-    if (stage.edge?.relation === "branch" && targets.some((node) => node.relationLabel)) {
-      return targets.map((node) => (
-        `${source} ${node.relationLabel || stage.edge?.label || "connects to"} ${node.label}.`
-      ));
+    if (stage.edge?.relation === "branch") {
+      return targets.map((node) => {
+        const relation = node.relationLabel || stage.edge?.label || "connects to";
+        // A branch target without its own relationLabel still needs a
+        // meaningful description per outcome, not one sentence that just
+        // lists every target — its subtitle (already visually rendered)
+        // is the next best source of that distinction.
+        const detail = !node.relationLabel && node.subtitle ? ` (${node.subtitle})` : "";
+        return `${source} ${relation} ${node.label}${detail}.`;
+      });
     }
 
     const target = targets.map((node) => node.label).join(" and ");
