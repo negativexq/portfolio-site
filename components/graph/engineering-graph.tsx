@@ -98,7 +98,7 @@ function constrainProjectFocusRatio(
 const projectFocusConceptLabels: Readonly<Record<string, readonly string[]>> = {
   "real-time-commerce-platform": ["Event-Driven Architecture", "Transactional Outbox"],
   "knowledge-base-rag": ["Hybrid Retrieval", "Citation Integrity"],
-  "modelops-control-plane": ["Canary Deployment", "Weighted Routing"],
+  "modelops-control-plane": ["Delayed Ground Truth", "Desired / Observed State"],
   "repo-context-forge": ["Repository Intelligence", "Source-Grounded Context"],
   "dbt-feature-lineage": ["Column-Level Lineage", "Downstream Impact"],
 };

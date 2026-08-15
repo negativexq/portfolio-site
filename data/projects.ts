@@ -162,11 +162,69 @@ const projectRecords = [
     status: "current",
     flagship: true,
     summary:
-      "ML release control plane with weighted canary routing, policy-driven evaluation, automated promotion and rollback, and an auditable deployment state machine.",
+      "Policy-driven ML release control plane combining progressive canary delivery, delayed-ground-truth quality gates, automated promotion and rollback, and desired-vs-observed routing reconciliation.",
     directAnswer:
-      "ModelOps Control Plane is an ML release control plane that combines weighted canary routing, policy-driven evaluation and a closed-loop worker to promote, roll back or pause model deployments through an auditable state machine.",
+      "ModelOps Control Plane is a policy-driven ML release system that progressively exposes a candidate model to routed traffic, incorporates delayed ground-truth labels, promotes or rolls back on reliability and model-quality evidence, and continuously reconciles the database's desired routing state with the router's own observed state.",
     whyItExists:
-      "Makes model-release decisions reproducible and inspectable through fault injection, deployment timelines, SQLAlchemy optimistic concurrency control and verification by the same worker that advances rollout state.",
+      "Model deployment is not complete when a container starts. A release control plane has to decide whether a candidate deserves more traffic using live reliability signals and model-quality evidence that arrives late, and \"not enough evidence yet\" has to stay distinct from \"healthy\" rather than default to either. It also has to keep the database's desired routing state in sync with what the router is actually doing, despite concurrent operators, failed pushes and restarts. Several of those correctness gaps only surfaced once the real nine-container stack was exercised end to end: SQLAlchemy optimistic concurrency and a DB-level partial unique index now stop a losing concurrent write from corrupting another action's result and cap each model at one unresolved rollout at a time; the desired state now commits before the router push, which is best-effort, with model-scoped routing generations rejecting a delayed write from an already-superseded rollout; and ground-truth labels are now written unconditionally to their own durable table and joined against metrics at read time, closing a race where a label arriving before its metric could go permanently unlinked.",
+    heroMetrics: [
+      {
+        value: "10 → 25 → 50 → 100%",
+        label: "Automated canary progression",
+        context: "Progressive delivery",
+        detail: "The real stateless worker advances a genuinely healthy candidate through every traffic stage and promotes it on a live minimum_recall PASS.",
+      },
+      {
+        value: "279 TESTS",
+        label: "Backend regression suite",
+        context: "Verification",
+        detail: "pytest alongside Ruff and mypy --strict, ~91% statement coverage, run on every push.",
+      },
+      {
+        value: "6 REAL-STACK SCENARIOS",
+        label: "Integration CI",
+        context: "System evidence",
+        detail: "CI boots the real nine-container stack and exercises worker-driven promotion, rollback and router-restart recovery.",
+      },
+      {
+        value: "DESIRED ↔ OBSERVED",
+        label: "Router reconciliation",
+        context: "Control loop",
+        detail: "The database's durable desired routing state is continuously reconciled against the router's restart-losable observed state.",
+      },
+    ],
+    highlights: [
+      {
+        title: "Delayed ground-truth quality gates",
+        description:
+          "Labels correlate to predictions by prediction_id and land in a durable GroundTruthLabel table. Before recall is trusted, the quality window must clear label-coverage and minimum-positive-label sufficiency gates, not just a raw sample count.",
+      },
+      {
+        title: "Two-window policy evaluation",
+        description:
+          "Reliability checks read the freshest traffic window; quality checks read an older, matured window instead, since ground-truth labels arrive delayed and the newest predictions are always the least-labeled ones.",
+      },
+      {
+        title: "Desired / observed reconciliation",
+        description:
+          "The database is the durable desired routing state; the router's config is a best-effort, restart-losable cache. A worker-triggered reconcile tick diffs the two and repairs drift on its own.",
+      },
+      {
+        title: "Race-safe rollout control",
+        description:
+          "SQLAlchemy optimistic concurrency plus a DB-level partial unique index stop concurrent actions from corrupting a rollout and cap each model at one unresolved deployment at a time.",
+      },
+      {
+        title: "Model-scoped routing generation",
+        description:
+          "Traffic-allocation revisions are scoped per model, not per deployment, so the router rejects a delayed push from an already-superseded rollout instead of silently resurrecting stale traffic.",
+      },
+      {
+        title: "Operator control and auditability",
+        description:
+          "Manual automation holds, explicit state-machine transitions, policy-evaluation snapshots and a merged deployment timeline keep every automated decision inspectable and human-overridable.",
+      },
+    ],
     technologies: [
       "Python",
       "FastAPI",
@@ -180,34 +238,61 @@ const projectRecords = [
       "Docker Compose",
     ],
     concepts: [
-      "Model Registry",
-      "Model Serving",
+      "Progressive Delivery",
       "Canary Deployment",
       "Weighted Routing",
       "Deployment State Machine",
       "Policy Engine",
       "Automated Promotion",
       "Automated Rollback",
+      "Delayed Ground Truth",
+      "Quality-Gated Promotion",
+      "Label Coverage Gating",
+      "Positive-Label Sufficiency",
+      "Matured Quality Window",
+      "Desired / Observed State",
+      "Control-Loop Reconciliation",
+      "Model-Scoped Routing Generation",
+      "Stale Configuration Rejection",
+      "Router Restart Recovery",
+      "Optimistic Concurrency Control",
+      "DB-Level Rollout Exclusivity",
+      "Manual Automation Hold",
       "Fault Injection",
       "Auditable Deployment Timeline",
-      "Optimistic Concurrency Control",
-      "Closed-Loop Verification",
+      "Policy Evaluation Snapshots",
+      "Model Registry",
+      "Model Serving",
       "Benchmarking",
     ],
     proofPoints: [
       {
-        label: "Worker-verified canary progression",
+        label: "Automated healthy rollout",
         value: "10% → 25% → 50% → 100%",
-        scope: "Real-stack CI",
+        scope: "Worker-driven real-stack CI",
         qualifier:
-          "CI boots the full nine-container stack and waits for the actual worker to progress a healthy deployment through every stage; a separate injected-latency scenario verifies automatic rollback.",
+          "CI scenario 3 waits for the actual stateless worker — not a manual call standing in for it — to walk a genuinely healthy canary through every traffic stage on live routed traffic and delayed labels, then promote it on a real minimum_recall PASS.",
       },
       {
-        label: "Backend validation",
-        value: "210 tests",
-        scope: "Backend test suite",
+        label: "Quality-driven rollback",
+        value: "Recall FAIL → automatic rollback",
+        scope: "Delayed ground-truth CI",
         qualifier:
-          "The backend suite runs alongside Ruff, mypy --strict and a separate real-stack integration job.",
+          "CI scenario 4 sends a deliberately weak model the same real, delayed label flow as scenario 3. Once the label data-sufficiency gates clear, minimum_recall genuinely fails and the worker rolls it back on its own — not a simulated verdict.",
+      },
+      {
+        label: "Restart-safe routing",
+        value: "Router restart recovery",
+        scope: "Desired/observed reconciliation · CI scenarios 5–6",
+        qualifier:
+          "Model-scoped routing generations reject a stale or delayed push regardless of which deployment it came from. CI scenario 5 restarts the router mid-rollout and confirms the worker's own reconcile tick restores the desired split; scenario 6 restarts it again after a promotion completes, confirming the router's startup sync alone restores a terminal deployment's allocation.",
+      },
+      {
+        label: "Backend regression suite",
+        value: "279 tests",
+        scope: "Backend suite · ~91% statement coverage",
+        qualifier:
+          "Runs alongside Ruff and mypy --strict on every push; a separate integration CI job boots the real nine-container stack and exercises all six scenarios above. CI/benchmark ground truth still originates from the synthetic dataset's known labels, delayed and partially covered through the real ingestion API — not live production feedback.",
       },
     ],
     roadmap: emptyRoadmap,

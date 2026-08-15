@@ -5,7 +5,7 @@ export const engineeringAreas = [
     id: "ai-ml-platform",
     title: "AI / ML Platform",
     description:
-      "Model lifecycle, serving, reusable features, validation and observable production operations.",
+      "Model lifecycle, progressive delivery, delayed quality feedback, policy-driven release control and observable production operations.",
     technologies: ["FastAPI", "Docker", "Kubernetes", "MLRun", "GitHub Actions"],
     evidenceProjectIds: ["modelops-control-plane"],
     evidenceExperienceIds: ["fibabanka"],

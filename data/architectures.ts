@@ -451,41 +451,12 @@ const architectures = {
   "modelops-control-plane": {
     projectId: "modelops-control-plane",
     description:
-      "An operator manages an auditable deployment state machine and policy through the Control Plane, which owns desired traffic allocation, uses SQLAlchemy optimistic concurrency control, and pushes a derived configuration to a weighted router. Client traffic reaches stable and canary model services. A separate stateless worker closes the verification loop by evaluating policy results and advancing, promoting, rolling back, or freezing an inconclusive rollout for human review.",
+      "The Control Plane holds the durable desired routing state (Deployment + TrafficAllocation + a model-scoped RoutingGeneration) and pushes it to a weighted router as a best-effort, restart-losable cache — never a version's host or port. Client traffic reaches stable and canary model-serving processes, tagged with a prediction_id that a delayed ground-truth label later joins against at read time. A stateless worker closes the loop: it evaluates policy over a fresh reliability window and an older, matured quality window, then advances, promotes, rolls back or freezes a rollout through the same API an operator uses — and periodically reconciles the router's observed config back to the database's desired state.",
     paths: [
       {
-        id: "control-plane",
-        label: "Desired release state",
-        summary: "Deployment lifecycle, policy and desired allocation live behind the Control Plane API.",
-        variant: "control",
-        stages: [
-          {
-            id: "operator",
-            nodes: [{ id: "dashboard", label: "Dashboard / Operator", subtitle: "manual release actions", variant: "client" }],
-          },
-          {
-            id: "control-plane-service",
-            nodes: [{ id: "control-plane", label: "Control Plane", subtitle: "allocation source of truth", variant: "control" }],
-            edge: { label: "persists", variant: "control" },
-          },
-          {
-            id: "deployment-state",
-            nodes: [
-              { id: "state-machine", label: "Deployment State", subtitle: "audited state machine", variant: "storage" },
-              { id: "policy-state", label: "Policy Evaluations", subtitle: "PASS · FAIL · INCONCLUSIVE", variant: "storage" },
-            ],
-            edge: { label: "pushes weights", variant: "control" },
-          },
-          {
-            id: "router-cache",
-            nodes: [{ id: "router-cache", label: "Router Config", subtitle: "derived runtime cache", variant: "control" }],
-          },
-        ],
-      },
-      {
         id: "traffic-path",
-        label: "Weighted inference traffic",
-        summary: "The router selects a configured target; an unhealthy selected target returns 503 rather than silently failing over.",
+        label: "Prediction / traffic path",
+        summary: "The router owns the version → host mapping; an unhealthy selected target returns an error rather than silently failing over.",
         variant: "primary",
         stages: [
           {
@@ -494,71 +465,137 @@ const architectures = {
           },
           {
             id: "weighted-router",
-            nodes: [{ id: "weighted-router", label: "Weighted Router", subtitle: "stable / canary split", variant: "service" }],
-            edge: { label: "routes by weight", relation: "branch" },
+            nodes: [{ id: "weighted-router", label: "Weighted Router", subtitle: "owns version → host mapping", variant: "service" }],
+            edge: { label: "{version, weight} only", relation: "branch" },
           },
           {
             id: "models",
             nodes: [
               { id: "stable-model", label: "Stable Model", subtitle: "current version", variant: "service" },
-              { id: "canary-model", label: "Canary Model", subtitle: "candidate version", variant: "service" },
+              { id: "canary-model", label: "Canary Model", subtitle: "candidate version, no fallback", variant: "service" },
             ],
+          },
+          {
+            id: "metrics-emit",
+            nodes: [{ id: "metrics-sink", label: "Control Plane", subtitle: "prediction_id-tagged metric", variant: "control" }],
+            edge: { label: "POST /metrics (fire-and-forget)", variant: "async" },
+          },
+        ],
+      },
+      {
+        id: "quality-path",
+        label: "Delayed ground-truth / quality path",
+        summary: "Label and metric writes are independent; a GroundTruthLabel is durable even before its matching PredictionMetric arrives.",
+        variant: "async",
+        stages: [
+          {
+            id: "label-source",
+            nodes: [{ id: "label-source", label: "Delayed Label Source", subtitle: "synthetic ground truth, real ingestion path", variant: "boundary" }],
+            edge: { label: "POST /api/labels(/batch)", variant: "async" },
+          },
+          {
+            id: "ground-truth-table",
+            nodes: [{ id: "ground-truth-table", label: "GroundTruthLabel", subtitle: "written unconditionally, durable", variant: "storage" }],
+            edge: { label: "read-time join by prediction_id" },
+          },
+          {
+            id: "quality-join",
+            nodes: [{ id: "quality-join", label: "Quality Aggregation", subtitle: "joins against PredictionMetric", variant: "analyzer" }],
+            edge: { label: "summarizes" },
+          },
+          {
+            id: "quality-summary",
+            nodes: [{ id: "quality-summary", label: "Quality Summary", subtitle: "recall over matured window", variant: "output" }],
           },
         ],
       },
       {
         id: "automation-loop",
-        label: "Automated rollout decision",
+        label: "Policy / automated rollout loop",
         summary: "A separate stateless worker acts only through the same Control Plane endpoints available to an operator.",
-        variant: "async",
+        variant: "control",
         stages: [
           {
             id: "worker",
             nodes: [{ id: "worker", label: "Automation Worker", subtitle: "restart-safe polling loop", variant: "service" }],
-            edge: { label: "evaluate", variant: "async" },
+            edge: { label: "evaluate", variant: "control" },
+          },
+          {
+            id: "windows",
+            nodes: [{ id: "windows", label: "Two Evaluation Windows", subtitle: "fresh reliability · matured quality", variant: "analyzer" }],
+            edge: { label: "feeds" },
           },
           {
             id: "policy-engine",
-            nodes: [{ id: "policy-engine", label: "Policy Engine", subtitle: "windowed comparison", variant: "analyzer" }],
-            edge: { label: "verdict", variant: "async", relation: "branch" },
+            nodes: [{ id: "policy-engine", label: "Policy Engine", subtitle: "7 checks · FAIL beats INCONCLUSIVE beats PASS", variant: "analyzer" }],
+            edge: { label: "verdict", relation: "branch" },
           },
           {
             id: "verdicts",
             nodes: [
-              { id: "pass", label: "PASS", subtitle: "10% → 25% → 50% → 100%", variant: "control" },
-              { id: "fail", label: "FAIL", subtitle: "automated rollback", variant: "control" },
-              { id: "inconclusive", label: "INCONCLUSIVE", subtitle: "freeze for human review", variant: "control" },
+              { id: "pass", label: "PASS", subtitle: "10% → 25% → 50% → 100%", relationLabel: "advances traffic", variant: "control" },
+              { id: "fail", label: "FAIL", subtitle: "automated rollback", relationLabel: "rolls back", variant: "control" },
+              { id: "inconclusive", label: "INCONCLUSIVE", subtitle: "freeze for human review", relationLabel: "freezes", variant: "control" },
             ],
           },
         ],
       },
       {
-        id: "benchmark-path",
-        label: "Real-stack verification",
-        summary: "Real-stack CI, Locust load and injected runtime faults exercise the actual router, candidate services and automation worker.",
-        variant: "failure",
+        id: "reconciliation-path",
+        label: "Desired / observed reconciliation",
+        summary: "The database's desired state commits first; the router push is best-effort and repaired on drift, not assumed to always land.",
+        variant: "control",
         stages: [
           {
-            id: "benchmark-harness",
-            nodes: [{ id: "benchmark-harness", label: "Real-Stack CI", subtitle: "nine-container stack", variant: "client" }],
-            edge: { label: "Locust traffic", variant: "failure" },
+            id: "desired-state",
+            nodes: [{ id: "desired-state", label: "Deployment + TrafficAllocation", subtitle: "durable desired state, model-scoped generation", variant: "storage" }],
+            edge: { label: "commits first" },
           },
           {
-            id: "router-under-test",
-            nodes: [{ id: "router-under-test", label: "Weighted Router", subtitle: "system under test", variant: "service" }],
+            id: "router-push",
+            nodes: [{ id: "router-push", label: "Best-Effort Router Push", subtitle: "PUT /router/config", variant: "control" }],
+            edge: { label: "push", variant: "async" },
           },
           {
-            id: "fault-candidates",
-            nodes: [{ id: "fault-candidates", label: "Candidate Services", subtitle: "quality / latency / error scenarios", variant: "service" }],
+            id: "router-observed",
+            nodes: [{ id: "router-observed", label: "Router Observed Config", subtitle: "in-memory, restart-losable, rejects stale generation", variant: "service" }],
+            edge: { label: "diffs against desired", variant: "async" },
+          },
+          {
+            id: "reconciler",
+            nodes: [{ id: "reconciler", label: "Reconcile Tick", subtitle: "worker-triggered, repairs drift", variant: "control" }],
+          },
+        ],
+      },
+      {
+        id: "operator-path",
+        label: "Operator / audit",
+        summary: "Manual actions use the same endpoints the worker does; every action and policy verdict lands on one merged timeline.",
+        variant: "primary",
+        stages: [
+          {
+            id: "dashboard",
+            nodes: [{ id: "dashboard", label: "Dashboard", subtitle: "pause / resume / promote / rollback", variant: "client" }],
+            edge: { label: "same endpoints as worker" },
+          },
+          {
+            id: "control-plane-api",
+            nodes: [{ id: "control-plane-api", label: "Control Plane API", subtitle: "manual or automated actor", variant: "control" }],
+            edge: { label: "records" },
+          },
+          {
+            id: "audit",
+            nodes: [{ id: "audit", label: "Deployment Timeline", subtitle: "events + policy snapshots merged", variant: "output" }],
           },
         ],
       },
     ],
     notes: [
-      "The Control Plane owns desired traffic allocation; router configuration is a pushed, derived cache.",
-      "Real-stack CI waits for the actual worker to progress 10% → 25% → 50% → 100%; a separate injected-latency scenario verifies rollback.",
-      "INCONCLUSIVE retries are bounded; a frozen deployment remains available for manual promote or rollback.",
-      "The current lightweight stack deliberately excludes Kubernetes, MLflow and Prometheus.",
+      "The database is the durable desired routing state; the router's config is an in-memory, restart-losable cache the control plane pushes best-effort after committing that decision.",
+      "TrafficAllocation revisions are scoped per model (RoutingGeneration), not per deployment, so the router rejects an equal-or-stale push even when it comes from an already-superseded rollout.",
+      "SQLAlchemy optimistic concurrency (a version column bumped on every commit) and a DB-level partial unique index together stop a losing concurrent action from corrupting a rollout and cap each model at one unresolved deployment at a time — INCONCLUSIVE counts as unresolved too.",
+      "INCONCLUSIVE means frozen for manual review, not a silent revert to the previous traffic split — its allocation stays the router's authoritative desired state until a human resolves it, the same as a completed PROMOTED or ROLLED_BACK rollout.",
+      "The single-router, SQLite, local-compose scope is deliberate, not an oversight — Kubernetes, PostgreSQL, Kafka-based metrics, MLflow and auth are documented production-evolution steps, not implemented here.",
     ],
   },
   "repo-context-forge": {
