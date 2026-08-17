@@ -55,6 +55,9 @@ const explicitPositions: Record<string, { x: number; y: number }> = {
   "learning:terraform": { x: -1.8, y: -8.5 },
   "learning:ai-platform-kubernetes": { x: 0.3, y: -9.2 },
   "learning:ai-platform-observability": { x: 2.6, y: -8.3 },
+  "learning:distributed-systems-reliability": { x: -8.5, y: -5.6 },
+  "learning:concurrency-performance-engineering": { x: -9.5, y: -1.6 },
+  "learning:systems-api-engineering": { x: -7.8, y: 0.8 },
 };
 
 const prominentTechnologies = new Set([

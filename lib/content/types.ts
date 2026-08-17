@@ -107,7 +107,7 @@ export type EngineeringArea = {
   evidenceExperienceIds: readonly string[];
 };
 
-export type LearningArea = "Agent Systems" | "Retrieval & Evaluation" | "Platform Infrastructure";
+export type LearningArea = "Agent Systems" | "Retrieval & Evaluation" | "Platform Infrastructure" | "Software Systems Engineering";
 
 export type LearningItem = {
   id: string;
