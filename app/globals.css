@@ -744,6 +744,78 @@ a {
   border-top: 1px solid var(--border-strong);
 }
 
+/* This card has no per-card actions row (each lab links out individually),
+   so its body fills the actions column too instead of leaving it blank. */
+.lab-group-card .project-card-body {
+  grid-column: 2 / -1;
+}
+
+.lab-progression {
+  margin: 1.5rem 0 0;
+  border-top: 1px solid var(--border);
+  padding: 0;
+  list-style: none;
+}
+
+.lab-progression-item {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  gap: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  padding-block: 1.1rem;
+}
+
+.lab-progression-index {
+  color: var(--accent);
+  font: 650 0.66rem/1.6 var(--mono);
+}
+
+.lab-progression-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.lab-progression-heading strong {
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.lab-progression-item p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.62;
+}
+
+.lab-progression-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font: 650 0.64rem/1 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lab-progression-link:hover,
+.lab-progression-link:focus-visible {
+  color: var(--accent);
+}
+
+.lab-progression-link svg {
+  transition: transform var(--motion-fast) ease;
+}
+
+.lab-progression-link:hover svg,
+.lab-progression-link:focus-visible svg {
+  transform: translate(0.15rem, -0.15rem);
+}
+
 .area-list {
   border-top: 1px solid var(--border-strong);
 }

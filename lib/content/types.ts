@@ -50,6 +50,31 @@ export type ProjectHighlight = {
   description: string;
 };
 
+/**
+ * A single repository inside a SupportingLabGroup. Deliberately not a
+ * `Project` — these render only inside Projects -> Supporting Work and
+ * must never appear in `data/projects.ts` or reach `lib/graph/build-graph.ts`,
+ * so they carry no graph-relevant fields (no id used as a graph node key,
+ * no concepts/technologies/proofPoints).
+ */
+export type SupportingLab = {
+  repo: string;
+  label: string;
+  description: string;
+  githubUrl: string;
+};
+
+/** A cohesive group of related supporting-work repositories, rendered as one
+ * card with an internal progression rather than one card per repository.
+ * Graph-excluded by construction — see SupportingLab. */
+export type SupportingLabGroup = {
+  id: string;
+  title: string;
+  summary: string;
+  theme: string;
+  labs: readonly SupportingLab[];
+};
+
 export type Project = {
   id: string;
   slug: string;

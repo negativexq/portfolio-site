@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/content/json-ld";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
+import { SupportingLabGroupCard } from "@/components/content/supporting-lab-group";
 import { MotionController } from "@/components/motion/motion-controller";
+import { goReliabilityLabs } from "@/data/go-reliability-labs";
 import { flagshipProjects, projects, supportingProjects } from "@/data/projects";
 
 export const metadata: Metadata = {
@@ -65,6 +67,7 @@ export default function ProjectsPage() {
             {supportingProjects.map((project) => (
               <ProjectCard key={project.id} project={project} compact />
             ))}
+            <SupportingLabGroupCard group={goReliabilityLabs} />
           </div>
         </div>
       </section>
