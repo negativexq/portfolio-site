@@ -224,7 +224,7 @@ export const learningItems = [
     area: "Software Systems Engineering",
     maturityLabel: "Building",
     rationale:
-      "Locust-driven load testing and query-plan-driven latency optimization already produced measured, reproducible numbers on the commerce platform and the ModelOps benchmark suite. The open direction is treating concurrency itself as an engineering variable: profiling to find where time is actually spent, distinguishing CPU-bound from I/O-bound from contention-bound workloads, and learning Go's goroutine and channel model as a second concurrency substrate to reason against Python's.",
+      "Locust-driven load testing and query-plan-driven latency optimization already produced measured, reproducible numbers on the commerce platform and the ModelOps benchmark suite. The open direction is treating concurrency itself as an engineering variable: profiling to find where time is actually spent, distinguishing CPU-bound from I/O-bound from contention-bound workloads, and using Go's goroutine and channel model as a second concurrency substrate to compare against Python's async/concurrency model.",
     previewSummary:
       "Profiling-driven performance work: finding the actual bottleneck, not just measuring throughput.",
     topics: [
@@ -243,7 +243,7 @@ export const learningItems = [
   },
   {
     id: "systems-api-engineering",
-    title: "Systems & API Engineering",
+    title: "Networking & Service Engineering",
     status: "learning",
     area: "Software Systems Engineering",
     maturityLabel: "Exploring",
