@@ -11,16 +11,17 @@ const architectures = {
         label: "Authenticated request boundary",
         summary: "Identity and customer scope are resolved server-side before any agent work begins.",
         variant: "primary",
+        layout: { type: "rows", rows: [3, 1] },
         stages: [
           {
             id: "caller",
             nodes: [{ id: "caller", label: "Customer / Operator", subtitle: "chat or console request", variant: "client" }],
-            edge: { label: "authenticated call" },
+            edge: { label: "calls" },
           },
           {
             id: "api",
-            nodes: [{ id: "api", label: "FastAPI", subtitle: "HTTP boundary", variant: "service" }],
-            edge: { label: "resolves principal" },
+            nodes: [{ id: "api", label: "FastAPI", subtitle: "HTTP boundary, resolves principal", variant: "service" }],
+            edge: { label: "resolves" },
           },
           {
             id: "auth",
@@ -51,12 +52,12 @@ const architectures = {
           {
             id: "graph",
             nodes: [{ id: "graph", label: "LangGraph Runtime", subtitle: "typed state · deterministic routing", variant: "service" }],
-            edge: { label: "structured decision" },
+            edge: { label: "proposes" },
           },
           {
             id: "understand",
             nodes: [{ id: "understand", label: "Understand · Select Tool", subtitle: "Pydantic-validated proposal", variant: "analyzer" }],
-            edge: { label: "validates arguments" },
+            edge: { label: "validates" },
           },
           {
             id: "validate",
@@ -66,7 +67,7 @@ const architectures = {
           {
             id: "policy",
             nodes: [{ id: "policy", label: "Policy Engine", subtitle: "deterministic · fail-closed", variant: "control" }],
-            edge: { label: "routes by risk", variant: "control", relation: "branch" },
+            edge: { label: "routes", variant: "control", relation: "branch" },
           },
           {
             id: "outcomes",
@@ -75,7 +76,7 @@ const architectures = {
               { id: "confirm", label: "Confirmation", subtitle: "durable pending action", relationLabel: "holds", variant: "control" },
               { id: "human", label: "Human Escalation", subtitle: "high-risk handoff", relationLabel: "escalates", variant: "output" },
             ],
-            edge: { label: "revalidates live state then executes", variant: "control", relation: "merge" },
+            edge: { label: "executes", variant: "control", relation: "merge" },
           },
           {
             id: "execute",
@@ -83,7 +84,7 @@ const architectures = {
               {
                 id: "tools",
                 label: "Typed Business Tools",
-                subtitle: "idempotent writes",
+                subtitle: "revalidates live state, idempotent writes",
                 variant: "service",
                 items: ["request-scoped keys", "one receipt per action"],
               },
