@@ -47,7 +47,7 @@ const architectures = {
         label: "Proposal to authorized execution",
         summary: "The model proposes; typed validation, deterministic policy and confirmation decide whether a mutation is allowed.",
         variant: "control",
-        layout: { type: "rows", rows: [3, 3] },
+        layout: { type: "rows", rows: [2, 2, 2] },
         stages: [
           {
             id: "graph",
@@ -518,7 +518,7 @@ const architectures = {
         label: "Policy / automated rollout loop",
         summary: "A separate stateless worker acts only through the same Control Plane endpoints available to an operator.",
         variant: "control",
-        layout: { type: "rows", rows: [2, 2] },
+        layout: { type: "rows", rows: [3, 1] },
         stages: [
           {
             id: "worker",

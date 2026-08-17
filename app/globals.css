@@ -1166,6 +1166,11 @@ a {
   font-weight: 680;
   letter-spacing: -0.02em;
   line-height: 1.3;
+  /* This column is narrow by design (a fixed 1.5rem index + flexible
+     title). A long single word must wrap onto its own line, never
+     mid-word, regardless of font-loading state or text-size settings. */
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .architecture-path-header p {
