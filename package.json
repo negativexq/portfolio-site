@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:markdown": "node --test lib/markdown/serializers.test.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

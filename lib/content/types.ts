@@ -151,6 +151,17 @@ export type LearningItem = {
   connectedLearningIds: readonly string[];
 };
 
+/** Per-area metadata for the /learning page's four top-level sections —
+ * shared by the page itself and the /learning.md serializer so there is
+ * one source for "current foundation" / "next direction" copy. */
+export type LearningAreaMeta = {
+  name: LearningArea;
+  index: string;
+  description: string;
+  foundation: string;
+  direction: string;
+};
+
 export type Metric = {
   value: string;
   label: string;
