@@ -198,6 +198,7 @@ export const learningItems = [
     title: "Distributed Systems & Reliability",
     status: "learning",
     area: "Software Systems Engineering",
+    maturityLabel: "Deepening",
     rationale:
       "At-least-once delivery, idempotent consumers, bounded retries and a transactional outbox are already implemented and benchmarked in the commerce platform. The open direction is deeper: reasoning explicitly about partial failure — what a service should do when a workflow fails halfway, when eventual consistency is an acceptable trade-off rather than a shortcut, and where a retry helps versus where it turns a transient failure into a duplicate or a cascading one.",
     previewSummary:
@@ -209,7 +210,6 @@ export const learningItems = [
       "Consistency models",
       "Backpressure",
       "Failure recovery",
-      "Transaction boundaries",
     ],
     evidenceTarget:
       "Extend the commerce platform's failure-injection surface with explicit failure-scenario tests — partial workflow failure, duplicate delivery, retry storms and consistency-window violations — each with a reproducible before/after outcome, not just a passing happy-path suite.",
@@ -222,17 +222,16 @@ export const learningItems = [
     title: "Concurrency & Performance Engineering",
     status: "learning",
     area: "Software Systems Engineering",
+    maturityLabel: "Building",
     rationale:
       "Locust-driven load testing and query-plan-driven latency optimization already produced measured, reproducible numbers on the commerce platform and the ModelOps benchmark suite. The open direction is treating concurrency itself as an engineering variable: profiling to find where time is actually spent, distinguishing CPU-bound from I/O-bound from contention-bound workloads, and learning Go's goroutine and channel model as a second concurrency substrate to reason against Python's.",
     previewSummary:
       "Profiling-driven performance work: finding the actual bottleneck, not just measuring throughput.",
     topics: [
       "Concurrency and parallelism",
-      "Async execution",
       "Go goroutines and channels",
       "Profiling",
       "Benchmarking",
-      "Caching",
       "Load testing",
       "Bottleneck analysis",
     ],
@@ -247,6 +246,7 @@ export const learningItems = [
     title: "Systems & API Engineering",
     status: "learning",
     area: "Software Systems Engineering",
+    maturityLabel: "Exploring",
     rationale:
       "FastAPI service boundaries, PostgreSQL transactional writes and idempotency-key design are already implemented across the agent, ModelOps and commerce platforms. The open direction moves underneath the endpoint: HTTP connection and timeout behavior, gRPC as an alternative to REST for internal service communication, transaction isolation levels and connection pooling, and the operating-system behavior a production service actually runs on top of.",
     previewSummary:
@@ -254,12 +254,9 @@ export const learningItems = [
     topics: [
       "HTTP internals",
       "gRPC",
-      "API design",
       "Networking fundamentals",
       "Database transactions",
       "Linux",
-      "Testing strategies",
-      "Service boundaries",
     ],
     evidenceTarget:
       "Implement, benchmark and document concrete service-level trade-offs — REST vs. gRPC for an internal call path, transaction isolation levels under concurrent writes, connection-pool behavior under load — rather than treating any of them as a fixed default.",

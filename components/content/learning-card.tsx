@@ -13,7 +13,7 @@ export function LearningCard({ item, projectLinks }: LearningCardProps) {
     <article className={`learning-card learning-card-${item.status}`} data-hover-lift>
       <div className="learning-card-heading">
         <h3>{item.title}</h3>
-        <StatusBadge status={item.status} />
+        <StatusBadge status={item.status} label={item.maturityLabel} />
       </div>
       <div className="learning-card-layer">
         <span className="learning-card-label">Why this matters</span>

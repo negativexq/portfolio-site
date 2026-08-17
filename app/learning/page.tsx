@@ -42,7 +42,7 @@ const areas: readonly {
   {
     name: "Software Systems Engineering",
     index: "04",
-    description: "Deepening the systems-level engineering foundations behind reliable production AI and distributed applications — failure analysis, measurable performance and service-boundary trade-offs, not a generic technology list.",
+    description: "Deepening the systems-level engineering foundations behind reliable production AI and distributed applications through failure analysis, measurable performance and explicit service-boundary trade-offs.",
     foundation: "At-least-once delivery, idempotency, load-tested throughput and transactional service boundaries already implemented and measured",
     direction: "Explicit failure-scenario testing, profiling-driven performance work and service-level trade-off benchmarking",
   },

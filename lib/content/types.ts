@@ -116,6 +116,9 @@ export type LearningItem = {
   area: LearningArea;
   rationale: string;
   previewSummary?: string;
+  /** Overrides the status badge's displayed text (e.g. "Deepening") while
+   * `status` still drives its color/semantics. */
+  maturityLabel?: string;
   topics: readonly string[];
   evidenceTarget: string;
   connectedProjectIds: readonly string[];
