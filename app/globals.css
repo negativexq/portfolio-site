@@ -3415,6 +3415,13 @@ a {
     grid-column: auto;
   }
 
+  /* At the single-column breakpoint the grid only has one explicit track;
+     "2 / -1" would otherwise create an implicit second column and place
+     the body beside .project-card-meta instead of below it. */
+  .lab-group-card .project-card-body {
+    grid-column: 1 / -1;
+  }
+
   .area-card {
     grid-template-columns: 2rem minmax(0, 1fr);
   }
