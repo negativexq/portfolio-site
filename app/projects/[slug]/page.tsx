@@ -9,7 +9,9 @@ import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
+import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
+import { personId } from "@/lib/seo/person";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -77,8 +79,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     programmingLanguage: project.technologies,
     author: {
       "@type": "Person",
-      "@id": "https://omerfkoc.dev/#person",
-      name: "Ömer Faruk Koç",
+      "@id": personId(profile),
+      name: profile.name,
     },
   };
 

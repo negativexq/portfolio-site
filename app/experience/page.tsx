@@ -6,6 +6,7 @@ import { MetricGrid } from "@/components/content/metric-grid";
 import { experiences } from "@/data/experience";
 import { metrics } from "@/data/metrics";
 import { profile } from "@/data/profile";
+import { personId } from "@/lib/seo/person";
 
 export const metadata: Metadata = {
   title: "Experience",
@@ -20,7 +21,7 @@ export default function ExperiencePage() {
   const occupationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": `${profile.links.website}/#person`,
+    "@id": personId(profile),
     name: profile.name,
     url: profile.links.website,
     jobTitle: profile.title,

@@ -1,0 +1,6 @@
+[
+  { "id": "name-only", "query": "Ömer Faruk Koç", "checks": ["entityFound", "websiteAssociation"] },
+  { "id": "name-ai-engineer", "query": "Ömer Faruk Koç AI Engineer", "checks": ["entityFound", "occupationMatch"] },
+  { "id": "name-mlops", "query": "Ömer Faruk Koç MLOps", "checks": ["entityFound", "occupationMatch"] },
+  { "id": "name-github-handle", "query": "Ömer Faruk Koç negativexq", "checks": ["entityFound", "githubAssociation"] }
+]

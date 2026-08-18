@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { EngineeringAreaCard } from "@/components/content/engineering-area-card";
-import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
+import { PersonJsonLd } from "@/components/content/person-jsonld";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
 import { StatusBadge } from "@/components/content/status-badge";
@@ -27,20 +27,11 @@ export default function Home() {
   const currentDirection = currentDirectionIds
     .map((id) => learningItems.find((item) => item.id === id))
     .filter((item) => item !== undefined);
-  const personJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": `${profile.links.website}/#person`,
-    name: profile.name,
-    jobTitle: "MLOps & AI Platform Engineer",
-    url: profile.links.website,
-    sameAs: [profile.links.linkedin, profile.links.github],
-  };
 
   return (
     <main>
       <MotionController />
-      <JsonLd data={personJsonLd} />
+      <PersonJsonLd />
       <section className="hero container" aria-labelledby="hero-title">
         <p className="hero-name">{profile.name}</p>
         <h1 id="hero-title">{profile.title}</h1>

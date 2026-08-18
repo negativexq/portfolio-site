@@ -1,6 +1,6 @@
 # AI Discoverability Benchmark Report
 
-Generated: 2026-08-18T00:47:48.385Z
+Generated: 2026-08-18T01:03:23.078Z
 Benchmark version: 1.0.0
 Target: http://localhost:3200
 Questions evaluated: 36
@@ -13,17 +13,17 @@ methodology and limitations.
 
 | | Resources | Requests | Bytes | Latency | Required info found |
 |---|---|---|---|---|---|
-| HTML path | /, /projects, /experience, /learning | 4 | 254.3 KB | 42 ms | yes |
-| AI path | /llms.txt, /resume.md | 2 | 11.5 KB | 5 ms | yes |
+| HTML path | /, /projects, /experience, /learning | 4 | 254.7 KB | 76 ms | yes |
+| AI path | /llms.txt, /resume.md | 2 | 11.5 KB | 20 ms | yes |
 
 ## 2. Token Efficiency
 
 | | Characters | Estimated tokens |
 |---|---|---|
-| HTML (`/`) | 67,937 | 16,985 |
+| HTML (`/`) | 68,424 | 17,106 |
 | Markdown (`/llms.txt` + `/resume.md` + `/projects.md`) | 21,979 | 5,495 |
 
-Reduction: **67.6%**. Token counts are a `chars / 4` estimate, not a real tokenizer -- see README.
+Reduction: **67.9%**. Token counts are a `chars / 4` estimate, not a real tokenizer -- see README.
 
 ## 3. Retrieval (lexical, not embedding-based -- see README)
 
@@ -47,10 +47,10 @@ Evaluated against 36 questions. No LLM call was made -- see README for why, and 
 
 | Markdown route | HTML size | Markdown size | Size reduction | HTML latency | Markdown latency |
 |---|---|---|---|---|---|
-| /projects.md | 77.0 KB | 10.1 KB | 86.9% | 3 ms | 2 ms |
-| /experience.md | 43.1 KB | 1.6 KB | 96.2% | 3 ms | 3 ms |
-| /learning.md | 67.7 KB | 10.3 KB | 84.8% | 4 ms | 3 ms |
-| /resume.md | 32.9 KB | 10.6 KB | 67.8% | 3 ms | 3 ms |
+| /projects.md | 77.0 KB | 10.1 KB | 86.9% | 5 ms | 4 ms |
+| /experience.md | 43.1 KB | 1.6 KB | 96.2% | 4 ms | 3 ms |
+| /learning.md | 67.7 KB | 10.3 KB | 84.8% | 5 ms | 3 ms |
+| /resume.md | 32.9 KB | 10.6 KB | 67.8% | 7 ms | 3 ms |
 
 ## Limitations
 
