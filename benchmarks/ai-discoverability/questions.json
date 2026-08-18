@@ -1,0 +1,316 @@
+[
+  {
+    "id": "experience-company-role",
+    "question": "What company and role does this engineer hold, and for how long?",
+    "source": {
+      "type": "experience-summary",
+      "id": "fibabanka"
+    }
+  },
+  {
+    "id": "experience-impact-call-center-intelligence",
+    "question": "What did this person do regarding call-center intelligence, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "call-center-intelligence"
+    }
+  },
+  {
+    "id": "experience-impact-ml-platform",
+    "question": "What did this person do regarding ml platform, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "ml-platform"
+    }
+  },
+  {
+    "id": "experience-impact-ai-infrastructure",
+    "question": "What did this person do regarding ai infrastructure, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "ai-infrastructure"
+    }
+  },
+  {
+    "id": "experience-impact-data-platform",
+    "question": "What did this person do regarding data platform, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "data-platform"
+    }
+  },
+  {
+    "id": "experience-impact-feature-platform",
+    "question": "What did this person do regarding feature platform, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "feature-platform"
+    }
+  },
+  {
+    "id": "experience-impact-data-scale",
+    "question": "What did this person do regarding data scale, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "data-scale"
+    }
+  },
+  {
+    "id": "experience-impact-quality-monitoring",
+    "question": "What did this person do regarding quality & monitoring, and what technologies were involved?",
+    "source": {
+      "type": "experience-impact",
+      "id": "fibabanka",
+      "impactId": "quality-monitoring"
+    }
+  },
+  {
+    "id": "project-tech-agentic-customer-service-platform",
+    "question": "What technologies does the \"Agentic Customer Service Platform\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "agentic-customer-service-platform",
+      "slug": "agentic-customer-service-platform"
+    }
+  },
+  {
+    "id": "project-tech-modelops-control-plane",
+    "question": "What technologies does the \"ModelOps Control Plane\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "modelops-control-plane",
+      "slug": "modelops-control-plane"
+    }
+  },
+  {
+    "id": "project-tech-knowledge-base-rag",
+    "question": "What technologies does the \"Knowledge Base RAG\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "knowledge-base-rag",
+      "slug": "knowledge-base-rag"
+    }
+  },
+  {
+    "id": "project-tech-real-time-commerce-platform",
+    "question": "What technologies does the \"Real-Time Commerce Platform\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "real-time-commerce-platform",
+      "slug": "real-time-commerce-platform"
+    }
+  },
+  {
+    "id": "project-tech-repo-context-forge",
+    "question": "What technologies does the \"Repo Context Forge\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "repo-context-forge",
+      "slug": "repo-context-forge"
+    }
+  },
+  {
+    "id": "project-tech-dbt-feature-lineage",
+    "question": "What technologies does the \"dbt Feature Lineage\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "dbt-feature-lineage",
+      "slug": "dbt-feature-lineage"
+    }
+  },
+  {
+    "id": "project-tech-production-rag-platform",
+    "question": "What technologies does the \"Production RAG Platform\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "production-rag-platform",
+      "slug": "production-rag-platform"
+    }
+  },
+  {
+    "id": "project-tech-terraform-docker-infrastructure-lab",
+    "question": "What technologies does the \"Terraform Docker Infrastructure Lab\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "terraform-docker-infrastructure-lab",
+      "slug": "terraform-docker-infrastructure-lab"
+    }
+  },
+  {
+    "id": "project-proof-agentic-customer-service-platform",
+    "question": "What measured evidence or metric backs the \"Agentic Customer Service Platform\" project?",
+    "source": {
+      "type": "project-proof",
+      "id": "agentic-customer-service-platform",
+      "slug": "agentic-customer-service-platform"
+    }
+  },
+  {
+    "id": "project-concepts-agentic-customer-service-platform",
+    "question": "What engineering concepts does \"Agentic Customer Service Platform\" demonstrate?",
+    "source": {
+      "type": "project-concepts",
+      "id": "agentic-customer-service-platform",
+      "slug": "agentic-customer-service-platform"
+    }
+  },
+  {
+    "id": "project-proof-modelops-control-plane",
+    "question": "What measured evidence or metric backs the \"ModelOps Control Plane\" project?",
+    "source": {
+      "type": "project-proof",
+      "id": "modelops-control-plane",
+      "slug": "modelops-control-plane"
+    }
+  },
+  {
+    "id": "project-concepts-modelops-control-plane",
+    "question": "What engineering concepts does \"ModelOps Control Plane\" demonstrate?",
+    "source": {
+      "type": "project-concepts",
+      "id": "modelops-control-plane",
+      "slug": "modelops-control-plane"
+    }
+  },
+  {
+    "id": "project-proof-knowledge-base-rag",
+    "question": "What measured evidence or metric backs the \"Knowledge Base RAG\" project?",
+    "source": {
+      "type": "project-proof",
+      "id": "knowledge-base-rag",
+      "slug": "knowledge-base-rag"
+    }
+  },
+  {
+    "id": "project-concepts-knowledge-base-rag",
+    "question": "What engineering concepts does \"Knowledge Base RAG\" demonstrate?",
+    "source": {
+      "type": "project-concepts",
+      "id": "knowledge-base-rag",
+      "slug": "knowledge-base-rag"
+    }
+  },
+  {
+    "id": "project-proof-real-time-commerce-platform",
+    "question": "What measured evidence or metric backs the \"Real-Time Commerce Platform\" project?",
+    "source": {
+      "type": "project-proof",
+      "id": "real-time-commerce-platform",
+      "slug": "real-time-commerce-platform"
+    }
+  },
+  {
+    "id": "project-concepts-real-time-commerce-platform",
+    "question": "What engineering concepts does \"Real-Time Commerce Platform\" demonstrate?",
+    "source": {
+      "type": "project-concepts",
+      "id": "real-time-commerce-platform",
+      "slug": "real-time-commerce-platform"
+    }
+  },
+  {
+    "id": "skills-ai-ml-platform",
+    "question": "What technologies fall under this person's \"AI / ML Platform\" skill area?",
+    "source": {
+      "type": "engineering-area",
+      "id": "ai-ml-platform"
+    }
+  },
+  {
+    "id": "skills-generative-ai-rag",
+    "question": "What technologies fall under this person's \"Generative AI / RAG\" skill area?",
+    "source": {
+      "type": "engineering-area",
+      "id": "generative-ai-rag"
+    }
+  },
+  {
+    "id": "skills-distributed-systems",
+    "question": "What technologies fall under this person's \"Distributed Systems\" skill area?",
+    "source": {
+      "type": "engineering-area",
+      "id": "distributed-systems"
+    }
+  },
+  {
+    "id": "skills-data-engineering",
+    "question": "What technologies fall under this person's \"Data Engineering\" skill area?",
+    "source": {
+      "type": "engineering-area",
+      "id": "data-engineering"
+    }
+  },
+  {
+    "id": "skills-agent-infrastructure",
+    "question": "What technologies fall under this person's \"Agent Systems / Agent Infrastructure\" skill area?",
+    "source": {
+      "type": "engineering-area",
+      "id": "agent-infrastructure"
+    }
+  },
+  {
+    "id": "learning-area-01",
+    "question": "What is the current foundation and next direction for \"Agent Systems\"?",
+    "source": {
+      "type": "learning-area",
+      "id": "Agent Systems"
+    }
+  },
+  {
+    "id": "learning-area-02",
+    "question": "What is the current foundation and next direction for \"Retrieval & Evaluation\"?",
+    "source": {
+      "type": "learning-area",
+      "id": "Retrieval & Evaluation"
+    }
+  },
+  {
+    "id": "learning-area-03",
+    "question": "What is the current foundation and next direction for \"Platform Infrastructure\"?",
+    "source": {
+      "type": "learning-area",
+      "id": "Platform Infrastructure"
+    }
+  },
+  {
+    "id": "learning-area-04",
+    "question": "What is the current foundation and next direction for \"Software Systems Engineering\"?",
+    "source": {
+      "type": "learning-area",
+      "id": "Software Systems Engineering"
+    }
+  },
+  {
+    "id": "learning-item-agent-memory",
+    "question": "What is this person exploring in \"Agentic Memory\"?",
+    "source": {
+      "type": "learning-item",
+      "id": "agent-memory",
+      "itemId": "agent-memory"
+    }
+  },
+  {
+    "id": "learning-item-context-engineering-rag",
+    "question": "What is this person exploring in \"Context Engineering for RAG\"?",
+    "source": {
+      "type": "learning-item",
+      "id": "context-engineering-rag",
+      "itemId": "context-engineering-rag"
+    }
+  },
+  {
+    "id": "learning-item-graphrag",
+    "question": "What is this person exploring in \"GraphRAG\"?",
+    "source": {
+      "type": "learning-item",
+      "id": "graphrag",
+      "itemId": "graphrag"
+    }
+  }
+]

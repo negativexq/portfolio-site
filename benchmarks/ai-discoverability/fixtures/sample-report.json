@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "baseUrl": "http://localhost:3000",
+  "benchmarkVersion": "1.0.0",
+  "discovery": {
+    "html": {
+      "label": "HTML path",
+      "resources": ["/", "/projects", "/experience", "/learning"],
+      "requestCount": 4,
+      "totalBytes": 251000,
+      "totalLatencyMs": 320,
+      "requiredInfoFound": true
+    },
+    "ai": {
+      "label": "AI path",
+      "resources": ["/llms.txt", "/resume.md"],
+      "requestCount": 2,
+      "totalBytes": 43000,
+      "totalLatencyMs": 40,
+      "requiredInfoFound": true
+    }
+  },
+  "tokenEfficiency": {
+    "htmlCharacters": 85000,
+    "htmlEstimatedTokens": 21250,
+    "markdownCharacters": 18000,
+    "markdownEstimatedTokens": 4500,
+    "reductionPercent": 78.8
+  },
+  "retrieval": {
+    "html": { "recallAt1": 0.4, "recallAt3": 0.6, "recallAt5": 0.72, "questionsEvaluated": 36 },
+    "markdown": { "recallAt1": 0.83, "recallAt3": 0.94, "recallAt5": 0.97, "questionsEvaluated": 36 }
+  },
+  "accuracy": {
+    "htmlFactPresenceRate": 82.1,
+    "markdownFactPresenceRate": 96.4,
+    "questionsEvaluated": 36
+  },
+  "http": [
+    {
+      "htmlPath": "/projects",
+      "markdownPath": "/projects.md",
+      "htmlBytes": 246000,
+      "markdownBytes": 18400,
+      "htmlLatencyMs": 210,
+      "markdownLatencyMs": 95,
+      "sizeReductionPercent": 92.5
+    }
+  ],
+  "questionCount": 36
+}
