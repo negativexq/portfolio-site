@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/content/json-ld";
+import { MachineReadableLink } from "@/components/content/machine-readable-link";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
 import { SupportingLabGroupCard } from "@/components/content/supporting-lab-group";
@@ -37,6 +38,7 @@ export default function ProjectsPage() {
         <p className="eyebrow">Public engineering work</p>
         <h1>Projects</h1>
         <p>Evidence-led systems work across AI platforms, agent systems, retrieval, data infrastructure and distributed systems—with reliability, evaluation, observability and trade-offs made explicit.</p>
+        <MachineReadableLink href="/projects.md" />
       </header>
 
       <section className="section-shell page-section" aria-labelledby="featured-projects">

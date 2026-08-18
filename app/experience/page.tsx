@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ExperienceStory } from "@/components/content/experience-story";
 import { JsonLd } from "@/components/content/json-ld";
+import { MachineReadableLink } from "@/components/content/machine-readable-link";
 import { MetricGrid } from "@/components/content/metric-grid";
 import { experiences } from "@/data/experience";
 import { metrics } from "@/data/metrics";
@@ -48,6 +49,7 @@ export default function ExperiencePage() {
             <div><dt>Location</dt><dd>{experience.location}</dd></div>
           </dl>
         </div>
+        <MachineReadableLink href="/experience.md" />
       </header>
 
       <section className="section-shell metric-section" aria-label="Career experience metrics">

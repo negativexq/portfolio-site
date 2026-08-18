@@ -26,6 +26,7 @@ export function SiteFooter() {
             GitHub <ArrowUpRight aria-hidden="true" size={12} />
             <span className="sr-only">(opens in a new tab)</span>
           </a>
+          <a href="/llms.txt">llms.txt</a>
         </nav>
       </div>
     </footer>

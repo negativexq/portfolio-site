@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
+import { MachineReadableLink } from "@/components/content/machine-readable-link";
 import { ProjectProof } from "@/components/content/project-proof";
 import { TagList } from "@/components/content/tag-list";
 import { engineeringAreas } from "@/data/engineering-areas";
@@ -38,6 +39,7 @@ export default function ResumePage() {
             LinkedIn <ArrowUpRight aria-hidden="true" size={14} />
           </a>
         </div>
+        <MachineReadableLink href="/resume.md" />
       </header>
 
       <div className="container resume-layout">

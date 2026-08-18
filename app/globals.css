@@ -1043,6 +1043,11 @@ a {
   line-height: 1.68;
 }
 
+.machine-readable-link {
+  margin-top: 1.5rem;
+  color: var(--muted);
+}
+
 .page-section,
 .graph-preview-section {
   border-top: 0;
