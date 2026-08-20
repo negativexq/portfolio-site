@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
+import { getPublishedArticles } from "@/lib/writing/articles";
 
 const BASE_URL = "https://omerfkoc.dev";
 
@@ -11,6 +12,7 @@ const routeLastModified = {
   experience: "2026-08-09",
   graph: "2026-08-13",
   learning: "2026-08-13",
+  writing: "2026-08-20",
   resume: "2026-08-09",
   projectCaseStudies: "2026-08-13",
 } as const;
@@ -22,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/experience`, lastModified: routeLastModified.experience, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/graph`, lastModified: routeLastModified.graph, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/learning`, lastModified: routeLastModified.learning, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/writing`, lastModified: routeLastModified.writing, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/resume`, lastModified: routeLastModified.resume, changeFrequency: "monthly", priority: 0.6 },
   ];
 
@@ -32,5 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: project.flagship ? 0.8 : 0.5,
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const writingRoutes: MetadataRoute.Sitemap = getPublishedArticles().map((article) => ({
+    url: `${BASE_URL}/writing/${article.slug}`,
+    lastModified: article.dateModified ?? article.datePublished,
+    changeFrequency: "monthly",
+    priority: article.featured ? 0.8 : 0.7,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...writingRoutes];
 }

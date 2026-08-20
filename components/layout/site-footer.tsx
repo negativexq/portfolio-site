@@ -27,6 +27,7 @@ export function SiteFooter() {
             <span className="sr-only">(opens in a new tab)</span>
           </a>
           <a href="/llms.txt">llms.txt</a>
+          <a href="/rss.xml">RSS</a>
         </nav>
       </div>
     </footer>

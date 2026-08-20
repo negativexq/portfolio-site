@@ -1,4 +1,5 @@
 import type { Profile } from "../content/types";
+import type { WritingArticleSummary } from "../writing/types.ts";
 import { joinBlocks } from "./helpers.ts";
 
 // Route paths are wiring, not content — the same kind of static route list
@@ -10,6 +11,7 @@ const MACHINE_READABLE_RESOURCES: readonly { path: string; description: string }
   { path: "/experience.md", description: "Professional experience" },
   { path: "/skills.md", description: "Technical skills" },
   { path: "/learning.md", description: "Current learning and engineering directions" },
+  { path: "/rss.xml", description: "Published engineering notes feed" },
 ];
 
 const HUMAN_ROUTES: readonly { path: string; description: string }[] = [
@@ -17,11 +19,12 @@ const HUMAN_ROUTES: readonly { path: string; description: string }[] = [
   { path: "/projects", description: "Projects" },
   { path: "/experience", description: "Professional experience" },
   { path: "/learning", description: "Engineering learning map" },
+  { path: "/writing", description: "Engineering writing" },
   { path: "/graph", description: "Engineering graph" },
   { path: "/resume", description: "Resume overview" },
 ];
 
-export function renderLlmsTxt(profile: Profile): string {
+export function renderLlmsTxt(profile: Profile, articles: readonly WritingArticleSummary[] = []): string {
   const base = profile.links.website.replace(/\/$/, "");
   const listOf = (routes: readonly { path: string; description: string }[]) =>
     routes.map((route) => `- ${base}${route.path} — ${route.description}`).join("\n");
@@ -33,6 +36,10 @@ export function renderLlmsTxt(profile: Profile): string {
     listOf(MACHINE_READABLE_RESOURCES),
     "## Human-readable website",
     listOf(HUMAN_ROUTES),
+    articles.length > 0 ? "## Published writing" : undefined,
+    articles.length > 0
+      ? articles.map((article) => `- ${base}/writing/${article.slug} — ${article.description}`).join("\n")
+      : undefined,
     "## External profiles",
     [`- GitHub: ${profile.links.github}`, `- LinkedIn: ${profile.links.linkedin}`].join("\n"),
   ]);

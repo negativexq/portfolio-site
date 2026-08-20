@@ -12,6 +12,7 @@ import { getProjectArchitecture } from "@/data/architectures";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
 import { personId } from "@/lib/seo/person";
+import { getPublishedArticles } from "@/lib/writing/articles";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -67,6 +68,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     : undefined;
 
   const projectArchitecture = getProjectArchitecture(project.id);
+  const relatedWriting = getPublishedArticles().filter((article) =>
+    article.relatedProjects.includes(project.id),
+  );
   const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
   const projectJsonLd = {
     "@context": "https://schema.org",
@@ -240,6 +244,22 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   <Link key={relatedProject.id} href={`/projects/${relatedProject.slug}`}>
                     <span>{label}</span>
                     <strong>{relatedProject.title}</strong>
+                    <ArrowRight aria-hidden="true" size={16} />
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {relatedWriting.length > 0 ? (
+            <section className="detail-section">
+              <p className="detail-kicker">Related writing</p>
+              <h2>Engineering notes</h2>
+              <div className="related-projects">
+                {relatedWriting.map((article) => (
+                  <Link key={article.slug} href={`/writing/${article.slug}`}>
+                    <span>{article.readingTime} min read</span>
+                    <strong>{article.title}</strong>
                     <ArrowRight aria-hidden="true" size={16} />
                   </Link>
                 ))}

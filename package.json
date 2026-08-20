@@ -11,7 +11,8 @@
     "test:http": "node --test lib/http/accept.test.ts",
     "test:seo": "node --test lib/seo/person.test.ts",
     "test:benchmark": "node --test benchmarks/ai-discoverability/*.test.ts benchmarks/ai-discoverability/identity/*.test.ts",
-    "test": "node --test lib/markdown/serializers.test.ts lib/http/accept.test.ts lib/seo/person.test.ts benchmarks/ai-discoverability/*.test.ts benchmarks/ai-discoverability/identity/*.test.ts",
+    "test:writing": "node --test lib/writing/*.test.ts",
+    "test": "node --test lib/markdown/serializers.test.ts lib/http/accept.test.ts lib/seo/person.test.ts lib/writing/*.test.ts benchmarks/ai-discoverability/*.test.ts benchmarks/ai-discoverability/identity/*.test.ts",
     "benchmark:ai": "node benchmarks/ai-discoverability/runner.ts",
     "benchmark:identity": "node benchmarks/ai-discoverability/identity/runner.ts"
   },

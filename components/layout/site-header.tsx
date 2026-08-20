@@ -12,6 +12,7 @@ const navigation = [
   { href: "/experience", label: "Experience" },
   { href: "/graph", label: "Graph" },
   { href: "/learning", label: "Learning" },
+  { href: "/writing", label: "Writing" },
   { href: "/resume", label: "Resume" },
 ];
 
@@ -28,8 +29,8 @@ function NavigationLinks({
     <ul ref={listRef}>
       {navigation.map((item) => {
         const isCurrent =
-          item.href === "/projects"
-            ? pathname.startsWith("/projects")
+          item.href === "/projects" || item.href === "/writing"
+            ? pathname.startsWith(item.href)
             : pathname === item.href;
 
         return (

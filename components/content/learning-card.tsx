@@ -6,9 +6,10 @@ import { TagList } from "./tag-list";
 type LearningCardProps = {
   item: LearningItem;
   projectLinks: readonly { slug: string; title: string }[];
+  writingLinks: readonly { slug: string; title: string }[];
 };
 
-export function LearningCard({ item, projectLinks }: LearningCardProps) {
+export function LearningCard({ item, projectLinks, writingLinks }: LearningCardProps) {
   return (
     <article className={`learning-card learning-card-${item.status}`} data-hover-lift>
       <div className="learning-card-heading">
@@ -33,6 +34,16 @@ export function LearningCard({ item, projectLinks }: LearningCardProps) {
           {projectLinks.map((project) => (
             <Link key={project.slug} href={`/projects/${project.slug}`}>
               {project.title}
+            </Link>
+          ))}
+        </div>
+      ) : null}
+      {writingLinks.length > 0 ? (
+        <div className="learning-connections">
+          <span>Related writing</span>
+          {writingLinks.map((article) => (
+            <Link key={article.slug} href={`/writing/${article.slug}`}>
+              {article.title}
             </Link>
           ))}
         </div>

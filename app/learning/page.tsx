@@ -5,6 +5,7 @@ import { MotionController } from "@/components/motion/motion-controller";
 import { learningAreas as areas } from "@/data/learning-areas";
 import { learningItems } from "@/data/learning";
 import { getProjectById } from "@/data/projects";
+import { getPublishedArticles } from "@/lib/writing/articles";
 
 export const metadata: Metadata = {
   title: "Learning",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function LearningPage() {
+  const writing = getPublishedArticles();
   return (
     <main>
       <MotionController />
@@ -45,7 +47,10 @@ export default function LearningPage() {
                       .map((id) => getProjectById(id))
                       .filter((project) => project !== undefined)
                       .map((project) => ({ slug: project.slug, title: project.title }));
-                    return <LearningCard key={item.id} item={item} projectLinks={projectLinks} />;
+                    const writingLinks = writing
+                      .filter((article) => article.relatedLearning.includes(item.id))
+                      .map((article) => ({ slug: article.slug, title: article.title }));
+                    return <LearningCard key={item.id} item={item} projectLinks={projectLinks} writingLinks={writingLinks} />;
                   })}
                 </div>
               </div>
