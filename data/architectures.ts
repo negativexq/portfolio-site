@@ -304,7 +304,8 @@ const architectures = {
       "The Event Processor—not the main Kafka topic—publishes invalid or exhausted records to commerce.events.dlq.",
       "PostgreSQL is the durable system of record; Redis contains reconstructible coordination state.",
       "Accepted event effects, fraud decisions, processed identity and outbox rows commit in one PostgreSQL transaction.",
-      "Kafka offsets commit after terminal handling; delivery is at least once and ordering is partition scoped.",
+      "Kafka offsets commit in bounded per-partition batches (50 records or 100ms, whichever comes first), with a synchronous flush on idle, rebalance and shutdown; delivery is at least once and ordering is partition scoped.",
+      "Two independently evidenced changes — bounded offset-commit batching, then query-plan-driven PostgreSQL indexing — moved the isolated three-worker pipeline's sustainable capacity from ~750 to ~1,050 events/s (~40%) without weakening at-least-once correctness.",
     ],
   },
   "knowledge-base-rag": {

@@ -78,6 +78,7 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "experience:fibabanka": "Fibabanka",
   "domain:agent-infrastructure": "Agent Systems",
   "project:real-time-commerce-platform": "Real-Time Commerce",
+  "evidence:project:real-time-commerce-platform:750-1-050-evt-s-40": "750 → 1,050 evt/s",
   "project:production-rag-platform": "Production RAG",
   "project:agentic-customer-service-platform": "Agentic Customer Service",
   "evidence:project:agentic-customer-service-platform:0-unsafe-executions-0-confirmation-bypasses": "0 unsafe · 0 bypass",

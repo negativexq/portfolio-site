@@ -384,7 +384,7 @@ const projectRecords = [
     directAnswer:
       "Real-Time Commerce Platform is a Kafka-based distributed system with idempotent consumers, PostgreSQL transactional persistence, Redis coordination, bounded retry, a DLQ and a transactional outbox under partition-scoped ordering.",
     whyItExists:
-      "Makes event-processing guarantees and failure paths explicit while using query-plan analysis, observability and repeated boundary tests to distinguish sustainable local performance from short-lived throughput.",
+      "Makes event-processing guarantees and failure paths explicit, then treats sustainable throughput as something to measure and defend rather than assume. Query-plan analysis and repeated boundary tests separate real capacity from short-lived throughput, and two independently evidenced changes — bounded Kafka offset-commit batching, then query-plan-driven PostgreSQL indexing — moved the isolated pipeline's sustainable ceiling from ~750 to ~1,050 events/s without weakening at-least-once correctness.",
     technologies: [
       "Python",
       "TypeScript",
@@ -408,16 +408,17 @@ const projectRecords = [
       "Consumer Groups",
       "Partition-Scoped Ordering",
       "Query-Plan Analysis",
+      "Offset-Commit Batching",
       "Observability",
       "Performance Engineering",
     ],
     proofPoints: [
       {
-        label: "Sustainable service rate",
-        value: "~742 evt/s",
-        scope: "Isolated local benchmark",
+        label: "Sustainable capacity improvement",
+        value: "750 → 1,050 evt/s (+40%)",
+        scope: "Isolated local benchmark · Kafka → processor → persistence",
         qualifier:
-          "Measured only across Kafka → processor → Redis/PostgreSQL with three processor workers and three Kafka partitions; 775 evt/s was non-sustainable in repeated boundary tests. This is not production capacity or Demo Control throughput.",
+          "Three processor workers matched to three Kafka partitions (750–775 evt/s was the original non-sustainable transition). Bounded per-partition offset-commit batching moved the sustainable boundary to ~900 evt/s; query-plan-driven PostgreSQL indexing plus a fresh capacity sweep moved it to ~1,050 evt/s, with ~1,075 evt/s the first repeatably degraded rate. Not production capacity or Demo Control throughput.",
       },
       {
         label: "Recent-payment lookup",
