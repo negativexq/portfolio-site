@@ -1,0 +1,13 @@
+export const WRITING_DIAGRAM_IDS = [
+  "kafka-idempotency-flow",
+  "transactional-outbox-flow",
+  "agent-trust-boundary",
+  "rag-citation-pipeline",
+  "agent-policy-flow",
+] as const;
+
+export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
+
+export function isWritingDiagramId(value: string): value is WritingDiagramId {
+  return (WRITING_DIAGRAM_IDS as readonly string[]).includes(value);
+}

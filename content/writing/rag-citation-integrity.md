@@ -2,8 +2,8 @@
 title: "Building Citation Integrity into a Production RAG Pipeline"
 description: "How retrieved source identity, bounded context construction, citation validation, and evaluation turn RAG citations into testable system behavior."
 slug: rag-citation-integrity
-datePublished: 2026-08-20
-dateModified: 2026-08-20
+datePublished: 2026-08-11
+dateModified: 2026-08-11
 tags:
   - RAG
   - LLM
@@ -31,20 +31,13 @@ Both retrieval backends return the same ranked chunk schema. The local backend c
 
 The exact fusion algorithms differ, so evaluation records the backend and strategy. Citation handling does not depend on those score details. It depends on the selected chunks retaining their source fields.
 
+:::diagram rag-citation-pipeline
+
 ## Build a bounded context
 
 `construct_context` sorts chunks by rerank score and retrieval score, removes duplicate normalized content, and stops at a configured maximum. The default generation path uses at most four chunks.
 
 The grounded answer generator creates its citation list from that selected context:
-
-```text
-retrieval candidates
-  -> optional reranking
-  -> duplicate-content removal
-  -> bounded context
-  -> citation objects from selected chunks
-  -> answer and citation metadata
-```
 
 When no context survives, the generator returns a bounded fallback with no citations and `grounded=False`. It does not manufacture a policy answer or a source reference.
 

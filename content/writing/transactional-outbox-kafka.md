@@ -2,8 +2,8 @@
 title: "Transactional Outbox: Closing the Database–Kafka Failure Window"
 description: "How the commerce platform commits business state and a Kafka-ready event together, then publishes that event through a recoverable PostgreSQL outbox."
 slug: transactional-outbox-kafka
-datePublished: 2026-08-20
-dateModified: 2026-08-20
+datePublished: 2026-07-30
+dateModified: 2026-07-30
 tags:
   - Kafka
   - PostgreSQL
@@ -35,13 +35,7 @@ Publishing after the commit has the opposite gap. The database state becomes vis
 
 The outbox changes the write set. Instead of trying to commit PostgreSQL and Kafka together, the source transaction commits PostgreSQL business state and an intent to publish:
 
-```text
-BEGIN
-  insert fraud_evaluations
-  insert fraud_alerts
-  insert fraud_outbox(payload_bytes, event_id, topic, headers, ...)
-COMMIT
-```
+:::diagram transactional-outbox-flow
 
 If the transaction rolls back, none of those rows survive. If it commits, the event bytes needed for publication are durable even when Kafka is unavailable.
 

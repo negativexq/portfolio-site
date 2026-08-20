@@ -2,8 +2,8 @@
 title: "At-Least-Once Kafka Without Duplicate Side Effects"
 description: "A concrete Kafka consumer design that combines Redis leases, a PostgreSQL event ledger, transactional writes, bounded retries, and careful offset commits."
 slug: kafka-at-least-once-idempotency
-datePublished: 2026-08-20
-dateModified: 2026-08-20
+datePublished: 2026-07-29
+dateModified: 2026-07-29
 tags:
   - Kafka
   - Distributed Systems
@@ -37,16 +37,7 @@ The processor uses manual Kafka offset commits. For each valid record it follows
 
 The database transaction is the durable boundary. Redis and Kafka operations stay outside it. If PostgreSQL rolls back, the processor does not mark the event complete and does not commit its offset.
 
-```text
-Kafka record
-  -> Redis reservation
-  -> PostgreSQL transaction
-       -> processed_events
-       -> business effects
-       -> fraud evaluation and outbox when applicable
-  -> Redis completion
-  -> Kafka offset commit
-```
+:::diagram kafka-idempotency-flow
 
 This is at-least-once processing with durable idempotency. It is not end-to-end exactly once, and the repository does not claim otherwise.
 

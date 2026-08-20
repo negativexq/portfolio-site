@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { ArticleDiagram } from "@/components/writing/article-diagram";
+import { isWritingDiagramId } from "@/lib/writing/diagrams";
 
 function inline(text: string): ReactNode[] {
   const pattern = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g;
@@ -36,6 +38,14 @@ export function ArticleMarkdown({ markdown }: { markdown: string }) {
   while (index < lines.length) {
     const line = lines[index];
     if (!line.trim()) {
+      index += 1;
+      continue;
+    }
+
+    const diagram = line.match(/^:::diagram\s+([a-z0-9-]+)$/);
+    if (diagram) {
+      if (!isWritingDiagramId(diagram[1])) throw new Error(`Unknown writing diagram: ${diagram[1]}`);
+      blocks.push(<ArticleDiagram id={diagram[1]} key={blocks.length} />);
       index += 1;
       continue;
     }
@@ -101,7 +111,7 @@ export function ArticleMarkdown({ markdown }: { markdown: string }) {
     while (
       index < lines.length
       && lines[index].trim()
-      && !/^(##|###|```|>\s|\-\s|\d+\.\s)/.test(lines[index])
+      && !/^(##|###|```|:::diagram\s|>\s|\-\s|\d+\.\s)/.test(lines[index])
       && !(index + 1 < lines.length && lines[index].includes("|") && isTableSeparator(lines[index + 1]))
     ) paragraph.push(lines[index++].trim());
     blocks.push(<p key={blocks.length}>{inline(paragraph.join(" "))}</p>);

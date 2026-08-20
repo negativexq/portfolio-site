@@ -2,8 +2,8 @@
 title: "Designing Guardrails for Production AI Agents"
 description: "A practical execution model for tool-using agents built from typed proposals, deterministic policy, durable confirmation, revalidation, idempotency, and audit."
 slug: production-agent-guardrails
-datePublished: 2026-08-20
-dateModified: 2026-08-20
+datePublished: 2026-08-12
+dateModified: 2026-08-12
 tags:
   - AI Agents
   - Guardrails
@@ -46,6 +46,8 @@ The default policy is small enough to inspect:
 The policy also checks that a customer exists in the execution context and that any requested customer matches it. Unknown tools return `deny`. An exception during policy evaluation fails closed.
 
 This policy is intentionally deterministic. The model does not estimate risk or decide that a confirmation is inconvenient.
+
+:::diagram agent-policy-flow
 
 ## Confirmation is a state machine
 

@@ -92,6 +92,7 @@ export function parseArticleSource(source: string, fileName = "article.md"): Wri
 
 export function calculateReadingTime(markdown: string) {
   const prose = markdown
+    .replace(/^:::diagram\s+[a-z0-9-]+$/gm, " ")
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`[^`]+`/g, " ")
     .replace(/\[[^\]]+\]\([^\)]+\)/g, (match) => match.replace(/\]\([^\)]+\)/, ""))

@@ -2,8 +2,8 @@
 title: "How I Keep Prompt Injection Away from Agent Tools"
 description: "A defense-in-depth boundary that treats model output, retrieved text, and remembered context as evidence while deterministic software keeps execution authority."
 slug: agent-prompt-injection-guardrails
-datePublished: 2026-08-20
-dateModified: 2026-08-20
+datePublished: 2026-08-13
+dateModified: 2026-08-13
 tags:
   - AI Agents
   - Security
@@ -21,6 +21,8 @@ seoTitle: "Prompt Injection Guardrails for Agent Tools"
 I treat tool execution as a privileged boundary. User text, retrieved documents, persistent memory, and model output can provide context, but none of them can grant permission to mutate customer state. The Agentic Customer Service Platform keeps that rule in ordinary software: authenticated scope, typed schemas, target grounding, business validation, policy, confirmation, idempotency, and audit.
 
 This does not make the model immune to prompt injection. It limits what a successful injection can authorize.
+
+:::diagram agent-trust-boundary
 
 ## Keep identity outside the prompt
 

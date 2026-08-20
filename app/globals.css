@@ -2079,6 +2079,157 @@ a {
   border-bottom: 0;
 }
 
+.article-diagram {
+  margin: 2rem 0 2.4rem;
+}
+
+.article-diagram-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.article-diagram-scroll:focus-visible {
+  outline-offset: 3px;
+}
+
+.article-diagram-canvas {
+  display: block;
+  width: 100%;
+  min-width: 44rem;
+  height: auto;
+  color: var(--foreground);
+}
+
+.article-diagram figcaption {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.diagram-node,
+.diagram-boundary,
+.diagram-zone,
+.diagram-result,
+.diagram-audit-rail,
+.diagram-arrow,
+.diagram-link,
+.diagram-divider,
+.diagram-external-boundary,
+.diagram-failure-mark {
+  vector-effect: non-scaling-stroke;
+}
+
+.diagram-node {
+  fill: var(--surface-raised);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.diagram-node--accent {
+  fill: var(--accent-soft);
+  stroke: color-mix(in srgb, var(--accent) 68%, var(--border));
+}
+
+.diagram-node--muted {
+  fill: color-mix(in srgb, var(--surface-raised) 72%, var(--background));
+  stroke-dasharray: 4 3;
+}
+
+.diagram-node--stop {
+  fill: var(--surface);
+  stroke: var(--status-learning);
+  stroke-dasharray: 4 3;
+}
+
+.diagram-node-text,
+.diagram-result-text,
+.diagram-list {
+  fill: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.diagram-node-text {
+  fill: var(--foreground);
+  font-weight: 590;
+}
+
+.diagram-label {
+  fill: var(--muted);
+  font: 650 9px/1 var(--mono);
+  letter-spacing: 0.08em;
+}
+
+.diagram-arrow,
+.diagram-link {
+  fill: none;
+  stroke: var(--subtle-strong);
+  stroke-width: 1.15;
+}
+
+.diagram-arrow--dashed {
+  stroke-dasharray: 5 4;
+}
+
+.diagram-arrow-head {
+  fill: var(--subtle-strong);
+}
+
+.diagram-boundary,
+.diagram-zone,
+.diagram-audit-rail {
+  fill: color-mix(in srgb, var(--surface-raised) 42%, transparent);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.diagram-boundary--accent {
+  fill: color-mix(in srgb, var(--accent-soft) 55%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 60%, var(--border));
+}
+
+.diagram-zone--untrusted,
+.diagram-zone--muted {
+  fill: color-mix(in srgb, var(--surface-raised) 68%, var(--background));
+}
+
+.diagram-divider {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.diagram-external-boundary {
+  stroke: var(--status-learning);
+  stroke-width: 1;
+  stroke-dasharray: 5 5;
+}
+
+.diagram-failure-mark {
+  fill: none;
+  stroke: var(--status-learning);
+  stroke-width: 1.5;
+}
+
+.diagram-result {
+  fill: var(--accent-soft);
+  stroke: none;
+}
+
+.diagram-result-text {
+  fill: var(--verified-text);
+  font-weight: 600;
+}
+
+.diagram-audit-rail {
+  fill: transparent;
+}
+
 .article-related-section {
   margin-top: clamp(3.5rem, 8vw, 6rem);
   border-top: 1px solid var(--border);

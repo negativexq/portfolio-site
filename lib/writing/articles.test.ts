@@ -8,6 +8,7 @@ import {
   getRelatedArticles,
   parseArticleSource,
 } from "./articles.ts";
+import { isWritingDiagramId } from "./diagrams.ts";
 
 test("published articles exclude drafts and remain date sorted", () => {
   const all = getAllArticles();
@@ -17,6 +18,16 @@ test("published articles exclude drafts and remain date sorted", () => {
   assert.ok(published.every((article) => article.draft === false));
   assert.ok(published.every((article, index) => index === 0 || published[index - 1].datePublished >= article.datePublished));
   assert.equal(getPublishedArticleBySlug("redis-cache-stampede"), undefined);
+});
+
+test("every published article has one recognized primary diagram", () => {
+  for (const article of getPublishedArticles()) {
+    const source = getPublishedArticleBySlug(article.slug);
+    assert.ok(source);
+    const diagrams = [...source.body.matchAll(/^:::diagram\s+([a-z0-9-]+)$/gm)];
+    assert.equal(diagrams.length, 1, article.slug);
+    assert.equal(isWritingDiagramId(diagrams[0][1]), true, article.slug);
+  }
 });
 
 test("related writing is deterministic and never returns the current article", () => {
