@@ -87,6 +87,7 @@ export default async function WritingArticlePage({ params }: WritingPageProps) {
           <h1>{article.title}</h1>
           <p className="article-standfirst">{article.description}</p>
           <div className="article-meta">
+            {article.category ? <span>{article.category}</span> : null}
             <span>Published <time dateTime={article.datePublished}>{formatArticleDate(article.datePublished)}</time></span>
             <span>{article.readingTime} min read</span>
             {modified ? <span>Updated <time dateTime={article.dateModified}>{formatArticleDate(article.dateModified!)}</time></span> : null}

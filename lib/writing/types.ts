@@ -4,6 +4,7 @@ export type ArticleFrontmatter = {
   slug: string;
   datePublished: string;
   dateModified?: string;
+  category?: string;
   tags: readonly string[];
   featured: boolean;
   relatedProjects: readonly string[];

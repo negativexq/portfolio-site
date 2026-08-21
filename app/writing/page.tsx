@@ -46,6 +46,7 @@ export default function WritingPage() {
             {articles.map((article) => (
               <article className="writing-card" key={article.slug}>
                 <div className="writing-card-meta">
+                  {article.category ? <span>{article.category}</span> : null}
                   <time dateTime={article.datePublished}>{formatArticleDate(article.datePublished)}</time>
                   <span>{article.readingTime} min read</span>
                 </div>

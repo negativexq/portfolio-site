@@ -13,11 +13,16 @@ import { isWritingDiagramId } from "./diagrams.ts";
 test("published articles exclude drafts and remain date sorted", () => {
   const all = getAllArticles();
   const published = getPublishedArticles();
-  assert.equal(all.length, 6);
-  assert.equal(published.length, 5);
+  assert.equal(all.length, 7);
+  assert.equal(published.length, 6);
   assert.ok(published.every((article) => article.draft === false));
   assert.ok(published.every((article, index) => index === 0 || published[index - 1].datePublished >= article.datePublished));
   assert.equal(getPublishedArticleBySlug("redis-cache-stampede"), undefined);
+});
+
+test("article category is preserved when present", () => {
+  const article = getPublishedArticleBySlug("building-reliable-kafka-event-processing-platform");
+  assert.equal(article?.category, "Engineering");
 });
 
 test("every published article has one recognized primary diagram", () => {

@@ -325,12 +325,62 @@ function AgentPolicyDiagram() {
   );
 }
 
+function CommerceProcessingLifecycleDiagram() {
+  const marker = "commerce-lifecycle-arrow";
+  return (
+    <DiagramFrame
+      id="commerce-processing-lifecycle"
+      title="Commerce event processing lifecycle"
+      description="A Kafka record is polled and validated, then reserved with a token-checked Redis lease. One PostgreSQL transaction writes the processed-events ledger, applies the business change, builds and evaluates fraud context when applicable, and records any outbox publication intent. After commit, Redis is marked complete and the offset tracker may commit the next contiguous Kafka offset."
+      caption="Redis coordinates active work. PostgreSQL owns durable correctness, and each source event has one database transaction before its Kafka offset becomes safe."
+      height={600}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">SOURCE AND COORDINATION</Label>
+      <Node x={28} y={52} width={112} height={58} lines={["Kafka", "record"]} />
+      <Node x={166} y={52} width={112} height={58} lines={["Consumer", "poll"]} />
+      <Node x={304} y={52} width={112} height={58} lines={["Validate", "envelope"]} />
+      <Node x={442} y={44} width={180} height={74} lines={["Redis reserve", "event_id + token", "bounded lease"]} tone="muted" />
+      <Node x={676} y={52} width={176} height={58} lines={["MessageProcessor", "bounded retry"]} />
+      <Arrow d="M140 81 H159" marker={marker} />
+      <Arrow d="M278 81 H297" marker={marker} />
+      <Arrow d="M416 81 H435" marker={marker} />
+      <Arrow d="M622 81 H669" marker={marker} />
+
+      <rect className="diagram-boundary diagram-boundary--accent" x={28} y={160} width={824} height={268} rx="10" />
+      <Label x={44} y={184} anchor="start">ONE POSTGRESQL TRANSACTION · COMMIT ALL OR ROLLBACK ALL</Label>
+      <Node x={52} y={214} width={168} height={66} lines={["processed_events", "identity + digest", "durable replay guard"]} tone="accent" />
+      <Node x={254} y={214} width={168} height={66} lines={["Business write", "dependency checks", "+ row locks"]} tone="accent" />
+      <Node x={456} y={202} width={168} height={90} lines={["Fraud context", "bounded reads", "evaluation", "when eligible"]} />
+      <Node x={658} y={202} width={170} height={90} lines={["Fraud persistence", "alert + outbox row", "when REVIEW/BLOCK"]} tone="accent" />
+      <Arrow d="M220 247 H247" marker={marker} />
+      <Arrow d="M422 247 H449" marker={marker} />
+      <Arrow d="M624 247 H651" marker={marker} />
+      <Node x={342} y={342} width={196} height={54} lines={["PostgreSQL COMMIT"]} tone="accent" />
+      <Arrow d="M743 292 V320 H440 V335" marker={marker} />
+      <Label x={440} y={414}>retry reruns this transaction; rollback leaves no durable effect</Label>
+      <Arrow d="M764 110 V146 H132 V207" marker={marker} />
+
+      <Label x={28} y={468} anchor="start">POST-COMMIT SAFETY</Label>
+      <Node x={76} y={490} width={190} height={68} lines={["Redis complete", "token must still match"]} tone="muted" />
+      <Node x={344} y={490} width={190} height={68} lines={["OffsetCommitTracker", "contiguous safe offsets"]} />
+      <Node x={612} y={490} width={190} height={68} lines={["Kafka offset commit", "batched by size/time"]} tone="accent" />
+      <Arrow d="M440 396 V458 H171 V483" marker={marker} />
+      <Arrow d="M266 524 H337" marker={marker} />
+      <Arrow d="M534 524 H605" marker={marker} />
+      <rect className="diagram-result" x={196} y={574} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={590} textAnchor="middle">A replay may repeat control flow, but not the committed business effect.</text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
   "agent-trust-boundary": AgentTrustBoundaryDiagram,
   "rag-citation-pipeline": RagCitationDiagram,
   "agent-policy-flow": AgentPolicyDiagram,
+  "commerce-processing-lifecycle": CommerceProcessingLifecycleDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {
