@@ -4,7 +4,7 @@ const architectures = {
   "agentic-customer-service-platform": {
     projectId: "agentic-customer-service-platform",
     description:
-      "Authentication resolves a typed principal before the server derives an ExecutionContext that request bodies and model output cannot replace. The LangGraph runtime proposes a structured decision, but deterministic policy, confirmation and typed tools stand between that proposal and any business mutation. PostgreSQL owns business records, idempotency receipts, persistent memory and durable checkpoints; Qdrant serves the configured retrieval path; OpenTelemetry and the evaluation harness observe behavior without becoming authorization inputs.",
+      "The LLM proposes; deterministic software decides what may execute. Authentication resolves a typed principal before the server derives an ExecutionContext that request bodies and model output cannot replace. The model's semantic proposal passes through provenance validation, a deterministic decision compiler, the policy engine and a confirmation gate before an execution authority is allowed to mutate business state. PostgreSQL owns business records, idempotency receipts, persistent memory and durable checkpoints; Qdrant serves the configured retrieval path; OpenTelemetry and the evaluation harness observe behavior without becoming authorization inputs.",
     paths: [
       {
         id: "request-boundary",
@@ -45,23 +45,23 @@ const architectures = {
       {
         id: "decision-path",
         label: "Proposal to authorized execution",
-        summary: "The model proposes; typed validation, deterministic policy and confirmation decide whether a mutation is allowed.",
+        summary: "The LLM proposes; deterministic software decides what may execute.",
         variant: "control",
         layout: { type: "rows", rows: [2, 2, 2] },
         stages: [
           {
             id: "graph",
-            nodes: [{ id: "graph", label: "LangGraph Runtime", subtitle: "typed state · deterministic routing", variant: "service" }],
+            nodes: [{ id: "graph", label: "LangGraph Runtime", subtitle: "agent orchestration, typed state", variant: "service" }],
             edge: { label: "proposes" },
           },
           {
             id: "understand",
-            nodes: [{ id: "understand", label: "Understand · Select Tool", subtitle: "Pydantic-validated proposal", variant: "analyzer" }],
+            nodes: [{ id: "understand", label: "LLM Semantic Proposal", subtitle: "untrusted, Pydantic-typed", variant: "analyzer" }],
             edge: { label: "validates" },
           },
           {
             id: "validate",
-            nodes: [{ id: "validate", label: "Typed Tool Validation", subtitle: "ownership + schema checks", variant: "control" }],
+            nodes: [{ id: "validate", label: "Provenance · Decision Compiler", subtitle: "grounds targets, compiles typed decision", variant: "control" }],
             edge: { label: "evaluates risk", variant: "control" },
           },
           {
@@ -73,7 +73,7 @@ const architectures = {
             id: "outcomes",
             nodes: [
               { id: "allow", label: "Allow", subtitle: "risk-0 / risk-1 execution", relationLabel: "permits", variant: "service" },
-              { id: "confirm", label: "Confirmation", subtitle: "durable pending action", relationLabel: "holds", variant: "control" },
+              { id: "confirm", label: "Confirmation Gate", subtitle: "durable pending action", relationLabel: "holds", variant: "control" },
               { id: "human", label: "Human Escalation", subtitle: "high-risk handoff", relationLabel: "escalates", variant: "output" },
             ],
             edge: { label: "executes", variant: "control", relation: "merge" },
@@ -83,8 +83,8 @@ const architectures = {
             nodes: [
               {
                 id: "tools",
-                label: "Typed Business Tools",
-                subtitle: "revalidates live state, idempotent writes",
+                label: "Execution Authority",
+                subtitle: "typed business tools, idempotent writes",
                 variant: "service",
                 items: ["request-scoped keys", "one receipt per action"],
               },
@@ -159,7 +159,8 @@ const architectures = {
       "Remembered text is contextual evidence only — it cannot authorize work or bypass policy.",
       "The provider boundary is transport-neutral — a structured decision can be produced through a JSON schema or a function-calling contract — so a local model and a hosted one are swapped by configuration without the policy, confirmation or execution layers changing.",
       "Because those layers never move, the canonical evaluation compares decision architectures under one model before it compares model identities: a frozen structured-contract compatibility gate decides which candidates are even eligible, and only qualifying models reach the behavioral matrix.",
-      "The most recent prospective run traced the containment funnel directly: 29 unsafe semantic proposals were reduced to 3 executable, confirmation-required survivors by deterministic guards, and zero reached execution — an open runtime-fix item the project tracks explicitly rather than reporting as closed.",
+      "The current release candidate's semantic-safety evaluation (D2c, M6.29B) closed the containment funnel at zero: 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions — reached in stages (15 → 3 → 0 → 0 → 0) through architectural hardening, not prompt-only tuning.",
+      "A separate operational release gate (D2d, M6.34) validates the deployed system itself — concurrency, restart/persistence and a 6/6 fault-injection matrix — independent of model behavior; D2c and D2d are deliberately distinct claims.",
       "Static bearer credentials keep local development simple; the authenticator, persistence, retrieval and provider abstractions are replaceable rather than a complete deployment environment.",
     ],
   },

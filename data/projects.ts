@@ -12,47 +12,52 @@ const projectRecords = [
     status: "current",
     flagship: true,
     summary:
-      "Reliable execution infrastructure built around a nondeterministic component: every LLM output is treated as an untrusted proposal, and deterministic grounding, authorization, policy, confirmation, idempotency and audit decide what is actually allowed to reach a real customer account.",
+      "Release-candidate agentic platform where every LLM output is an untrusted proposal: deterministic grounding, policy, confirmation, idempotency and audit decide what reaches a real customer account — validated through a closed semantic-safety gate and a passed operational release gate.",
     directAnswer:
-      "Agentic Customer Service Platform is a case study in designing reliable execution infrastructure around a nondeterministic system. A LangGraph agent proposes actions against real customer accounts, but a deterministic control plane — typed validation, policy, durable confirmation, live-state revalidation, idempotent writes and audit — decides what is actually allowed to execute. Customer service is the proving ground; the infrastructure pattern, not the chat surface, is the point.",
+      "Agentic Customer Service Platform is a validated production-oriented reference architecture built on one principle: the LLM proposes, deterministic software decides what may execute. A LangGraph agent proposes actions against real customer accounts; provenance validation, a deterministic decision compiler, a policy engine, a confirmation gate and an execution authority decide whether a mutation is actually allowed. The current release candidate has passed both its semantic-safety validation (D2c) and its operational release gate (D2d).",
     whyItExists:
-      "LLMs are probabilistic; business actions are not. This project is not agent feature development — it's an investigation into how to build execution infrastructure that stays correct when the component proposing the work cannot be trusted. A prospective live evaluation (M6.15B) found unsafe model proposals that survived the deterministic controls of that time; rather than prompt-tuning around the failures, the fix was architectural — semantic grounding and destructive-target admissibility checks added to the control plane itself. The next frozen evaluation (M6.20B) measured the same failure class again and found executable, confirmation-required survivors down from 15 to 3, an 80% reduction, with zero unsafe executions in both runs. The remaining three are tracked as an open containment gap, not a closed result.",
+      "LLMs are probabilistic; business actions are not. This project treats that gap as an execution-infrastructure problem: an early prospective live evaluation found unsafe model proposals reaching executable, confirmation-required state before deterministic guards fully contained them. Rather than prompt-tuning around individual failures, the response was architectural — semantic grounding and destructive-target admissibility checks added to the control plane, then a targeted prompt-contract hardening pass once a narrower provenance gap was isolated. Across that evaluation sequence, unsafe executable survivors were eliminated in stages — 15 → 3 → 0 → 0 → 0 — while unsafe executions held at zero throughout. The current release candidate (M6.29B) closed semantic-safety validation with zero survivors across 540 measured executions, and a separate operational release gate (M6.34) validated the deployed system under concurrency, restart and fault conditions. D2c and D2d are deliberately separate claims: one is evidence about model behavior under this exact contract, the other is evidence about the deployed system's own correctness — neither is a claim of unrestricted production readiness.",
     heroMetrics: [
       {
         value: "540 RUNS",
-        label: "Prospective evaluation",
-        context: "Scale",
-        detail: "180 bilingual scenarios × 3 repetitions, M6.20B, frozen live_eval_v2.",
+        label: "Semantic safety validation",
+        context: "D2c · M6.29B",
+        detail: "180 bilingual scenarios × 3 repetitions on the frozen live_eval_v2 dataset, semantic_decision_v3 contract.",
       },
       {
         value: "0 UNSAFE EXECUTIONS",
         label: "Deterministic containment",
-        context: "Safety",
-        detail: "No unsafe model proposal reached execution across the full M6.20B run.",
+        context: "D2c · M6.29B",
+        detail: "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions.",
       },
       {
-        value: "15 → 3",
-        label: "Unsafe executable survivors",
-        context: "Hardening",
-        detail: "An 80% reduction after adding deterministic semantic grounding and destructive-target admissibility guards.",
+        value: "15 → 0",
+        label: "Safety hardening journey",
+        context: "M6.15B → M6.29B",
+        detail: "Unsafe executable survivors eliminated in stages (15 → 3 → 0 → 0 → 0) through deterministic containment and semantic-contract hardening.",
       },
       {
-        value: "0 BYPASSES",
-        label: "Confirmation compliance",
-        context: "Safety",
-        detail: "Every confirmation-required action was revalidated before executing; none bypassed the confirmation boundary.",
+        value: "D2D_RELEASE_GATE_PASS",
+        label: "Operational release gate",
+        context: "D2d · M6.34",
+        detail: "Baseline E2E, same-action concurrency, restart/persistence, a 6/6 fault matrix and observability/privacy all passed under a frozen deployment.",
       },
     ],
     highlights: [
       {
-        title: "Deterministic agent safety",
+        title: "Semantic safety",
         description:
-          "Explicit identifiers must be grounded in the user's current request before destructive actions can proceed. Symbolic or model-invented targets are blocked or routed to clarification instead of executing.",
+          "Provenance enforcement, deterministic decision-compiler validation and fail-closed policy sit between every model proposal and a business mutation — the current release candidate closed this gate at 0 unsafe executions across 540 measured executions.",
       },
       {
-        title: "Transaction-safe business actions",
+        title: "Operational reliability",
         description:
-          "Writes use actor- and request-scoped idempotency keys, database uniqueness constraints and durable receipts. A write whose outcome is unknown is never automatically replayed.",
+          "Same-action concurrency, restart/persistence and a fault-injection matrix are validated against the deployed system itself, independent of model behavior — the current release candidate passed all of them under the frozen D2d operational gate.",
+      },
+      {
+        title: "Execution guarantees",
+        description:
+          "0 duplicate mutations, 0 confirmation bypasses and 0 unauthorized mutations held across both the semantic-safety and operational-gate evaluations — idempotency keys and durable confirmation state are what make that a property of the system, not of any one run.",
       },
       {
         title: "Human-in-the-loop that survives restarts",
@@ -67,12 +72,7 @@ const projectRecords = [
       {
         title: "Evaluation as a first-class system",
         description:
-          "Frozen bilingual scenarios, source-bound approvals, immutable hashes and explicit budgets run across deterministic regression, safety and resilience suites, plus an approval-gated prospective live run.",
-      },
-      {
-        title: "Operational visibility",
-        description:
-          "OpenTelemetry traces cover agent, tool, policy, RAG, memory and resilience stages while excluding raw customer prompts and sensitive tool arguments from labels.",
+          "Frozen bilingual scenarios, source-bound approvals, immutable hashes and explicit budgets back two separate release gates — D2c for semantic and containment safety, D2d for operational correctness under concurrency, restart and fault conditions — so a model-quality claim and a deployed-system claim are never conflated.",
       },
     ],
     technologies: [
@@ -117,22 +117,39 @@ const projectRecords = [
       "Decision Architecture Evaluation",
       "Containment Funnel Analysis",
       "Prompt Injection Resistance",
+      "Provenance Enforcement",
+      "Operational Release Gate",
+      "Fault Injection",
       "Observability",
     ],
     proofPoints: [
       {
-        label: "Prospective containment funnel",
-        value: "0 unsafe executions · 0 confirmation bypasses",
-        scope: "M6.20B · 540 measured executions · gpt-5.6-luna",
+        label: "D2c semantic safety validation",
+        value: "540/540 · 0 unsafe executions",
+        scope: "M6.29B · semantic_decision_v3 · live_eval_v2",
         qualifier:
-          "The latest approval-gated live run (semantic_decision_v3, official OpenAI API, 180 scenarios × 3 repetitions) traced the full containment path: 29 unsafe semantic proposals, 26 stopped by deterministic guards before execution, 3 executable confirmation-required survivors that did not execute. Zero reached execution and zero bypassed confirmation — but the 3 pre-execution survivors are tracked as an open runtime-fix item (PRODUCT_RUNTIME_FIX_REQUIRED), not a closed result.",
+          "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions. Also recorded: 0 confirmation bypasses, 0 unauthorized mutations, 0 duplicate mutations, 0 hallucinated identifiers. Evidence for this exact source, prompt, model, provider and contract binding — not a universal guarantee about future hosted-model behavior.",
       },
       {
-        label: "Deterministic evaluation",
-        value: "110 / 110",
-        scope: "Full deterministic agent evaluation suite",
+        label: "D2d operational release gate",
+        value: "D2D_RELEASE_GATE_PASS",
+        scope: "M6.34 · frozen deployment topology",
         qualifier:
-          "Additional dedicated safety and resilience suites run separately at 40/40 and 28/28, all against a fake structured-decision provider — a regression gate, not a claim about live-model behavior.",
+          "Baseline E2E PASS; same-action concurrency committed 1, 1, 1 across 16-way contention and 3 rounds; independent-action concurrency committed 2, 2, 2; restart/persistence PASS; fault matrix 6/6 recovered; observability/privacy PASS. Validates the deployed system's own correctness under controlled operational conditions, not model quality.",
+      },
+      {
+        label: "Safety hardening journey",
+        value: "15 → 3 → 0 → 0 → 0",
+        scope: "Unsafe executable survivors, M6.15B → M6.29B",
+        qualifier:
+          "Containment gaps were closed in stages — deterministic grounding and admissibility checks, then containment-observability instrumentation, then a targeted prompt-contract hardening once the remaining gap was isolated to unsupported refund-reason provenance. Unsafe executions held at zero throughout.",
+      },
+      {
+        label: "Deterministic regression suite",
+        value: "110/110 · 40/40 · 28/28",
+        scope: "Deterministic · safety · resilience gates",
+        qualifier:
+          "Runs against a fake structured-decision provider as a repeatable CI regression gate — evidence about runtime correctness, not a claim about live-model behavior.",
       },
       {
         label: "Decision architecture selection",
