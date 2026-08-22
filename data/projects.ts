@@ -47,17 +47,17 @@ const projectRecords = [
       {
         title: "Semantic safety",
         description:
-          "Provenance enforcement, deterministic decision-compiler validation and fail-closed policy sit between every model proposal and a business mutation — the current release candidate closed this gate at 0 unsafe executions across 540 measured executions.",
-      },
-      {
-        title: "Operational reliability",
-        description:
-          "Same-action concurrency, restart/persistence and a fault-injection matrix are validated against the deployed system itself, independent of model behavior — the current release candidate passed all of them under the frozen D2d operational gate.",
+          "Problem: an LLM can produce a plausible but ungrounded execution proposal — a non-authoritative output with unsupported semantic arguments — that cannot be trusted as executable intent. Solution: provenance validation and a deterministic decision compiler ground every argument in authoritative context before it becomes an executable decision, closing this gate at 0 unsafe executions across 540 measured executions.",
       },
       {
         title: "Execution guarantees",
         description:
-          "0 duplicate mutations, 0 confirmation bypasses and 0 unauthorized mutations held across both the semantic-safety and operational-gate evaluations — idempotency keys and durable confirmation state are what make that a property of the system, not of any one run.",
+          "Problem: a non-authoritative model output should not be able to directly mutate a production system. Solution: policy checks, a confirmation gate and a separate execution authority stand between proposal and mutation, keeping 0 duplicate mutations, 0 confirmation bypasses and 0 unauthorized mutations a property of the system, not of any one run.",
+      },
+      {
+        title: "Operational reliability",
+        description:
+          "Problem: a semantically correct agent can still fail operationally under concurrency, restarts or dependency failures. Solution: the D2d release gate validates same-action concurrency, restart/persistence and a 6/6 fault-injection matrix against the deployed system itself, independent of model behavior.",
       },
       {
         title: "Human-in-the-loop that survives restarts",
