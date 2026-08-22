@@ -16,7 +16,7 @@ const projectRecords = [
     directAnswer:
       "Agentic Customer Service Platform is a validated production-oriented reference architecture built on one principle: the LLM proposes, deterministic software decides what may execute. A LangGraph agent proposes actions against real customer accounts; provenance validation, a deterministic decision compiler, a policy engine, a confirmation gate and an execution authority decide whether a mutation is actually allowed. The current release candidate has passed both its semantic-safety validation (D2c) and its operational release gate (D2d).",
     whyItExists:
-      "LLMs are probabilistic; business actions are not. This project treats that gap as an execution-infrastructure problem: an early prospective live evaluation found unsafe model proposals reaching executable, confirmation-required state before deterministic guards fully contained them. Rather than prompt-tuning around individual failures, the response was architectural — semantic grounding and destructive-target admissibility checks added to the control plane, then a targeted prompt-contract hardening pass once a narrower provenance gap was isolated. Across that evaluation sequence, unsafe executable survivors were eliminated in stages — 15 → 3 → 0 → 0 → 0 — while unsafe executions held at zero throughout. The current release candidate (M6.29B) closed semantic-safety validation with zero survivors across 540 measured executions, and a separate operational release gate (M6.34) validated the deployed system under concurrency, restart and fault conditions. D2c and D2d are deliberately separate claims: one is evidence about model behavior under this exact contract, the other is evidence about the deployed system's own correctness — neither is a claim of unrestricted production readiness.",
+      "A useful customer-service agent eventually needs permission to mutate real account state — issue a refund, cancel an order, escalate a case. That creates the central systems problem: a nondeterministic model cannot be the authority for destructive work, because a plausible-sounding proposal is not the same as an authorized one. This project separates semantic interpretation from execution authority: the LLM proposes intent and references; deterministic software grounds, compiles, validates, authorizes, confirms and executes. The architecture is validated in two separate layers — D2c measures semantic and model behavior, closed at 540/540 measured executions with zero unsafe executions for the current release candidate; D2d validates operational correctness under concurrency, restart and dependency failure, passed as a separate release gate. Getting here was not a straight line: unsafe executable survivors were eliminated in stages — 15 → 3 → 0 → 0 → 0 — through deterministic containment and semantic-contract hardening, not prompt-only tuning. Neither gate claims unrestricted production readiness.",
     heroMetrics: [
       {
         value: "540 RUNS",
@@ -62,12 +62,12 @@ const projectRecords = [
       {
         title: "Human-in-the-loop that survives restarts",
         description:
-          "Confirmation is bound to a durable pending action rather than a regenerated model response. Ownership, arguments and current business state are revalidated before it executes.",
+          "Confirmation binds to the exact persisted action across turns and process restarts, not to a regenerated model response — a restarted backend, a reloaded page or a re-sent message cannot spawn a second version of the same pending decision.",
       },
       {
         title: "Production-oriented RAG",
         description:
-          "Hybrid dense + sparse retrieval with reciprocal-rank fusion and optional reranking, versioned snapshots with atomic alias activation, and bounded fallback when the reranker fails.",
+          "Hybrid dense + sparse retrieval with reciprocal-rank fusion and optional reranking, versioned snapshots with atomic alias activation, and bounded fallback when the reranker fails — retrieval is evidence the agent can cite, never an independent source of execution authority.",
       },
       {
         title: "Evaluation as a first-class system",
@@ -142,7 +142,7 @@ const projectRecords = [
         value: "15 → 3 → 0 → 0 → 0",
         scope: "Unsafe executable survivors, M6.15B → M6.29B",
         qualifier:
-          "Containment gaps were closed in stages — deterministic grounding and admissibility checks, then containment-observability instrumentation, then a targeted prompt-contract hardening once the remaining gap was isolated to unsupported refund-reason provenance. Unsafe executions held at zero throughout.",
+          "Containment gaps were closed in stages — deterministic grounding and admissibility checks, then containment-observability instrumentation, then a targeted prompt-contract hardening once the remaining gap was isolated to unsupported refund-reason provenance. A Turkish valid-refund control exposed the mechanism directly: the model proposed unsupported reason wording that the deterministic compiler correctly rejected (0/3 supported). The prompt contract was aligned without weakening the compiler, and targeted then full prospective runs returned 3/3 supported Risk-2 flows. Unsafe executions held at zero throughout.",
       },
       {
         label: "Deterministic regression suite",
