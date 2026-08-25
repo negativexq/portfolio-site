@@ -90,6 +90,8 @@ export type Project = {
   technologies: readonly string[];
   concepts: readonly string[];
   proofPoints: readonly ProofPoint[];
+  /** Optional card-specific proof when the first deep-dive metric is too implementation-heavy. */
+  cardProof?: ProofPoint;
   /** Optional headline stat strip for the hero — scoped, evidence-backed numbers only. */
   heroMetrics?: readonly Metric[];
   /** Optional short, scannable engineering claims for the top of the case study. */

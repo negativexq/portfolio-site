@@ -12,6 +12,13 @@ const projectRecords = [
     status: "current",
     flagship: true,
     showCardProof: true,
+    cardProof: {
+      label: "Execution authority",
+      value: "SERVER-OWNED",
+      scope: "LLM proposal → deterministic execution",
+      qualifier:
+        "Authentication, scope, policy, confirmation, revalidation, idempotency and business execution stay outside the model. The exercised D2c slice recorded 0 unauthorized mutations and 0 unsafe executions.",
+    },
     summary:
       "Customer-service agent platform where the LLM proposes refunds, cancellations, lookups, tickets and escalations while deterministic software owns scope, policy, confirmation, revalidation, idempotency and execution.",
     directAnswer:
@@ -184,6 +191,13 @@ const projectRecords = [
     category: "MLOps / AI Platform",
     status: "current",
     flagship: true,
+    cardProof: {
+      label: "Routing control loop",
+      value: "DESIRED ↔ OBSERVED",
+      scope: "Durable database state → router reconciliation",
+      qualifier:
+        "The database owns desired traffic; the router is restart-losable observed state. A worker-triggered reconcile tick repairs drift after a restart or failed push.",
+    },
     summary:
       "Policy-driven ML release control plane combining progressive canary delivery, delayed-ground-truth quality gates, automated promotion and rollback, and desired-vs-observed routing reconciliation.",
     directAnswer:
@@ -403,11 +417,45 @@ const projectRecords = [
     status: "current",
     flagship: true,
     summary:
-      "Distributed commerce system focused on at-least-once correctness, transactional persistence, bounded failure handling, observability and measured performance limits.",
+      "Production-oriented event-driven commerce platform where Kafka may redeliver, but layered idempotency, transactional persistence and bounded failure handling protect durable business effects.",
     directAnswer:
       "Real-Time Commerce Platform is a Kafka-based distributed system with idempotent consumers, PostgreSQL transactional persistence, Redis coordination, bounded retry, a DLQ and a transactional outbox under partition-scoped ordering.",
     whyItExists:
       "Makes event-processing guarantees and failure paths explicit, then treats sustainable throughput as something to measure and defend rather than assume. Query-plan analysis and repeated boundary tests separate real capacity from short-lived throughput, and two independently evidenced changes — bounded Kafka offset-commit batching, then query-plan-driven PostgreSQL indexing — moved the isolated pipeline's sustainable ceiling from ~750 to ~1,050 events/s without weakening at-least-once correctness.",
+    heroMetrics: [
+      {
+        value: "~1,050 evt/s",
+        label: "Sustainable isolated capacity",
+        context: "3 workers · 3 partitions",
+        detail: "Highest clearly sustainable rate in the local Kafka → processor → persistence benchmark; ~1,075 evt/s degraded repeatably.",
+      },
+      {
+        value: "28.6×",
+        label: "Fewer offset commits",
+        context: "125,669 → 4,385 calls",
+        detail: "Bounded contiguous per-partition batching moved the earlier sustainable boundary from ~750 to ~900 evt/s.",
+      },
+      {
+        value: "0.253 ms",
+        label: "Recent-payment lookup",
+        context: "10.897 ms before indexing",
+        detail: "Measured PostgreSQL execution time after query-plan-driven indexing, not end-to-end latency.",
+      },
+    ],
+    highlights: [
+      {
+        title: "At-least-once, duplicate-safe",
+        description: "Kafka offsets can be replayed. Redis leases coordinate active work, while PostgreSQL durable identity and uniqueness make repeated business effects harmless.",
+      },
+      {
+        title: "One durable business boundary",
+        description: "Commerce state, fraud outcomes and the derived-event outbox commit together in a PostgreSQL Unit of Work.",
+      },
+      {
+        title: "Measured limits",
+        description: "Demo full-path throughput and isolated processor capacity remain separate claims, with a fresh sweep defining the current sustainable boundary.",
+      },
+    ],
     technologies: [
       "Python",
       "TypeScript",

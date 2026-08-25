@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
+import { CommerceProjectCaseStudy } from "@/components/content/commerce-project-case-study";
+import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
@@ -12,6 +14,8 @@ import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
 import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
+import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
+import { modelOpsMeta, modelOpsProjectUrl } from "@/data/modelops-control-plane";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
 import { personId } from "@/lib/seo/person";
@@ -51,6 +55,50 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
         title: agenticMeta.title,
         description: agenticMeta.description,
         images: [agenticMeta.image],
+      },
+    };
+  }
+
+  if (project.id === "real-time-commerce-platform") {
+    return {
+      title: commerceMeta.title,
+      description: commerceMeta.description,
+      keywords: [...commerceMeta.keywords],
+      alternates: { canonical: commerceProjectUrl },
+      openGraph: {
+        type: "article",
+        url: commerceProjectUrl,
+        title: commerceMeta.title,
+        description: commerceMeta.description,
+        images: [{ url: commerceMeta.image, width: 920, height: 1690, alt: commerceMeta.imageAlt }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: commerceMeta.title,
+        description: commerceMeta.description,
+        images: [commerceMeta.image],
+      },
+    };
+  }
+
+  if (project.id === "modelops-control-plane") {
+    return {
+      title: modelOpsMeta.title,
+      description: modelOpsMeta.description,
+      keywords: [...modelOpsMeta.keywords],
+      alternates: { canonical: modelOpsProjectUrl },
+      openGraph: {
+        type: "article",
+        url: modelOpsProjectUrl,
+        title: modelOpsMeta.title,
+        description: modelOpsMeta.description,
+        images: [{ url: modelOpsMeta.image, width: 1280, height: 1500, alt: modelOpsMeta.imageAlt }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: modelOpsMeta.title,
+        description: modelOpsMeta.description,
+        images: [modelOpsMeta.image],
       },
     };
   }
@@ -106,7 +154,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     url: projectUrl,
     codeRepository: project.githubUrl,
     programmingLanguage: project.technologies,
-    keywords: project.id === "agentic-customer-service-platform" ? [...agenticMeta.keywords] : undefined,
+    keywords:
+      project.id === "agentic-customer-service-platform"
+        ? [...agenticMeta.keywords]
+        : project.id === "real-time-commerce-platform"
+          ? [...commerceMeta.keywords]
+          : project.id === "modelops-control-plane"
+            ? [...modelOpsMeta.keywords]
+          : undefined,
     author: {
       "@type": "Person",
       "@id": personId(profile),
@@ -119,6 +174,24 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <AgenticProjectCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "real-time-commerce-platform") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <CommerceProjectCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "modelops-control-plane") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <ModelOpsProjectCaseStudy project={project} />
       </>
     );
   }
