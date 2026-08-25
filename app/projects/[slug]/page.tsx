@@ -7,6 +7,7 @@ import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
 import { ProjectProof } from "@/components/content/project-proof";
+import { SectionIndex } from "@/components/content/section-index";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
@@ -140,6 +141,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       ? [{ id: "roadmap", navLabel: "Roadmap", kickerText: "Next phase" }]
       : []),
   ];
+  const sectionIndex = sections.map((section) => [section.id, section.navLabel] as const);
   const kicker = (id: string) => {
     const index = sections.findIndex((section) => section.id === id);
     const section = sections[index];
@@ -168,14 +170,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       </header>
 
       <div className={`container detail-layout${projectArchitecture ? " detail-layout--architecture" : ""}`}>
-        <aside className="detail-index" aria-label="Page sections">
-          <span>Case study</span>
-          {sections.map((section) => (
-            <a key={section.id} href={`#${section.id}`}>
-              {section.navLabel}
-            </a>
-          ))}
-        </aside>
+        <SectionIndex sections={sectionIndex} label="Case study" />
 
         <div className="detail-content">
           <section id="overview" className="detail-section">
