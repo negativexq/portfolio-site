@@ -12,6 +12,7 @@ tags:
 featured: true
 relatedProjects:
   - agentic-customer-service-platform
+  - knowledge-base-rag
 relatedLearning:
 relatedWriting:
   - memory-is-context-not-authority
