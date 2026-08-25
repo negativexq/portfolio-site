@@ -94,6 +94,8 @@ export type Project = {
   heroMetrics?: readonly Metric[];
   /** Optional short, scannable engineering claims for the top of the case study. */
   highlights?: readonly ProjectHighlight[];
+  /** Whether the compact card should show its first proof point. */
+  showCardProof?: boolean;
   roadmap: readonly RoadmapItem[];
   relationships: readonly ProjectRelationship[];
   evolvedFrom?: ProjectEvolution;

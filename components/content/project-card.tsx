@@ -33,7 +33,7 @@ export function ProjectCard({ project, index, compact = false }: ProjectCardProp
           limit={compact ? 4 : 5}
           label={`${project.title} technologies`}
         />
-        {project.proofPoints[0] ? (
+        {project.showCardProof !== false && project.proofPoints[0] ? (
           <ProjectProof proof={project.proofPoints[0]} compact />
         ) : null}
       </div>

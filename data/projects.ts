@@ -11,43 +11,44 @@ const projectRecords = [
     category: "AI Reliability / Execution Infrastructure",
     status: "current",
     flagship: true,
+    showCardProof: true,
     summary:
-      "Release-candidate agentic platform where every LLM output is an untrusted proposal: deterministic grounding, policy, confirmation, idempotency and audit decide what reaches a real customer account — validated through a closed semantic-safety gate and a passed operational release gate.",
+      "Customer-service agent platform where the LLM proposes refunds, cancellations, lookups, tickets and escalations while deterministic software owns scope, policy, confirmation, revalidation, idempotency and execution.",
     directAnswer:
-      "Agentic Customer Service Platform is a validated production-oriented reference architecture built on one principle: the LLM proposes, deterministic software decides what may execute. A LangGraph agent proposes actions against real customer accounts; provenance validation, a deterministic decision compiler, a policy engine, a confirmation gate and an execution authority decide whether a mutation is actually allowed. The current release candidate has passed both its semantic-safety validation (D2c) and its operational release gate (D2d).",
+      "Agentic Customer Service Platform is a production-oriented Agentic AI Control Plane for customer-support workflows. The LLM proposes semantic intent; deterministic software owns authentication, customer scope, target resolution, policy, confirmation, revalidation, idempotency and execution. The repository is a reference implementation with explicit release warnings, not an unrestricted production SaaS product.",
     whyItExists:
-      "A useful customer-service agent eventually needs permission to mutate real account state — issue a refund, cancel an order, escalate a case. That creates the central systems problem: a nondeterministic model cannot be the authority for destructive work, because a plausible-sounding proposal is not the same as an authorized one. This project separates semantic interpretation from execution authority: the LLM proposes intent and references; deterministic software grounds, compiles, validates, authorizes, confirms and executes. The architecture is validated in two separate layers — D2c measures semantic and model behavior, closed at 540/540 measured executions with zero unsafe executions for the current release candidate; D2d validates operational correctness under concurrency, restart and dependency failure, passed as a separate release gate. Getting here was not a straight line: unsafe executable survivors were eliminated in stages — 15 → 3 → 0 → 0 → 0 — through deterministic containment and semantic-contract hardening, not prompt-only tuning. Neither gate claims unrestricted production readiness.",
+      "A customer-service agent becomes a systems problem when it can affect account state: refund an order, cancel it, create a ticket or escalate a case. A plausible model proposal is not an authorization decision. This project keeps natural-language understanding and execution authority separate, then measures semantic safety, operational correctness, deterministic resilience and real-LLM quality as distinct evidence rather than one synthetic score.",
     heroMetrics: [
       {
-        value: "540 RUNS",
-        label: "Semantic safety validation",
-        context: "D2c · M6.29B",
-        detail: "180 bilingual scenarios × 3 repetitions on the frozen live_eval_v2 dataset, semantic_decision_v3 contract.",
+        value: "540/540 ATTEMPTS",
+        label: "Measured semantic-safety attempts",
+        context: "D2c · semantic_decision_v3",
+        detail: "The current source-bound semantic-safety slice closed with 0 unsafe executable survivors and 0 unsafe executions.",
       },
       {
         value: "0 UNSAFE EXECUTIONS",
         label: "Deterministic containment",
-        context: "D2c · M6.29B",
+        context: "D2c · current release candidate",
         detail: "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions.",
       },
       {
-        value: "15 → 0",
-        label: "Safety hardening journey",
-        context: "M6.15B → M6.29B",
-        detail: "Unsafe executable survivors eliminated in stages (15 → 3 → 0 → 0 → 0) through deterministic containment and semantic-contract hardening.",
+        value: "18/18 SCENARIOS",
+        label: "Operational release gate",
+        context: "D2d · 8/8 phases · 6/6 fault classes",
+        detail: "The reference deployment passed its exercised operational scenarios, mandatory phases and fault classes as a separate gate.",
       },
       {
-        value: "D2D_RELEASE_GATE_PASS",
-        label: "Operational release gate",
-        context: "D2d · M6.34",
-        detail: "Baseline E2E, same-action concurrency, restart/persistence, a 6/6 fault matrix and observability/privacy all passed under a frozen deployment.",
+        value: "100 REAL-LLM SAMPLES",
+        label: "Quality evidence",
+        context: "82 passed · 18 bounded warning-partials",
+        detail: "A quality-outcome breakdown from the real-LLM QA slice, not a safety rate.",
       },
     ],
     highlights: [
       {
         title: "Semantic safety",
         description:
-          "Problem: an LLM can produce a plausible but ungrounded execution proposal — a non-authoritative output with unsupported semantic arguments — that cannot be trusted as executable intent. Solution: provenance validation and a deterministic decision compiler ground every argument in authoritative context before it becomes an executable decision, closing this gate at 0 unsafe executions across 540 measured executions.",
+          "Problem: an LLM can produce a plausible but ungrounded execution proposal — a non-authoritative output with unsupported semantic arguments — that cannot be trusted as executable intent. Solution: provenance validation and a deterministic decision compiler ground every argument in authoritative context before it becomes an executable decision, closing this gate at 0 unsafe executions across 540/540 measured semantic-safety attempts.",
       },
       {
         title: "Execution guarantees",
@@ -60,14 +61,14 @@ const projectRecords = [
           "Problem: a semantically correct agent can still fail operationally under concurrency, restarts or dependency failures. Solution: the D2d release gate validates same-action concurrency, restart/persistence and a 6/6 fault-injection matrix against the deployed system itself, independent of model behavior.",
       },
       {
-        title: "Human-in-the-loop that survives restarts",
+        title: "Durable workflows that survive interruption and recovery",
         description:
-          "Confirmation binds to the exact persisted action across turns and process restarts, not to a regenerated model response — a restarted backend, a reloaded page or a re-sent message cannot spawn a second version of the same pending decision.",
+          "Consequential actions bind confirmation to one pending action. Mixed messages suspend rather than confirm; workflows can resume or be superseded; supported browser/backend recovery restores state; revalidation and replay-safe idempotency protect the final write.",
       },
       {
-        title: "Production-oriented RAG",
+        title: "Grounded RAG with bounded abstention",
         description:
-          "Hybrid dense + sparse retrieval with reciprocal-rank fusion and optional reranking, versioned snapshots with atomic alias activation, and bounded fallback when the reranker fails — retrieval is evidence the agent can cite, never an independent source of execution authority.",
+          "Hybrid retrieval, evidence provenance, citation and excerpt validation, grounding checks, and bounded uncertainty when evidence is missing or insufficient. Retrieved evidence informs answers; it never grants execution authority.",
       },
       {
         title: "Evaluation as a first-class system",
@@ -84,9 +85,14 @@ const projectRecords = [
       "Alembic",
       "Qdrant",
       "OpenTelemetry",
-      "Ollama",
       "React",
       "TypeScript",
+      "Vite",
+      "Pydantic",
+      "Ruff",
+      "Mypy",
+      "Vitest",
+      "Playwright",
       "Docker Compose",
     ],
     concepts: [
@@ -109,7 +115,7 @@ const projectRecords = [
       "Immutable Knowledge Snapshots",
       "Atomic Alias Activation",
       "Snapshot Rollback",
-      "Persistent Memory",
+      "Customer-Scoped Memory",
       "Live Model Evaluation",
       "Multilingual Evaluation",
       "Provider-Neutral Model Transport",
@@ -125,17 +131,17 @@ const projectRecords = [
     proofPoints: [
       {
         label: "D2c semantic safety validation",
-        value: "540/540 · 0 unsafe executions",
-        scope: "M6.29B · semantic_decision_v3 · live_eval_v2",
+        value: "540/540 measured attempts",
+        scope: "semantic/safety · semantic_decision_v3",
         qualifier:
           "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions. Also recorded: 0 confirmation bypasses, 0 unauthorized mutations, 0 duplicate mutations, 0 hallucinated identifiers. Evidence for this exact source, prompt, model, provider and contract binding — not a universal guarantee about future hosted-model behavior.",
       },
       {
         label: "D2d operational release gate",
-        value: "D2D_RELEASE_GATE_PASS",
-        scope: "M6.34 · frozen deployment topology",
+        value: "18/18 · 8/8 · 6/6",
+        scope: "operational scenarios · phases · fault classes",
         qualifier:
-          "Baseline E2E PASS; same-action concurrency committed 1, 1, 1 across 16-way contention and 3 rounds; independent-action concurrency committed 2, 2, 2; restart/persistence PASS; fault matrix 6/6 recovered; observability/privacy PASS. Validates the deployed system's own correctness under controlled operational conditions, not model quality.",
+          "The reference deployment passed 18/18 operational scenarios, 8/8 mandatory phases and recovered all 6/6 fault classes. This is operational evidence, not model-quality evidence.",
       },
       {
         label: "Safety hardening journey",
@@ -145,18 +151,18 @@ const projectRecords = [
           "Containment gaps were closed in stages — deterministic grounding and admissibility checks, then containment-observability instrumentation, then a targeted prompt-contract hardening once the remaining gap was isolated to unsupported refund-reason provenance. A Turkish valid-refund control exposed the mechanism directly: the model proposed unsupported reason wording that the deterministic compiler correctly rejected (0/3 supported). The prompt contract was aligned without weakening the compiler, and targeted then full prospective runs returned 3/3 supported Risk-2 flows. Unsafe executions held at zero throughout.",
       },
       {
-        label: "Deterministic regression suite",
-        value: "110/110 · 40/40 · 28/28",
-        scope: "Deterministic · safety · resilience gates",
+        label: "Deterministic resilience snapshot",
+        value: "28/28",
+        scope: "Deterministic resilience",
         qualifier:
-          "Runs against a fake structured-decision provider as a repeatable CI regression gate — evidence about runtime correctness, not a claim about live-model behavior.",
+          "A separate resilience result for runtime correctness; it is not merged with D2c, D2d or real-LLM quality evidence.",
       },
       {
-        label: "Decision architecture selection",
-        value: "94.05% vs 82.14%",
-        scope: "semantic_decision_v3 vs direct_tool_v1 · same model",
+        label: "Current runtime contract",
+        value: "semantic_decision_v3",
+        scope: "Default semantic contract",
         qualifier:
-          "Both architectures ran the same gpt-5.6-luna model, provider, dataset and deterministic safety stack, so only the decision path varied: semantic_decision_v3 reached 79/84 effective routing and clarification against 69/84 for direct tool calling. That made it the canonical architecture for subsequent model evaluation — the production runtime default itself remains direct_tool_v1 until that migration is made.",
+          "The current runtime contract is semantic_decision_v3. direct_tool_v1 remains only as an explicit compatibility contract for historical evaluation or legacy integration paths.",
       },
       {
         label: "Structured-contract compatibility gate",

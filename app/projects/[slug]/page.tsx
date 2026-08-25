@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
@@ -9,6 +10,7 @@ import { ProjectProof } from "@/components/content/project-proof";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
+import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
 import { personId } from "@/lib/seo/person";
@@ -29,6 +31,28 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const project = getProjectBySlug(slug);
 
   if (!project) return {};
+
+  if (project.id === "agentic-customer-service-platform") {
+    return {
+      title: agenticMeta.title,
+      description: agenticMeta.description,
+      keywords: [...agenticMeta.keywords],
+      alternates: { canonical: agenticProjectUrl },
+      openGraph: {
+        type: "article",
+        url: agenticProjectUrl,
+        title: agenticMeta.title,
+        description: agenticMeta.description,
+        images: [{ url: agenticMeta.image, width: 1440, height: 900, alt: agenticMeta.imageAlt }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: agenticMeta.title,
+        description: agenticMeta.description,
+        images: [agenticMeta.image],
+      },
+    };
+  }
 
   return {
     title: project.title,
@@ -81,12 +105,22 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     url: projectUrl,
     codeRepository: project.githubUrl,
     programmingLanguage: project.technologies,
+    keywords: project.id === "agentic-customer-service-platform" ? [...agenticMeta.keywords] : undefined,
     author: {
       "@type": "Person",
       "@id": personId(profile),
       name: profile.name,
     },
   };
+
+  if (project.id === "agentic-customer-service-platform") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <AgenticProjectCaseStudy project={project} />
+      </>
+    );
+  }
 
   const sections = [
     { id: "overview", navLabel: "Overview", kickerText: "Overview" },

@@ -4,7 +4,7 @@ const architectures = {
   "agentic-customer-service-platform": {
     projectId: "agentic-customer-service-platform",
     description:
-      "The LLM proposes; deterministic software decides what may execute. Authentication resolves a typed principal before the server derives an ExecutionContext that request bodies and model output cannot replace. The model's semantic proposal passes through provenance validation, a deterministic decision compiler, the policy engine and a confirmation gate before an execution authority is allowed to mutate business state. PostgreSQL owns business records, idempotency receipts, persistent memory and durable checkpoints; Qdrant serves the configured retrieval path; OpenTelemetry and the evaluation harness observe behavior without becoming authorization inputs.",
+      "The LLM proposes; deterministic software decides what may execute. Authentication resolves a typed principal before the server derives customer scope. The semantic proposal then passes through a deterministic compiler, authoritative target resolution, typed business validation, policy, confirmation, revalidation, typed tools, idempotency and database ownership. Knowledge follows a separate hybrid-retrieval and grounding path. Memory is context only; neither memory nor RAG can grant authority.",
     paths: [
       {
         id: "request-boundary",
@@ -44,10 +44,10 @@ const architectures = {
       },
       {
         id: "decision-path",
-        label: "Proposal to authorized execution",
-        summary: "The LLM proposes; deterministic software decides what may execute.",
+        label: "Controlled business-action path",
+        summary: "The model proposes semantic intent; the server owns every decision that can lead to a mutation.",
         variant: "control",
-        layout: { type: "rows", rows: [2, 2, 2] },
+        layout: { type: "rows", rows: [2, 2, 2, 2, 2, 2] },
         stages: [
           {
             id: "graph",
@@ -61,41 +61,116 @@ const architectures = {
           },
           {
             id: "validate",
-            nodes: [{ id: "validate", label: "Provenance · Decision Compiler", subtitle: "grounds targets, compiles typed decision", variant: "control" }],
-            edge: { label: "evaluates risk", variant: "control" },
+            nodes: [{ id: "validate", label: "Deterministic Compiler", subtitle: "provenance and admissibility", variant: "control" }],
+            edge: { label: "resolves target", variant: "control" },
+          },
+          {
+            id: "target",
+            nodes: [{ id: "target", label: "Authoritative Target Resolution", subtitle: "authenticated customer scope", variant: "control" }],
+            edge: { label: "validates", variant: "control" },
+          },
+          {
+            id: "business-validation",
+            nodes: [{ id: "business-validation", label: "Typed / Business Validation", subtitle: "live state and tool arguments", variant: "control" }],
+            edge: { label: "evaluates", variant: "control" },
           },
           {
             id: "policy",
-            nodes: [{ id: "policy", label: "Policy Engine", subtitle: "deterministic · fail-closed", variant: "control" }],
-            edge: { label: "routes", variant: "control", relation: "branch" },
+            nodes: [{ id: "policy", label: "Policy", subtitle: "deterministic · fail-closed", variant: "control" }],
+            edge: { label: "branches", variant: "control", relation: "branch" },
           },
           {
             id: "outcomes",
             nodes: [
-              { id: "allow", label: "Allow", subtitle: "risk-0 / risk-1 execution", relationLabel: "permits", variant: "service" },
-              { id: "confirm", label: "Confirmation Gate", subtitle: "durable pending action", relationLabel: "holds", variant: "control" },
-              { id: "human", label: "Human Escalation", subtitle: "high-risk handoff", relationLabel: "escalates", variant: "output" },
+              { id: "allow", label: "Allow", subtitle: "risk 0 / 1", relationLabel: "typed path", variant: "service" },
+              { id: "confirm", label: "Confirm", subtitle: "risk 2", relationLabel: "binds action", variant: "control" },
+              { id: "human", label: "Human", subtitle: "risk 3", relationLabel: "escalates", variant: "output" },
+              { id: "deny", label: "Deny", subtitle: "no execution", relationLabel: "blocks", variant: "boundary" },
             ],
-            edge: { label: "executes", variant: "control", relation: "merge" },
+            edge: { label: "continues when permitted", variant: "control", relation: "merge" },
+          },
+          {
+            id: "confirmation",
+            nodes: [{ id: "confirmation", label: "Confirmation Boundary", subtitle: "exact pending action", variant: "control" }],
+            edge: { label: "revalidates", variant: "control" },
+          },
+          {
+            id: "revalidation",
+            nodes: [{ id: "revalidation", label: "Revalidation", subtitle: "ownership, expiry, live state", variant: "control" }],
+            edge: { label: "calls", variant: "control" },
           },
           {
             id: "execute",
             nodes: [
               {
                 id: "tools",
-                label: "Execution Authority",
-                subtitle: "typed business tools, idempotent writes",
+                label: "Typed Tool",
+                subtitle: "execution authority",
                 variant: "service",
-                items: ["request-scoped keys", "one receipt per action"],
+                items: ["server-owned arguments", "business effect only here"],
               },
             ],
+            edge: { label: "commits", variant: "control" },
+          },
+          {
+            id: "idempotency",
+            nodes: [{ id: "idempotency", label: "Idempotency + DB", subtitle: "one business effect", variant: "storage", items: ["replay protection", "state invariants"] }],
+            edge: { label: "projects", variant: "observability" },
+          },
+          {
+            id: "projection",
+            nodes: [{ id: "projection", label: "Projection / Audit", subtitle: "bounded operator evidence", variant: "output" }],
+          },
+        ],
+      },
+      {
+        id: "knowledge-path",
+        label: "Bounded knowledge path",
+        summary: "Retrieved evidence can support an answer, but it never grants execution authority.",
+        variant: "async",
+        stages: [
+          {
+            id: "question",
+            nodes: [{ id: "question", label: "Knowledge Question", subtitle: "FAQ or policy request", variant: "client" }],
+            edge: { label: "retrieves", variant: "async" },
+          },
+          {
+            id: "retrieval",
+            nodes: [{ id: "retrieval", label: "Hybrid Retrieval", subtitle: "dense + BM25", variant: "service" }],
+            edge: { label: "checks", variant: "async" },
+          },
+          {
+            id: "grounding",
+            nodes: [{ id: "grounding", label: "Grounding / Citation Validation", subtitle: "bounded evidence", variant: "control" }],
+            edge: { label: "answers", variant: "async" },
+          },
+          {
+            id: "answer",
+            nodes: [{ id: "answer", label: "Bounded Answer", subtitle: "abstains when evidence is insufficient", variant: "output" }],
+          },
+        ],
+      },
+      {
+        id: "context-only",
+        label: "Context, never authority",
+        summary: "Customer-scoped memory enriches context; it cannot approve, widen scope or bypass policy.",
+        variant: "async",
+        stages: [
+          {
+            id: "memory",
+            nodes: [{ id: "memory", label: "Memory = context", subtitle: "consent · TTL · customer scope", variant: "boundary" }],
+            edge: { label: "does not authorize", variant: "failure" },
+          },
+          {
+            id: "not-authority",
+            nodes: [{ id: "not-authority", label: "Memory ≠ authority", subtitle: "no permission or approval", variant: "output" }],
           },
         ],
       },
       {
         id: "state-boundaries",
         label: "State ownership",
-        summary: "Durable identity, business effects, memory and checkpoints share one database boundary; retrieval stays separate.",
+        summary: "Business state, idempotency receipts, memory and checkpoints are durable; retrieval remains a separate evidence system.",
         variant: "async",
         stages: [
           {
@@ -159,8 +234,9 @@ const architectures = {
       "Remembered text is contextual evidence only — it cannot authorize work or bypass policy.",
       "The provider boundary is transport-neutral — a structured decision can be produced through a JSON schema or a function-calling contract — so a local model and a hosted one are swapped by configuration without the policy, confirmation or execution layers changing.",
       "Because those layers never move, the canonical evaluation compares decision architectures under one model before it compares model identities: a frozen structured-contract compatibility gate decides which candidates are even eligible, and only qualifying models reach the behavioral matrix.",
-      "The current release candidate's semantic-safety evaluation (D2c, M6.29B) closed the containment funnel at zero: 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions — reached in stages (15 → 3 → 0 → 0 → 0) through architectural hardening, not prompt-only tuning.",
-      "A separate operational release gate (D2d, M6.34) validates the deployed system itself — concurrency, restart/persistence and a 6/6 fault-injection matrix — independent of model behavior; D2c and D2d are deliberately distinct claims.",
+      "The current D2c semantic-safety evaluation closed the containment funnel at zero: 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions — reached through architectural hardening, not prompt-only tuning.",
+      "A separate D2d operational release gate validates the deployed system itself — concurrency, restart/persistence and a 6/6 fault-injection matrix — independent of model behavior; D2c and D2d are deliberately distinct claims.",
+      "The current runtime contract is semantic_decision_v3. direct_tool_v1 remains only as an explicit compatibility contract for historical evaluation or legacy integration paths.",
       "Static bearer credentials keep local development simple; the authenticator, persistence, retrieval and provider abstractions are replaceable rather than a complete deployment environment.",
     ],
   },
