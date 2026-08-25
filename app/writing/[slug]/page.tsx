@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/content/json-ld";
+import { SectionIndex } from "@/components/content/section-index";
 import { TagList } from "@/components/content/tag-list";
-import { ArticleMarkdown } from "@/components/writing/article-markdown";
+import { ArticleMarkdown, articleHeadingId } from "@/components/writing/article-markdown";
 import { profile } from "@/data/profile";
 import { getProjectById } from "@/data/projects";
 import { personId } from "@/lib/seo/person";
@@ -12,6 +13,14 @@ import { getPublishedArticleBySlug, getPublishedArticles, getRelatedArticles } f
 import { formatArticleDate } from "@/lib/writing/format";
 
 type WritingPageProps = { params: Promise<{ slug: string }> };
+
+function getArticleSections(markdown: string) {
+  return markdown.split("\n")
+    .flatMap((line) => {
+      const heading = line.match(/^##\s+(.+)$/);
+      return heading ? [[articleHeadingId(heading[1]), heading[1]] as const] : [];
+    });
+}
 
 export function generateStaticParams() {
   return getPublishedArticles().map((article) => ({ slug: article.slug }));
@@ -57,6 +66,7 @@ export default async function WritingArticlePage({ params }: WritingPageProps) {
     .map((id) => getProjectById(id))
     .filter((project) => project !== undefined);
   const relatedWriting = getRelatedArticles(article);
+  const sections = getArticleSections(article.body);
   const modified = article.dateModified && article.dateModified !== article.datePublished;
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -96,6 +106,7 @@ export default async function WritingArticlePage({ params }: WritingPageProps) {
         </header>
 
         <div className="article-layout container">
+          <SectionIndex sections={sections} label="On this page" />
           <div className="article-content">
             <ArticleMarkdown markdown={article.body} />
 

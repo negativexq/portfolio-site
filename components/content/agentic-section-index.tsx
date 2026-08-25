@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { SectionIndex } from "./section-index";
 
 type Section = readonly [string, string];
 
@@ -9,70 +7,5 @@ type AgenticSectionIndexProps = {
 };
 
 export function AgenticSectionIndex({ sections }: AgenticSectionIndexProps) {
-  const [activeId, setActiveId] = useState(sections[0]?.[0] ?? "");
-
-  useEffect(() => {
-    const updateActiveSection = () => {
-      const marker = window.innerHeight * 0.28;
-      let currentId = sections[0]?.[0] ?? "";
-
-      for (const [id] of sections) {
-        const section = document.getElementById(id);
-        if (!section) continue;
-
-        const bounds = section.getBoundingClientRect();
-        if (bounds.top <= marker && bounds.bottom > marker) {
-          currentId = id;
-          break;
-        }
-
-        if (bounds.top < marker) currentId = id;
-      }
-
-      setActiveId((previousId) => previousId === currentId ? previousId : currentId);
-    };
-
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleSection = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-
-        if (visibleSection) setActiveId(visibleSection.target.id);
-      },
-      { rootMargin: "-28% 0px -65% 0px", threshold: 0 },
-    );
-
-    for (const [id] of sections) {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
-    }
-
-    return () => {
-      window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("resize", updateActiveSection);
-      observer.disconnect();
-    };
-  }, [sections]);
-
-  return (
-    <aside className="detail-index" aria-label="Page sections">
-      <span>Case study</span>
-      {sections.map(([id, label]) => (
-        <a
-          key={id}
-          className={activeId === id ? "is-active" : undefined}
-          href={`#${id}`}
-          aria-current={activeId === id ? "location" : undefined}
-          onClick={() => setActiveId(id)}
-        >
-          {label}
-        </a>
-      ))}
-    </aside>
-  );
+  return <SectionIndex sections={sections} label="Case study" />;
 }

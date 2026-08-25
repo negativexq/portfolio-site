@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 import { ArticleDiagram } from "@/components/writing/article-diagram";
 import { isWritingDiagramId } from "@/lib/writing/diagrams";
 
+export function articleHeadingId(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+}
+
 function inline(text: string): ReactNode[] {
   const pattern = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g;
   return text.split(pattern).filter(Boolean).map((part, index) => {
@@ -63,7 +67,7 @@ export function ArticleMarkdown({ markdown }: { markdown: string }) {
 
     const heading = line.match(/^(##|###)\s+(.+)$/);
     if (heading) {
-      const id = heading[2].toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+      const id = articleHeadingId(heading[2]);
       blocks.push(heading[1] === "##" ? <h2 id={id} key={blocks.length}>{inline(heading[2])}</h2> : <h3 id={id} key={blocks.length}>{inline(heading[2])}</h3>);
       index += 1;
       continue;
