@@ -344,53 +344,138 @@ const projectRecords = [
     category: "Generative AI / RAG Platform",
     status: "current",
     flagship: true,
+    showCardProof: true,
+    cardProof: {
+      label: "Multilingual reranker decision",
+      value: "63 rescues · 0 drops",
+      scope: "220-query paired evaluation",
+      qualifier:
+        "BAAI/bge-reranker-v2-m3 reached cross-lingual Recall@5 1.0000 and MRR 0.9558 on the committed evaluation set. This result belongs to that dataset, model and runtime configuration.",
+    },
     summary:
-      "RAG reliability platform with multi-source ingestion, incremental synchronization, hybrid retrieval, reranking, citation integrity and observable index repair.",
+      "Local-first multilingual RAG platform with tenant-scoped hybrid retrieval, measured reranking, strict answer validation, versioned index operations and an evidence-first React console.",
     directAnswer:
-      "Knowledge Base RAG is a multi-source RAG platform that synchronizes PDF, Markdown and Notion content incrementally, combines dense and sparse retrieval with native RRF fusion, reranks results and validates citation integrity before returning a response.",
+      "Knowledge Base RAG is a local-first platform for operating multilingual knowledge bases. It applies server-owned tenant ACL before dense and sparse retrieval, reranks authorized results with a measured multilingual model, treats retrieved content as untrusted data, validates canonical citations before release in strict mode, and exposes the full path in a React operations console.",
     whyItExists:
-      "Extends retrieval beyond the happy path with versioned re-indexing, cancellation safety, Qdrant and registry reconciliation, schema migration, DeepEval evaluation, and OpenTelemetry traces inspected in Jaeger.",
+      "A useful RAG system has to answer more than whether a chunk is relevant. It has to prove that the user could retrieve it, preserve source identity, stop document instructions from becoming system policy, reject an invalid answer before release, activate compatible index versions safely, and show operators why a result was produced. This project makes those boundaries observable and tests them separately.",
+    heroMetrics: [
+      {
+        value: "844 BACKEND TESTS",
+        label: "Last recorded full verification",
+        context: "2 external checks skipped",
+        detail: "18 frontend tests also passed, with Ruff, typecheck, lint and the production build green.",
+      },
+      {
+        value: "220 QUERIES",
+        label: "Paired multilingual evaluation",
+        context: "Reranker decision",
+        detail: "The selected BGE model recorded cross-lingual Recall@5 1.0000, MRR 0.9558, 63 rescues and 0 drops.",
+      },
+      {
+        value: "82 ADVERSARIAL CASES",
+        label: "Prompt-security evidence",
+        context: "Committed security suite",
+        detail: "Injection, spoofing, suppression, unauthorized citation and cross-tenant exfiltration rates all recorded 0.0000.",
+      },
+      {
+        value: "26/26 SUCCESSFUL",
+        label: "Generation sanity",
+        context: "Baseline generation path",
+        detail: "Citation integrity, not-found behavior and strict validation each recorded 1.0000 in the exercised suite.",
+      },
+    ],
+    highlights: [
+      {
+        title: "Tenant scope before relevance",
+        description:
+          "FastAPI resolves a server-owned user, role and tenant context before retrieval. The mandatory ACL runs before reranking, so no later relevance stage can widen the authorized result set.",
+      },
+      {
+        title: "Retrieved context stays untrusted",
+        description:
+          "Document bodies, titles, headings, source names and locations are serialized as reference data under answer_v3. Delimiter-looking instructions inside a document never receive a system or assistant message role.",
+      },
+      {
+        title: "Validate before release",
+        description:
+          "Strict production mode buffers the answer, checks canonical citation membership and output policy, then releases it. Fast streaming is a separate server-side option whose post-stream validation tradeoff is explicit.",
+      },
+      {
+        title: "Versioned index lifecycle",
+        description:
+          "Pipeline fingerprints bind embedding, parser, index and chunk settings to a collection. A compatible version is built and checked before the kb_active alias moves, keeping model or dimension changes from silently reusing the wrong index.",
+      },
+      {
+        title: "Measured multilingual reranking",
+        description:
+          "A paired 220-query benchmark moved production to BAAI/bge-reranker-v2-m3 after it reached cross-lingual Recall@5 1.0000 and MRR 0.9558. The page keeps the local CPU latency cost beside the quality gain.",
+      },
+      {
+        title: "Operations console, not a chat shell",
+        description:
+          "The React console brings sources, retrieval stages, security state, trace spans, synchronization history, active settings and evaluation artifacts into the same inspection path as the answer.",
+      },
+    ],
     technologies: [
       "Python",
       "FastAPI",
+      "React",
+      "TypeScript",
+      "Vite",
       "Qdrant",
       "Ollama",
       "OpenTelemetry",
       "Jaeger",
-      "DeepEval",
-      "Streamlit",
       "Docker Compose",
     ],
     concepts: [
       "Multi-Source Ingestion",
       "Incremental Sync",
+      "Tenant-Scoped Retrieval",
+      "Role-Based Access Control",
       "Hybrid Retrieval",
       "Dense Retrieval",
       "Sparse Retrieval",
       "RRF Fusion",
-      "Cross-Encoder Reranking",
+      "Multilingual Reranking",
+      "Untrusted RAG Context",
+      "Prompt Injection Resistance",
+      "Strict Output Validation",
       "Citation Integrity",
-      "Versioned Re-Indexing",
-      "Cancellation Safety",
-      "Index Reconciliation",
-      "Schema Migration",
+      "Pipeline Fingerprinting",
+      "Versioned Index Activation",
+      "Alias Rollback",
       "Distributed Tracing",
-      "Evaluation",
+      "Artifact-Backed Evaluation",
     ],
     proofPoints: [
       {
         label: "Repository test evidence",
-        value: "448 tests",
-        scope: "Repository test suite",
+        value: "844 backend · 18 frontend",
+        scope: "Last recorded full verification",
         qualifier:
-          "The suite covers synchronization, retrieval, citation integrity, migration and real-dependency behavior across SQLite, Qdrant, Jaeger and browser paths.",
+          "Two external Notion/provider checks skipped. Ruff, backend and frontend type checks, frontend lint and the production build were green in the same recorded verification.",
       },
       {
-        label: "Bilingual reranker investigation",
-        value: "8 real cells",
-        scope: "2×2 × reranker on/off",
+        label: "Multilingual reranker evaluation",
+        value: "Recall@5 1.0000 · MRR 0.9558",
+        scope: "220-query paired benchmark",
         qualifier:
-          "Query and document language pairing was flipped across the matrix: both cross-lingual cells regressed under reranking while both mono-lingual cells remained unchanged.",
+          "The selected BGE reranker recorded 63 cross-lingual rescues and 0 drops. Total retrieval p95 was 2457.7 ms on the measured local path, so the quality gain carries a visible latency cost.",
+      },
+      {
+        label: "Prompt-security evaluation",
+        value: "82 adversarial cases",
+        scope: "Tenant ACL · untrusted context · strict validation",
+        qualifier:
+          "Injection, spoofing, citation suppression, unauthorized citation and cross-tenant exfiltration rates were all 0.0000 in the committed suite. This is bounded evidence, not a claim of universal prompt-injection immunity.",
+      },
+      {
+        label: "Generation sanity",
+        value: "26/26 successful",
+        scope: "Baseline generation path",
+        qualifier:
+          "Citation integrity, not-found behavior and strict validation each recorded 1.0000. Citation integrity verifies authorized source membership, not claim-level semantic entailment.",
       },
     ],
     roadmap: emptyRoadmap,

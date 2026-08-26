@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
 import { CommerceProjectCaseStudy } from "@/components/content/commerce-project-case-study";
+import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
@@ -15,6 +16,7 @@ import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
 import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
 import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
+import { knowledgeBaseRagMeta, knowledgeBaseRagProjectUrl } from "@/data/knowledge-base-rag";
 import { modelOpsMeta, modelOpsProjectUrl } from "@/data/modelops-control-plane";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
@@ -103,6 +105,33 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
+  if (project.id === "knowledge-base-rag") {
+    return {
+      title: knowledgeBaseRagMeta.title,
+      description: knowledgeBaseRagMeta.description,
+      keywords: [...knowledgeBaseRagMeta.keywords],
+      alternates: { canonical: knowledgeBaseRagProjectUrl },
+      openGraph: {
+        type: "article",
+        url: knowledgeBaseRagProjectUrl,
+        title: knowledgeBaseRagMeta.title,
+        description: knowledgeBaseRagMeta.description,
+        images: [{
+          url: knowledgeBaseRagMeta.image,
+          width: 1249,
+          height: 690,
+          alt: knowledgeBaseRagMeta.imageAlt,
+        }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: knowledgeBaseRagMeta.title,
+        description: knowledgeBaseRagMeta.description,
+        images: [knowledgeBaseRagMeta.image],
+      },
+    };
+  }
+
   return {
     title: project.title,
     description: project.summary,
@@ -161,6 +190,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           ? [...commerceMeta.keywords]
           : project.id === "modelops-control-plane"
             ? [...modelOpsMeta.keywords]
+          : project.id === "knowledge-base-rag"
+            ? [...knowledgeBaseRagMeta.keywords]
           : undefined,
     author: {
       "@type": "Person",
@@ -192,6 +223,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <ModelOpsProjectCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "knowledge-base-rag") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <KnowledgeBaseRagCaseStudy project={project} />
       </>
     );
   }
