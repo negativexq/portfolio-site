@@ -20,3 +20,9 @@ export type WritingArticle = ArticleFrontmatter & {
 };
 
 export type WritingArticleSummary = Omit<WritingArticle, "body">;
+
+export type WritingTopic = {
+  slug: string;
+  title: string;
+  description: string;
+};

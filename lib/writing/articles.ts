@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { projects } from "../../data/projects.ts";
 import { learningItems } from "../../data/learning.ts";
+import { writingTopics } from "../../data/writing-topics.ts";
 import type { ArticleFrontmatter, WritingArticle, WritingArticleSummary } from "./types.ts";
 
 const CONTENT_DIRECTORY = join(process.cwd(), "content", "writing");
@@ -106,6 +107,7 @@ let cachedArticles: readonly WritingArticle[] | undefined;
 export function getAllArticles(): readonly WritingArticle[] {
   if (cachedArticles) return cachedArticles;
   const validProjectIds = new Set(projects.map((project) => project.id));
+  const validTopicTitles = new Set(writingTopics.map((topic) => topic.title));
   const validLearningIds = new Set(learningItems.map((item) => item.id));
   const files = readdirSync(CONTENT_DIRECTORY).filter((file) => file.endsWith(".md")).sort();
   const articles = files.map((file) => {
@@ -116,6 +118,10 @@ export function getAllArticles(): readonly WritingArticle[] {
     }
     for (const learningId of article.relatedLearning) {
       if (!validLearningIds.has(learningId)) throw new Error(`${file}: unknown related learning item ${learningId}`);
+    }
+    if (!article.category) throw new Error(`${file}: missing category`);
+    if (!validTopicTitles.has(article.category)) {
+      throw new Error(`${file}: category "${article.category}" is not a writing topic`);
     }
     return article;
   });

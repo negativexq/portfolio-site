@@ -4,7 +4,7 @@ description: "A deep dive into designing, testing, and optimizing an event-drive
 slug: building-reliable-kafka-event-processing-platform
 datePublished: 2026-08-21
 dateModified: 2026-08-21
-category: Engineering
+category: Distributed Systems
 tags:
   - Distributed Systems
   - Kafka

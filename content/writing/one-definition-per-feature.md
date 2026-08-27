@@ -2,8 +2,8 @@
 title: "One Definition Per Feature"
 description: "When every pipeline rebuilds the same customer feature, the definitions drift apart silently. Making the feature a shared owned artifact fixes that and creates a change-impact problem that column lineage has to answer."
 slug: one-definition-per-feature
-datePublished: 2026-08-27
-dateModified: 2026-08-27
+datePublished: 2026-08-08
+dateModified: 2026-08-08
 category: Data Engineering
 tags:
   - Data Engineering

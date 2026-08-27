@@ -4,6 +4,7 @@ description: "How the commerce platform commits business state and a Kafka-ready
 slug: transactional-outbox-kafka
 datePublished: 2026-07-30
 dateModified: 2026-07-30
+category: Distributed Systems
 tags:
   - Kafka
   - PostgreSQL

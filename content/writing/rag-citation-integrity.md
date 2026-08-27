@@ -4,6 +4,7 @@ description: "How retrieved source identity, bounded context construction, citat
 slug: rag-citation-integrity
 datePublished: 2026-08-11
 dateModified: 2026-08-11
+category: Retrieval & RAG
 tags:
   - RAG
   - LLM

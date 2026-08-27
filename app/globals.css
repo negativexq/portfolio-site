@@ -4235,6 +4235,62 @@ a {
   padding-block: 0 var(--section);
 }
 
+/* Writing topic navigation and per-topic section headings. */
+.writing-topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.writing-topic-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.42rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--tag-text);
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease);
+}
+
+.writing-topic-nav a:hover,
+.writing-topic-nav a:focus-visible {
+  border-color: var(--border-strong);
+  color: var(--foreground);
+}
+
+.writing-topic-nav a span {
+  color: var(--subtle);
+  font-size: 0.66rem;
+}
+
+.writing-topic-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.writing-topic-heading h2 {
+  margin: 0 0 var(--space-2);
+  font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+  letter-spacing: -0.03em;
+}
+
+.writing-topic-heading p {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 .writing-list {
   border-top: 1px solid var(--border);
 }

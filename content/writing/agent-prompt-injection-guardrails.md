@@ -4,6 +4,7 @@ description: "A defense-in-depth boundary that treats model output, retrieved te
 slug: agent-prompt-injection-guardrails
 datePublished: 2026-08-13
 dateModified: 2026-08-27
+category: Agent Reliability
 tags:
   - AI Agents
   - Security

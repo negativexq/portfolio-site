@@ -4,6 +4,7 @@ description: "Model deployment is not complete when a container starts. How prog
 slug: designing-a-policy-driven-model-promotion-control-plane
 datePublished: 2026-08-25
 dateModified: 2026-08-25
+category: AI Platform
 tags:
   - MLOps
   - AI Platform

@@ -4,6 +4,7 @@ description: 'Why "yes" is not always approval, and how interruption, suspension
 slug: a-confirmation-is-not-a-boolean
 datePublished: 2026-08-25
 dateModified: 2026-08-25
+category: Agent Reliability
 tags:
   - AI Agents
   - Stateful Workflows

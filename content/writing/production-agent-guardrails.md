@@ -4,6 +4,7 @@ description: "A practical execution model for tool-using agents built from typed
 slug: production-agent-guardrails
 datePublished: 2026-08-12
 dateModified: 2026-08-27
+category: Agent Reliability
 tags:
   - AI Agents
   - Guardrails

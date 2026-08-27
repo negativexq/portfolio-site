@@ -4,6 +4,7 @@ description: "Persistent agent memory is useful only if remembered text cannot b
 slug: memory-is-context-not-authority
 datePublished: 2026-08-23
 dateModified: 2026-08-25
+category: Agent Reliability
 tags:
   - AI Agents
   - Memory

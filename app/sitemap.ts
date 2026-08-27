@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
 import { getPublishedArticles } from "@/lib/writing/articles";
+import { getWritingTopicGroups } from "@/lib/writing/topics";
 
 const BASE_URL = "https://omerfkoc.dev";
 
@@ -42,5 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: article.featured ? 0.8 : 0.7,
   }));
 
-  return [...staticRoutes, ...projectRoutes, ...writingRoutes];
+  const writingTopicRoutes: MetadataRoute.Sitemap = getWritingTopicGroups().map((group) => ({
+    url: `${BASE_URL}/writing/topic/${group.topic.slug}`,
+    lastModified: group.articles[0].dateModified ?? group.articles[0].datePublished,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...writingRoutes, ...writingTopicRoutes];
 }

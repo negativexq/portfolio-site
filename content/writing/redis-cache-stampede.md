@@ -4,6 +4,7 @@ description: "A planned engineering note on request coalescing, TTL jitter, stal
 slug: redis-cache-stampede
 datePublished: 2026-08-20
 dateModified: 2026-08-20
+category: Distributed Systems
 tags:
   - Redis
   - Caching

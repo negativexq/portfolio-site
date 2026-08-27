@@ -4,6 +4,7 @@ description: "For consequential agents, intent, authority, and execution must be
 slug: decision-authority-execution-observability
 datePublished: 2026-08-22
 dateModified: 2026-08-25
+category: Agent Reliability
 tags:
   - AI Agents
   - Observability

@@ -4,6 +4,7 @@ description: "Deterministic integration tests and real-LLM tests answer differen
 slug: testing-ai-agents-without-pretending-they-are-deterministic
 datePublished: 2026-08-23
 dateModified: 2026-08-25
+category: Agent Reliability
 tags:
   - AI Evaluation
   - LLM

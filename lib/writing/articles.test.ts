@@ -9,6 +9,7 @@ import {
   parseArticleSource,
 } from "./articles.ts";
 import { isWritingDiagramId } from "./diagrams.ts";
+import { getWritingTopicGroup, getWritingTopicGroups } from "./topics.ts";
 
 test("published articles exclude drafts and remain date sorted", () => {
   const all = getAllArticles();
@@ -20,9 +21,11 @@ test("published articles exclude drafts and remain date sorted", () => {
   assert.equal(getPublishedArticleBySlug("redis-cache-stampede"), undefined);
 });
 
-test("article category is preserved when present", () => {
+test("article category is preserved and is a declared topic", () => {
   const article = getPublishedArticleBySlug("building-reliable-kafka-event-processing-platform");
-  assert.equal(article?.category, "Engineering");
+  assert.equal(article?.category, "Distributed Systems");
+  const titles = new Set(getWritingTopicGroups().map((group) => group.topic.title));
+  assert.ok(getPublishedArticles().every((entry) => titles.has(entry.category ?? "")));
 });
 
 test("every published article carries at least one recognized diagram", () => {
@@ -54,4 +57,27 @@ test("frontmatter validation rejects malformed publication data", () => {
 
 test("reading time ignores fenced code and has a one-minute floor", () => {
   assert.equal(calculateReadingTime("A short note.\n\n```text\n" + "word ".repeat(500) + "\n```"), 1);
+});
+
+test("every published article belongs to exactly one declared writing topic", () => {
+  const published = getPublishedArticles();
+  const groups = getWritingTopicGroups();
+  const grouped = groups.flatMap((group) => group.articles.map((article) => article.slug));
+
+  assert.equal(grouped.length, published.length);
+  assert.equal(new Set(grouped).size, grouped.length, "an article appears under more than one topic");
+  for (const article of published) {
+    assert.ok(grouped.includes(article.slug), `${article.slug} is not grouped under any topic`);
+  }
+  assert.ok(groups.every((group) => group.articles.length > 0));
+});
+
+test("topic slugs are unique and resolvable", () => {
+  const groups = getWritingTopicGroups();
+  const slugs = groups.map((group) => group.topic.slug);
+  assert.equal(new Set(slugs).size, slugs.length);
+  for (const slug of slugs) {
+    assert.equal(getWritingTopicGroup(slug)?.topic.slug, slug);
+  }
+  assert.equal(getWritingTopicGroup("no-such-topic"), undefined);
 });

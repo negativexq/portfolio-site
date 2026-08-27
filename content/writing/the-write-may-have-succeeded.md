@@ -4,6 +4,7 @@ description: "A timeout after a customer-impacting action does not mean the acti
 slug: the-write-may-have-succeeded
 datePublished: 2026-08-24
 dateModified: 2026-08-25
+category: Agent Reliability
 tags:
   - AI Agents
   - Distributed Systems

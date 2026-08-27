@@ -4,6 +4,7 @@ description: "Retrieved evidence can support an agent answer without becoming an
 slug: rag-can-provide-evidence
 datePublished: 2026-08-22
 dateModified: 2026-08-25
+category: Retrieval & RAG
 tags:
   - RAG
   - AI Agents

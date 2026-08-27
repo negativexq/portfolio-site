@@ -4,6 +4,7 @@ description: "A concrete Kafka consumer design that combines Redis leases, a Pos
 slug: kafka-at-least-once-idempotency
 datePublished: 2026-07-29
 dateModified: 2026-07-29
+category: Distributed Systems
 tags:
   - Kafka
   - Distributed Systems
