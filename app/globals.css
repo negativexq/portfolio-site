@@ -340,15 +340,23 @@ a {
   line-height: 0.96;
 }
 
-.hero > * {
+/* Grid rather than a plain block so the children stay grid items: their
+   margins then sum instead of collapsing, which is what the spacing below
+   is authored against. */
+.hero-main {
+  display: grid;
+  align-content: start;
+}
+
+.hero-main > * {
   animation: hero-reveal var(--motion-entry) var(--motion-ease) both;
 }
 
-.hero > h1 { animation-delay: 45ms; }
-.hero > .hero-copy { animation-delay: 90ms; }
-.hero > .hero-summary { animation-delay: 135ms; }
-.hero > .hero-actions { animation-delay: 180ms; }
-.hero > .hero-meta { animation-delay: 225ms; }
+.hero-main > h1 { animation-delay: 45ms; }
+.hero-main > .hero-copy { animation-delay: 90ms; }
+.hero-main > .hero-summary { animation-delay: 135ms; }
+.hero-main > .hero-actions { animation-delay: 180ms; }
+.hero-main > .hero-meta { animation-delay: 225ms; }
 
 @keyframes hero-reveal {
   from {
@@ -386,6 +394,253 @@ a {
   color: var(--subtle);
   letter-spacing: 0.07em;
   text-transform: none;
+}
+
+/* Hero request span tree.
+   Rows carry a `--i` step; a 9s period with a 0.6s stagger walks the tree
+   depth-first. The four policy outcomes and Response are gated to a 36s
+   master period instead (four 9s runs, one per outcome), because Response is
+   only reached on the allow run. Highlights are released as a cut rather than
+   a ramp: interpolating `color` on small mono text over ~1s makes the browser
+   re-resolve subpixel antialiasing every frame, so the glyph edges crawl and
+   the label reads as trembling while it dims.
+   Only the highlight is animated — the tree itself is static — so reduced
+   motion degrades to a legible static diagram rather than an empty column. */
+.hero-pipeline {
+  display: none;
+  animation: hero-reveal var(--motion-entry) var(--motion-ease) both;
+  animation-delay: 270ms;
+}
+
+.hero-pipeline-caption {
+  margin: 0 0 var(--space-5);
+  color: var(--subtle);
+  font: 650 0.68rem/1.35 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero-pipeline-nodes {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-pipeline-nodes li {
+  display: flex;
+  align-items: center;
+  padding-block: 0.34rem;
+  color: var(--subtle);
+}
+
+/* Guide columns stretch the full row box, padding included, so the vertical
+   runs join across rows instead of breaking at every gap. */
+.hero-pipeline-guide {
+  position: relative;
+  flex: none;
+  align-self: stretch;
+  width: 0.85rem;
+}
+
+.hero-pipeline-guide-line::before,
+.hero-pipeline-guide-tee::before,
+.hero-pipeline-guide-elbow::before {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  background: var(--border-strong);
+  content: "";
+}
+
+.hero-pipeline-guide-line::before,
+.hero-pipeline-guide-tee::before {
+  top: 0;
+  bottom: 0;
+}
+
+.hero-pipeline-guide-elbow::before {
+  top: 0;
+  height: 50%;
+}
+
+.hero-pipeline-guide-tee::after,
+.hero-pipeline-guide-elbow::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 1px;
+  background: var(--border-strong);
+  content: "";
+}
+
+.hero-pipeline-dot {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-right: var(--space-3);
+  border-radius: 50%;
+  background: currentColor;
+  animation: hero-pipeline-dot 9s linear infinite;
+  animation-delay: calc(var(--i) * 0.6s);
+}
+
+.hero-pipeline-label {
+  font: 500 0.8rem/1.3 var(--mono);
+  letter-spacing: 0.01em;
+}
+
+.hero-pipeline-nodes > li:not(.hero-pipeline-branch) {
+  animation: hero-pipeline-node 9s linear infinite;
+  animation-delay: calc(var(--i) * 0.6s);
+}
+
+/* The four real policy outcomes from data/architectures.ts. Each lights on
+   its own run, 9s apart inside the 36s period; the alternatives stay dim so
+   the block reads as a decision rather than four sequential steps.
+   `backwards` matters: with a positive delay and no fill mode the chip would
+   fall back to its base style until its first run begins. */
+.hero-pipeline-outcome {
+  margin-left: 1.15rem;
+  color: var(--border-strong);
+  font: 500 0.72rem/1.3 var(--mono);
+  letter-spacing: 0.02em;
+  animation: hero-pipeline-outcome-pick 36s linear infinite backwards;
+  animation-delay: calc(var(--k) * 9s);
+}
+
+.hero-pipeline-tone-allow { --tone: var(--accent); }
+.hero-pipeline-tone-confirm { --tone: var(--status-learning); }
+.hero-pipeline-tone-human { --tone: var(--status-planned); }
+.hero-pipeline-tone-deny { --tone: var(--subtle-strong); }
+
+/* Observability is cross-cutting, so it sits outside the tree and stays lit
+   for the whole run rather than appearing as a final sequential step. */
+.hero-pipeline-trace {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--border);
+  color: var(--subtle);
+  font: 500 0.8rem/1.3 var(--mono);
+  letter-spacing: 0.01em;
+  animation: hero-pipeline-trace-window 9s linear infinite;
+}
+
+.hero-pipeline-trace-dot {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@keyframes hero-pipeline-node {
+  0% {
+    color: var(--subtle);
+  }
+  1%,
+  8% {
+    color: var(--accent);
+  }
+  8.01%,
+  100% {
+    color: var(--subtle);
+  }
+}
+
+@keyframes hero-pipeline-dot {
+  0% {
+    transform: scale(1);
+  }
+  1%,
+  8% {
+    transform: scale(1.32);
+  }
+  8.01%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-pipeline-outcome-pick {
+  0%,
+  8.2% {
+    color: var(--border-strong);
+  }
+  8.5%,
+  11.5% {
+    color: var(--tone);
+  }
+  11.51%,
+  100% {
+    color: var(--border-strong);
+  }
+}
+
+/* Rises with the first stage (1%) and is the last thing to go dark: Response
+   is still lit until 12% of the 36s master, which is 48% of this 9s run, so
+   closing the window any earlier would drop telemetry mid-run. */
+@keyframes hero-pipeline-trace-window {
+  0% {
+    color: var(--subtle);
+  }
+  1%,
+  48.5% {
+    color: var(--accent);
+  }
+  48.51%,
+  100% {
+    color: var(--subtle);
+  }
+}
+
+@media (min-width: 1160px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    align-items: center;
+    column-gap: var(--space-8);
+  }
+
+  /* Centre against the copy, not the whole column: hero-meta hangs a long way
+     below the actions, and centring across that trailing space leaves the
+     visual sitting optically low next to the headline. Mirroring hero-meta's
+     top margin lifts the centring axis back up. */
+  .hero-pipeline {
+    display: block;
+    margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The global reduce rule collapses each animation to its final keyframe,
+     which would leave the pulse and completion line invisible. Pin the
+     visual to a legible, deliberately static state instead. */
+  .hero-pipeline-pulse {
+    display: none;
+  }
+
+  .hero-pipeline-nodes li,
+  .hero-pipeline-trace {
+    color: var(--muted);
+  }
+
+  .hero-pipeline-trace-dot {
+    opacity: 1;
+  }
+
+  /* No rotation without motion: settle on the allow run so the visual still
+     reads as one complete, permitted request. */
+  .hero-pipeline-outcome {
+    color: var(--border-strong);
+  }
+
+  .hero-pipeline-outcome.hero-pipeline-tone-allow {
+    color: var(--accent);
+  }
 }
 
 .button {

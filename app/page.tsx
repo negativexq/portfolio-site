@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { EngineeringAreaCard } from "@/components/content/engineering-area-card";
+import { HeroPipeline } from "@/components/content/hero-pipeline";
 import { MetricGrid } from "@/components/content/metric-grid";
 import { PersonJsonLd } from "@/components/content/person-jsonld";
 import { ProjectCard } from "@/components/content/project-card";
@@ -33,29 +34,32 @@ export default function Home() {
       <MotionController />
       <PersonJsonLd />
       <section className="hero container" aria-labelledby="hero-title">
-        <p className="hero-name">{profile.name}</p>
-        <h1 id="hero-title">{profile.title}</h1>
-        <p className="hero-copy">{profile.positioning}</p>
-        <p className="hero-summary">{profile.summary}</p>
-        <div className="hero-actions" aria-label="Primary actions">
-          <Link className="button button-primary" href="/projects">
-            Explore projects <ArrowRight aria-hidden="true" size={16} />
-          </Link>
-          <Link className="button button-secondary" href="/graph">
-            Engineering graph
-          </Link>
-          <a
-            className="text-link"
-            href={profile.links.github}
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub <ArrowUpRight aria-hidden="true" size={15} />
-          </a>
+        <div className="hero-main">
+          <p className="hero-name">{profile.name}</p>
+          <h1 id="hero-title">{profile.title}</h1>
+          <p className="hero-copy">{profile.positioning}</p>
+          <p className="hero-summary">{profile.summary}</p>
+          <div className="hero-actions" aria-label="Primary actions">
+            <Link className="button button-primary" href="/projects">
+              Explore projects <ArrowRight aria-hidden="true" size={16} />
+            </Link>
+            <Link className="button button-secondary" href="/graph">
+              Engineering graph
+            </Link>
+            <a
+              className="text-link"
+              href={profile.links.github}
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub <ArrowUpRight aria-hidden="true" size={15} />
+            </a>
+          </div>
+          <p className="hero-meta">
+            {profile.location} · Open to remote opportunities · MLOps · AI Platform · GenAI
+          </p>
         </div>
-        <p className="hero-meta">
-          {profile.location} · Open to remote opportunities · MLOps · AI Platform · GenAI
-        </p>
+        <HeroPipeline />
       </section>
 
       <section className="section-shell metric-section" aria-labelledby="proof-heading">
