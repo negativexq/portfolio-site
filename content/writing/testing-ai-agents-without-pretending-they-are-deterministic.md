@@ -22,7 +22,7 @@ seoTitle: "How to Test AI Agents: Deterministic and Real-LLM QA"
 ---
 An agent system has two different testing problems. One is whether the control plane preserves its invariants. The other is whether a real model understands varied language well enough to use that control plane. Treating those as one score makes both results harder to interpret.
 
-:::diagram agent-policy-flow
+:::diagram agent-evaluation-tracks
 
 The split is straightforward:
 

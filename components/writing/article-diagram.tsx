@@ -755,6 +755,119 @@ function DecisionAuthorityExecutionDiagram() {
   );
 }
 
+function AgentEvaluationTracksDiagram() {
+  const marker = "agent-evaluation-arrow";
+  return (
+    <DiagramFrame
+      id="agent-evaluation-tracks"
+      title="Two evaluation tracks meeting one server-owned boundary"
+      description="A deterministic provider supplies a known proposal so language is not the variable, while a real provider supplies variable interpretation across paraphrase, ambiguity and multilingual wording. Both runs pass through the same typed decision and execution boundary, so the deterministic track produces reproducible invariant validation and the real track produces bounded semantic and quality checks. Assertions match the layer, and the cross-layer invariant is that no provider output can bypass scope, policy, confirmation or idempotency. The resulting evidence slices carry different denominators and are reported separately."
+      caption="Deterministic tests prove what the control plane must never violate. Real-model tests probe how language reaches it. The two answer different questions and keep different denominators."
+      height={730}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">DETERMINISTIC PROVIDER</Label>
+      <Label x={472} y={30} anchor="start">REAL PROVIDER</Label>
+      <Node x={28} y={52} width={380} height={62} lines={["known proposal", "language is not the variable"]} />
+      <Node
+        x={472}
+        y={52}
+        width={380}
+        height={62}
+        lines={["variable interpretation", "paraphrase · ambiguity · multilingual"]}
+        tone="muted"
+      />
+      <Arrow d="M218 114 V146" marker={marker} />
+      <Arrow d="M662 114 V146" marker={marker} />
+
+      <Node
+        x={28}
+        y={152}
+        width={824}
+        height={68}
+        lines={["SAME TYPED DECISION AND EXECUTION BOUNDARY", "scope · policy · confirmation · revalidation · idempotency"]}
+        tone="accent"
+      />
+      <Arrow d="M218 220 V252" marker={marker} />
+      <Arrow d="M662 220 V252" marker={marker} />
+
+      <Node
+        x={28}
+        y={258}
+        width={380}
+        height={68}
+        lines={["invariant validation", "exact assertions · reproducible regressions"]}
+        tone="accent"
+      />
+      <Node
+        x={472}
+        y={258}
+        width={380}
+        height={68}
+        lines={["semantic and quality checks", "bounded assertions under a chosen model"]}
+        tone="muted"
+      />
+
+      <line className="diagram-divider" x1="28" y1="350" x2="852" y2="350" />
+      <Label x={28} y={378} anchor="start">ASSERTIONS MATCH THE LAYER</Label>
+      <Node
+        x={28}
+        y={392}
+        width={380}
+        height={60}
+        lines={["deterministic assertion", "mixed confirmation does not execute a refund"]}
+      />
+      <Node
+        x={472}
+        y={392}
+        width={380}
+        height={60}
+        lines={["real-LLM quality assertion", "cites evidence, avoids an unsupported claim"]}
+      />
+      <Node
+        x={28}
+        y={466}
+        width={824}
+        height={56}
+        lines={["cross-layer invariant: no provider output can bypass", "scope, policy, confirmation or idempotency"]}
+        tone="accent"
+      />
+
+      <line className="diagram-divider" x1="28" y1="546" x2="852" y2="546" />
+      <Label x={28} y={574} anchor="start">EVIDENCE SLICES, DIFFERENT DENOMINATORS</Label>
+      <Node
+        x={28}
+        y={588}
+        width={264}
+        height={76}
+        lines={["100 real-LLM samples", "82 passed · 18 bounded warnings", "0 safety invariant failures"]}
+      />
+      <Node
+        x={308}
+        y={588}
+        width={264}
+        height={76}
+        lines={["540 / 540", "measured semantic-safety attempts"]}
+        tone="accent"
+      />
+      <Node
+        x={588}
+        y={588}
+        width={264}
+        height={76}
+        lines={["18/18 scenarios · 8/8 phases", "6/6 faults · 28/28 resilience"]}
+        tone="accent"
+      />
+
+      <rect className="diagram-result" x={196} y={690} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={706} textAnchor="middle">
+        82/18 is a quality breakdown, not a safety rate.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -766,6 +879,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "confirmation-lifecycle": ConfirmationLifecycleDiagram,
   "unknown-write-outcome": UnknownWriteOutcomeDiagram,
   "decision-authority-execution": DecisionAuthorityExecutionDiagram,
+  "agent-evaluation-tracks": AgentEvaluationTracksDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

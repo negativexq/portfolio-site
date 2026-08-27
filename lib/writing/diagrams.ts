@@ -9,6 +9,7 @@ export const WRITING_DIAGRAM_IDS = [
   "confirmation-lifecycle",
   "unknown-write-outcome",
   "decision-authority-execution",
+  "agent-evaluation-tracks",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
