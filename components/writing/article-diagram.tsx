@@ -565,6 +565,105 @@ function ConfirmationLifecycleDiagram() {
   );
 }
 
+function UnknownWriteOutcomeDiagram() {
+  const marker = "unknown-write-arrow";
+  return (
+    <DiagramFrame
+      id="unknown-write-outcome"
+      title="Recovering from an unknown write outcome"
+      description="A confirmed action carries a stable action identity into execution. The caller observes one of three things: a normal response, an explicit failure that committed nothing, or a timeout that proves nothing about what the database did. That third case is an unknown outcome. Retrying it blindly under a new identity is indistinguishable from a fresh request, so recovery instead reconciles under the same action identity using the idempotency receipt and database constraints. Reconciliation alone is not permission: revalidation still re-checks actor, scope, target, policy, confirmation binding and current business state, and the result is one of three distinct states rather than a single retry path."
+      caption="An exception describes what the caller observed. A receipt, a current-state check and a stable action identity describe what actually happened."
+      height={700}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">AN EXCEPTION IS NOT A TRANSACTION RESULT</Label>
+      <Node x={28} y={52} width={196} height={72} lines={["Confirmed action", "stable action_id"]} tone="accent" />
+      <Node x={272} y={52} width={176} height={72} lines={["Execution attempt"]} />
+      <Node
+        x={496}
+        y={52}
+        width={176}
+        height={72}
+        lines={["PostgreSQL", "the commit may", "already have happened"]}
+        tone="accent"
+      />
+      <Arrow d="M224 88 H267" marker={marker} />
+      <Arrow d="M448 88 H491" marker={marker} />
+
+      <Arrow d="M360 124 V154" marker={marker} />
+      <Arrow d="M153 154 H722" marker={marker} />
+      <Arrow d="M153 154 V174" marker={marker} />
+      <Arrow d="M435 154 V174" marker={marker} />
+      <Arrow d="M722 154 V174" marker={marker} />
+      <Node x={28} y={180} width={250} height={72} lines={["normal response", "receipt recorded"]} />
+      <Node
+        x={310}
+        y={180}
+        width={250}
+        height={72}
+        lines={["explicit failure", "no effect committed", "safe to retry"]}
+      />
+      <Node
+        x={592}
+        y={180}
+        width={260}
+        height={72}
+        lines={["timeout / connection lost", "UNKNOWN outcome"]}
+        tone="muted"
+      />
+
+      <Label x={28} y={272} anchor="start">RECOVERING FROM AN UNKNOWN OUTCOME</Label>
+      <Arrow d="M722 252 V288" marker={marker} />
+      <Arrow d="M178 288 H722" marker={marker} />
+      <Arrow d="M178 288 V306" marker={marker} dashed />
+      <Arrow d="M616 288 V306" marker={marker} />
+      <Node
+        x={28}
+        y={312}
+        width={300}
+        height={76}
+        lines={["blind retry with a new identity", "indistinguishable from", "a new refund"]}
+        tone="stop"
+      />
+      <Node
+        x={380}
+        y={312}
+        width={472}
+        height={76}
+        lines={["reconcile under the same action identity", "idempotency receipt + database constraints"]}
+        tone="accent"
+      />
+      <path className="diagram-failure-mark" d="M173 396 l10 10 m0 -10 l-10 10" />
+      <Label x={178} y={422}>a second business effect</Label>
+
+      <Arrow d="M616 388 V410 H500 V428" marker={marker} />
+      <Node
+        x={310}
+        y={434}
+        width={380}
+        height={80}
+        lines={["revalidation", "actor · scope · target · policy", "confirmation binding · live state"]}
+        tone="accent"
+      />
+
+      <Arrow d="M500 514 V540" marker={marker} />
+      <Arrow d="M158 540 H722" marker={marker} />
+      <Arrow d="M158 540 V558" marker={marker} />
+      <Arrow d="M440 540 V558" marker={marker} />
+      <Arrow d="M722 540 V558" marker={marker} />
+      <Node x={28} y={564} width={260} height={70} lines={["already applied", "return the existing receipt"]} tone="accent" />
+      <Node x={310} y={564} width={260} height={70} lines={["safe to continue", "execute exactly once"]} tone="accent" />
+      <Node x={592} y={564} width={260} height={70} lines={["cannot continue", "needs a fresh decision"]} tone="muted" />
+
+      <rect className="diagram-result" x={196} y={658} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={674} textAnchor="middle">
+        Collapsing these into one retry path hides the risk.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -574,6 +673,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "commerce-processing-lifecycle": CommerceProcessingLifecycleDiagram,
   "model-promotion-control-loop": ModelPromotionControlLoopDiagram,
   "confirmation-lifecycle": ConfirmationLifecycleDiagram,
+  "unknown-write-outcome": UnknownWriteOutcomeDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

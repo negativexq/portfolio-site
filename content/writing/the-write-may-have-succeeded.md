@@ -23,7 +23,7 @@ seoTitle: "Unknown Write Outcomes in AI Agents"
 ---
 An agent can receive a timeout after a refund request and still have caused a refund. The timeout describes what the caller observed. It does not prove what the database committed.
 
-:::diagram agent-policy-flow
+:::diagram unknown-write-outcome
 
 The failure story is short:
 
