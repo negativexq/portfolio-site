@@ -470,6 +470,101 @@ function ModelPromotionControlLoopDiagram() {
   );
 }
 
+function ConfirmationLifecycleDiagram() {
+  const marker = "confirmation-lifecycle-arrow";
+  return (
+    <DiagramFrame
+      id="confirmation-lifecycle"
+      title="Pending action lifecycle from proposal to a single execution"
+      description="A model proposal creates no business effect. The server compiles a pending action that owns the customer scope, typed arguments, policy result and TTL, then waits at a confirmation boundary. An incoming turn is classified rather than read as a boolean: an interruption suspends the workflow while leaving the pending action unchanged, a replacement supersedes it so it can never execute silently, and only an affirmation resumes it. Resume returns to the boundary instead of skipping it, revalidation re-checks actor, scope, conversation, arguments, policy, live state and expiry, and a stable action identity keeps the committed effect to one."
+      caption="The confirmation binds to one server-owned action, not to the last message. A state transition does not grant authority by itself."
+      height={680}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">PENDING ACTION LIFECYCLE</Label>
+      <Node x={28} y={52} width={200} height={62} lines={["proposed", "model intent · no effect"]} />
+      <Arrow d="M128 114 V144" marker={marker} />
+      <Node
+        x={28}
+        y={150}
+        width={260}
+        height={76}
+        lines={["confirmation_required", "server-owned action id, scope,", "typed args, policy, TTL"]}
+        tone="accent"
+      />
+      <Arrow d="M288 188 H333" marker={marker} />
+      <Label x={465} y={140}>&quot;Yes, but first...&quot; is not approval</Label>
+      <Node
+        x={340}
+        y={150}
+        width={250}
+        height={76}
+        lines={["Incoming turn classified", "not a boolean"]}
+        tone="accent"
+      />
+
+      <Arrow d="M465 226 V270" marker={marker} />
+      <Arrow d="M135 270 H738" marker={marker} />
+      <Arrow d="M135 270 V294" marker={marker} />
+      <Arrow d="M390 270 V294" marker={marker} />
+      <Arrow d="M738 270 V294" marker={marker} />
+
+      <Node
+        x={28}
+        y={300}
+        width={214}
+        height={76}
+        lines={["superseded", "replacement", "never silently executable"]}
+        tone="stop"
+      />
+      <Node
+        x={274}
+        y={300}
+        width={232}
+        height={76}
+        lines={["suspended", "interruption / question", "pending action unchanged"]}
+      />
+      <Node
+        x={624}
+        y={300}
+        width={228}
+        height={76}
+        lines={["resumed", "affirmation", "returns to the boundary"]}
+      />
+      <Label x={562} y={330}>explicit resume</Label>
+      <Arrow d="M506 338 H619" marker={marker} />
+
+      <Arrow d="M738 376 V404 H444 V424" marker={marker} />
+      <Node
+        x={274}
+        y={430}
+        width={340}
+        height={86}
+        lines={["revalidation", "actor · scope · conversation · args", "policy · live state · TTL"]}
+        tone="accent"
+      />
+
+      <Arrow d="M444 516 V536 H142 V550" marker={marker} />
+      <Arrow d="M444 516 V536 H550 V550" marker={marker} />
+      <Node x={28} y={556} width={228} height={64} lines={["not admissible", "execution stops"]} tone="stop" />
+      <Node
+        x={380}
+        y={556}
+        width={340}
+        height={64}
+        lines={["executed once", "idempotency receipt, not a flag"]}
+        tone="accent"
+      />
+
+      <rect className="diagram-result" x={196} y={640} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={656} textAnchor="middle">
+        A state transition does not grant authority by itself.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -478,6 +573,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "agent-policy-flow": AgentPolicyDiagram,
   "commerce-processing-lifecycle": CommerceProcessingLifecycleDiagram,
   "model-promotion-control-loop": ModelPromotionControlLoopDiagram,
+  "confirmation-lifecycle": ConfirmationLifecycleDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

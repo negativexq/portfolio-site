@@ -6,6 +6,7 @@ export const WRITING_DIAGRAM_IDS = [
   "agent-policy-flow",
   "commerce-processing-lifecycle",
   "model-promotion-control-loop",
+  "confirmation-lifecycle",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

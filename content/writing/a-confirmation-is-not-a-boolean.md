@@ -22,7 +22,7 @@ seoTitle: "Stateful Agent Workflows: Why Confirmation Is Not a Boolean"
 ---
 A consequential agent action does not become safe because the latest message contains the word "yes". The system has to know what the customer is confirming, whether the message is actually an approval, whether the pending action is still valid, and whether the workflow can resume without changing the action behind the user's back.
 
-:::diagram agent-policy-flow
+:::diagram confirmation-lifecycle
 
 Consider a refund request:
 
