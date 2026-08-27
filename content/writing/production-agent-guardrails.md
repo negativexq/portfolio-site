@@ -3,7 +3,7 @@ title: "Designing Guardrails for Production AI Agents"
 description: "A practical execution model for tool-using agents built from typed proposals, deterministic policy, durable confirmation, revalidation, idempotency, and audit."
 slug: production-agent-guardrails
 datePublished: 2026-08-12
-dateModified: 2026-08-12
+dateModified: 2026-08-27
 tags:
   - AI Agents
   - Guardrails
@@ -86,13 +86,15 @@ There is one important transaction boundary: pre-write audit must succeed before
 
 ## Evaluate the containment path in layers
 
-The repository separates model semantic quality, deterministic runtime containment, execution safety, and production readiness. A single task-success score would mix those questions.
+The repository keeps semantic, operational, resilience, and real-LLM evidence separate, with each denominator preserved rather than merged into one score. A single task-success number would blur questions that need different answers.
 
-The deterministic suites cover 110 general scenarios, a 40-scenario safety slice, and 28 resilience scenarios. They use a fake structured-decision provider to exercise the control plane reproducibly. The prospective M6.20B run then measured 540 live-model executions against a frozen bilingual dataset and exact model/provider configuration.
+The deterministic suites cover 110 general scenarios, a 40-scenario safety slice, and 28 resilience scenarios. They use a fake structured-decision provider to exercise the control plane reproducibly. Prospective runs then measure live-model executions against a frozen bilingual dataset and an exact model and provider configuration.
 
-That live run observed 29 unsafe semantic proposals. Guards stopped 26 before executable state. Three survived to a confirmation-required proposal, and none executed. It also recorded 0 confirmation bypasses, 0 unauthorized mutations, and 0 duplicate mutations.
+An earlier prospective run made a useful distinction visible. It observed 29 unsafe semantic proposals, deterministic guards stopped 26 before executable state, and three reached a confirmation-required proposal without executing. Nothing unsafe executed, but the runtime had not yet contained every unsafe proposal before executable state. Those are different results, and only the second one is a containment claim.
 
-The three survivors prevent a production-readiness claim. They show why "nothing unsafe executed" and "the runtime contained every unsafe proposal before executable state" are different results. The next change must address that exact gap and rerun the frozen evaluation.
+Closing that gap was architectural rather than prompt tuning: semantic grounding and destructive-target admissibility checks, then a prompt-contract fix once the remaining gap was isolated to unsupported refund-reason provenance. Across that sequence, unsafe executable survivors went 15 → 3 → 0 → 0 → 0. The current prospective run observed 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, and 0 unsafe executions across 540 measured executions, with 0 confirmation bypasses, 0 unauthorized mutations, and 0 duplicate mutations.
+
+That is evidence for one source, prompt, model, provider, and contract binding. It does not claim that model errors stopped happening. It claims that deterministic containment caught them before they became executable.
 
 ## Boundaries are the guardrail
 
@@ -100,4 +102,4 @@ The implementation does not rely on one classifier or one system prompt. Typed c
 
 Each boundary has a narrower job and a testable failure mode. Together they keep a probabilistic proposal separate from a privileged effect.
 
-The [Agentic Customer Service Platform](/projects/agentic-customer-service-platform) case study contains the current evidence and known limitation. The focused note on [prompt injection](/writing/agent-prompt-injection-guardrails) examines how retrieved and user-controlled text stays outside the authorization boundary.
+The [Agentic Customer Service Platform](/projects/agentic-customer-service-platform) case study contains the current evidence and the limits of what it claims. The focused note on [prompt injection](/writing/agent-prompt-injection-guardrails) examines how retrieved and user-controlled text stays outside the authorization boundary.
