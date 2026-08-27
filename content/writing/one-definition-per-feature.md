@@ -60,6 +60,8 @@ There is also a blunter use for the same graph. The Feature Explorer compares ev
 
 A shared definition raises the cost of a regression, so the regression has to be caught early.
 
+:::diagram feature-pipeline-gates
+
 The failure mode worth designing against is a data or model regression that first appears as a wrong number in a downstream report, days later, seen by the person furthest from the cause. By then the investigation runs backwards through several systems to find a change nobody flagged.
 
 Expectations that run inside the orchestration — Great Expectations on the data, model validation on the trained artifact, both as Airflow tasks and delivery-pipeline steps — fail the run at the point of computation. A check in the pipeline fails a job. A check in the report fails the reader's trust in every number next to it.

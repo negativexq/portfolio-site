@@ -11,6 +11,7 @@ export const WRITING_DIAGRAM_IDS = [
   "decision-authority-execution",
   "agent-evaluation-tracks",
   "feature-definition-lineage",
+  "feature-pipeline-gates",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

@@ -946,6 +946,99 @@ function FeatureDefinitionLineageDiagram() {
   );
 }
 
+function FeaturePipelineGatesDiagram() {
+  const marker = "feature-pipeline-arrow";
+  return (
+    <DiagramFrame
+      id="feature-pipeline-gates"
+      title="Where the checks run around a shared feature definition"
+      description="One orchestrated DAG builds sources and staging models, then the shared feature models in parallel, and a Great Expectations task gates the data before anything downstream consumes it. A failing expectation fails the run rather than surfacing later as a wrong number. Past that gate, training, batch inference and reporting consume the same feature models, and a Deepchecks validation step gates promotion to serving, so a model regression blocks delivery. On a change to a shared definition, continuous integration rebuilds and tests the affected models while lineage separates directly affected consumers from those that inherit the column transitively."
+      caption="Both gates run inside the orchestration, so a regression fails a job at the point of computation instead of a number in a report days later."
+      height={620}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">ONE AIRFLOW DAG · BUILD, THEN GATE</Label>
+      <Node x={28} y={52} width={142} height={68} lines={["sources"]} />
+      <Node x={194} y={52} width={166} height={68} lines={["staging models", "dbt"]} />
+      <Node
+        x={384}
+        y={44}
+        width={208}
+        height={84}
+        lines={["feature models", "dbt, built in parallel", "one definition each"]}
+        tone="accent"
+      />
+      <Node
+        x={616}
+        y={44}
+        width={236}
+        height={84}
+        lines={["data quality gate", "Great Expectations", "as a DAG task"]}
+        tone="accent"
+      />
+      <Arrow d="M170 86 H189" marker={marker} />
+      <Arrow d="M360 86 H379" marker={marker} />
+      <Arrow d="M592 86 H611" marker={marker} />
+      <Arrow d="M751 128 V146" marker={marker} />
+      <Node x={650} y={152} width={202} height={48} lines={["run fails here"]} tone="stop" />
+
+      <Arrow d="M630 128 V214 H146 V248" marker={marker} />
+      <Label x={304} y={232} anchor="start">CONSUMERS AND MODEL DELIVERY</Label>
+      <Node
+        x={28}
+        y={254}
+        width={236}
+        height={84}
+        lines={["model training", "batch inference", "marts and reporting"]}
+      />
+      <Node
+        x={304}
+        y={254}
+        width={236}
+        height={84}
+        lines={["model validation gate", "Deepchecks", "as a delivery step"]}
+        tone="accent"
+      />
+      <Node
+        x={580}
+        y={254}
+        width={272}
+        height={84}
+        lines={["promotion to serving", "only past both gates"]}
+        tone="accent"
+      />
+      <Arrow d="M264 296 H299" marker={marker} />
+      <Arrow d="M540 296 H575" marker={marker} />
+      <Arrow d="M422 338 V356" marker={marker} />
+      <Node x={304} y={362} width={236} height={48} lines={["delivery blocked"]} tone="stop" />
+
+      <Label x={28} y={442} anchor="start">ON A CHANGE TO A SHARED DEFINITION</Label>
+      <Node
+        x={28}
+        y={464}
+        width={390}
+        height={84}
+        lines={["CI on the change", "dbt build and tests", "GitHub Actions"]}
+      />
+      <Node
+        x={442}
+        y={464}
+        width={410}
+        height={84}
+        lines={["lineage impact review", "which consumers are directly affected,", "which inherit it transitively"]}
+        tone="accent"
+      />
+      <Arrow d="M418 506 H437" marker={marker} />
+
+      <rect className="diagram-result" x={196} y={580} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={596} textAnchor="middle">
+        A gate inside the DAG fails a job, not a reader&apos;s trust.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -959,6 +1052,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "decision-authority-execution": DecisionAuthorityExecutionDiagram,
   "agent-evaluation-tracks": AgentEvaluationTracksDiagram,
   "feature-definition-lineage": FeatureDefinitionLineageDiagram,
+  "feature-pipeline-gates": FeaturePipelineGatesDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

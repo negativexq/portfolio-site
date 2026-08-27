@@ -25,13 +25,15 @@ test("article category is preserved when present", () => {
   assert.equal(article?.category, "Engineering");
 });
 
-test("every published article has one recognized primary diagram", () => {
+test("every published article carries at least one recognized diagram", () => {
   for (const article of getPublishedArticles()) {
     const source = getPublishedArticleBySlug(article.slug);
     assert.ok(source);
     const diagrams = [...source.body.matchAll(/^:::diagram\s+([a-z0-9-]+)$/gm)];
-    assert.equal(diagrams.length, 1, article.slug);
-    assert.equal(isWritingDiagramId(diagrams[0][1]), true, article.slug);
+    assert.ok(diagrams.length >= 1, article.slug);
+    for (const [, id] of diagrams) {
+      assert.equal(isWritingDiagramId(id), true, `${article.slug}: ${id}`);
+    }
   }
 });
 
