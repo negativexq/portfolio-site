@@ -374,6 +374,102 @@ function CommerceProcessingLifecycleDiagram() {
   );
 }
 
+function ModelPromotionControlLoopDiagram() {
+  const marker = "model-promotion-arrow";
+  return (
+    <DiagramFrame
+      id="model-promotion-control-loop"
+      title="Policy-driven model promotion control loop"
+      description="Client traffic is split by a weighted router between a stable version and a canary. Predictions are tagged with a prediction_id, and ground-truth labels that arrive later are joined at read time. The policy engine evaluates two separate windows: reliability over the freshest traffic and quality over older matured traffic. Their verdict follows a strict FAIL over INCONCLUSIVE over PASS ordering, which decides whether the rollout advances, promotes, rolls back, or holds for more evidence. A state change commits the desired allocation in the database, and a reconcile tick repairs any drift between that desired state and the router's observed revision."
+      caption="The database owns the desired allocation; the router only holds an observed revision. Evidence decides the rollout, and reconciliation — not a queue — closes the gap between intent and what is actually being served."
+      height={670}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">TRAFFIC AND SERVING</Label>
+      <Node x={28} y={52} width={104} height={58} lines={["Client", "traffic"]} />
+      <Node x={156} y={44} width={150} height={74} lines={["Weighted router", "observed revision"]} tone="muted" />
+      <Node x={330} y={36} width={132} height={48} lines={["Stable vN"]} />
+      <Node x={330} y={92} width={132} height={48} lines={["Canary vN+1"]} tone="accent" />
+      <Node
+        x={496}
+        y={44}
+        width={356}
+        height={74}
+        lines={["prediction_id tagged metrics", "labels arrive later, joined at read time"]}
+      />
+      <Arrow d="M132 81 H149" marker={marker} />
+      <Arrow d="M306 72 H316 V60 H323" marker={marker} />
+      <Arrow d="M306 90 H316 V116 H323" marker={marker} />
+      <Arrow d="M462 60 H479 V81 H489" marker={marker} />
+      <Arrow d="M462 116 H479 V81 H489" marker={marker} />
+      <Arrow d="M674 118 V153" marker={marker} />
+
+      <rect className="diagram-boundary diagram-boundary--accent" x={28} y={160} width={824} height={250} rx="10" />
+      <Label x={44} y={184} anchor="start">POLICY EVALUATION · TWO WINDOWS, ONE VERDICT</Label>
+      <Node
+        x={52}
+        y={200}
+        width={300}
+        height={70}
+        lines={["Reliability · freshest traffic", "min requests · p95 · error rate"]}
+      />
+      <Node
+        x={52}
+        y={286}
+        width={300}
+        height={70}
+        lines={["Quality · matured traffic", "labels · coverage · positives · recall"]}
+      />
+      <Node
+        x={470}
+        y={236}
+        width={250}
+        height={84}
+        lines={["Verdict ordering", "FAIL > INCONCLUSIVE > PASS"]}
+        tone="accent"
+      />
+      <Arrow d="M352 235 H420 V278" marker={marker} />
+      <Arrow d="M352 321 H420 V278" marker={marker} />
+      <Arrow d="M420 278 H463" marker={marker} />
+      <rect className="diagram-result" x={52} y={372} width={392} height={22} rx="6" />
+      <text className="diagram-result-text" x={248} y={388} textAnchor="middle">
+        INCONCLUSIVE cannot be outvoted by PASS.
+      </text>
+
+      <Label x={28} y={446} anchor="start">CONTROL ACTIONS · WORKER OR OPERATOR, SAME API</Label>
+      <Arrow d="M595 320 V434" marker={marker} />
+      <Node x={28} y={462} width={200} height={64} lines={["advance", "10 → 25 → 50 → 100%"]} />
+      <Node x={248} y={462} width={136} height={64} lines={["promote"]} tone="accent" />
+      <Node x={404} y={462} width={136} height={64} lines={["roll back"]} tone="stop" />
+      <Node x={560} y={462} width={196} height={64} lines={["hold", "insufficient evidence"]} tone="muted" />
+      <Arrow d="M128 440 V456" marker={marker} />
+      <Arrow d="M316 440 V456" marker={marker} />
+      <Arrow d="M472 440 V456" marker={marker} />
+      <Arrow d="M658 440 V456" marker={marker} />
+
+      <Node
+        x={250}
+        y={556}
+        width={340}
+        height={58}
+        lines={["Desired allocation committed in database"]}
+        tone="accent"
+      />
+      <Arrow d="M128 526 V540 H420 V550" marker={marker} />
+      <Arrow d="M316 526 V540" marker={marker} />
+      <Arrow d="M472 526 V540 H420" marker={marker} />
+      <Arrow d="M658 526 V548" marker={marker} dashed />
+      <Label x={658} y={572}>no state change</Label>
+
+      <Arrow d="M250 585 H14 V146 H231 V121" marker={marker} />
+      <Label x={14} y={644} anchor="start">
+        reconcile tick compares desired allocation with the router&apos;s observed revision and repairs drift
+      </Label>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -381,6 +477,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "rag-citation-pipeline": RagCitationDiagram,
   "agent-policy-flow": AgentPolicyDiagram,
   "commerce-processing-lifecycle": CommerceProcessingLifecycleDiagram,
+  "model-promotion-control-loop": ModelPromotionControlLoopDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

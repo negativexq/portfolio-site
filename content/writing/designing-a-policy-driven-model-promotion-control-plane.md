@@ -20,7 +20,7 @@ seoTitle: "Designing a Policy-Driven Model Promotion Control Plane"
 ---
 Deploying a new model is easy to describe as a binary event: the container is healthy, so send it traffic. That description leaves out the part that can hurt production. A candidate can be available and still be too slow, too error-prone, or not yet measurable from the quality data that has arrived.
 
-:::diagram commerce-processing-lifecycle
+:::diagram model-promotion-control-loop
 
 The real question is not "is version two running?" It is:
 
