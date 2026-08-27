@@ -1039,6 +1039,87 @@ function FeaturePipelineGatesDiagram() {
   );
 }
 
+function DagRetrySemanticsDiagram() {
+  const marker = "dag-retry-arrow";
+  return (
+    <DiagramFrame
+      id="dag-retry-semantics"
+      title="What a retry and a backfill do to work a task already committed"
+      description="A retried task runs again from the top; the scheduler does not undo the writes the failed attempt already committed, so the second run lands on top of the first. Whether that is safe depends on the shape of the write: overwriting the window's partition or upserting on a business key produces one effect, while appending, incrementing or notifying has no identity to collide with and duplicates. Backfilling is the same property with a date attached — a task parameterised by its data interval can be rerun for any window, while a task that computes everything since the last run produces output that depends on when it ran rather than which window it was for."
+      caption="The schedule says when a DAG runs. The write shape says what happens when it runs again."
+      height={660}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">A RETRY IS A REPLAY, NOT AN UNDO</Label>
+      <Node x={28} y={52} width={200} height={70} lines={["attempt 1", "writes, then fails"]} />
+      <Node x={268} y={52} width={220} height={70} lines={["partial effect", "already durable"]} tone="stop" />
+      <Node x={528} y={52} width={150} height={70} lines={["scheduler", "reschedules"]} tone="muted" />
+      <Node x={712} y={52} width={140} height={70} lines={["attempt 2", "full task"]} />
+      <Arrow d="M228 87 H263" marker={marker} />
+      <Arrow d="M488 87 H523" marker={marker} />
+      <Arrow d="M678 87 H707" marker={marker} />
+      <Arrow d="M782 122 V150 H378 V128" marker={marker} />
+      <Label x={580} y={168}>the second run lands on top of the first</Label>
+
+      <line className="diagram-divider" x1="28" y1="210" x2="852" y2="210" />
+
+      <Label x={28} y={240} anchor="start">IF THIS TASK RUNS TWICE, IS THE EFFECT ONCE?</Label>
+      <Node
+        x={28}
+        y={262}
+        width={260}
+        height={86}
+        lines={["overwrite the window", "partition swap or full replace", "one effect"]}
+        tone="accent"
+      />
+      <Node
+        x={310}
+        y={262}
+        width={260}
+        height={86}
+        lines={["upsert on a business key", "merge or on-conflict", "one effect"]}
+        tone="accent"
+      />
+      <Node
+        x={592}
+        y={262}
+        width={260}
+        height={86}
+        lines={["append, increment, notify", "no identity to collide with", "duplicated effect"]}
+        tone="stop"
+      />
+      <path className="diagram-failure-mark" d="M717 366 l10 10 m0 -10 l-10 10" />
+      <Label x={722} y={400}>the row count grows, and no test calls it wrong</Label>
+
+      <line className="diagram-divider" x1="28" y1="430" x2="852" y2="430" />
+
+      <Label x={28} y={460} anchor="start">BACKFILL IS THE SAME PROPERTY WITH A DATE ATTACHED</Label>
+      <Node
+        x={28}
+        y={482}
+        width={400}
+        height={86}
+        lines={["parameterised by the interval", "data_interval_start / _end", "any window can be rerun"]}
+        tone="accent"
+      />
+      <Node
+        x={452}
+        y={482}
+        width={400}
+        height={86}
+        lines={["computed from now()", "everything since the last run", "output depends on when it ran"]}
+        tone="stop"
+      />
+
+      <rect className="diagram-result" x={196} y={610} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={626} textAnchor="middle">
+        A green DAG says the tasks ran. It does not say they ran once.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1053,6 +1134,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "agent-evaluation-tracks": AgentEvaluationTracksDiagram,
   "feature-definition-lineage": FeatureDefinitionLineageDiagram,
   "feature-pipeline-gates": FeaturePipelineGatesDiagram,
+  "dag-retry-semantics": DagRetrySemanticsDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

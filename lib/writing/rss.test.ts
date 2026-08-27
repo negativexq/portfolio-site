@@ -8,7 +8,7 @@ test("RSS contains published canonical URLs and excludes drafts", () => {
   assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
   assert.match(xml, /https:\/\/omerfkoc\.dev\/writing\/kafka-at-least-once-idempotency/);
   assert.doesNotMatch(xml, /redis-cache-stampede/);
-  assert.equal((xml.match(/<item>/g) ?? []).length, 14);
+  assert.equal((xml.match(/<item>/g) ?? []).length, 15);
 });
 
 test("RSS escapes XML text", () => {
