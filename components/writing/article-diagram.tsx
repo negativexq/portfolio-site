@@ -664,6 +664,97 @@ function UnknownWriteOutcomeDiagram() {
   );
 }
 
+function DecisionAuthorityExecutionDiagram() {
+  const marker = "decision-authority-arrow";
+  return (
+    <DiagramFrame
+      id="decision-authority-execution"
+      title="Decision, authority and execution as separate operator facts"
+      description="A consequential agent request produces three facts that must stay separate: what the control plane decided, whether authority existed at that point, and what reached business state. Shared request, workflow, pending action and trace identifiers correlate them. Three cases that produce a similar chat response are operationally different: a decision requiring confirmation with authority not granted and execution not attempted, an allowed and granted action blocked during revalidation, and an allowed and granted action that committed and returned a receipt. Each needs a different operator response. A bounded projection exposes the decision path without exposing raw prompts, hidden reasoning, secrets or raw tool arguments."
+      caption="A single status hides which of these happened. Separating decision, authority and execution is what turns a transcript into an operational explanation."
+      height={710}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">THREE FACTS, RECORDED SEPARATELY</Label>
+      <rect className="diagram-audit-rail" x={28} y={52} width={176} height={214} rx="10" />
+      <Label x={44} y={78} anchor="start">CORRELATION</Label>
+      <text className="diagram-list" x={44} y={112}>
+        <tspan x="44">request_id</tspan>
+        <tspan x="44" dy="27">workflow_id</tspan>
+        <tspan x="44" dy="27">pending_action_id</tspan>
+        <tspan x="44" dy="27">trace context</tspan>
+      </text>
+      <line className="diagram-link" x1="204" y1="83" x2="231" y2="83" />
+      <line className="diagram-link" x1="204" y1="159" x2="231" y2="159" />
+      <line className="diagram-link" x1="204" y1="235" x2="231" y2="235" />
+
+      <Node
+        x={236}
+        y={52}
+        width={616}
+        height={62}
+        lines={["DECISION · what the control plane decided", "proposal, target and validation, policy outcome"]}
+      />
+      <Node
+        x={236}
+        y={128}
+        width={616}
+        height={62}
+        lines={["AUTHORITY · whether permission existed", "confirmation bound to this exact pending action"]}
+      />
+      <Node
+        x={236}
+        y={204}
+        width={616}
+        height={62}
+        lines={["EXECUTION · what reached business state", "attempt, explicit non-attempt, replay result"]}
+      />
+
+      <line className="diagram-divider" x1="28" y1="300" x2="852" y2="300" />
+      <Label x={28} y={332} anchor="start">SAME CHAT RESPONSE, THREE DIFFERENT REALITIES</Label>
+      <Label x={28} y={360} anchor="start">OPERATOR&apos;S NEXT STEP</Label>
+      <Label x={324} y={360}>DECISION</Label>
+      <Label x={532} y={360}>AUTHORITY</Label>
+      <Label x={747} y={360}>EXECUTION</Label>
+
+      <Node x={28} y={372} width={186} height={52} lines={["needs a customer", "confirmation"]} tone="muted" />
+      <Node x={226} y={372} width={196} height={52} lines={["require_confirmation"]} />
+      <Node x={434} y={372} width={196} height={52} lines={["not_granted"]} tone="stop" />
+      <Node x={642} y={372} width={210} height={52} lines={["not_attempted"]} tone="stop" />
+
+      <Node x={28} y={436} width={186} height={52} lines={["needs the stale-state", "explanation"]} tone="muted" />
+      <Node x={226} y={436} width={196} height={52} lines={["allow"]} />
+      <Node x={434} y={436} width={196} height={52} lines={["granted"]} tone="accent" />
+      <Node x={642} y={436} width={210} height={52} lines={["blocked by revalidation"]} tone="stop" />
+
+      <Node x={28} y={500} width={186} height={52} lines={["needs the receipt", "and projection"]} tone="muted" />
+      <Node x={226} y={500} width={196} height={52} lines={["allow"]} />
+      <Node x={434} y={500} width={196} height={52} lines={["granted"]} tone="accent" />
+      <Node x={642} y={500} width={210} height={52} lines={["committed, receipt"]} tone="accent" />
+
+      <line className="diagram-divider" x1="28" y1="584" x2="852" y2="584" />
+      <Label x={28} y={612} anchor="start">BOUNDED PROJECTION, NOT A TRANSCRIPT ARCHIVE</Label>
+      <Node
+        x={28}
+        y={624}
+        width={400}
+        height={72}
+        lines={["projection shows", "proposal · policy · authority · execution", "citations · trace ids"]}
+        tone="accent"
+      />
+      <Node
+        x={452}
+        y={624}
+        width={400}
+        height={72}
+        lines={["never exposed", "raw prompts · chain-of-thought", "secrets · raw tool arguments"]}
+        tone="stop"
+      />
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -674,6 +765,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "model-promotion-control-loop": ModelPromotionControlLoopDiagram,
   "confirmation-lifecycle": ConfirmationLifecycleDiagram,
   "unknown-write-outcome": UnknownWriteOutcomeDiagram,
+  "decision-authority-execution": DecisionAuthorityExecutionDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

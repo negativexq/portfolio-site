@@ -22,7 +22,7 @@ seoTitle: "Decision, Authority, Execution: AI Agent Observability"
 ---
 "The model said refund requested" is not enough information to operate a customer-service agent. An operator needs to know what the system decided, whether authority existed, and whether a business write was attempted.
 
-:::diagram agent-policy-flow
+:::diagram decision-authority-execution
 
 Those are three separate facts:
 
