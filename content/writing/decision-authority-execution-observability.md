@@ -13,6 +13,7 @@ featured: true
 relatedProjects:
   - agentic-customer-service-platform
 relatedLearning:
+  - ai-platform-observability
 relatedWriting:
   - a-confirmation-is-not-a-boolean
   - production-agent-guardrails

@@ -12,6 +12,7 @@ featured: true
 relatedProjects:
   - agentic-customer-service-platform
 relatedLearning:
+  - agent-memory
 relatedWriting:
   - production-agent-guardrails
   - rag-citation-integrity

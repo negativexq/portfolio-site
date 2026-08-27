@@ -14,6 +14,7 @@ relatedProjects:
   - agentic-customer-service-platform
   - knowledge-base-rag
 relatedLearning:
+  - context-engineering-rag
 relatedWriting:
   - memory-is-context-not-authority
   - rag-citation-integrity

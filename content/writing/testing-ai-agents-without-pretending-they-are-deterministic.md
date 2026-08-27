@@ -13,6 +13,7 @@ featured: true
 relatedProjects:
   - agentic-customer-service-platform
 relatedLearning:
+  - llm-rag-evaluation
 relatedWriting:
   - a-confirmation-is-not-a-boolean
   - production-agent-guardrails

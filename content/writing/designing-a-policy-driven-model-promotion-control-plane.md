@@ -13,6 +13,7 @@ featured: true
 relatedProjects:
   - modelops-control-plane
 relatedLearning:
+  - ai-platform-observability
 relatedWriting:
   - testing-ai-agents-without-pretending-they-are-deterministic
 draft: false

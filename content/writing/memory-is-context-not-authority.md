@@ -13,6 +13,7 @@ featured: true
 relatedProjects:
   - agentic-customer-service-platform
 relatedLearning:
+  - agent-memory
 relatedWriting:
   - a-confirmation-is-not-a-boolean
   - agent-prompt-injection-guardrails

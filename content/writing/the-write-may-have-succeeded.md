@@ -13,6 +13,8 @@ featured: true
 relatedProjects:
   - agentic-customer-service-platform
 relatedLearning:
+  - distributed-systems-reliability
+  - systems-api-engineering
 relatedWriting:
   - a-confirmation-is-not-a-boolean
   - kafka-at-least-once-idempotency
