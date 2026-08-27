@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
 import { CommerceProjectCaseStudy } from "@/components/content/commerce-project-case-study";
+import { DbtFeatureLineageCaseStudy } from "@/components/content/dbt-feature-lineage-case-study";
 import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
@@ -14,6 +15,7 @@ import { SectionIndex } from "@/components/content/section-index";
 import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
+import { dbtFeatureLineageMeta } from "@/data/dbt-feature-lineage";
 import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
 import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
 import { knowledgeBaseRagMeta, knowledgeBaseRagProjectUrl } from "@/data/knowledge-base-rag";
@@ -132,6 +134,27 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
+  if (project.id === "dbt-feature-lineage") {
+    const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
+    return {
+      title: dbtFeatureLineageMeta.title,
+      description: dbtFeatureLineageMeta.description,
+      keywords: [...dbtFeatureLineageMeta.keywords],
+      alternates: { canonical: projectUrl },
+      openGraph: {
+        type: "article",
+        url: projectUrl,
+        title: dbtFeatureLineageMeta.title,
+        description: dbtFeatureLineageMeta.description,
+      },
+      twitter: {
+        card: "summary",
+        title: dbtFeatureLineageMeta.title,
+        description: dbtFeatureLineageMeta.description,
+      },
+    };
+  }
+
   return {
     title: project.title,
     description: project.summary,
@@ -232,6 +255,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <KnowledgeBaseRagCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "dbt-feature-lineage") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <DbtFeatureLineageCaseStudy project={project} />
       </>
     );
   }

@@ -649,12 +649,61 @@ const projectRecords = [
     status: "current",
     flagship: false,
     summary:
-      "Manifest-aware dbt analysis for model dependencies, cross-model column lineage, change impact and query flow without a live warehouse.",
+      "Local-first dbt analysis for model dependencies, cross-model column lineage, change impact and query flow without a live warehouse.",
     directAnswer:
-      "dbt Feature Lineage reads target/manifest.json and compiled SQL when available, falls back to static SQL analysis, and uses sqlglot and NetworkX to trace cross-model columns and downstream impact without a live warehouse connection.",
+      "dbt Feature Lineage is a local-first developer tool that reads a dbt checkout or cloned git repository, prefers manifest-aware analysis when artifacts exist, falls back to static SQL/YAML analysis, and exposes the result through a Typer CLI and a FastAPI-backed Next.js web app.",
     whyItExists:
-      "Makes upstream and downstream lineage inspectable across manifest-aware and static modes, distinguishing direct from transitive impact while keeping query-flow visualization and interface logic on one analysis layer.",
-    technologies: ["Python", "dbt Core", "sqlglot", "NetworkX", "Streamlit", "Typer", "Docker"],
+      "Makes upstream and downstream lineage inspectable across manifest-aware and static modes, distinguishing direct from transitive impact while keeping query flow, exposure-aware impact, model health and interface logic on one analysis layer.",
+    heroMetrics: [
+      {
+        value: "2 MODES",
+        label: "One normalized project model",
+        context: "MANIFEST + STATIC",
+        detail: "Artifact-first loading with a static SQL/YAML fallback keeps the analysis path useful before a manifest exists.",
+      },
+      {
+        value: "5 VIEWS",
+        label: "Shared selection context",
+        context: "NEXT.JS WEB APP",
+        detail: "Dashboard, Model Explorer, Model DAG, Column Lineage and Feature Explorer share the same project scope.",
+      },
+      {
+        value: "LOCAL ONLY",
+        label: "No warehouse connection required",
+        context: "DEMO STATIC PATH",
+        detail: "The included demo runs with static analysis from project files on disk.",
+      },
+    ],
+    highlights: [
+      {
+        title: "Artifact-first, fallback-ready",
+        description: "Manifest and catalog artifacts are preferred; recursive SQL/YAML scanning keeps local exploration available when they are missing.",
+      },
+      {
+        title: "Direct vs transitive impact",
+        description: "Downstream analysis separates direct column consumers from the full inherited chain, so blast radius stays actionable.",
+      },
+      {
+        title: "Shared analysis layer",
+        description: "Typer and the FastAPI-backed Next.js web app consume the same normalized domain models and services instead of reimplementing lineage logic.",
+      },
+      {
+        title: "Visible parsing uncertainty",
+        description: "Partial SQL results return with a warning when a query cannot be fully understood; the tool does not fail silently.",
+      },
+    ],
+    technologies: [
+      "Python",
+      "dbt Core",
+      "FastAPI",
+      "Next.js",
+      "TypeScript",
+      "React Flow",
+      "sqlglot",
+      "NetworkX",
+      "Typer",
+      "Docker",
+    ],
     concepts: [
       "Model DAG",
       "Column-Level Lineage",
@@ -665,6 +714,10 @@ const projectRecords = [
       "Manifest-Aware Analysis",
       "Compiled SQL Analysis",
       "Query Flow",
+      "Exposure-Aware Impact",
+      "Model Health",
+      "Git URL Import",
+      "Deep-Linkable Views",
     ],
     proofPoints: [
       {

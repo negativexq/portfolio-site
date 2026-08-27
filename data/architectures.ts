@@ -757,7 +757,7 @@ const architectures = {
   "dbt-feature-lineage": {
     projectId: "dbt-feature-lineage",
     description:
-      "A local dbt project is loaded from target/manifest.json and compiled SQL when available, with static SQL and YAML analysis as a fallback. Both modes normalize into shared domain models. A common service layer powers model DAGs, column lineage, tracing, impact analysis, and query flow for both the Typer CLI and Streamlit UI helpers.",
+      "A local dbt project or cloned git repository is resolved into manifest-aware or static analysis inputs. Both modes normalize into shared domain models. A common service layer powers model DAGs, column lineage, tracing, impact analysis, query flow and model health for both the Typer CLI and the FastAPI-backed Next.js web app.",
     paths: [
       {
         id: "ingestion-modes",
@@ -767,7 +767,7 @@ const architectures = {
         stages: [
           {
             id: "dbt-project",
-            nodes: [{ id: "dbt-project", label: "Local dbt Project", subtitle: "project files on disk", variant: "boundary" }],
+            nodes: [{ id: "dbt-project", label: "dbt project / git clone", subtitle: "local checkout boundary", variant: "boundary" }],
             edge: { label: "load" },
           },
           {
@@ -787,7 +787,7 @@ const architectures = {
       {
         id: "service-consumers",
         label: "Shared analysis services",
-        summary: "CLI and Streamlit consume one service layer rather than reimplementing analysis in each interface.",
+        summary: "CLI and the FastAPI-backed web app consume one service layer rather than reimplementing analysis in each interface.",
         variant: "control",
         stages: [
           {
@@ -802,7 +802,7 @@ const architectures = {
               label: "Services",
               subtitle: "shared analysis layer",
               variant: "analyzer",
-              items: ["Model DAG", "Column lineage", "Up/downstream trace", "Impact analysis", "Query flow"],
+              items: ["Dashboard + health", "Model DAG", "Column lineage", "Impact + exposures", "Query flow"],
             }],
             edge: { label: "serve", variant: "control", relation: "branch" },
           },
@@ -810,7 +810,7 @@ const architectures = {
             id: "consumers",
             nodes: [
               { id: "typer-cli", label: "Typer CLI", subtitle: "human + JSON output", variant: "client" },
-              { id: "streamlit-ui", label: "UI Helpers → Streamlit", subtitle: "thin presentation adapters", variant: "client" },
+              { id: "fastapi-web", label: "FastAPI → Next.js", subtitle: "JSON API + web app", variant: "client" },
             ],
           },
         ],
@@ -818,8 +818,8 @@ const architectures = {
     ],
     notes: [
       "Manifest and static analysis normalize into the same domain models.",
-      "Typer and Streamlit share one service layer; analysis logic is not duplicated between interfaces.",
-      "The demo and static-analysis path require no live data warehouse connection.",
+      "Typer and the FastAPI-backed Next.js app share one service layer; analysis logic is not duplicated between interfaces.",
+      "The demo and static-analysis path require no live data warehouse connection, and git imports are handled through the local clone boundary.",
     ],
   },
   "terraform-docker-infrastructure-lab": {
