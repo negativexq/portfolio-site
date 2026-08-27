@@ -868,6 +868,84 @@ function AgentEvaluationTracksDiagram() {
   );
 }
 
+function FeatureDefinitionLineageDiagram() {
+  const marker = "feature-definition-arrow";
+  return (
+    <DiagramFrame
+      id="feature-definition-lineage"
+      title="One shared feature definition and what sharing then requires"
+      description="When each pipeline rebuilds the same customer feature, the project ends up with several definitions of one thing, no owner, and no signal that they disagree. Defining the feature once as an owned, described and tested model lets training, batch inference and analytics consume the same artifact. Sharing then concentrates risk rather than removing it, so a change to the shared definition needs column lineage that separates directly affected consumers from the full transitive chain, and quality checks that run inside the pipeline instead of surfacing later as a wrong number downstream."
+      caption="Copy-paste keeps the blast radius at one. A shared definition is safer only when you can see what a change touches and the checks fail where the work happens."
+      height={690}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">WITHOUT A SHARED DEFINITION</Label>
+      <Node x={28} y={52} width={260} height={76} lines={["training pipeline", "rebuilds active_customer"]} />
+      <Node x={310} y={52} width={260} height={76} lines={["batch inference", "rebuilds active_customer"]} />
+      <Node x={592} y={52} width={260} height={76} lines={["analytics model", "rebuilds active_customer"]} />
+      <Arrow d="M158 128 V142" marker={marker} />
+      <Arrow d="M440 128 V142" marker={marker} />
+      <Arrow d="M722 128 V142" marker={marker} />
+      <Arrow d="M158 142 H722" marker={marker} />
+      <Arrow d="M440 142 V152" marker={marker} />
+      <Node
+        x={196}
+        y={158}
+        width={488}
+        height={56}
+        lines={["three definitions of one feature", "no owner, and no signal that they disagree"]}
+        tone="stop"
+      />
+
+      <line className="diagram-divider" x1="28" y1="248" x2="852" y2="248" />
+
+      <Label x={28} y={278} anchor="start">ONE DEFINITION, MANY CONSUMERS</Label>
+      <Node x={28} y={300} width={200} height={76} lines={["raw sources", "staging models"]} />
+      <Node
+        x={280}
+        y={292}
+        width={280}
+        height={92}
+        lines={["active_customer", "one dbt model", "owner · description · tests"]}
+        tone="accent"
+      />
+      <Arrow d="M228 338 H273" marker={marker} />
+      <Node x={612} y={286} width={240} height={44} lines={["model training"]} />
+      <Node x={612} y={342} width={240} height={44} lines={["batch inference"]} />
+      <Node x={612} y={398} width={240} height={44} lines={["analytics and reporting"]} />
+      <Arrow d="M560 338 H586 V308 H605" marker={marker} />
+      <Arrow d="M560 338 H586 V364 H605" marker={marker} />
+      <Arrow d="M560 338 H586 V420 H605" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="476" x2="852" y2="476" />
+
+      <Label x={28} y={506} anchor="start">SHARING CONCENTRATES RISK, SO IT NEEDS TWO THINGS</Label>
+      <Node
+        x={28}
+        y={528}
+        width={400}
+        height={92}
+        lines={["what breaks if this changes?", "column lineage: upstream trace,", "downstream impact, direct vs transitive"]}
+        tone="accent"
+      />
+      <Node
+        x={452}
+        y={528}
+        width={400}
+        height={92}
+        lines={["fail where the work happens", "expectations run inside the pipeline,", "not as a wrong number downstream"]}
+        tone="accent"
+      />
+
+      <rect className="diagram-result" x={196} y={650} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={666} textAnchor="middle">
+        Lineage gives you blast radius, not a correct definition.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -880,6 +958,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "unknown-write-outcome": UnknownWriteOutcomeDiagram,
   "decision-authority-execution": DecisionAuthorityExecutionDiagram,
   "agent-evaluation-tracks": AgentEvaluationTracksDiagram,
+  "feature-definition-lineage": FeatureDefinitionLineageDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

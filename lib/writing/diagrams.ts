@@ -10,6 +10,7 @@ export const WRITING_DIAGRAM_IDS = [
   "unknown-write-outcome",
   "decision-authority-execution",
   "agent-evaluation-tracks",
+  "feature-definition-lineage",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
