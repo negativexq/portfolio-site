@@ -13,6 +13,7 @@ export const WRITING_DIAGRAM_IDS = [
   "feature-definition-lineage",
   "feature-pipeline-gates",
   "dag-retry-semantics",
+  "reranker-tradeoff",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

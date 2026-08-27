@@ -1120,6 +1120,93 @@ function DagRetrySemanticsDiagram() {
   );
 }
 
+function RerankerTradeoffDiagram() {
+  const marker = "reranker-tradeoff-arrow";
+  return (
+    <DiagramFrame
+      id="reranker-tradeoff"
+      title="What the reranker benchmark measured and what it costs"
+      description="Dense and sparse retrieval are fused by reciprocal rank fusion, tenant ACL is enforced before anything expensive runs, and the cross-encoder reranks twenty candidates down to the five passed to generation. Against a 220-query paired multilingual benchmark, cross-lingual Recall@5 moved from 0.9563 without reranking to 1.0000 with it, and the shape behind that aggregate was 63 rescues and 0 drops — nothing that already worked stopped working. The cost is a total retrieval p95 of 2457.7 ms on the measured local CPU path, and that figure is a single-flight number because the synchronous cross-encoder call is isolated in a thread with its concurrency capped at one."
+      caption="The aggregate says the change was positive. Rescues and drops say what it did, and the concurrency cap says what the latency figure actually describes."
+      height={600}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">RETRIEVAL PATH · THE RERANKER SEES 20, PASSES 5</Label>
+      <Node x={28} y={44} width={210} height={56} lines={["dense · Qwen3 @ 1024"]} />
+      <Node x={28} y={108} width={210} height={56} lines={["sparse · Qdrant BM25"]} />
+      <Node x={278} y={68} width={150} height={72} lines={["RRF fusion"]} />
+      <Arrow d="M238 72 H258 V104 H273" marker={marker} />
+      <Arrow d="M238 136 H258 V104 H273" marker={marker} />
+      <Node x={468} y={68} width={170} height={72} lines={["tenant ACL", "before reranking"]} tone="accent" />
+      <Arrow d="M428 104 H463" marker={marker} />
+      <Node
+        x={678}
+        y={60}
+        width={174}
+        height={88}
+        lines={["BGE reranker v2-m3", "20 candidates in", "5 out"]}
+        tone="accent"
+      />
+      <Arrow d="M638 104 H673" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="200" x2="852" y2="200" />
+
+      <Label x={28} y={230} anchor="start">220-QUERY PAIRED BENCHMARK · THE SHAPE, NOT THE AGGREGATE</Label>
+      <Node
+        x={28}
+        y={252}
+        width={240}
+        height={76}
+        lines={["without reranking", "cross-lingual Recall@5", "0.9563"]}
+      />
+      <Node
+        x={306}
+        y={252}
+        width={240}
+        height={76}
+        lines={["with reranking", "Recall@5 1.0000", "MRR 0.9558"]}
+        tone="accent"
+      />
+      <Arrow d="M268 290 H301" marker={marker} />
+      <Node
+        x={584}
+        y={252}
+        width={268}
+        height={76}
+        lines={["63 rescues · 0 drops", "nothing that already worked", "stopped working"]}
+        tone="accent"
+      />
+      <Arrow d="M546 290 H579" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="364" x2="852" y2="364" />
+
+      <Label x={28} y={394} anchor="start">THE COST IS LATENCY AND CONCURRENCY</Label>
+      <Node
+        x={28}
+        y={416}
+        width={400}
+        height={86}
+        lines={["total retrieval p95 2457.7 ms", "measured local CPU path", "a single-flight number"]}
+        tone="stop"
+      />
+      <Node
+        x={452}
+        y={416}
+        width={400}
+        height={86}
+        lines={["synchronous cross-encoder", "isolated with asyncio.to_thread()", "concurrency capped at 1"]}
+        tone="stop"
+      />
+
+      <rect className="diagram-result" x={196} y={544} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={560} textAnchor="middle">
+        Reported without the concurrency cap, that p95 means one request.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1135,6 +1222,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "feature-definition-lineage": FeatureDefinitionLineageDiagram,
   "feature-pipeline-gates": FeaturePipelineGatesDiagram,
   "dag-retry-semantics": DagRetrySemanticsDiagram,
+  "reranker-tradeoff": RerankerTradeoffDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {
