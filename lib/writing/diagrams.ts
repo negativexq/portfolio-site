@@ -14,6 +14,8 @@ export const WRITING_DIAGRAM_IDS = [
   "feature-pipeline-gates",
   "dag-retry-semantics",
   "reranker-tradeoff",
+  "agent-authority-boundary",
+  "frozen-change-control",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

@@ -1207,6 +1207,104 @@ function RerankerTradeoffDiagram() {
   );
 }
 
+function AgentAuthorityBoundaryDiagram() {
+  const marker = "agent-authority-arrow";
+  return (
+    <DiagramFrame
+      id="agent-authority-boundary"
+      title="Where an agent's authority ends and verification begins"
+      description="The agent plans, writes and tests inside a workspace it is allowed to modify. Everything that decides whether the work is acceptable sits outside that workspace. Integrity is checked first, by verifying the frozen manifest's hashes over acceptance tests, golden datasets and policies, because hard gates run against altered rules prove nothing. Only then do the gates themselves run. A hash mismatch is not a gate failure to retry; it blocks and goes to human review, while a genuine gate failure returns to the agent for a bounded number of further attempts."
+      caption="The agent is allowed to change the solution. It is not allowed to change the definition of success, and integrity is verified before the gates are trusted."
+      height={500}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">AGENT WORKSPACE · MUTABLE</Label>
+      <Node x={28} y={52} width={200} height={76} lines={["agent", "plan → code → test"]} />
+      <Node
+        x={268}
+        y={52}
+        width={300}
+        height={76}
+        lines={["src/ · libs/ · implementation tests", "the agent may write here"]}
+      />
+      <Arrow d="M228 90 H263" marker={marker} />
+      <Arrow d="M418 128 V162" marker={marker} />
+
+      <rect className="diagram-boundary diagram-boundary--accent" x={28} y={170} width={824} height={200} rx="10" />
+      <Label x={44} y={194} anchor="start">CONTROL PLANE · OUTSIDE THE AGENT&apos;S REACH</Label>
+      <Node
+        x={52}
+        y={212}
+        width={340}
+        height={86}
+        lines={["1 · integrity check", "sha256 -c frozen-manifest", "acceptance tests · goldens · policies"]}
+        tone="accent"
+      />
+      <Node
+        x={440}
+        y={212}
+        width={380}
+        height={86}
+        lines={["2 · hard gates", "tests · typecheck · lint · security", "eval thresholds"]}
+        tone="accent"
+      />
+      <Arrow d="M392 255 H435" marker={marker} />
+      <Label x={440} y={334}>integrity first — gates run against altered rules prove nothing</Label>
+
+      <Arrow d="M153 370 V394" marker={marker} />
+      <Arrow d="M435 370 V394" marker={marker} />
+      <Arrow d="M722 370 V394" marker={marker} />
+      <Node x={28} y={400} width={250} height={76} lines={["hash mismatch", "BLOCKED · human review"]} tone="stop" />
+      <Node x={310} y={400} width={250} height={76} lines={["gate failed", "retry, bounded"]} tone="muted" />
+      <Node x={592} y={400} width={260} height={76} lines={["passed both", "accepted"]} tone="accent" />
+      <Arrow d="M310 438 H14 V90 H23" marker={marker} />
+    </DiagramFrame>
+  );
+}
+
+function FrozenChangeControlDiagram() {
+  const marker = "frozen-change-arrow";
+  return (
+    <DiagramFrame
+      id="frozen-change-control"
+      title="Change control for an artifact that genuinely has to change"
+      description="Freezing an artifact does not mean it can never change; it means the agent is not the one who changes it. When the agent reaches a real conflict with a frozen artifact it stops and emits a proposal carrying the reason and the change it would make, rather than editing the file. A human reviews that proposal, the artifact is explicitly unfrozen, updated, hashed again and re-frozen. The hash is therefore a change-control boundary rather than only a checksum."
+      caption="Freezing is not permanence. It moves the authority to change the rules from the agent to a reviewed step that leaves a new hash behind."
+      height={350}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">WHEN A FROZEN ARTIFACT GENUINELY MUST CHANGE</Label>
+      <Node x={28} y={52} width={220} height={76} lines={["agent hits a conflict", "with a frozen artifact"]} />
+      <Node x={288} y={52} width={220} height={76} lines={["BLOCKED", "the agent does not edit it"]} tone="stop" />
+      <Node
+        x={548}
+        y={52}
+        width={304}
+        height={76}
+        lines={["a proposal, not a patch", "reason + the change it would make"]}
+      />
+      <Arrow d="M248 90 H283" marker={marker} />
+      <Arrow d="M508 90 H543" marker={marker} />
+      <Arrow d="M700 128 V156 H153 V174" marker={marker} />
+
+      <Node x={28} y={180} width={250} height={76} lines={["human review", "approve or reject"]} tone="accent" />
+      <Node x={310} y={180} width={180} height={76} lines={["unfreeze"]} tone="muted" />
+      <Node x={522} y={180} width={150} height={76} lines={["update"]} />
+      <Node x={704} y={180} width={148} height={76} lines={["new hash", "re-freeze"]} tone="accent" />
+      <Arrow d="M278 218 H305" marker={marker} />
+      <Arrow d="M490 218 H517" marker={marker} />
+      <Arrow d="M672 218 H699" marker={marker} />
+
+      <rect className="diagram-result" x={196} y={300} width={488} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={316} textAnchor="middle">
+        The hash is a change-control boundary, not only a checksum.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1223,6 +1321,8 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "feature-pipeline-gates": FeaturePipelineGatesDiagram,
   "dag-retry-semantics": DagRetrySemanticsDiagram,
   "reranker-tradeoff": RerankerTradeoffDiagram,
+  "agent-authority-boundary": AgentAuthorityBoundaryDiagram,
+  "frozen-change-control": FrozenChangeControlDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {
