@@ -81,7 +81,7 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "evidence:project:real-time-commerce-platform:750-1-050-evt-s-40": "750 → 1,050 evt/s",
   "project:production-rag-platform": "Production RAG",
   "evidence:project:knowledge-base-rag:70-useful-2-incorrect": "70% Useful",
-  "evidence:project:knowledge-base-rag:28-of-answers": "28% Abstained",
+  "evidence:project:knowledge-base-rag:28-18-self-10-forced": "28% Abstained",
   "evidence:project:knowledge-base-rag:0-failures": "0 Contract Fails",
   "evidence:project:knowledge-base-rag:recall-5-1-0000-mrr-0-9558": "Recall@5 1.0000",
   "evidence:project:knowledge-base-rag:bge-removal-not-supported": "BGE Removal Blocked",

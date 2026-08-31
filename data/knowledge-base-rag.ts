@@ -191,8 +191,8 @@ export const knowledgeBaseRagEvidence = [
   },
   {
     area: "Unavailable or abstained",
-    result: "28% of answers",
-    detail: "Model self-abstention and deterministic forced abstention together. Reported as an outcome, not assumed to be either a safety success or a quality failure without case-level attribution.",
+    result: "28% · 18% self · 10% forced",
+    detail: "Intentional fail-closed behaviour when support cannot be established: 9/50 model self-abstentions and 5/50 deterministic forced abstentions. An abstention is not automatically a safety success or a quality failure; whether one was appropriate is a separate case-level question.",
   },
   {
     area: "Support-ID and citation contracts",
@@ -261,7 +261,7 @@ export const knowledgeBaseRagLimitations = [
   "The BGE reranker is a synchronous local model call inside the async retrieval path; concurrent model serving is not implemented.",
   "The current chunking corpus is too short to distinguish the tested 256 to 768 token boundaries, so the 500/50 baseline remains active.",
   "Citation integrity checks source membership, not claim-level semantic support. Calibrated answerability and abstention are also still open.",
-  "The 28% unavailable bucket is not attributed case by case, so it cannot be split into abstentions that were correct and abstentions caused by reranker loss, evidence packing or validator over-rejection.",
+  "Whether an individual abstention was appropriate is assessed through layer-wise failure attribution, not inferred from the aggregate. Candidate evidence recall sits at an earlier retrieval boundary and does not classify individual abstentions.",
   "Local tokens and development identities are demo authentication. A production deployment needs an external identity provider or verifier.",
   "Sync coordination is process-local, and each configured source type maps to a server-owned tenant in the current connector model.",
 ] as const;

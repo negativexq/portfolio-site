@@ -464,10 +464,10 @@ const projectRecords = [
       },
       {
         label: "Unavailable or abstained",
-        value: "28% of answers",
-        scope: "Model self-abstention and deterministic forced abstention",
+        value: "28% · 18% self · 10% forced",
+        scope: "9/50 self-abstain · 5/50 forced abstain",
         qualifier:
-          "No useful supported answer was released. The system is intentionally allowed to abstain when support cannot be established, but this is reported as an outcome rather than assumed to be either a safety success or a quality failure: whether an individual abstention was appropriate is a separate failure-attribution question, and candidate-stage recall and final abstention have different populations and pipeline boundaries.",
+          "No useful supported answer was released. Abstaining when support cannot be established is intentional fail-closed behaviour, but an abstention is not automatically a safety success or a quality failure: appropriateness is assessed through layer-wise failure attribution rather than inferred from the aggregate, and candidate evidence recall sits at an earlier retrieval boundary that does not classify individual abstentions.",
       },
       {
         label: "Support-ID and citation contracts",
