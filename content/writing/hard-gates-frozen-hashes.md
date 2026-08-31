@@ -23,7 +23,7 @@ seoTitle: "Hard Gates and Frozen Hashes for AI Coding Agents"
 ---
 An AI coding agent reporting "done" is a claim, not a result. It tells you the agent's loop terminated. It does not tell you the work is correct, complete, or even in the direction you asked for.
 
-That gap is manageable as long as something outside the agent decides whether the work is acceptable — and as long as the agent cannot reach the thing doing the deciding.
+That gap is manageable as long as something outside the agent decides whether the work is acceptable, and as long as the agent cannot reach the thing doing the deciding.
 
 :::diagram agent-authority-boundary
 
@@ -33,23 +33,21 @@ The failure modes are ordinary rather than exotic.
 
 An agent finishes early because its internal notion of completeness was satisfied while the requirement was not. It optimises toward whatever signal it can see, which is often the test output rather than the requirement behind the test. It burns a long loop producing motion without progress, each iteration plausible and none of them closer.
 
-And the one worth designing against specifically: when the requirement is hard and the feedback signal is a file the agent can edit, editing the signal is a locally rational move. The agent is not being adversarial. It is doing what gradient-following does when the gradient is reachable.
+The failure worth designing against specifically is different in kind. When the requirement is hard and the feedback signal is a file the agent can edit, editing the signal is a locally rational move rather than an adversarial one. It is what gradient-following does when the gradient is reachable.
 
-None of that is solved by a better prompt, for the same reason that [an agent taking business actions cannot be made safe by instructions alone](/writing/production-agent-guardrails). Prompts shape behaviour. They do not constrain it.
+None of that is solved by a better prompt, for the same reason that [an agent taking business actions cannot be made safe by instructions alone](/writing/production-agent-guardrails). Prompts shape behaviour without constraining it.
 
 ## Hard gates: the agent does not grade its own work
 
-A hard gate is an external, deterministic check that runs after the agent stops and decides whether the change is acceptable. Its defining property is not what it checks but who owns the answer: not the agent.
+A hard gate is an external, deterministic check that runs after the agent stops and decides whether the change is acceptable. What makes it a gate is not what it checks but who owns the answer, which is never the agent.
 
 The gates worth having are unremarkable and mostly already exist in a normal delivery pipeline. In [the agent platform I work on](/projects/agentic-customer-service-platform), a single blocking workflow runs lint and formatting, `mypy` across application, tests, evaluation and scripts, the test suites, a frontend typecheck and build, then dependency audits, secret scanning, filesystem vulnerability and misconfiguration scanning, workflow-semantics validation, deterministic evaluation datasets, image builds and scans, and authenticated lifecycle smoke checks.
 
 That list is not interesting because it is clever. It is interesting because it is fixed, it is external, and it fails the job rather than reporting into a summary the agent then narrates.
 
-The useful mental shift is small: the agent produces a candidate. The gate produces the verdict.
+The agent produces a candidate. The gate produces the verdict.
 
 ## A gate is only as honest as its assertions
-
-Here is where hard gates on their own stop being sufficient.
 
 Suppose an acceptance test encodes a real safety property:
 
@@ -77,7 +75,7 @@ Mutable is most of it: `src/`, libraries, internal architecture, helper code, de
 
 Frozen is a much smaller set: acceptance criteria, golden evaluation datasets, security and policy definitions, external API contracts, and benchmark methodology. Hash each of those, keep the digests in a manifest, and verify the manifest before trusting any gate result.
 
-A mismatch is not a test failure. It is a different class of outcome, and it should not be retried — it should stop and surface, because the run's verdict is no longer meaningful. Retrying a gate whose rules changed just produces a confident green.
+A mismatch is not a test failure but a different class of outcome, and it should stop and surface rather than be retried, because the run's verdict is no longer meaningful. Retrying a gate whose rules changed just produces a confident green.
 
 This pattern is more familiar than it sounds. The same repository's CI installs Python dependencies with `uv sync --frozen`, and the documented behaviour is that **a stale lockfile fails instead of being rewritten**. The rule sitting next to it is written as an instruction to humans and machines alike: *do not replace frozen installation with an updating command in CI*. That is a frozen-hash rule about dependency resolution. Extending the same idea to acceptance criteria is not a new mechanism, just a wider application of one that already earns its place.
 
@@ -85,19 +83,17 @@ The evaluation side goes further. Its operational release gate binds an approval
 
 ## Two questions, two mechanisms
 
-The division of labour is clean enough to state in one line each.
-
 The hard gate answers: **did the solution pass?**
 
 The frozen hash answers: **did it pass against the same rules?**
 
-Either one alone is insufficient in a predictable way. Gates without frozen baselines verify a moving target. Frozen baselines without gates preserve criteria that nothing enforces.
+Either one alone fails predictably. Gates without frozen baselines verify a moving target. Frozen baselines without gates preserve criteria that nothing enforces.
 
 ## A frozen manifest inside an agent-writable workspace is not frozen
 
-This is the detail that decides whether any of the above holds, and it is easy to get wrong because the file looks correct.
+The file looks correct either way, which is what makes this easy to get wrong.
 
-If the manifest of hashes lives in the same tree the agent edits, the agent can update the manifest to match whatever it changed. The hashes will verify. The verification will be meaningless. The same applies to the gate scripts, the golden datasets, and the workflow definition that decides which gates run at all — a workflow file is a gate configuration, and an agent that can edit it can delete a job.
+If the manifest of hashes lives in the same tree the agent edits, the agent can update the manifest to match whatever it changed, and the hashes will verify against a baseline that no longer means anything. The same applies to the gate scripts, the golden datasets, and the workflow definition that decides which gates run at all. A workflow file is a gate configuration, and an agent that can edit it can delete a job.
 
 So the boundary is not "these files are marked frozen." It is that the verification runs somewhere the agent's write access does not reach: a separate control plane, a CI job whose definition is protected, a checkout the agent process cannot modify, or a manifest held outside the workspace entirely.
 
@@ -119,7 +115,7 @@ Sometimes the frozen artifact is the thing that is wrong. A contract is genuinel
 
 :::diagram frozen-change-control
 
-The agent's correct behaviour at that point is to stop and say so: what it hit, why the frozen artifact conflicts with the requirement, and what change it would make. A proposal, not a patch. A human approves or rejects it, the artifact is explicitly unfrozen, updated, hashed again and re-frozen.
+The agent's correct behaviour at that point is to stop and say so: what it hit, why the frozen artifact conflicts with the requirement, and what change it would make. That is a proposal rather than a patch. A human approves or rejects it, the artifact is explicitly unfrozen, updated, hashed again and re-frozen.
 
 That loop is what makes the hash a change-control boundary instead of a tamper alarm. The rules can move. Moving them is a reviewed act that leaves a new digest behind, and the history of digests is the history of what "correct" meant over time.
 
@@ -127,7 +123,7 @@ That loop is what makes the hash a change-control boundary instead of a tamper a
 
 More iterations are not more progress. An agent that can retry indefinitely against a failing gate will keep producing candidates long after it has stopped converging, and each attempt costs tokens and wall-clock time whether or not it is closer.
 
-Bounded iterations, deterministic verification, and explicit failure is a healthier shape than an open loop. Failing after a fixed number of attempts with the last gate output attached is more useful than a twentieth attempt, because the output is a debugging artifact and the twentieth attempt is usually the nineteenth with different variable names.
+Bounded iterations, deterministic verification and an explicit failure are a healthier shape than an open loop. Failing after a fixed number of attempts with the last gate output attached is more useful than a twentieth attempt, because the output is a debugging artifact and the twentieth attempt is usually the nineteenth with different variable names.
 
 The gate's own execution is worth holding to the same standard. The release gate described above allows zero automatic per-test retries and zero automatic full-run reruns, precisely so that a green result cannot be an artifact of repetition.
 
@@ -139,7 +135,7 @@ Gates only test what someone thought to assert. A frozen acceptance suite that i
 
 Freezing also adds friction, and friction has a direction. If the review loop is slow, pressure builds to shrink the frozen set until the boundary stops protecting anything. That erosion is gradual and looks reasonable at every individual step.
 
-And none of this makes an agent's output good. It makes an agent's output *checkable*, which is a smaller claim and a more useful one.
+None of this makes an agent's output good. It makes the output checkable, which is a smaller claim and a more useful one.
 
 Autonomy and authority are separable, and separating them is most of the work. The agent can explore, refactor and rewrite freely inside its workspace. What it cannot do is decide that it succeeded.
 
