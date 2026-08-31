@@ -3,7 +3,7 @@ export const knowledgeBaseRagProjectUrl = "https://omerfkoc.dev/projects/knowled
 export const knowledgeBaseRagMeta = {
   title: "Knowledge Base RAG",
   description:
-    "Local-first multilingual RAG platform with tenant-scoped hybrid retrieval, measured reranking, strict citation validation, incremental index lifecycle and an operations console.",
+    "Local-first multilingual RAG platform with tenant-scoped hybrid retrieval, measured reranking, support-unit evidence construction, occurrence-aware validation and preregistered evaluation gates.",
   image: "/projects/knowledge-base-rag/rag-overview.jpg",
   imageAlt:
     "Knowledge Base RAG operations console showing source health, recent syncs, security state and the active Qdrant index.",
@@ -70,12 +70,16 @@ export const knowledgeBaseRagQueryFlow = [
     detail: "BAAI/bge-reranker-v2-m3 reranks 20 authorized candidates and passes the best 5 onward.",
   },
   {
-    label: "Untrusted context",
-    detail: "Document text and metadata are serialized as reference data. They never receive a system or assistant role.",
+    label: "SectionAware evidence",
+    detail: "Surviving results are packed into request-scoped support units under a bounded context budget. Document text and metadata stay reference data and never receive a system or assistant role.",
   },
   {
-    label: "Strict validation",
-    detail: "The production path buffers the answer, validates citations and output policy, then releases it.",
+    label: "Support-ID validation",
+    detail: "The model returns text plus support IDs. Unknown, cross-query, hidden and unauthorized IDs are rejected before anything else runs.",
+  },
+  {
+    label: "Occurrence-aware validation",
+    detail: "Architecture V2 checks critical-value consistency against an immutable occurrence ledger, so a role decision stays attached to the occurrence it came from.",
   },
   {
     label: "Inspectable response",
@@ -181,24 +185,39 @@ export const knowledgeBaseRagScreenshots = [
 
 export const knowledgeBaseRagEvidence = [
   {
-    area: "Repository verification",
-    result: "844 backend · 18 frontend",
-    detail: "Last recorded full run; 2 external provider checks skipped, with Ruff, typecheck, lint and production build green.",
+    area: "End-to-end answers",
+    result: "70% useful · 2% incorrect",
+    detail: "Canonical TechQA BGE-ON record. Useful is Correct plus Partial, which is not an accuracy claim; strict full completeness scored separately at 30%.",
+  },
+  {
+    area: "Unavailable or abstained",
+    result: "28% of answers",
+    detail: "Model self-abstention and deterministic forced abstention together. Reported as an outcome, not assumed to be either a safety success or a quality failure without case-level attribution.",
+  },
+  {
+    area: "Support-ID and citation contracts",
+    result: "0 failures",
+    detail: "No unknown, cross-query, hidden or unauthorized support IDs accepted. Deterministic contract results on the evaluated corpus, not proven security.",
+  },
+  {
+    area: "Candidate evidence recall",
+    result: "95.9% at Top-20",
+    detail: "Measured at the shared candidate stage before reranking narrows to five, so it is not a statement about evidence in the model's final context.",
   },
   {
     area: "Multilingual reranker",
     result: "220 queries · Recall@5 1.0000 · MRR 0.9558",
-    detail: "63 cross-lingual rescues and 0 drops for the selected BGE model in the committed paired benchmark.",
+    detail: "63 cross-lingual rescues and 0 drops for the selected BGE model. A retrieval and ranking metric, separate from final-answer accuracy.",
   },
   {
-    area: "Prompt security",
-    result: "82 adversarial cases",
-    detail: "Injection, spoofing, citation suppression, unauthorized citation and cross-tenant exfiltration rates were all 0.0000 in this suite.",
+    area: "Preregistered gate",
+    result: "BGE_REMOVAL_NOT_SUPPORTED",
+    detail: "Removing the reranker improved evidence completeness, but the semantic non-regression gate frozen beforehand failed, so the change was not adopted.",
   },
   {
-    area: "Generation sanity",
-    result: "26/26 successful",
-    detail: "Citation integrity, not-found behavior and strict validation each recorded 1.0000 for the exercised baseline path.",
+    area: "Repository verification",
+    result: "844 backend · 18 frontend",
+    detail: "Last recorded full run; 2 external provider checks skipped, with Ruff, typecheck, lint and production build green.",
   },
 ] as const;
 
@@ -242,6 +261,7 @@ export const knowledgeBaseRagLimitations = [
   "The BGE reranker is a synchronous local model call inside the async retrieval path; concurrent model serving is not implemented.",
   "The current chunking corpus is too short to distinguish the tested 256 to 768 token boundaries, so the 500/50 baseline remains active.",
   "Citation integrity checks source membership, not claim-level semantic support. Calibrated answerability and abstention are also still open.",
+  "The 28% unavailable bucket is not attributed case by case, so it cannot be split into abstentions that were correct and abstentions caused by reranker loss, evidence packing or validator over-rejection.",
   "Local tokens and development identities are demo authentication. A production deployment needs an external identity provider or verifier.",
   "Sync coordination is process-local, and each configured source type maps to a server-owned tenant in the current connector model.",
 ] as const;

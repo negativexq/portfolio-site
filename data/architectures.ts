@@ -388,7 +388,7 @@ const architectures = {
   "knowledge-base-rag": {
     projectId: "knowledge-base-rag",
     description:
-      "Filesystem and Notion sources enter a fingerprinted sync path that builds versioned Qdrant collections before the kb_active alias moves. Authenticated queries receive a server-owned tenant ACL before dense and sparse retrieval, RRF fusion, multilingual reranking, untrusted context construction and strict answer validation. The React console exposes the same retrieval, security, evaluation and trace state through read-only FastAPI projections.",
+      "Filesystem and Notion sources enter a fingerprinted sync path that builds versioned Qdrant collections before the kb_active alias moves. Authenticated queries receive a server-owned tenant ACL before dense and sparse retrieval, RRF fusion and reranking, so no later relevance stage can widen the authorized set. SectionAware evidence construction turns the surviving results into request-scoped support units, and release is gated in three separate steps: support-ID validation, occurrence-aware critical-value validation, then citation resolution. The React console exposes the same retrieval, security, evaluation and trace state through read-only FastAPI projections.",
     paths: [
       {
         id: "index-lifecycle",
@@ -468,12 +468,12 @@ const architectures = {
           },
           {
             id: "multilingual-reranker",
-            nodes: [{ id: "multilingual-reranker", label: "BGE Reranker", subtitle: "multilingual · top 5", variant: "analyzer" }],
-            edge: { label: "serializes" },
+            nodes: [{ id: "multilingual-reranker", label: "BGE Reranker", subtitle: "authorized top 20 → top 5", variant: "analyzer" }],
+            edge: { label: "packs evidence" },
           },
           {
             id: "untrusted-envelope",
-            nodes: [{ id: "untrusted-envelope", label: "Untrusted Context", subtitle: "reference data only", variant: "boundary" }],
+            nodes: [{ id: "untrusted-envelope", label: "SectionAware Support Units", subtitle: "untrusted reference data · request-scoped IDs", variant: "boundary" }],
             edge: { label: "generates under answer_v3" },
           },
           {
@@ -483,7 +483,7 @@ const architectures = {
           },
           {
             id: "strict-validation",
-            nodes: [{ id: "strict-validation", label: "Strict Validation", subtitle: "citations + output policy", variant: "control" }],
+            nodes: [{ id: "strict-validation", label: "Support ID · Occurrence Validator · Citations", subtitle: "Architecture V2 · release gate", variant: "control" }],
             edge: { label: "releases" },
           },
           {

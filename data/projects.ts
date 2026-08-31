@@ -346,42 +346,42 @@ const projectRecords = [
     flagship: true,
     showCardProof: true,
     cardProof: {
-      label: "Multilingual reranker decision",
-      value: "63 rescues · 0 drops",
-      scope: "220-query paired evaluation",
+      label: "End-to-end evaluation",
+      value: "70% useful · 2% incorrect",
+      scope: "Canonical TechQA BGE-ON record",
       qualifier:
-        "BAAI/bge-reranker-v2-m3 reached cross-lingual Recall@5 1.0000 and MRR 0.9558 on the committed evaluation set. This result belongs to that dataset, model and runtime configuration.",
+        "Useful-answer rate is Correct plus Partial, which is not an accuracy claim. The remaining 28% released no useful supported answer. These are benchmark results on an evaluated corpus, not live traffic.",
     },
     summary:
-      "Local-first multilingual RAG platform with tenant-scoped hybrid retrieval, measured reranking, strict answer validation, versioned index operations and an evidence-first React console.",
+      "Local-first multilingual RAG platform where tenant scope, evidence construction, support-unit identity and occurrence-aware validation are separate boundaries, and where a change is adopted only if it passes a decision rule frozen before the result was known.",
     directAnswer:
-      "Knowledge Base RAG is a local-first platform for operating multilingual knowledge bases. It applies server-owned tenant ACL before dense and sparse retrieval, reranks authorized results with a measured multilingual model, treats retrieved content as untrusted data, validates canonical citations before release in strict mode, and exposes the full path in a React operations console.",
+      "Knowledge Base RAG is a local-first platform for operating multilingual knowledge bases. Server-owned tenant ACL runs before retrieval and reranking, SectionAware evidence construction turns authorized results into request-scoped support units, and an occurrence-aware validator checks critical-value consistency before a citation-resolved answer is released. Retrieval, evidence, generation, validation and citation failures are attributed to distinct boundaries rather than collapsed into one pass or fail label.",
     whyItExists:
-      "A useful RAG system has to answer more than whether a chunk is relevant. It has to prove that the user could retrieve it, preserve source identity, stop document instructions from becoming system policy, reject an invalid answer before release, activate compatible index versions safely, and show operators why a result was produced. This project makes those boundaries observable and tests them separately.",
+      "Retrieval quality alone does not make an answer trustworthy. The system has to preserve tenant boundaries, construct evidence deliberately, explain which support units reached the model, validate the model's references, and fail closed when a safety boundary cannot be established. The second half of the project is treating evaluation as an engineering control rather than a scoreboard: decision rules are frozen before results are known, rejected candidates are preserved as evidence instead of being rewritten into a success narrative, and metric families are kept separate so a ranking score is never read as answer accuracy.",
     heroMetrics: [
       {
-        value: "844 BACKEND TESTS",
-        label: "Last recorded full verification",
-        context: "2 external checks skipped",
-        detail: "18 frontend tests also passed, with Ruff, typecheck, lint and the production build green.",
+        value: "70% USEFUL-ANSWER",
+        label: "End-to-end evaluation",
+        context: "Canonical TechQA BGE-ON record",
+        detail: "Correct plus Partial, which is not an accuracy claim. 2% were materially incorrect and 28% released no useful supported answer.",
       },
       {
-        value: "220 QUERIES",
-        label: "Paired multilingual evaluation",
-        context: "Reranker decision",
-        detail: "The selected BGE model recorded cross-lingual Recall@5 1.0000, MRR 0.9558, 63 rescues and 0 drops.",
+        value: "0 CONTRACT FAILURES",
+        label: "Support-ID and citation contracts",
+        context: "Corrected TechQA evaluation",
+        detail: "No unknown, cross-query, hidden or unauthorized support IDs were accepted. Deterministic contract results on the evaluated corpus, not proven security.",
       },
       {
-        value: "82 ADVERSARIAL CASES",
-        label: "Prompt-security evidence",
-        context: "Committed security suite",
-        detail: "Injection, spoofing, suppression, unauthorized citation and cross-tenant exfiltration rates all recorded 0.0000.",
+        value: "RECALL@5 1.0000",
+        label: "Reranker selection benchmark",
+        context: "220 multilingual questions",
+        detail: "Against 0.9563 cross-lingual without a reranker. A retrieval and ranking metric, separate from final-answer accuracy.",
       },
       {
-        value: "26/26 SUCCESSFUL",
-        label: "Generation sanity",
-        context: "Baseline generation path",
-        detail: "Citation integrity, not-found behavior and strict validation each recorded 1.0000 in the exercised suite.",
+        value: "REMOVAL NOT AUTHORIZED",
+        label: "Preregistered decision rule held",
+        context: "BGE_REMOVAL_NOT_SUPPORTED",
+        detail: "Disabling the reranker improved evidence completeness, but the semantic non-regression gate frozen beforehand failed, so the change was not adopted.",
       },
     ],
     highlights: [
@@ -396,9 +396,9 @@ const projectRecords = [
           "Document bodies, titles, headings, source names and locations are serialized as reference data under answer_v3. Delimiter-looking instructions inside a document never receive a system or assistant message role.",
       },
       {
-        title: "Validate before release",
+        title: "Occurrence-aware critical-value validation",
         description:
-          "Strict production mode buffers the answer, checks canonical citation membership and output policy, then releases it. Fast streaming is a separate server-side option whose post-stream validation tradeoff is explicit.",
+          "Earlier validator prototypes bolted on handling for negation, corrections, signed values and repeated siblings, and kept failing because identity was lost between extraction, matching, masking and re-discovery. Architecture V2 replaced the patches with one canonical extraction feeding an immutable occurrence ledger, so a role decision stays attached to the occurrence it belongs to. It is the default validator in this runtime.",
       },
       {
         title: "Versioned index lifecycle",
@@ -406,9 +406,9 @@ const projectRecords = [
           "Pipeline fingerprints bind embedding, parser, index and chunk settings to a collection. A compatible version is built and checked before the kb_active alias moves, keeping model or dimension changes from silently reusing the wrong index.",
       },
       {
-        title: "Measured multilingual reranking",
+        title: "Failures are attributed to a boundary",
         description:
-          "A paired 220-query benchmark moved production to BAAI/bge-reranker-v2-m3 after it reached cross-lingual Recall@5 1.0000 and MRR 0.9558. The page keeps the local CPU latency cost beside the quality gain.",
+          "When an answer is wrong the useful question is which boundary made it wrong, so retrieval miss, reranker loss, evidence-packing loss, generation error, validator over-rejection and citation failure stay separate classes. That keeps a retrieval limitation from hiding behind a validator metric, and stops a citation identity check from being read as semantic grounding.",
       },
       {
         title: "Operations console, not a chat shell",
@@ -445,37 +445,57 @@ const projectRecords = [
       "Pipeline Fingerprinting",
       "Versioned Index Activation",
       "Alias Rollback",
+      "SectionAware Evidence Packing",
+      "Support-Unit Identity",
+      "Occurrence Ledger",
+      "Failure Attribution",
+      "Preregistered Evaluation Gates",
+      "Fail-Closed Abstention",
       "Distributed Tracing",
       "Artifact-Backed Evaluation",
     ],
     proofPoints: [
+      {
+        label: "End-to-end evaluation",
+        value: "70% useful · 2% incorrect",
+        scope: "Canonical TechQA BGE-ON record",
+        qualifier:
+          "Useful-answer rate is Correct plus Partial and is not an accuracy claim. Strict full-completeness scored separately at 30%, which is a different metric rather than another outcome bucket. Candidate evidence recall at the shared Top-20 stage was 95.9%. Benchmark results on an evaluated corpus, not live traffic or serving performance.",
+      },
+      {
+        label: "Unavailable or abstained",
+        value: "28% of answers",
+        scope: "Model self-abstention and deterministic forced abstention",
+        qualifier:
+          "No useful supported answer was released. The system is intentionally allowed to abstain when support cannot be established, but this is reported as an outcome rather than assumed to be either a safety success or a quality failure: whether an individual abstention was appropriate is a separate failure-attribution question, and candidate-stage recall and final abstention have different populations and pipeline boundaries.",
+      },
+      {
+        label: "Support-ID and citation contracts",
+        value: "0 failures",
+        scope: "Corrected TechQA evaluation",
+        qualifier:
+          "No unknown, cross-query, hidden or unauthorized support IDs were accepted, and there were zero citation contract failures. Deterministic contract results from the evaluated corpus, not a claim of formally proven system security.",
+      },
+      {
+        label: "Reranker selection benchmark",
+        value: "Recall@5 1.0000 · MRR 0.9558",
+        scope: "220 multilingual questions · frozen set",
+        qualifier:
+          "Against 0.9563 cross-lingual Recall@5 with hybrid retrieval and no reranker, and 63 rescue cases with zero drop-outs. The prior English reranker went the other way on the same set, dropping 85 expected top-five cases and rescuing one. Total retrieval p95 was 2457.7 ms on the measured local path. These are retrieval and ranking metrics, not final-answer accuracy.",
+      },
+      {
+        label: "Preregistered decision rule",
+        value: "BGE_REMOVAL_NOT_SUPPORTED",
+        scope: "Frozen semantic non-regression gate",
+        qualifier:
+          "Disabling the reranker materially improved evidence completeness, but the gate frozen before the result was known still failed, so removal was not authorized. Rejected validator candidates are kept as canonical evidence with their original verdicts rather than rewritten into a success narrative.",
+      },
       {
         label: "Repository test evidence",
         value: "844 backend · 18 frontend",
         scope: "Last recorded full verification",
         qualifier:
           "Two external Notion/provider checks skipped. Ruff, backend and frontend type checks, frontend lint and the production build were green in the same recorded verification.",
-      },
-      {
-        label: "Multilingual reranker evaluation",
-        value: "Recall@5 1.0000 · MRR 0.9558",
-        scope: "220-query paired benchmark",
-        qualifier:
-          "The selected BGE reranker recorded 63 cross-lingual rescues and 0 drops. Total retrieval p95 was 2457.7 ms on the measured local path, so the quality gain carries a visible latency cost.",
-      },
-      {
-        label: "Prompt-security evaluation",
-        value: "82 adversarial cases",
-        scope: "Tenant ACL · untrusted context · strict validation",
-        qualifier:
-          "Injection, spoofing, citation suppression, unauthorized citation and cross-tenant exfiltration rates were all 0.0000 in the committed suite. This is bounded evidence, not a claim of universal prompt-injection immunity.",
-      },
-      {
-        label: "Generation sanity",
-        value: "26/26 successful",
-        scope: "Baseline generation path",
-        qualifier:
-          "Citation integrity, not-found behavior and strict validation each recorded 1.0000. Citation integrity verifies authorized source membership, not claim-level semantic entailment.",
       },
     ],
     roadmap: emptyRoadmap,
