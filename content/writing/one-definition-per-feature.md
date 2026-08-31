@@ -28,7 +28,7 @@ One pipeline counts a customer active on ninety days of activity. Another uses a
 
 The system now holds three answers to one question, and no owner for any of them. The failure mode is not a bug that can be caught by a test, because there is nothing to compare against. It is an absence: no single place where the definition lives.
 
-That absence surfaces later, and badly. A model's training data and its serving path disagree. Two dashboards report different customer counts to different people. Someone eventually reconciles them by hand, picks a winner, and the fork quietly continues everywhere it was not found.
+That absence surfaces later, and badly. A model's training data and its serving path disagree. Two dashboards report different customer counts to different people. Someone eventually reconciles them by hand, picks a winner, and the fork survives everywhere it was not found.
 
 ## Make the feature an artifact, not a snippet
 
@@ -40,15 +40,13 @@ Consumers stop being authors. Training, batch inference and reporting all read t
 
 ## Sharing moves the risk, it does not remove it
 
-This is the part that is easy to skip when advocating for shared definitions.
-
 Copy-paste has one genuine virtue: its blast radius is one. When each pipeline owns its own version, a careless change breaks exactly one thing. Once ten consumers share a definition, a change to it is a change to ten things at once, and the person making it usually knows about two of them.
 
 So a shared definition is only safer if the question "what breaks if I change this column?" can be answered before the change, not discovered after it. Otherwise the shared model becomes something people are afraid to touch, and fear produces the same outcome as convenience: someone forks it again.
 
 ## Direct impact and transitive impact are different questions
 
-That is the problem [dbt-feature-lineage](/projects/dbt-feature-lineage) exists to answer. It reads a local dbt project — no warehouse connection required — and traces a column backwards through joins, coalesces and renames to its raw sources, or forwards to its consumers, through a project-wide graph.
+That is the problem [dbt-feature-lineage](/projects/dbt-feature-lineage) exists to answer. It reads a local dbt project, with no warehouse connection required, and traces a column backwards through joins, coalesces and renames to its raw sources, or forwards to its consumers, through a project-wide graph.
 
 The part that matters for shared features is that the downstream summary separates the directly affected models from the full transitive chain. Those deserve different responses. Direct consumers reference the column themselves and almost always need review. The transitive tail inherits it, and often does not care. Collapsing them into one number either buries the reviewer in noise or understates the change.
 
@@ -64,7 +62,7 @@ A shared definition raises the cost of a regression, so the regression has to be
 
 The failure mode worth designing against is a data or model regression that first appears as a wrong number in a downstream report, days later, seen by the person furthest from the cause. By then the investigation runs backwards through several systems to find a change nobody flagged.
 
-Expectations that run inside the orchestration — Great Expectations on the data, model validation on the trained artifact, both as Airflow tasks and delivery-pipeline steps — fail the run at the point of computation. A check in the pipeline fails a job. A check in the report fails the reader's trust in every number next to it.
+Expectations that run inside the orchestration fail the run at the point of computation: Great Expectations on the data, model validation on the trained artifact, both as Airflow tasks and delivery-pipeline steps. A check in the pipeline fails a job. A check in the report fails the reader's trust in every number next to it.
 
 ## Cheap to change, or it will not stay shared
 

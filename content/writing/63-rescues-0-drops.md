@@ -43,7 +43,7 @@ Recall@5 of `1.0000` across 220 queries does not mean retrieval is solved. It me
 
 That distinction decides what the number licenses. It supports a decision made today between specific models on this corpus. It does not support a claim about queries that are not in the set, and the moment a metric saturates, it can no longer rank the next candidate against the current one.
 
-So the honest follow-up to a perfect score is a harder set, not a stronger claim. A benchmark that everything passes has finished being an experiment and become a regression test — useful, but a different instrument.
+So the honest follow-up to a perfect score is a harder set, not a stronger claim. A benchmark that everything passes has finished being an experiment and become a regression test, which is useful but a different instrument.
 
 ## The cost is latency and concurrency, and only one of those gets reported
 
@@ -51,25 +51,25 @@ Total retrieval p95 on the measured local CPU path is `2457.7 ms`. That is a rea
 
 But the latency figure alone understates the shape of the cost. The cross-encoder call is synchronous. It is isolated with `asyncio.to_thread()` and guarded by a concurrency limit that defaults to one. So the p95 describes a request that had the reranker to itself.
 
-Under concurrent load, that number is not what the second caller experiences — they queue. A p95 published without the concurrency cap beside it is a single-flight measurement being presented as a service characteristic, which is a common way to be accidentally wrong about capacity.
+Under concurrent load, that number is not what the second caller experiences, because they queue. A p95 published without the concurrency cap beside it is a single-flight measurement being presented as a service characteristic, which is a common way to be accidentally wrong about capacity.
 
 Stating the cap alongside the percentile costs one sentence and prevents the misreading.
 
 ## Where the reranker sits decides what it can cost you
 
-Retrieval runs dense and sparse in parallel — Qwen3 embeddings at 1024 dimensions and Qdrant BM25 — and fuses them with reciprocal rank fusion. The reranker then sees twenty candidates and passes five to generation.
+Retrieval runs dense and sparse in parallel, Qwen3 embeddings at 1024 dimensions and Qdrant BM25, and fuses them with reciprocal rank fusion. The reranker then sees twenty candidates and passes five to generation.
 
 Two placement decisions carry most of the cost control.
 
-The **candidate count is the knob**. Cross-encoder cost scales roughly with how many candidates it scores, while the quality gain saturates: the twentieth candidate is rarely the one that gets rescued. Twenty in and five out is a measured setting for this corpus, not a framework default worth inheriting.
+The candidate count is the knob. Cross-encoder cost scales roughly with how many candidates it scores, while the quality gain saturates: the twentieth candidate is rarely the one that gets rescued. Twenty in and five out is a measured setting for this corpus, not a framework default worth inheriting.
 
-The **tenant ACL runs before reranking, not after**. Reranking is the most expensive stage in the path, so scoring rows the caller is not allowed to see spends the budget twice — once on compute that gets discarded, and once on the risk that a filtering bug turns discarded work into a disclosure. Filtering first is cheaper and the ordering is also the security boundary.
+The tenant ACL runs before reranking, not after. Reranking is the most expensive stage in the path, so scoring rows the caller is not allowed to see spends the budget twice: once on compute that gets discarded, and once on the risk that a filtering bug turns discarded work into a disclosure. Filtering first is cheaper and the ordering is also the security boundary.
 
 ## A measured "no" is a result too
 
 The same benchmark process rejected a change. Token-aware chunking candidates matched the existing quality and did not reduce context size, chunk count or storage, so the legacy 500/50 configuration was kept.
 
-The useful part is what got published with that decision: the corpus's average chunk is about 69 tokens with a maximum of 100, so the 256–768 token candidate boundaries were never actually exercised. The experiment could not have shown a difference on this data.
+What got published alongside that decision is the corpus's average chunk of about 69 tokens with a maximum of 100, so the 256–768 token candidate boundaries were never actually exercised. The experiment could not have shown a difference on this data.
 
 That is more valuable than the null result on its own. A null result says "we tried it and nothing happened." A null result with its own power analysis says "this corpus cannot answer this question, and here is what would have to change before asking again."
 
@@ -77,7 +77,7 @@ That is more valuable than the null result on its own. A null result says "we tr
 
 These are local CPU measurements against four fixture documents and a 220-question set. They are a benchmark, not traffic, and nothing here is a production capacity claim.
 
-Recall and MRR measure whether the right source reached the top of the list. They say nothing about whether the generated answer then used it correctly — that is a separate check with its own separate result, and even there, citation integrity verifies authorized source membership rather than claim-level entailment.
+Recall and MRR measure whether the right source reached the top of the list. They say nothing about whether the generated answer then used it correctly. That is a separate check with its own separate result, and even there, citation integrity verifies authorized source membership rather than claim-level entailment.
 
 And the reranker choice is bound to this corpus, this language mix and this candidate count. A different chunk-size distribution would move the numbers, which is exactly the limitation the chunking experiment documented rather than concealed.
 

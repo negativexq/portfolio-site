@@ -23,7 +23,7 @@ seoTitle: "Airflow DAGs: Retry Semantics, Idempotent Tasks and Backfills"
 ---
 Most orchestration writing is about the schedule. Cron expression, dependencies, a picture of boxes with arrows. That part is easy, and it is not what decides whether a pipeline survives contact with production.
 
-A DAG that runs correctly once is a solved problem. A DAG that runs correctly the *second* time — after a task died halfway through, after someone reran yesterday, after a backfill covered three weeks of windows in parallel — is the actual engineering. What a DAG really encodes is a set of promises about failure.
+A DAG that runs correctly once is a solved problem. A DAG that runs correctly the *second* time, after a task died halfway through, after someone reran yesterday, after a backfill covered three weeks of windows in parallel, is the actual engineering. What a DAG really encodes is a set of promises about failure.
 
 :::diagram dag-retry-semantics
 
@@ -35,17 +35,17 @@ That is the whole problem in one sentence, and it is the same question an at-lea
 
 The answer depends entirely on the shape of the write.
 
-**Overwriting the window is naturally idempotent.** If the task replaces the partition it owns, running it five times produces the same partition. This is the shape to reach for by default, and it is why `INSERT OVERWRITE` semantics and partition swaps exist.
+Overwriting the window is naturally idempotent. If the task replaces the partition it owns, running it five times produces the same partition. This is the shape to reach for by default, and it is why `INSERT OVERWRITE` semantics and partition swaps exist.
 
-**Upserting on a business key is conditionally idempotent.** A merge keyed on something stable collapses repeats. It stops being idempotent the moment the key is not actually unique, which is usually discovered later and in production.
+Upserting on a business key is conditionally idempotent. A merge keyed on something stable collapses repeats. It stops being idempotent the moment the key is not actually unique, which is usually discovered later and in production.
 
-**Appending, incrementing and notifying are not idempotent at all.** There is no identity for the second run to collide with. An append-mode load that retries produces duplicates, and the failure is quiet: the row count went up, which is what a row count is supposed to do. No freshness check and no volume check calls that wrong.
+Appending, incrementing and notifying are not idempotent at all. There is no identity for the second run to collide with. An append-mode load that retries produces duplicates, and the failure is quiet: the row count went up, which is what a row count is supposed to do. No freshness check and no volume check calls that wrong.
 
 ## Partial success is the normal case, not the edge case
 
 A task that writes to three places and dies on the third has already written two. The run shows red, and the data is in a state no one designed.
 
-There are only two honest responses. Make the unit of work atomic, so the whole task commits or none of it does — one transaction, one partition swap, one staged directory promoted at the end. Or make the task resumable, so it can determine on startup what it already finished and continue from there.
+There are only two honest responses. Make the unit of work atomic, so the whole task commits or none of it does: one transaction, one partition swap, one staged directory promoted at the end. Or make the task resumable, so it can determine on startup what it already finished and continue from there.
 
 The third response, wrapping the body in a `try/except` and logging the error, is not recovery. It converts a loud failure into a quiet one and leaves the partial state exactly where it was, except now the task is green.
 
@@ -59,7 +59,7 @@ That second shape is the single most common reason a pipeline cannot be backfill
 
 ## The declared order is usually stricter than the real dependency
 
-`depends_on_past` exists for genuine cases. Running balances, slowly changing dimensions, anything where the window's result reads the previous window's output — those must run in order, and backfilling them in parallel is wrong.
+`depends_on_past` exists for genuine cases. Running balances, slowly changing dimensions, anything where the window's result reads the previous window's output. Those must run in order, and backfilling them in parallel is wrong.
 
 Most tasks do not have that dependency and get it imposed anyway, usually because it was easier to be safe. The cost arrives during the first large backfill, when three weeks of independent windows crawl through one at a time.
 
@@ -77,6 +77,6 @@ Idempotent tasks do not make the DAG atomic. A run that fails at step four leave
 
 Retries hide transient failures, which is their job, and they hide persistent ones just as effectively. A task that fails twice and succeeds on the third attempt every single day is broken, and its light is green. Retry counts are worth alerting on separately from task outcomes.
 
-And an otherwise idempotent task with one non-idempotent side effect is still unsafe to retry. Sending a notification, calling an external API that charges per request, publishing to a topic without a deduplication key — the database write can be perfectly replayable while the email goes out four times.
+And an otherwise idempotent task with one non-idempotent side effect is still unsafe to retry. Sending a notification, calling an external API that charges per request, publishing to a topic without a deduplication key. The database write can be perfectly replayable while the email goes out four times.
 
 The schedule tells you when a DAG runs. Everything else in it tells you what happens when it does not.
