@@ -113,6 +113,16 @@ export const commerceEngineeringDecisions = [
       "The project separates Demo full-path throughput from the isolated processor benchmark. Offset-commit batching moved the isolated boundary from about 750 to 900 events/s; query-plan-aware indexes and a fresh sweep established about 1,050 events/s as the highest clearly sustainable point for that workload.",
   },
   {
+    title: "Throughput without correctness is not capacity",
+    description:
+      "A processor can report 1,200 events/s while receiving 1,300 and still be falling behind, so service rate alone proves nothing. A rate counts as sustainable only when arrival and service track each other with a flat Kafka lag slope, and only when the run also passes its correctness gate: injected event IDs match durable processed_events rows, no unexpected DLQ or integrity errors remain, source lag and pending outbox work drain to zero, and fraud evaluations match the count of eligible events. A higher number bought by dropping or weakening work is not a higher ceiling.",
+  },
+  {
+    title: "The generator labels behavior, the detector never reads the label",
+    description:
+      "Personas drive generation: account_takeover produces device and country changes, payment retries and rapid high-value activity, while bot produces bounded catalogue scanning. The fraud path never sees any of that. Its rules read observed facts from sessions, orders, payments and refunds, and persona names are not inputs to the fraud context. Detection is therefore measured against behavior rather than against the label that produced it, so changing a threshold changes the result.",
+  },
+  {
     title: "Capacity is a workload question, not a number",
     description:
       "Fraud-eligible events take a longer path: extra customer, order and payment context reads, fraud evaluation and fraud persistence. Measuring across compositions showed the observed ceiling moving from about 1,075 to about 1,600 events/s as that share falls to zero, so quoting one throughput figure without its workload is incomplete. Fraud-eligible share is not the fraud detection rate, and a 0% workload contains no eligible events rather than disabling fraud processing.",
@@ -222,6 +232,22 @@ export const commerceDeepDiveLinks = [
   {
     label: "Observability",
     href: "https://github.com/negativexq/real-time-commerce-platform/blob/main/docs/observability.md",
+  },
+  {
+    label: "Benchmark methodology",
+    href: "https://github.com/negativexq/real-time-commerce-platform/blob/main/docs/deep-dives/benchmark-methodology.md",
+  },
+  {
+    label: "Scenario generation",
+    href: "https://github.com/negativexq/real-time-commerce-platform/blob/main/docs/deep-dives/scenario-generation.md",
+  },
+  {
+    label: "Fraud decision strategy",
+    href: "https://github.com/negativexq/real-time-commerce-platform/blob/main/docs/deep-dives/fraud-decision-strategy.md",
+  },
+  {
+    label: "Fraud workload profiles",
+    href: "https://github.com/negativexq/real-time-commerce-platform/blob/main/docs/deep-dives/fraud-workload-profiles.md",
   },
 ] as const;
 

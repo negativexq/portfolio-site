@@ -26,13 +26,13 @@ type CommerceProjectCaseStudyProps = {
 const sections = [
   ["principle", "Principle"],
   ["capabilities", "What it does"],
+  ["evidence", "Measured evidence"],
+  ["workload-capacity", "Workload capacity"],
   ["failure", "Failure story"],
   ["delivery", "Delivery vs effects"],
   ["architecture", "Architecture"],
   ["decisions", "Reliability patterns"],
   ["proof", "Repository proof"],
-  ["evidence", "Evidence"],
-  ["workload-capacity", "Workload capacity"],
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
@@ -102,6 +102,64 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
                 </article>
               ))}
             </div>
+          </section>
+
+          <section id="evidence" className="detail-section">
+            <h2>Measured evidence</h2>
+            <p>
+              The numbers below come from different paths and experiments. They are kept separate
+              so a local isolated capacity result is not mistaken for Demo Control throughput or
+              a production SLA.
+            </p>
+            <div className="commerce-evidence-table" role="region" aria-label="Selected commerce platform evidence" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Evidence slice</th><th scope="col">Current result</th><th scope="col">What it means</th></tr>
+                </thead>
+                <tbody>
+                  {commerceEvidence.map((item) => (
+                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="workload-capacity" className="detail-section">
+            <h2>Capacity is a workload question, not a number</h2>
+            <p>
+              Fraud-eligible events take a longer path: extra customer, order and payment context
+              reads, fraud evaluation and fraud persistence. Non-eligible events skip that portion
+              while still paying validation, idempotency, business and Kafka costs. The processor
+              therefore has no single workload-independent throughput ceiling.
+            </p>
+            <div className="commerce-evidence-table" role="region" aria-label="Observed capacity by fraud-eligible event share" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Fraud-eligible event share</th>
+                    <th scope="col">Highest near-line-rate observation</th>
+                    <th scope="col">Transition / degraded candidate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {commerceWorkloadCapacity.map((row) => (
+                    <tr key={row.share}>
+                      <th scope="row">{row.share}</th>
+                      <td>{row.nearLineRate}</td>
+                      <td>{row.transition}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="commerce-inline-note">
+              Fraud-eligible share is not the fraud detection rate: an eligible event can still be
+              approved, and the 0% row means the workload contained no eligible events rather than
+              fraud processing being disabled. Rows were collected in separate benchmark state
+              regimes and several transition bands remain broad, so this is a sensitivity study
+              rather than an authoritative capacity curve.
+            </p>
           </section>
 
           <section id="failure" className="detail-section">
@@ -216,64 +274,6 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
                 </figure>
               ))}
             </div>
-          </section>
-
-          <section id="evidence" className="detail-section">
-            <h2>Measured evidence</h2>
-            <p>
-              The numbers below come from different paths and experiments. They are kept separate
-              so a local isolated capacity result is not mistaken for Demo Control throughput or
-              a production SLA.
-            </p>
-            <div className="commerce-evidence-table" role="region" aria-label="Selected commerce platform evidence" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr><th scope="col">Evidence slice</th><th scope="col">Current result</th><th scope="col">What it means</th></tr>
-                </thead>
-                <tbody>
-                  {commerceEvidence.map((item) => (
-                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section id="workload-capacity" className="detail-section">
-            <h2>Capacity is a workload question, not a number</h2>
-            <p>
-              Fraud-eligible events take a longer path: extra customer, order and payment context
-              reads, fraud evaluation and fraud persistence. Non-eligible events skip that portion
-              while still paying validation, idempotency, business and Kafka costs. The processor
-              therefore has no single workload-independent throughput ceiling.
-            </p>
-            <div className="commerce-evidence-table" role="region" aria-label="Observed capacity by fraud-eligible event share" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Fraud-eligible event share</th>
-                    <th scope="col">Highest near-line-rate observation</th>
-                    <th scope="col">Transition / degraded candidate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {commerceWorkloadCapacity.map((row) => (
-                    <tr key={row.share}>
-                      <th scope="row">{row.share}</th>
-                      <td>{row.nearLineRate}</td>
-                      <td>{row.transition}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="commerce-inline-note">
-              Fraud-eligible share is not the fraud detection rate: an eligible event can still be
-              approved, and the 0% row means the workload contained no eligible events rather than
-              fraud processing being disabled. Rows were collected in separate benchmark state
-              regimes and several transition bands remain broad, so this is a sensitivity study
-              rather than an authoritative capacity curve.
-            </p>
           </section>
 
           <section id="observability" className="detail-section">
