@@ -521,6 +521,14 @@ const projectRecords = [
     category: "Distributed Systems / Streaming",
     status: "current",
     flagship: true,
+    showCardProof: true,
+    cardProof: {
+      label: "Sustainable isolated capacity",
+      value: "Workload-dependent",
+      scope: "~1,050 evt/s at 42.8% fraud-eligible · ~1,600 at 0%",
+      qualifier:
+        "The processor has no single workload-independent ceiling, because fraud-eligible events take a longer path. The ~750 to ~1,050 evt/s (+40%) optimisation was measured on the 42.8% workload. Local isolated benchmark, not production capacity.",
+    },
     summary:
       "Production-oriented event-driven commerce platform where Kafka may redeliver, but layered idempotency, transactional persistence and bounded failure handling protect durable business effects.",
     directAnswer:

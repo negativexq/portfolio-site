@@ -188,6 +188,14 @@ export const commerceEvidence = [
   },
 ] as const;
 
+export const commerceWorkloadCapacity = [
+  { share: "~42.8% (historical baseline)", nearLineRate: "1,075 evt/s", transition: "1,100 evt/s" },
+  { share: "~20%", nearLineRate: "1,200 evt/s", transition: "1,300 evt/s" },
+  { share: "~10%", nearLineRate: "1,400 evt/s", transition: "1,500–1,600 evt/s" },
+  { share: "~5%", nearLineRate: "Near line rate through 1,500–1,600 evt/s", transition: "Boundary not fully resolved" },
+  { share: "0%", nearLineRate: "1,600 evt/s", transition: "1,700 evt/s" },
+] as const;
+
 export const commerceStackGroups = [
   ["Backend", "Python 3.12 + FastAPI + Pydantic v2 + psycopg 3"],
   ["Messaging", "Apache Kafka 3.9 KRaft + confluent-kafka"],

@@ -9,6 +9,7 @@ import {
   commerceDeliveryRows,
   commerceEngineeringDecisions,
   commerceEvidence,
+  commerceWorkloadCapacity,
   commerceFailureWorkflow,
   commerceRelatedWriting,
   commerceStackGroups,
@@ -31,6 +32,7 @@ const sections = [
   ["decisions", "Reliability patterns"],
   ["proof", "Repository proof"],
   ["evidence", "Evidence"],
+  ["workload-capacity", "Workload capacity"],
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
@@ -235,6 +237,43 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
                 </tbody>
               </table>
             </div>
+          </section>
+
+          <section id="workload-capacity" className="detail-section">
+            <h2>Capacity is a workload question, not a number</h2>
+            <p>
+              Fraud-eligible events take a longer path: extra customer, order and payment context
+              reads, fraud evaluation and fraud persistence. Non-eligible events skip that portion
+              while still paying validation, idempotency, business and Kafka costs. The processor
+              therefore has no single workload-independent throughput ceiling.
+            </p>
+            <div className="commerce-evidence-table" role="region" aria-label="Observed capacity by fraud-eligible event share" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Fraud-eligible event share</th>
+                    <th scope="col">Highest near-line-rate observation</th>
+                    <th scope="col">Transition / degraded candidate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {commerceWorkloadCapacity.map((row) => (
+                    <tr key={row.share}>
+                      <th scope="row">{row.share}</th>
+                      <td>{row.nearLineRate}</td>
+                      <td>{row.transition}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="commerce-inline-note">
+              Fraud-eligible share is not the fraud detection rate: an eligible event can still be
+              approved, and the 0% row means the workload contained no eligible events rather than
+              fraud processing being disabled. Rows were collected in separate benchmark state
+              regimes and several transition bands remain broad, so this is a sensitivity study
+              rather than an authoritative capacity curve.
+            </p>
           </section>
 
           <section id="observability" className="detail-section">
