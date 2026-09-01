@@ -79,6 +79,7 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "domain:agent-infrastructure": "Agent Systems",
   "project:real-time-commerce-platform": "Real-Time Commerce",
   "evidence:project:real-time-commerce-platform:750-1-050-evt-s-40": "750 → 1,050 evt/s",
+  "evidence:project:real-time-commerce-platform:1-075-1-600-evt-s-observed": "Workload-Sensitive",
   "project:production-rag-platform": "Production RAG",
   "evidence:project:knowledge-base-rag:70-useful-2-incorrect": "70% Useful",
   "evidence:project:knowledge-base-rag:28-18-self-10-forced": "28% Abstained",

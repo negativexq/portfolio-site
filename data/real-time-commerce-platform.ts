@@ -110,7 +110,12 @@ export const commerceEngineeringDecisions = [
   {
     title: "Performance follows evidence, not a headline",
     description:
-      "The project separates Demo full-path throughput from the isolated processor benchmark. Offset-commit batching moved the isolated boundary from about 750 to 900 events/s; query-plan-aware indexes and a fresh sweep established about 1,050 events/s as the highest clearly sustainable point.",
+      "The project separates Demo full-path throughput from the isolated processor benchmark. Offset-commit batching moved the isolated boundary from about 750 to 900 events/s; query-plan-aware indexes and a fresh sweep established about 1,050 events/s as the highest clearly sustainable point for that workload.",
+  },
+  {
+    title: "Capacity is a workload question, not a number",
+    description:
+      "Fraud-eligible events take a longer path: extra customer, order and payment context reads, fraud evaluation and fraud persistence. Measuring across compositions showed the observed ceiling moving from about 1,075 to about 1,600 events/s as that share falls to zero, so quoting one throughput figure without its workload is incomplete. Fraud-eligible share is not the fraud detection rate, and a 0% workload contains no eligible events rather than disabling fraud processing.",
   },
 ] as const;
 
@@ -155,7 +160,13 @@ export const commerceEvidence = [
     area: "Isolated sustainable capacity",
     result: "~750 → ~1,050 evt/s (+40%)",
     detail:
-      "Three workers and three Kafka partitions on the isolated Kafka → processor → persistence path. ~1,050 evt/s stayed bounded and correct across all retained repeats; ~1,075 evt/s was the first repeatably degraded rate.",
+      "Three workers and three Kafka partitions on the isolated Kafka → processor → persistence path, under a workload of about 42.8% fraud-eligible events. ~1,075 evt/s was the highest near-line-rate observation for that workload and ~1,100 evt/s the transition candidate.",
+  },
+  {
+    area: "Workload-sensitive ceiling",
+    result: "1,075 → 1,600 evt/s observed",
+    detail:
+      "There is no single workload-independent ceiling. As the fraud-eligible share falls from about 42.8% to 0%, the highest near-line-rate observation rises from 1,075 to about 1,600 evt/s. Rows come from separate benchmark state regimes, so this is a sensitivity study rather than an authoritative capacity curve.",
   },
   {
     area: "Offset-commit optimization",

@@ -594,7 +594,14 @@ const projectRecords = [
         value: "750 → 1,050 evt/s (+40%)",
         scope: "Isolated local benchmark · Kafka → processor → persistence",
         qualifier:
-          "Three processor workers matched to three Kafka partitions (750–775 evt/s was the original non-sustainable transition). Bounded per-partition offset-commit batching moved the sustainable boundary to ~900 evt/s; query-plan-driven PostgreSQL indexing plus a fresh capacity sweep moved it to ~1,050 evt/s, with ~1,075 evt/s the first repeatably degraded rate. Not production capacity or Demo Control throughput.",
+          "Three processor workers matched to three Kafka partitions (750–775 evt/s was the original non-sustainable transition). Bounded per-partition offset-commit batching moved the sustainable boundary to ~900 evt/s; query-plan-driven PostgreSQL indexing plus a fresh capacity sweep moved it to ~1,050 evt/s. That figure belongs to a workload of about 42.8% fraud-eligible events, where ~1,075 evt/s was the highest near-line-rate observation and ~1,100 evt/s the transition candidate. Not production capacity or Demo Control throughput.",
+      },
+      {
+        label: "Workload-sensitive ceiling",
+        value: "1,075 → 1,600 evt/s observed",
+        scope: "Fraud-eligible share 42.8% → 0%",
+        qualifier:
+          "The processor has no single workload-independent throughput ceiling: fraud-eligible events take a longer path through extra context reads, fraud evaluation and fraud persistence. As their share falls, the highest near-line-rate observation rises from ~1,075 to ~1,600 evt/s. Fraud-eligible share is not the fraud detection rate, and the 0% workload contains no eligible events rather than disabling fraud processing. Rows were collected in separate benchmark state regimes, so this is a sensitivity study, not an authoritative capacity curve.",
       },
       {
         label: "Recent-payment lookup",
