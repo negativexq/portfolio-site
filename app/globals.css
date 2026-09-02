@@ -3867,6 +3867,7 @@ a {
 
 .platform-detail-panel {
   position: relative;
+  scroll-margin-top: 6rem;
   padding: 1.35rem;
 }
 

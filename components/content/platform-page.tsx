@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type Ref } from "react";
 import { MotionController } from "@/components/motion/motion-controller";
 import {
   platformArchitectureLayers,
@@ -138,17 +138,36 @@ function ModelPoolNode({
   );
 }
 
+function scrollDetailIntoViewIfNeeded(panel: HTMLElement | null) {
+  if (!panel) return;
+
+  const rect = panel.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  const panelIsBelowComfortableThreshold = rect.top > viewportHeight * 0.78;
+  const panelIsFullyAboveViewport = rect.bottom <= 0;
+
+  if (!panelIsBelowComfortableThreshold && !panelIsFullyAboveViewport) return;
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  panel.scrollIntoView({
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+    block: "start",
+  });
+}
+
 function PlatformDetailPanel({
   node,
   onClose,
+  panelRef,
 }: {
   node: PlatformNode | null;
   onClose: () => void;
+  panelRef: Ref<HTMLElement>;
 }) {
   if (!node) return null;
 
   return (
-    <aside className="platform-detail-panel" id="platform-node-detail" aria-live="polite">
+    <aside ref={panelRef} className="platform-detail-panel" id="platform-node-detail" aria-live="polite">
       <button className="platform-detail-close" type="button" onClick={onClose} aria-label="Close node details">
         <X aria-hidden="true" size={17} />
       </button>
@@ -250,7 +269,13 @@ function PlatformDetailPanel({
 export function PlatformPage() {
   const defaultNodeId = "knowledge";
   const [selectedId, setSelectedId] = useState<string | null>(defaultNodeId);
+  const detailPanelRef = useRef<HTMLElement | null>(null);
   const selectedNode = platformNodes.find((node) => node.id === selectedId) ?? null;
+
+  const selectNode = (id: string) => {
+    setSelectedId(id);
+    window.requestAnimationFrame(() => scrollDetailIntoViewIfNeeded(detailPanelRef.current));
+  };
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -313,15 +338,15 @@ export function PlatformPage() {
                   <div className="platform-graph-lane" key={node.id}>
                     <span className="platform-lane-label">{node.stage}</span>
                     <p>{node.stage === "KNOW" ? "What does the organization know?" : node.stage === "ACT" ? "What should the system do?" : "What does the structured data tell us?"}</p>
-                    <ArchitectureNode node={node} selected={selectedId === node.id} onSelect={setSelectedId} />
+                    <ArchitectureNode node={node} selected={selectedId === node.id} onSelect={selectNode} />
                   </div>
                 ))}
                 <div className="platform-graph-runtime">
                   <span className="platform-lane-label">SHARED MODEL RUNTIME</span>
-                  <ArchitectureNode node={platformNodes.find((node) => node.id === "adaptive-router")!} selected={selectedId === "adaptive-router"} onSelect={setSelectedId} />
+                  <ArchitectureNode node={platformNodes.find((node) => node.id === "adaptive-router")!} selected={selectedId === "adaptive-router"} onSelect={selectNode} />
                 </div>
                 <div className="platform-graph-model-pool">
-                  <ModelPoolNode node={platformNodes.find((node) => node.id === "model-pool")!} selected={selectedId === "model-pool"} onSelect={setSelectedId} />
+                  <ModelPoolNode node={platformNodes.find((node) => node.id === "model-pool")!} selected={selectedId === "model-pool"} onSelect={selectNode} />
                 </div>
                 <div className="platform-graph-lifecycle">
                   <div className="platform-graph-lifecycle-heading">
@@ -329,8 +354,8 @@ export function PlatformPage() {
                     <span className="platform-lifecycle-relation-label">promotion / rollback</span>
                   </div>
                   <div className="platform-graph-lifecycle-nodes">
-                    <ArchitectureNode node={platformNodes.find((node) => node.id === "modelops")!} selected={selectedId === "modelops"} onSelect={setSelectedId} />
-                    <ArchitectureNode node={platformNodes.find((node) => node.id === "fineforge")!} selected={selectedId === "fineforge"} onSelect={setSelectedId} />
+                    <ArchitectureNode node={platformNodes.find((node) => node.id === "modelops")!} selected={selectedId === "modelops"} onSelect={selectNode} />
+                    <ArchitectureNode node={platformNodes.find((node) => node.id === "fineforge")!} selected={selectedId === "fineforge"} onSelect={selectNode} />
                   </div>
                 </div>
               </div>
@@ -340,7 +365,7 @@ export function PlatformPage() {
                 <span><i className="platform-line-sample is-dashed" /> target integration</span>
               </div>
             </div>
-            <PlatformDetailPanel node={selectedNode} onClose={() => setSelectedId(null)} />
+            <PlatformDetailPanel node={selectedNode} onClose={() => setSelectedId(null)} panelRef={detailPanelRef} />
           </div>
 
           <details className="platform-full-architecture">
