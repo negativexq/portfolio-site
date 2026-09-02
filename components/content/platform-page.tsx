@@ -123,6 +123,7 @@ function PlatformDetailPanel({
       <button className="platform-detail-close" type="button" onClick={onClose} aria-label="Close node details">
         <X aria-hidden="true" size={17} />
       </button>
+      <div className="platform-detail-body">
       <div className="platform-detail-heading">
         <PlatformStatusLabel status={node.status} />
         <span>{node.role}</span>
@@ -183,6 +184,7 @@ function PlatformDetailPanel({
           {node.links.map((link) => <ExternalLink key={link.href} {...link} />)}
         </nav>
       ) : null}
+      </div>
     </aside>
   );
 }

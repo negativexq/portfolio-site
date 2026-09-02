@@ -3443,9 +3443,14 @@ a {
 
 .platform-architecture-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(19rem, 23rem);
+  /* The detail panel sits below the board rather than beside it. Sharing a
+     grid row meant a tall panel stretched the board, and the board carries an
+     absolutely positioned SVG with preserveAspectRatio="none", so any height
+     it did not ask for pulled every connector away from its nodes. Stacking
+     makes that impossible instead of merely corrected, and the panel gets the
+     full width, so the same detail reads in roughly a third of the height. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
-  align-items: stretch;
 }
 
 .platform-graph-board,
@@ -3457,7 +3462,14 @@ a {
 
 .platform-graph-board {
   position: relative;
+  /* The connector overlay is a fixed viewBox with preserveAspectRatio="none"
+     while the nodes are placed by CSS grid, so the two only line up at the
+     width the path coordinates were tuned against. Holding that width keeps
+     them aligned; the detail panel below is free to use the full column. */
+  width: 100%;
+  max-width: 47rem;
   min-height: 35rem;
+  margin-inline: auto;
   overflow: hidden;
   padding: 1.2rem;
 }
@@ -3753,6 +3765,18 @@ a {
 .platform-detail-panel {
   position: relative;
   padding: 1.35rem;
+}
+
+.platform-detail-panel .platform-detail-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-4) var(--space-6);
+  align-items: start;
+}
+
+.platform-detail-panel .platform-detail-heading,
+.platform-detail-panel .platform-detail-purpose {
+  grid-column: 1 / -1;
 }
 
 .platform-detail-empty {
