@@ -9,6 +9,7 @@ import { profile } from "@/data/profile";
 
 const navigation = [
   { href: "/projects", label: "Projects" },
+  { href: "/platform", label: "Platform" },
   { href: "/experience", label: "Experience" },
   { href: "/graph", label: "Graph" },
   { href: "/learning", label: "Learning" },

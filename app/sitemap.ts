@@ -10,6 +10,7 @@ const BASE_URL = "https://omerfkoc.dev";
 const routeLastModified = {
   home: "2026-08-13",
   projects: "2026-08-13",
+  platform: "2026-09-03",
   experience: "2026-08-09",
   graph: "2026-08-13",
   learning: "2026-08-13",
@@ -22,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: routeLastModified.home, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/projects`, lastModified: routeLastModified.projects, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/platform`, lastModified: routeLastModified.platform, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/experience`, lastModified: routeLastModified.experience, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/graph`, lastModified: routeLastModified.graph, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/learning`, lastModified: routeLastModified.learning, changeFrequency: "monthly", priority: 0.6 },
