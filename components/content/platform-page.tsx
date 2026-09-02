@@ -145,15 +145,7 @@ function PlatformDetailPanel({
   node: PlatformNode | null;
   onClose: () => void;
 }) {
-  if (!node) {
-    return (
-      <aside className="platform-detail-panel platform-detail-empty" id="platform-node-detail" aria-live="polite">
-        <p className="platform-proof-label">Interactive architecture</p>
-        <h3>Select a node to inspect it.</h3>
-        <p>Use click, tap, or keyboard focus to see the decision, evidence boundary, and intended platform role.</p>
-      </aside>
-    );
-  }
+  if (!node) return null;
 
   return (
     <aside className="platform-detail-panel" id="platform-node-detail" aria-live="polite">
@@ -224,7 +216,7 @@ function PlatformDetailPanel({
 
       {node.evidence.length > 0 ? (
         <div className="platform-detail-group platform-detail-evidence">
-          <p className="platform-proof-label">Evidence</p>
+          <p className="platform-proof-label">Current evidence</p>
           <ul>
             {node.evidence.map((item) => <li key={item}>{item}</li>)}
           </ul>
@@ -256,7 +248,8 @@ function PlatformDetailPanel({
 }
 
 export function PlatformPage() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const defaultNodeId = "knowledge";
+  const [selectedId, setSelectedId] = useState<string | null>(defaultNodeId);
   const selectedNode = platformNodes.find((node) => node.id === selectedId) ?? null;
 
   useEffect(() => {

@@ -3250,7 +3250,7 @@ a {
 
 .platform-status-key span:last-child {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   line-height: 1.45;
 }
 
@@ -3381,7 +3381,7 @@ a {
   align-items: start;
   gap: 0.45rem;
   color: var(--foreground);
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 650;
   line-height: 1.45;
 }
@@ -3423,7 +3423,7 @@ a {
   align-items: center;
   gap: 0.3rem;
   color: var(--text);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   transition: color var(--motion-fast) ease;
 }
@@ -3532,7 +3532,7 @@ a {
   min-height: 2.5rem;
   margin: 0.45rem 0 0.75rem;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   line-height: 1.45;
 }
 
@@ -3581,7 +3581,7 @@ a {
 
 .platform-architecture-node > span:last-child {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   line-height: 1.4;
 }
 
@@ -3671,6 +3671,7 @@ a {
 .platform-model-state-future { color: var(--muted); }
 
 .platform-graph-lifecycle {
+  position: relative;
   display: grid;
   grid-column: 1 / -1;
   grid-row: 4;
@@ -3685,8 +3686,15 @@ a {
 }
 
 .platform-lifecycle-relation-label {
+  position: absolute;
+  top: -1.55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 0.35rem;
+  background: var(--surface);
   color: var(--status-planned);
-  font: 500 0.58rem/1.3 var(--mono);
+  font: 500 0.62rem/1.3 var(--mono);
+  white-space: nowrap;
 }
 
 .platform-graph-lifecycle-nodes {
@@ -3837,7 +3845,7 @@ a {
   border-top: 1px solid var(--border);
   padding-top: 0.75rem;
   color: var(--muted);
-  font: 500 0.68rem/1.4 var(--mono);
+  font: 500 0.72rem/1.4 var(--mono);
 }
 
 .platform-graph-legend span {
@@ -3874,24 +3882,11 @@ a {
   grid-column: 1 / -1;
 }
 
-/* Compact hint, not a placeholder the size of the diagram. The 35rem floor
-   existed to match the board's height when the panel sat beside it; stacked
-   below, it was 560px of empty box under the graph. */
-.platform-detail-empty {
+.platform-detail-heading {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 0.9rem;
-  min-height: 0;
-  padding: 0.9rem 1.35rem;
-}
-
-.platform-detail-empty h3 {
-  margin: 0;
-  color: var(--foreground);
-  font-size: 0.92rem;
-  font-weight: 620;
-  letter-spacing: -0.01em;
+  align-items: center;
+  gap: 0.65rem;
+  padding-right: 3rem;
 }
 
 .platform-detail-close {
@@ -3908,21 +3903,15 @@ a {
   color: var(--muted);
 }
 
-.platform-detail-close:hover {
+.platform-detail-close:hover,
+.platform-detail-close:focus-visible {
   border-color: var(--border-strong);
   color: var(--foreground);
 }
 
-.platform-detail-heading {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding-right: 3rem;
-}
-
 .platform-detail-heading > span {
   color: var(--muted);
-  font: 500 0.68rem/1.35 var(--mono);
+  font: 500 0.72rem/1.35 var(--mono);
 }
 
 .platform-detail-panel h3 {
@@ -3934,12 +3923,11 @@ a {
 }
 
 .platform-detail-purpose,
-.platform-detail-group > p:not(.platform-proof-label),
-.platform-detail-empty > p:not(.platform-proof-label) {
+.platform-detail-group > p:not(.platform-proof-label) {
   flex: 1 1 18rem;
   margin: 0;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   line-height: 1.6;
 }
 
@@ -3990,7 +3978,7 @@ a {
 
 .platform-detail-flow li strong {
   color: var(--text);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 650;
 }
 
@@ -4004,7 +3992,7 @@ a {
 
 .platform-detail-evidence li {
   color: var(--foreground);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 650;
   line-height: 1.45;
 }
@@ -4040,7 +4028,7 @@ a {
 
 .platform-detail-distinction span {
   color: var(--text);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   line-height: 1.5;
 }
 
@@ -4264,7 +4252,7 @@ a {
 .platform-roadmap-list p {
   grid-column: 2;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
 }
 
 .platform-context-block {
@@ -4448,8 +4436,7 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .platform-detail-panel,
-  .platform-detail-empty {
+  .platform-detail-panel {
     min-height: 0;
   }
 }
