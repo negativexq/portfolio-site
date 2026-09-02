@@ -5,6 +5,7 @@ import { ArrowDown, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MotionController } from "@/components/motion/motion-controller";
 import {
+  platformArchitectureLayers,
   platformNodes,
   platformStatusDefinitions,
   type PlatformNode,
@@ -290,6 +291,43 @@ export function PlatformPage() {
             </div>
             <PlatformDetailPanel node={selectedNode} onClose={() => setSelectedId(null)} />
           </div>
+
+          <details className="platform-full-architecture">
+            <summary>
+              <span>Expand full architecture</span>
+              <span className="platform-full-hint">the target system, with what is built marked</span>
+            </summary>
+            <div className="platform-full-body">
+              <p className="platform-full-intro">
+                The graph above shows what exists and how it connects today. This is the architecture
+                those systems are being built toward. Every box carries its own status, because
+                without that the target reads as though it were already finished.
+              </p>
+              {platformArchitectureLayers.map((layer) => (
+                <section className="platform-full-layer" key={layer.id}>
+                  <header>
+                    <h3>{layer.band}</h3>
+                    {layer.note ? <p>{layer.note}</p> : null}
+                  </header>
+                  <div className="platform-full-columns">
+                    {layer.columns.map((column) => (
+                      <article className="platform-full-column" key={column.label}>
+                        <div className="platform-full-column-head">
+                          <h4>{column.label}</h4>
+                          {column.status ? (
+                            <span className={`platform-status platform-status-${column.status.toLowerCase()}`}>
+                              {column.status}
+                            </span>
+                          ) : null}
+                        </div>
+                        <ul>{column.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </details>
         </div>
       </section>
 

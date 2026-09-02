@@ -166,3 +166,86 @@ export const platformStatusDefinitions = [
   ["EVOLVING", "A working subsystem exists; its role or abstraction is being generalized."],
   ["NEXT", "Not implemented yet."],
 ] as const;
+
+export type PlatformLayerItem = {
+  label: string;
+  status?: PlatformStatus;
+  items: readonly string[];
+};
+
+export type PlatformLayer = {
+  id: string;
+  band: string;
+  note?: string;
+  columns: readonly PlatformLayerItem[];
+};
+
+/**
+ * The full target architecture, shown only when the reader expands it.
+ *
+ * The simplified graph above answers "what exists and how does it connect".
+ * This answers "what is the whole system meant to become", which is a
+ * different question and a much denser one. Status markers travel with every
+ * box on purpose: without them the target reads as though it were built.
+ */
+export const platformArchitectureLayers = [
+  {
+    id: "entry",
+    band: "Request entry",
+    columns: [
+      { label: "Platform Gateway", items: ["identity · tenant", "request context", "authn / authz context"] },
+      { label: "Capability Router", status: "NEXT", items: ["which capability handles this request"] },
+    ],
+  },
+  {
+    id: "planes",
+    band: "Capability planes",
+    note: "Each plane proposes; the deterministic controls inside it decide.",
+    columns: [
+      { label: "Knowledge plane", status: "PROVEN", items: ["retrieval + reranking", "evidence construction", "citation validation", "fail-closed abstention"] },
+      { label: "Data plane", status: "BUILDING", items: ["schema retrieval", "SQL generation", "AST validation", "table / column ACL", "read-only execution"] },
+      { label: "Action plane", status: "PROVEN", items: ["target resolution", "policy", "confirmation", "revalidation", "idempotent execution"] },
+    ],
+  },
+  {
+    id: "runtime",
+    band: "Shared model runtime",
+    note: "Model choice never changes permissions.",
+    columns: [
+      { label: "Adaptive Model Router", status: "EVOLVING", items: ["task · capability · complexity aware", "quality · latency · cost aware", "privacy and local-only aware", "health · fallback · escalation"] },
+      { label: "Model tiers", status: "NEXT", items: ["specialist SLM", "general reasoning LLM", "vision and multimodal"] },
+      { label: "Inference providers", items: ["local open models", "OpenAI-compatible APIs"] },
+    ],
+  },
+  {
+    id: "lifecycle",
+    band: "Model lifecycle",
+    note: "A candidate reaches the router only through an evaluation it passed.",
+    columns: [
+      { label: "FineForge", status: "NEXT", items: ["QLoRA / PEFT", "dataset preparation", "resource profiling"] },
+      { label: "Offline evaluation", status: "NEXT", items: ["base vs fine-tuned", "quality · latency · VRAM", "generalization"] },
+      { label: "ModelOps Control Plane", status: "PROVEN", items: ["canary 10 → 25 → 50 → 100", "quality and reliability gates", "delayed ground truth", "promotion · rollback · reconciliation"] },
+      { label: "Model registry", status: "NEXT", items: ["versions and lineage", "feeds the router"] },
+    ],
+  },
+  {
+    id: "governance",
+    band: "Cross-cutting governance",
+    note: "Shared contracts and central governance over independent services, not one monolith.",
+    columns: [
+      { label: "Enterprise Context", status: "NEXT", items: ["one entity across planes", "data · knowledge · metrics · actions", "role / tenant / scope"] },
+      { label: "Capability Gateway", status: "NEXT", items: ["typed capabilities", "REST / OpenAPI · MCP", "databases · knowledge · business systems"] },
+      { label: "Unified Registry", status: "NEXT", items: ["models · agents · knowledge bases", "entities · tools · policies", "eval suites · deployments"] },
+      { label: "Control Plane", status: "NEXT", items: ["identity · policy · lifecycle", "evaluation · deployment state", "observability · audit · cost"] },
+    ],
+  },
+  {
+    id: "observability",
+    band: "One trace across every plane",
+    columns: [
+      { label: "knowledge.rag", items: ["retrieve", "rerank", "evidence.build", "model.route", "validate"] },
+      { label: "decision.sql", items: ["schema.retrieve", "sql.generate", "sql.parse", "policy.evaluate", "query.execute"] },
+      { label: "agent.runtime", items: ["proposal", "target.resolve", "policy.evaluate", "confirmation", "tool.execute"] },
+    ],
+  },
+] satisfies readonly PlatformLayer[];

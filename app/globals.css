@@ -3118,7 +3118,7 @@ a {
 .platform-principle-index {
   margin: 0;
   color: var(--muted);
-  font: 650 0.65rem/1.35 var(--mono);
+  font: 650 0.68rem/1.35 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -3178,7 +3178,7 @@ a {
 .platform-hero-index span {
   grid-row: 1 / span 2;
   color: var(--accent);
-  font: 600 0.65rem/1.3 var(--mono);
+  font: 600 0.68rem/1.3 var(--mono);
 }
 
 .platform-hero-index strong {
@@ -3260,7 +3260,7 @@ a {
   align-items: center;
   border: 1px solid var(--border);
   padding: 0.3rem 0.42rem;
-  font: 750 0.57rem/1 var(--mono);
+  font: 750 0.68rem/1 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -3322,7 +3322,7 @@ a {
 
 .platform-card-stage {
   color: var(--accent);
-  font-size: 0.57rem;
+  font-size: 0.68rem;
   line-height: 1.45;
 }
 
@@ -3359,7 +3359,7 @@ a {
 
 .platform-proof-label {
   color: var(--muted);
-  font-size: 0.57rem;
+  font-size: 0.68rem;
 }
 
 .platform-proof-evidence,
@@ -3403,7 +3403,7 @@ a {
   border: 1px solid var(--border);
   padding: 0.27rem 0.38rem;
   color: var(--tag-text);
-  font: 500 0.59rem/1.3 var(--mono);
+  font: 500 0.78rem/1.3 var(--mono);
 }
 
 .platform-proof-links,
@@ -3515,7 +3515,7 @@ a {
 
 .platform-lane-label {
   color: var(--accent);
-  font-size: 0.59rem;
+  font-size: 0.68rem;
 }
 
 .platform-graph-lane > p {
@@ -3588,6 +3588,138 @@ a {
   gap: 1rem;
 }
 
+/* Progressive disclosure for the platform architecture: the graph answers
+   what exists, this answers what it is being built toward. Kept closed by
+   default so the page does not open with a wall of boxes. */
+.platform-full-architecture {
+  margin-top: var(--space-7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.platform-full-architecture > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  cursor: pointer;
+  color: var(--foreground);
+  font: 650 0.82rem/1.3 var(--mono);
+  letter-spacing: 0.04em;
+  list-style: none;
+}
+
+.platform-full-architecture > summary::-webkit-details-marker {
+  display: none;
+}
+
+.platform-full-architecture > summary::before {
+  content: "+";
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.platform-full-architecture[open] > summary::before {
+  content: "\2212";
+}
+
+.platform-full-architecture > summary:hover,
+.platform-full-architecture > summary:focus-visible {
+  color: var(--accent);
+}
+
+.platform-full-hint {
+  color: var(--subtle);
+  font: 500 0.72rem/1.3 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.platform-full-body {
+  display: grid;
+  gap: var(--space-6);
+  border-top: 1px solid var(--border);
+  padding: var(--space-6) var(--space-5) var(--space-7);
+}
+
+.platform-full-intro {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.platform-full-layer {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.platform-full-layer > header h3 {
+  margin: 0;
+  color: var(--foreground);
+  font: 650 0.72rem/1.3 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.platform-full-layer > header p {
+  margin: var(--space-2) 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.platform-full-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-4);
+}
+
+.platform-full-column {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: var(--space-4);
+  background: var(--background);
+}
+
+.platform-full-column-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.platform-full-column-head h4 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.86rem;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+.platform-full-column ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.platform-full-column li {
+  color: var(--muted);
+  font: 500 0.78rem/1.45 var(--mono);
+}
+
+@media (max-width: 640px) {
+  .platform-full-body {
+    padding: var(--space-5) var(--space-4) var(--space-6);
+  }
+}
+
 .platform-graph-legend {
   position: relative;
   z-index: 1;
@@ -3598,7 +3730,7 @@ a {
   border-top: 1px solid var(--border);
   padding-top: 0.75rem;
   color: var(--muted);
-  font: 500 0.59rem/1.4 var(--mono);
+  font: 500 0.68rem/1.4 var(--mono);
 }
 
 .platform-graph-legend span {
@@ -3657,7 +3789,7 @@ a {
 
 .platform-detail-heading > span {
   color: var(--muted);
-  font: 500 0.61rem/1.35 var(--mono);
+  font: 500 0.68rem/1.35 var(--mono);
 }
 
 .platform-detail-panel h3 {
@@ -3718,7 +3850,7 @@ a {
 
 .platform-detail-flow li span {
   color: var(--accent);
-  font: 500 0.58rem/1.2 var(--mono);
+  font: 500 0.78rem/1.2 var(--mono);
 }
 
 .platform-detail-flow li strong {
@@ -3784,7 +3916,7 @@ a {
 
 .platform-lifecycle-step > span {
   color: var(--accent);
-  font: 600 0.58rem/1.2 var(--mono);
+  font: 600 0.68rem/1.2 var(--mono);
 }
 
 .platform-lifecycle-step strong {
@@ -3877,7 +4009,7 @@ a {
 
 .platform-authority-list strong {
   color: var(--accent);
-  font: 650 0.61rem/1.4 var(--mono);
+  font: 650 0.8rem/1.4 var(--mono);
   text-transform: uppercase;
 }
 
@@ -3930,7 +4062,7 @@ a {
   padding-top: 0.1rem;
   background: var(--background);
   color: var(--accent);
-  font: 600 0.6rem/1.4 var(--mono);
+  font: 600 0.8rem/1.4 var(--mono);
 }
 
 .platform-roadmap-line i {
@@ -4013,7 +4145,7 @@ a {
 
 .platform-order-code code {
   color: var(--text);
-  font: 500 0.62rem/1.5 var(--mono);
+  font: 500 0.68rem/1.5 var(--mono);
   overflow-wrap: anywhere;
 }
 
@@ -4027,7 +4159,7 @@ a {
 
 .platform-entity-map span {
   color: var(--muted);
-  font: 500 0.57rem/1.25 var(--mono);
+  font: 500 0.68rem/1.25 var(--mono);
 }
 
 .platform-entity-map i {
@@ -4066,7 +4198,7 @@ a {
 .platform-future-planes p {
   margin: 0.55rem 0 0;
   color: var(--muted);
-  font: 500 0.63rem/1.6 var(--mono);
+  font: 500 0.8rem/1.6 var(--mono);
 }
 
 .platform-architecture-intention {
