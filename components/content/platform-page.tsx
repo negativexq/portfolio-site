@@ -238,11 +238,14 @@ export function PlatformPage() {
           <div className="platform-architecture-workspace">
             <div className="platform-graph-board">
               <svg className="platform-graph-connectors" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
-                <path className="is-solid" d="M166 154 V220 H500 V284" />
-                <path className="is-dashed" d="M500 154 V284" />
-                <path className="is-solid" d="M834 154 V220 H500 V284" />
-                <path className="is-dashed" d="M500 350 V430" />
-                <path className="is-solid" d="M500 492 H820" />
+                {/* Endpoints are in viewBox units matching the grid: lane nodes span
+                    y 86-196, the router 275-382, the lifecycle row 436-546. Column
+                    centres are 162 / 500 / 838 above and 246 / 754 below. */}
+                <path className="is-solid" d="M162 196 V236 H500 V275" />
+                <path className="is-dashed" d="M500 196 V275" />
+                <path className="is-solid" d="M838 196 V236 H500 V275" />
+                <path className="is-dashed" d="M500 382 V409 H246 V436" />
+                <path className="is-solid" d="M500 382 V409 H754 V436" />
               </svg>
 
               <div className="platform-graph-grid">

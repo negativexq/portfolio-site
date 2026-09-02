@@ -3467,9 +3467,7 @@ a {
      width the path coordinates were tuned against. Holding that width keeps
      them aligned; the detail panel below is free to use the full column. */
   width: 100%;
-  max-width: 47rem;
-  min-height: 35rem;
-  margin-inline: auto;
+  min-height: 38rem;
   overflow: hidden;
   padding: 1.2rem;
 }
@@ -3779,10 +3777,24 @@ a {
   grid-column: 1 / -1;
 }
 
+/* Compact hint, not a placeholder the size of the diagram. The 35rem floor
+   existed to match the board's height when the panel sat beside it; stacked
+   below, it was 560px of empty box under the graph. */
 .platform-detail-empty {
-  display: grid;
-  align-content: center;
-  min-height: 35rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+  min-height: 0;
+  padding: 0.9rem 1.35rem;
+}
+
+.platform-detail-empty h3 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.92rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
 }
 
 .platform-detail-close {
@@ -3827,9 +3839,11 @@ a {
 .platform-detail-purpose,
 .platform-detail-group > p:not(.platform-proof-label),
 .platform-detail-empty > p:not(.platform-proof-label) {
+  flex: 1 1 18rem;
+  margin: 0;
   color: var(--muted);
-  font-size: 0.76rem;
-  line-height: 1.65;
+  font-size: 0.78rem;
+  line-height: 1.6;
 }
 
 .platform-detail-purpose {
