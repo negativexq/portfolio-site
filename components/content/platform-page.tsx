@@ -223,29 +223,6 @@ export function PlatformPage() {
         </div>
       </section>
 
-      <section className="section-shell platform-proof-section" id="implemented-systems" aria-labelledby="implemented-heading">
-        <div className="container">
-          <header className="platform-section-heading" data-reveal>
-            <div>
-              <p className="eyebrow">Proof before vision</p>
-              <h2 id="implemented-heading">Implemented systems.</h2>
-              <p>Three independent subsystems, each with a different failure surface and an explicit evidence trail.</p>
-            </div>
-            <p className="platform-section-aside">Status is a claim boundary, not a project-management label.</p>
-          </header>
-
-          <div className="platform-status-key" aria-label="Platform status definitions">
-            {platformStatusDefinitions.map(([status, definition]) => (
-              <div key={status}><PlatformStatusLabel status={status} /><span>{definition}</span></div>
-            ))}
-          </div>
-
-          <div className="platform-proof-grid">
-            {proofNodes.map((node) => <ProofCard key={node.id} node={node} />)}
-          </div>
-        </div>
-      </section>
-
       <section className="section-shell platform-architecture-section" aria-labelledby="architecture-heading">
         <div className="container">
           <header className="platform-section-heading" data-reveal>
@@ -328,6 +305,29 @@ export function PlatformPage() {
               ))}
             </div>
           </details>
+        </div>
+      </section>
+
+      <section className="section-shell platform-proof-section" id="implemented-systems" aria-labelledby="implemented-heading">
+        <div className="container">
+          <header className="platform-section-heading" data-reveal>
+            <div>
+              <p className="eyebrow">Proof before vision</p>
+              <h2 id="implemented-heading">Implemented systems.</h2>
+              <p>Three independent subsystems, each with a different failure surface and an explicit evidence trail.</p>
+            </div>
+            <p className="platform-section-aside">Status is a claim boundary, not a project-management label.</p>
+          </header>
+
+          <div className="platform-status-key" aria-label="Platform status definitions">
+            {platformStatusDefinitions.map(([status, definition]) => (
+              <div key={status}><PlatformStatusLabel status={status} /><span>{definition}</span></div>
+            ))}
+          </div>
+
+          <div className="platform-proof-grid">
+            {proofNodes.map((node) => <ProofCard key={node.id} node={node} />)}
+          </div>
         </div>
       </section>
 
