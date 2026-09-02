@@ -94,9 +94,46 @@ function ArchitectureNode({
       aria-controls="platform-node-detail"
       onClick={() => onSelect(node.id)}
     >
-      <span className="platform-node-status"><PlatformStatusLabel status={node.status} /></span>
+      <span className="platform-node-status">
+        {node.showStatus === false ? <span className="platform-resource-label">RUNTIME RESOURCE GROUPING</span> : <PlatformStatusLabel status={node.status} />}
+      </span>
       <strong>{node.title}</strong>
-      <span>{node.role}</span>
+      <span>{node.architectureDescription ?? node.role}</span>
+    </button>
+  );
+}
+
+function ModelPoolNode({
+  node,
+  selected,
+  onSelect,
+}: {
+  node: PlatformNode;
+  selected: boolean;
+  onSelect: (id: string) => void;
+}) {
+  const modelClasses = [
+    ["General LLMs", "CURRENT", "current"],
+    ["Specialist SLMs", "NEXT", "next"],
+    ["VLM / Other Models", "FUTURE", "future"],
+  ] as const;
+
+  return (
+    <button
+      className={`platform-model-pool-node${selected ? " is-selected" : ""}`}
+      type="button"
+      aria-pressed={selected}
+      aria-controls="platform-node-detail"
+      onClick={() => onSelect(node.id)}
+    >
+      <span className="platform-node-status"><span className="platform-resource-label">RUNTIME RESOURCE GROUPING</span></span>
+      <strong>{node.title}</strong>
+      <span className="platform-model-pool-copy">Models available to runtime selection</span>
+      <span className="platform-model-pool-rows">
+        {modelClasses.map(([label, status, statusClassName]) => (
+          <span key={label}><b>{label}</b><em className={`platform-model-state platform-model-state-${statusClassName}`}>{status}</em></span>
+        ))}
+      </span>
     </button>
   );
 }
@@ -125,11 +162,25 @@ function PlatformDetailPanel({
       </button>
       <div className="platform-detail-body">
       <div className="platform-detail-heading">
-        <PlatformStatusLabel status={node.status} />
+        {node.showStatus === false ? <span className="platform-resource-label">RUNTIME RESOURCE GROUPING</span> : <PlatformStatusLabel status={node.status} />}
         <span>{node.role}</span>
       </div>
       <h3>{node.title}</h3>
       <p className="platform-detail-purpose">{node.purpose}</p>
+
+      {node.details.currentFoundation ? (
+        <div className="platform-detail-group">
+          <p className="platform-proof-label">Current foundation</p>
+          <p>{node.details.currentFoundation}</p>
+        </div>
+      ) : null}
+
+      {node.details.objective ? (
+        <div className="platform-detail-group">
+          <p className="platform-proof-label">Core objective</p>
+          <p>{node.details.objective}</p>
+        </div>
+      ) : null}
 
       <div className="platform-detail-group">
         <p className="platform-proof-label">{node.status === "PROVEN" ? "What it does" : "Current goal"}</p>
@@ -153,6 +204,21 @@ function PlatformDetailPanel({
               </li>
             ))}
           </ol>
+        </div>
+      ) : null}
+
+      {node.details.targetEvolution ? (
+        <div className="platform-detail-group platform-detail-evolution">
+          <p className="platform-proof-label">Target evolution</p>
+          <ul>{node.details.targetEvolution.map((item) => <li key={item}>{item}</li>)}</ul>
+        </div>
+      ) : null}
+
+      {node.details.routingDistinction ? (
+        <div className="platform-detail-group platform-detail-distinction">
+          <p className="platform-proof-label">Two routing questions</p>
+          <div><strong>Capability routing</strong><span>{node.details.routingDistinction.capability}</span></div>
+          <div><strong>Model routing</strong><span>{node.details.routingDistinction.model}</span></div>
         </div>
       ) : null}
 
@@ -229,23 +295,24 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">Where the systems are going</p>
-              <h2 id="architecture-heading">How the systems fit together.</h2>
-              <p>The green/proven nodes below are existing, independently tested systems. Other nodes describe active work or the integration direction.</p>
+              <p className="eyebrow">WHERE THE SYSTEMS ARE GOING</p>
+              <h2 id="architecture-heading">How the systems are evolving together.</h2>
+              <p>The proven nodes are existing, independently tested systems. Building and evolving nodes show active work or the direction of integration.</p>
             </div>
           </header>
 
           <div className="platform-architecture-workspace">
             <div className="platform-graph-board">
-              <svg className="platform-graph-connectors" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
-                {/* Endpoints are in viewBox units matching the grid: lane nodes span
-                    y 86-196, the router 275-382, the lifecycle row 436-546. Column
-                    centres are 162 / 500 / 838 above and 246 / 754 below. */}
-                <path className="is-solid" d="M162 196 V236 H500 V275" />
-                <path className="is-dashed" d="M500 196 V275" />
-                <path className="is-solid" d="M838 196 V236 H500 V275" />
-                <path className="is-dashed" d="M500 382 V409 H246 V436" />
-                <path className="is-solid" d="M500 382 V409 H754 V436" />
+              <svg className="platform-graph-connectors" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+                {/* Capability edges are target integrations: the existing
+                    repositories do not currently share this router. The
+                    cost-aware router → model pool path is the current runtime
+                    foundation; lifecycle → pool is promotion direction. */}
+                <path className="is-dashed" d="M162 196 V236 H500 V290" />
+                <path className="is-dashed" d="M500 196 V290" />
+                <path className="is-dashed" d="M838 196 V236 H500 V290" />
+                <path className="is-solid" d="M500 400 V465" />
+                <path className="is-dashed" d="M500 575 V650" />
               </svg>
 
               <div className="platform-graph-grid">
@@ -260,9 +327,18 @@ export function PlatformPage() {
                   <span className="platform-lane-label">SHARED MODEL RUNTIME</span>
                   <ArchitectureNode node={platformNodes.find((node) => node.id === "adaptive-router")!} selected={selectedId === "adaptive-router"} onSelect={setSelectedId} />
                 </div>
+                <div className="platform-graph-model-pool">
+                  <ModelPoolNode node={platformNodes.find((node) => node.id === "model-pool")!} selected={selectedId === "model-pool"} onSelect={setSelectedId} />
+                </div>
                 <div className="platform-graph-lifecycle">
-                  <ArchitectureNode node={platformNodes.find((node) => node.id === "modelops")!} selected={selectedId === "modelops"} onSelect={setSelectedId} />
-                  <ArchitectureNode node={platformNodes.find((node) => node.id === "specialist-models")!} selected={selectedId === "specialist-models"} onSelect={setSelectedId} />
+                  <div className="platform-graph-lifecycle-heading">
+                    <span className="platform-lane-label">MODEL LIFECYCLE</span>
+                    <span className="platform-lifecycle-relation-label">promotion / rollback</span>
+                  </div>
+                  <div className="platform-graph-lifecycle-nodes">
+                    <ArchitectureNode node={platformNodes.find((node) => node.id === "modelops")!} selected={selectedId === "modelops"} onSelect={setSelectedId} />
+                    <ArchitectureNode node={platformNodes.find((node) => node.id === "fineforge")!} selected={selectedId === "fineforge"} onSelect={setSelectedId} />
+                  </div>
                 </div>
               </div>
 
@@ -471,4 +547,3 @@ export function PlatformPage() {
     </main>
   );
 }
-
