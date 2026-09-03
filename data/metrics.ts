@@ -8,21 +8,21 @@ export const metrics = [
     detail: "Professional experience across ML, data and GenAI systems.",
   },
   {
-    value: "10+ ML MODELS",
-    label: "Deployed & operated",
+    value: "PRODUCTION ML",
+    label: "End-to-end lifecycle",
     context: "Lifecycle",
-    detail: "Production ML lifecycle ownership across multiple analytics use cases.",
+    detail: "Owned validation, promotion, serving, retraining and monitoring across multiple analytics use cases.",
   },
   {
-    value: "~9M CUSTOMERS",
-    label: "Customer-level tables",
+    value: "LARGE-SCALE DATA",
+    label: "Customer-level ML datasets",
     context: "Scale",
-    detail: "Batch and near-real-time pipelines consolidating many source tables into customer-level training, inference and analytics tables.",
+    detail: "Batch and near-real-time pipelines consolidating multiple source systems into reusable training, inference and analytics datasets.",
   },
   {
     value: "75% RUNTIME REDUCTION",
     label: "Core ETL workflow",
     context: "Performance",
-    detail: "Sequential Oracle ETL re-architected with modular parallel dbt: 120 → 30 min.",
+    detail: "Sequential Oracle ETL re-architected into modular parallel dbt workflows, reducing end-to-end runtime by 75%.",
   },
 ] satisfies readonly Metric[];

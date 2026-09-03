@@ -17,13 +17,13 @@ export const experiences = [
         context:
           "Call recordings held operational signal that nobody could query: reviewing them was manual, so the content never reached reporting.",
         summary:
-          "Built an audio intelligence pipeline from transcription and diarization through structured operational outputs.",
+          "Built a GPU-distributed, high-volume audio intelligence pipeline from transcription and diarization through structured operational outputs.",
         proof: {
-          label: "Audio pipeline throughput",
-          value: "~9,000 recordings / day",
-          scope: "Production call-center pipeline",
+          label: "Processing architecture",
+          value: "GPU-DISTRIBUTED",
+          scope: "High-volume daily processing",
           qualifier:
-            "Daily recording volume processed end to end: transcription with WhisperX, timestamp alignment, speaker diarization, then LLM summarization into structured fields that feed operational KPIs.",
+            "A GPU-distributed pipeline handled high-volume daily processing end to end: transcription with WhisperX, timestamp alignment, speaker diarization, then LLM summarization into structured fields that feed operational KPIs.",
         },
         topics: [
           "WhisperX",
@@ -40,11 +40,11 @@ export const experiences = [
         context:
           "Models were reaching production faster than there was a repeatable way to validate, promote and monitor them.",
         summary:
-          "Owned deployment and lifecycle management for 10+ production ML models.",
+          "Owned deployment and lifecycle management across multiple production ML use cases.",
         proof: {
-          label: "Production model ownership",
-          value: "10+ production ML models",
-          scope: "Full lifecycle ownership",
+          label: "Production ML ownership",
+          value: "END-TO-END LIFECYCLE",
+          scope: "Multiple analytics use cases",
           qualifier:
             "Ownership covered the lifecycle rather than a single handoff: validation, versioning, promotion, serving, retraining and monitoring across multiple analytics use cases.",
         },
@@ -54,7 +54,7 @@ export const experiences = [
         id: "ai-infrastructure",
         title: "AI Infrastructure",
         context:
-          "Generative AI prototypes validated on Azure could not stay there — customer data required the models to run inside the bank.",
+          "Generative AI prototypes validated in Azure required data-residency-aware serving and private infrastructure constraints.",
         summary:
           "Moved validated Azure prototypes to on-premises GPU infrastructure for private open-source model serving.",
         topics: ["Azure", "On-prem GPU", "llama.cpp", "Ollama", "LangChain"],
@@ -67,11 +67,11 @@ export const experiences = [
         summary:
           "Re-architected sequential Oracle ETL workflows into modular parallel dbt pipelines.",
         proof: {
-          label: "Core ETL runtime",
-          value: "120 → 30 min",
+          label: "Core ETL impact",
+          value: "75% RUNTIME REDUCTION",
           scope: "Sequential Oracle → modular parallel dbt",
           qualifier:
-            "End-to-end runtime of the core workflow after splitting monolithic sequential procedures into modular dbt models that execute in parallel — a 75% reduction.",
+            "End-to-end runtime of the core workflow fell by 75% after splitting monolithic sequential procedures into modular dbt models that execute in parallel.",
         },
         topics: ["Oracle", "dbt", "ETL / ELT", "Parallel execution"],
       },
@@ -81,11 +81,11 @@ export const experiences = [
         context:
           "Every model rebuilt the same customer features in its own pipeline, so definitions drifted apart between use cases.",
         summary:
-          "Built a centralized feature store and dimensional models used by 10+ production ML models.",
+          "Built a centralized feature store and dimensional models for reusable production ML features.",
         proof: {
           label: "Shared feature reuse",
           value: "One definition per feature",
-          scope: "Centralized store across 10+ models",
+          scope: "Centralized reuse across production ML use cases",
           qualifier:
             "Features and dimensional models were defined once and consumed by the production models, replacing per-model reimplementation of the same customer attributes.",
         },
@@ -100,10 +100,10 @@ export const experiences = [
           "Engineered batch and near-real-time training, inference and analytics pipelines.",
         proof: {
           label: "Customer-level coverage",
-          value: "~9M customers",
-          scope: "Customer-level output tables",
+          value: "LARGE-SCALE COVERAGE",
+          scope: "Multi-source batch + near-real-time datasets",
           qualifier:
-            "The pipelines consolidate many upstream source tables into customer-level tables covering the full ~9M customer base. This is the coverage of the produced tables, not a per-day record throughput.",
+            "Batch and near-real-time pipelines consolidate multiple upstream source systems into customer-level datasets for training, inference and analytics.",
         },
         topics: ["Batch pipelines", "Near-real-time", "Training", "Inference", "Analytics"],
       },
