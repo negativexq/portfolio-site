@@ -8,15 +8,15 @@ const BASE_URL = "https://omerfkoc.dev";
 // These dates track the latest content-affecting commit for each route.
 // Update the relevant entry whenever published page content changes.
 const routeLastModified = {
-  home: "2026-08-13",
-  projects: "2026-08-13",
+  home: "2026-09-03",
+  projects: "2026-09-03",
   platform: "2026-09-03",
-  experience: "2026-08-09",
-  graph: "2026-08-13",
+  experience: "2026-09-03",
+  graph: "2026-09-03",
   learning: "2026-08-13",
   writing: "2026-08-20",
-  resume: "2026-08-09",
-  projectCaseStudies: "2026-08-13",
+  resume: "2026-09-03",
+  projectCaseStudies: "2026-09-03",
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

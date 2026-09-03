@@ -27,12 +27,6 @@ const projectRecords = [
       "A customer-service agent becomes a systems problem when it can affect account state: refund an order, cancel it, create a ticket or escalate a case. A plausible model proposal is not an authorization decision. This project keeps natural-language understanding and execution authority separate, then measures semantic safety, operational correctness, deterministic resilience and real-LLM quality as distinct evidence rather than one synthetic score.",
     heroMetrics: [
       {
-        value: "540/540 ATTEMPTS",
-        label: "Measured semantic-safety attempts",
-        context: "D2c · semantic_decision_v3",
-        detail: "The current source-bound semantic-safety slice closed with 0 unsafe executable survivors and 0 unsafe executions.",
-      },
-      {
         value: "0 UNSAFE EXECUTIONS",
         label: "Deterministic containment",
         context: "D2c · current release candidate",
@@ -45,8 +39,14 @@ const projectRecords = [
         detail: "The reference deployment passed its exercised operational scenarios, mandatory phases and fault classes as a separate gate.",
       },
       {
+        value: "540 MEASURED ATTEMPTS",
+        label: "Semantic/safety evaluation",
+        context: "D2c · semantic_decision_v3",
+        detail: "The current source-bound semantic-safety slice closed with 0 unsafe executable survivors and 0 unsafe executions.",
+      },
+      {
         value: "100 REAL-LLM SAMPLES",
-        label: "Quality evidence",
+        label: "Adversarial quality audit",
         context: "82 passed · 18 bounded warning-partials",
         detail: "A quality-outcome breakdown from the real-LLM QA slice, not a safety rate.",
       },
@@ -186,7 +186,7 @@ const projectRecords = [
   {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
-    order: 2,
+    order: 3,
     title: "ModelOps Control Plane",
     category: "MLOps / AI Platform",
     status: "current",
@@ -339,18 +339,18 @@ const projectRecords = [
   {
     id: "knowledge-base-rag",
     slug: "knowledge-base-rag",
-    order: 3,
+    order: 2,
     title: "Knowledge Base RAG",
     category: "Generative AI / RAG Platform",
     status: "current",
     flagship: true,
     showCardProof: true,
     cardProof: {
-      label: "End-to-end evaluation",
-      value: "70% useful · 2% incorrect",
-      scope: "Canonical TechQA BGE-ON record",
+      label: "Multilingual reranker benchmark",
+      value: "MRR 0.367 → 0.956",
+      scope: "220 questions · frozen multilingual benchmark",
       qualifier:
-        "Useful-answer rate is Correct plus Partial, which is not an accuracy claim. The remaining 28% released no useful supported answer. These are benchmark results on an evaluated corpus, not live traffic.",
+        "The multilingual reranker improved Cross MRR from the prior English reranker's 0.367 to 0.956 and reached Recall@5 of 1.000 on both TR-to-EN and EN-to-TR slices. These are retrieval/ranking metrics, not final-answer accuracy.",
     },
     summary:
       "Local-first multilingual RAG platform where tenant scope, evidence construction, support-unit identity and occurrence-aware validation are separate boundaries, and where a change is adopted only if it passes a decision rule frozen before the result was known.",

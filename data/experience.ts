@@ -15,7 +15,7 @@ export const experiences = [
         id: "call-center-intelligence",
         title: "Call-Center Intelligence",
         context:
-          "Call recordings held operational signal that nobody could query: reviewing them was manual, so the content never reached reporting.",
+          "Call recordings contained valuable operational signal but were expensive to inspect manually and difficult to reuse consistently in analytics.",
         summary:
           "Built a GPU-distributed, high-volume audio intelligence pipeline from transcription and diarization through structured operational outputs.",
         proof: {
@@ -38,7 +38,7 @@ export const experiences = [
         id: "ml-platform",
         title: "ML Platform",
         context:
-          "Models were reaching production faster than there was a repeatable way to validate, promote and monitor them.",
+          "As production ML use cases expanded, validation, promotion, serving, retraining and monitoring became a shared platform concern.",
         summary:
           "Owned deployment and lifecycle management across multiple production ML use cases.",
         proof: {
@@ -63,7 +63,7 @@ export const experiences = [
         id: "data-platform",
         title: "Data Platform",
         context:
-          "The core ETL ran as sequential Oracle procedures, so the workflow's runtime grew with every addition and left no room in the batch window.",
+          "As the core Oracle workflow grew, sequential execution increasingly constrained the batch window, dependency visibility and change isolation.",
         summary:
           "Re-architected sequential Oracle ETL workflows into modular parallel dbt pipelines.",
         proof: {
@@ -79,7 +79,7 @@ export const experiences = [
         id: "feature-platform",
         title: "Feature Platform",
         context:
-          "Every model rebuilt the same customer features in its own pipeline, so definitions drifted apart between use cases.",
+          "Multiple ML use cases independently rebuilt overlapping customer features, creating duplicated maintenance and definition drift.",
         summary:
           "Built a centralized feature store and dimensional models for reusable production ML features.",
         proof: {
@@ -111,7 +111,7 @@ export const experiences = [
         id: "quality-monitoring",
         title: "Quality & Monitoring",
         context:
-          "Pipeline and model failures surfaced downstream as wrong numbers in reports rather than as an alert at the point of failure.",
+          "Without pipeline-level validation, data and model regressions could surface late in downstream analytics.",
         summary:
           "Implemented data quality, model validation and delivery workflows around production analytics systems.",
         proof: {

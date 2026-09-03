@@ -6,28 +6,31 @@ import { MetricGrid } from "@/components/content/metric-grid";
 import { PersonJsonLd } from "@/components/content/person-jsonld";
 import { ProjectCard } from "@/components/content/project-card";
 import { SectionHeading } from "@/components/content/section-heading";
-import { StatusBadge } from "@/components/content/status-badge";
+import { TagList } from "@/components/content/tag-list";
 import { MotionController } from "@/components/motion/motion-controller";
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
-import { learningItems } from "@/data/learning";
 import { metrics } from "@/data/metrics";
 import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
 import { buildEngineeringGraph } from "@/lib/graph/build-graph";
+import { getPublishedArticles } from "@/lib/writing/articles";
+import { formatArticleDate } from "@/lib/writing/format";
 
-const currentDirectionIds = [
-  "context-engineering-rag",
-  "ai-platform-observability",
-  "ai-platform-kubernetes",
-];
+const selectedWritingSlugs = [
+  "hard-gates-frozen-hashes",
+  "production-agent-guardrails",
+  "63-rescues-0-drops",
+] as const;
 
 export default function Home() {
   const experience = experiences[0];
   const graphData = buildEngineeringGraph();
-  const currentDirection = currentDirectionIds
-    .map((id) => learningItems.find((item) => item.id === id))
-    .filter((item) => item !== undefined);
+  const publishedArticles = getPublishedArticles();
+  const selectedWriting = selectedWritingSlugs.flatMap((slug) => {
+    const article = publishedArticles.find((candidate) => candidate.slug === slug);
+    return article ? [article] : [];
+  });
 
   return (
     <main>
@@ -43,8 +46,8 @@ export default function Home() {
             <Link className="button button-primary" href="/projects">
               Explore projects <ArrowRight aria-hidden="true" size={16} />
             </Link>
-            <Link className="button button-secondary" href="/graph">
-              Engineering graph
+            <Link className="button button-secondary" href="/platform">
+              AI Platform Architecture
             </Link>
             <a
               className="text-link"
@@ -129,28 +132,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell section-tinted" aria-labelledby="direction-heading">
+      <section className="section-shell section-tinted" aria-labelledby="writing-heading">
         <div className="container">
           <SectionHeading
-            id="direction-heading"
-            eyebrow="Current direction"
-            title="Extending the platform boundary."
-            description="Planned and learning items are intentionally distinct from current, evidence-backed work."
+            id="writing-heading"
+            eyebrow="Engineering writing"
+            title="Notes from building the systems."
+            description="Short technical pieces on reliability, evaluation, retrieval, distributed systems and production AI."
           />
-          <div className="direction-grid" data-reveal>
-            {currentDirection.map((item, index) => (
-              <article key={item.id} data-hover-lift>
-                <span className="direction-index">0{index + 1}</span>
-                <div className="direction-heading-row">
-                  <h3>{item.title}</h3>
-                  <StatusBadge status={item.status} />
+          <div className="writing-list" data-reveal>
+            {selectedWriting.map((article) => (
+              <article className="writing-card" key={article.slug}>
+                <div className="writing-card-meta">
+                  <time dateTime={article.datePublished}>{formatArticleDate(article.datePublished)}</time>
+                  <span>{article.category}</span>
                 </div>
-                <p>{item.previewSummary ?? item.rationale}</p>
+                <div className="writing-card-body">
+                  <h3><Link href={`/writing/${article.slug}`}>{article.title}</Link></h3>
+                  <p>{article.description}</p>
+                  <TagList items={article.tags} limit={3} label={`${article.title} topics`} />
+                </div>
+                <Link className="writing-card-link" href={`/writing/${article.slug}`} aria-label={`Read ${article.title}`}>
+                  Read <ArrowRight aria-hidden="true" size={15} />
+                </Link>
               </article>
             ))}
           </div>
-          <Link className="section-link" href="/learning">
-            Open learning roadmap <ArrowRight aria-hidden="true" size={15} />
+          <Link className="section-link" href="/writing">
+            Explore writing <ArrowRight aria-hidden="true" size={15} />
           </Link>
         </div>
       </section>
