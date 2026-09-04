@@ -180,9 +180,9 @@ export const platformNodes = [
     },
   },
   {
-    id: "fineforge",
+    id: "causetune",
     stage: "MODEL LIFECYCLE",
-    title: "FineForge",
+    title: "CauseTune",
     status: "NEXT",
     role: "Specialist-model training and evaluation",
     purpose: "A planned specialization path from base model to evaluated candidate.",
@@ -194,8 +194,8 @@ export const platformNodes = [
       currentGoal: "Define the training and evaluation path for specialist model candidates.",
       milestone: "Compare base and specialized models across task quality, execution accuracy where relevant, latency, throughput, VRAM, cost, and generalization.",
       nextGate: "A candidate must clear offline evaluation before ModelOps can manage its canary lifecycle.",
-      why: "FineForge is intentionally NEXT: no specialization result is presented as implemented or better than a base model.",
-      flow: ["base model", "FineForge / QLoRA", "offline evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
+      why: "CauseTune is intentionally NEXT: no specialization result is presented as implemented or better than a base model.",
+      flow: ["base model", "CauseTune / QLoRA", "offline evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
     },
   },
 ] as const satisfies readonly PlatformNode[];
@@ -262,7 +262,7 @@ export const platformArchitectureLayers = [
     band: "Model lifecycle",
     note: "A candidate reaches the router only through an evaluation it passed.",
     columns: [
-      { label: "FineForge", status: "NEXT", items: ["QLoRA / PEFT", "dataset preparation", "resource profiling"] },
+      { label: "CauseTune", status: "NEXT", items: ["QLoRA / PEFT", "dataset preparation", "resource profiling"] },
       { label: "Offline evaluation", status: "NEXT", items: ["base vs fine-tuned", "quality · latency · VRAM", "generalization"] },
       { label: "ModelOps Control Plane", status: "PROVEN", items: ["canary 10 → 25 → 50 → 100", "quality and reliability gates", "delayed ground truth", "promotion · rollback · reconciliation"] },
       { label: "Model registry", status: "NEXT", items: ["versions and lineage", "feeds the router"] },

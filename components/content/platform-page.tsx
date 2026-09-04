@@ -355,7 +355,7 @@ export function PlatformPage() {
                   </div>
                   <div className="platform-graph-lifecycle-nodes">
                     <ArchitectureNode node={platformNodes.find((node) => node.id === "modelops")!} selected={selectedId === "modelops"} onSelect={selectNode} />
-                    <ArchitectureNode node={platformNodes.find((node) => node.id === "fineforge")!} selected={selectedId === "fineforge"} onSelect={selectNode} />
+                    <ArchitectureNode node={platformNodes.find((node) => node.id === "causetune")!} selected={selectedId === "causetune"} onSelect={selectNode} />
                   </div>
                 </div>
               </div>
@@ -436,13 +436,13 @@ export function PlatformPage() {
             <div>
               <p className="eyebrow">Model lifecycle / model optimization</p>
               <h2 id="lifecycle-heading">Specialization has to earn its place.</h2>
-              <p>FineForge is intentionally shown as NEXT here. The question is not whether a model can be fine-tuned; it is whether specialization actually beats the base model.</p>
+              <p>CauseTune is intentionally shown as NEXT here. The question is not whether a model can be fine-tuned; it is whether specialization actually beats the base model.</p>
             </div>
           </header>
           <div className="platform-lifecycle-flow" aria-label="Target model lifecycle">
             {[
               "Base Model",
-              "FineForge / QLoRA",
+              "CauseTune / QLoRA",
               "Offline Evaluation",
               "Candidate",
               "ModelOps",
@@ -458,7 +458,7 @@ export function PlatformPage() {
             ))}
           </div>
           <div className="platform-lifecycle-note">
-            <div><PlatformStatusLabel status="NEXT" /><h3>FineForge / QLoRA</h3></div>
+            <div><PlatformStatusLabel status="NEXT" /><h3>CauseTune / QLoRA</h3></div>
             <p>Potential evaluation: task quality, SQL execution accuracy where relevant, retrieval/generation quality, latency, throughput, VRAM, cost, and generalization.</p>
           </div>
         </div>
