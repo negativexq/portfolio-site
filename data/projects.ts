@@ -626,7 +626,7 @@ const projectRecords = [
   {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 5,
+    order: 6,
     title: "Repo Context Forge",
     category: "Agent Infrastructure / Developer Tooling",
     status: "current",
@@ -678,7 +678,7 @@ const projectRecords = [
   {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 6,
+    order: 7,
     title: "dbt Feature Lineage",
     category: "Data Engineering / Lineage",
     status: "current",
@@ -770,7 +770,7 @@ const projectRecords = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 7,
+    order: 8,
     title: "Production RAG Platform",
     category: "Generative AI / Retrieval",
     status: "current",
@@ -814,7 +814,7 @@ const projectRecords = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 8,
+    order: 9,
     title: "Terraform Docker Infrastructure Lab",
     category: "Infrastructure as Code / Platform Engineering",
     status: "current",
@@ -874,7 +874,7 @@ const projectRecords = [
   {
     id: "cause-tune",
     slug: "cause-tune",
-    order: 9,
+    order: 5,
     title: "CauseTune",
     category: "Model Training / Fine-Tuning",
     status: "current",
