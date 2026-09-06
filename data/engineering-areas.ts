@@ -7,7 +7,7 @@ export const engineeringAreas = [
     description:
       "Model lifecycle, progressive delivery, delayed quality feedback, policy-driven release control and observable production operations.",
     technologies: ["FastAPI", "Docker", "Kubernetes", "MLRun", "GitHub Actions"],
-    evidenceProjectIds: ["modelops-control-plane"],
+    evidenceProjectIds: ["modelops-control-plane", "cause-tune"],
     evidenceExperienceIds: ["fibabanka"],
   },
   {

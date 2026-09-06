@@ -871,6 +871,144 @@ const projectRecords = [
     relationships: [],
     githubUrl: "https://github.com/negativexq/terraform-docker-infrastructure-lab",
   },
+  {
+    id: "cause-tune",
+    slug: "cause-tune",
+    order: 9,
+    title: "CauseTune",
+    category: "Model Training / Fine-Tuning",
+    status: "current",
+    flagship: false,
+    showCardProof: true,
+    cardProof: {
+      label: "Measured specialization gain",
+      value: "+34.03 pp diagnosis exact match",
+      scope: "Frozen 144-case synthetic benchmark",
+      qualifier:
+        "Experiment 02: untouched Qwen3-4B scored 65.28%, the tuned adapter 99.31%. The benchmark was frozen before training and excluded from checkpoint selection; 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
+    },
+    summary:
+      "LLM fine-tuning laboratory for measuring specialization gain, training dynamics, generalization and failure behavior under constrained hardware, with a frozen benchmark and base-vs-tuned evidence.",
+    directAnswer:
+      "CauseTune is a QLoRA fine-tuning laboratory that freezes a held-out benchmark, measures the untouched base model's capability gap, runs one controlled specialization, then re-measures base versus tuned on the same frozen evaluation with quality, efficiency and failure analysis kept as separate evidence.",
+    whyItExists:
+      "A single accuracy number does not show whether fine-tuning added a real capability, whether it generalized, or what it cost. CauseTune keeps the benchmark frozen before training, selects checkpoints on validation only, and reports the gain as specific failure modes disappearing rather than one headline score — so a specialization claim is inspectable, not asserted.",
+    heroMetrics: [
+      {
+        value: "65.28% → 99.31%",
+        label: "Diagnosis exact match",
+        context: "Experiment 02 · frozen 144-case benchmark",
+        detail: "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training. +34.03 pp; synthetic benchmark accuracy, not production accuracy.",
+      },
+      {
+        value: "100 / 600 STEPS",
+        label: "Early stop, no forced budget",
+        context: "validation_no_improvement",
+        detail: "Diagnosis hit the validation ceiling by step 25; early stopping ended the run at step 100, avoiding 500 of 600 optimizer updates (83.33%).",
+      },
+      {
+        value: "5.312 GiB",
+        label: "Peak allocated VRAM",
+        context: "8 GB RTX 5070 Laptop · 0.814% trainable",
+        detail: "33,030,144 trainable parameters over a 4.06B logical model. Peak allocated VRAM, not framework reserved-memory accounting.",
+      },
+      {
+        value: "26.8% → 99.2%",
+        label: "One-variable causal fix",
+        context: "Experiment 01 · M5 → M6 validation",
+        detail: "Changing only the training order from unshuffled to a deterministic seeded shuffle recovered held-out accuracy; balanced data still produced pathological single-class optimizer windows.",
+      },
+    ],
+    highlights: [
+      {
+        title: "Frozen benchmark before any training",
+        description:
+          "Problem: a benchmark the model was tuned against measures memorization, not capability. Solution: the challenge benchmark and evaluation contract are established and hashed before training, excluded from the train and validation data, and never used for checkpoint selection.",
+      },
+      {
+        title: "The gain is specific failure modes disappearing",
+        description:
+          "Problem: an aggregate delta hides whether the model got better or just shifted errors. Solution: base-vs-tuned is decomposed into mechanically observed transitions — 49 cases went base-wrong to tuned-correct against 1 regression — and per-family behavior, so configuration_regression (0% → 100%) and disk_io_saturation (25% → 100%) are visible individually.",
+      },
+      {
+        title: "Efficiency measured, not assumed",
+        description:
+          "Problem: fine-tuning claims often ignore what the run cost. Solution: peak allocated VRAM (5.312 GiB on an 8 GB laptop GPU), trainable-parameter share (0.814%), optimizer steps actually consumed (100 of 600) and wall time are reported as first-class results alongside quality.",
+      },
+      {
+        title: "A causal training-order diagnosis",
+        description:
+          "Experiment 01 isolated one training-affecting variable: an unshuffled class-contiguous order collapsed held-out accuracy to 26.8% because the final optimizer windows were single-class, while a deterministic seeded shuffle recovered it to 99.2%. Train loss alone was insufficient evidence.",
+      },
+      {
+        title: "Integrity controls over convenience",
+        description:
+          "No benchmark-informed oversampling, no LLM judge, no manual output repair, no alternate-checkpoint fishing. Malformed outputs were scored as produced, and metrics were recomputed offline from the persisted 144 predictions without regenerating model outputs.",
+      },
+    ],
+    technologies: [
+      "Python",
+      "PyTorch",
+      "Transformers",
+      "PEFT",
+      "bitsandbytes",
+      "TRL",
+      "QLoRA",
+      "Qwen3-4B",
+      "pytest",
+    ],
+    concepts: [
+      "QLoRA",
+      "LoRA",
+      "PEFT",
+      "NF4 Quantization",
+      "Frozen Benchmark",
+      "Held-Out Evaluation",
+      "Checkpoint Selection",
+      "Early Stopping",
+      "Validation-Only Selection",
+      "Failure-Mode Analysis",
+      "Training Dynamics",
+      "Generalization Slices",
+      "Causal Shuffle Diagnosis",
+      "VRAM Profiling",
+      "Deterministic Training",
+      "Base-vs-Tuned Measurement",
+    ],
+    proofPoints: [
+      {
+        label: "Specialization gain",
+        value: "65.28% -> 99.31% diagnosis exact match",
+        scope: "Experiment 02 · frozen 144-case synthetic benchmark",
+        qualifier:
+          "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training and excluded from checkpoint selection. +34.03 pp; resolution exact match rose +64.58 pp. Synthetic benchmark accuracy, not production accuracy.",
+      },
+      {
+        label: "Generalization by slice",
+        value: "STANDARD 100% · HARD 97.92% · TRANSFER 100%",
+        scope: "Experiment 02 tuned · held-out slices",
+        qualifier:
+          "The single remaining diagnosis error was one HARD downstream-timeout case predicted as DNS resolution failure. TRANSFER is transfer-style evaluation, not true OOD.",
+      },
+      {
+        label: "Training efficiency",
+        value: "Stopped at step 100 of 600 · 5.312 GiB peak VRAM",
+        scope: "8 GB RTX 5070 Laptop · 0.814% trainable",
+        qualifier:
+          "Early stopping on validation_no_improvement avoided 500 of 600 optimizer updates. 33,030,144 trainable parameters over a 4,055,498,240-parameter logical model.",
+      },
+      {
+        label: "Causal training-order fix",
+        value: "26.8% -> 99.2% validation accuracy",
+        scope: "Experiment 01 · M5 unshuffled vs M6 seeded shuffle",
+        qualifier:
+          "Changing only the training order from class-contiguous to a deterministic seed-42 shuffle recovered held-out performance; all 250 optimizer windows became mixed-class instead of terminal single-class.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/cause-tune",
+  },
 ] satisfies readonly Project[];
 
 // `order` is the single source of truth for presentation sequence, so array
