@@ -287,7 +287,15 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
   const [error, setError] = useState<string | null>(null);
 
   const selectedNode = data.nodes.find((node) => node.id === selectedNodeId) ?? null;
-  const visibleCount = data.nodes.filter((node) => isNodeTypeVisible(node.type, filters)).length;
+  const visibleNodeIds = useMemo(
+    () => new Set(data.nodes.filter((node) => isNodeTypeVisible(node.type, filters)).map((node) => node.id)),
+    [data.nodes, filters],
+  );
+  const visibleCount = visibleNodeIds.size;
+  const visibleEdgeCount = useMemo(
+    () => data.edges.filter((edge) => visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)).length,
+    [data.edges, visibleNodeIds],
+  );
   const mobileShortcuts = [
     { id: "project:agentic-customer-service-platform", label: "Agentic" },
     { id: "project:modelops-control-plane", label: "ModelOps" },
@@ -1241,7 +1249,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
 
       <GraphBrowseList data={data} onSelect={handleBrowseSelect} />
       <p className="graph-data-summary">
-        {data.nodes.length} source-grounded nodes · {data.edges.length} validated relationships · no external API data
+        showing {visibleCount} of {data.nodes.length} source-grounded nodes · {visibleEdgeCount} of {data.edges.length} validated relationships · no external API data
       </p>
     </div>
   );
