@@ -914,6 +914,143 @@ const architectures = {
       "k6 exercises local load and controlled error, latency and API-down alert lifecycles end to end.",
     ],
   },
+  "decision-sql": {
+    projectId: "decision-sql",
+    description:
+      "A natural-language analytics request is answered against a model-visible, governed context, and the model emits exactly one typed decision. Only an ANSWER + SQL submission enters the SQL runtime; clarifications and authority or policy blocks never do. The selected SQL then crosses a deterministic admission chain — sqlglot parse, SQL policy, grain-safety validation, an optional narrow normalizer, re-validation, PostgreSQL EXPLAIN, a cost gate and an accepted immutable QueryPlan — before a restricted read-only executor runs it. Correctness is scored off the request path by executing against BASE and counterfactual database states, with evaluator-only truth that never reaches the model.",
+    paths: [
+      {
+        id: "decision-path",
+        label: "Governed decision",
+        summary: "Runtime routing is driven by the parsed model submission, not by evaluator truth; only ANSWER + SQL reaches the SQL runtime.",
+        variant: "primary",
+        layout: { type: "rows", rows: [3, 1] },
+        stages: [
+          {
+            id: "request",
+            nodes: [{ id: "request", label: "Analytics Request", subtitle: "natural language", variant: "client" }],
+            edge: { label: "with governed context" },
+          },
+          {
+            id: "context",
+            nodes: [{ id: "context", label: "Model-Visible Governed Context", subtitle: "public / governed schema, authorized metadata", variant: "control" }],
+            edge: { label: "one-shot generation" },
+          },
+          {
+            id: "generation",
+            nodes: [{ id: "generation", label: "One-Shot LLM Decision", subtitle: "untrusted, typed, no retry", variant: "analyzer" }],
+            edge: { label: "emits", relation: "branch" },
+          },
+          {
+            id: "typed-decision",
+            nodes: [
+              { id: "answer", label: "ANSWER + SQL", subtitle: "read-only SELECT", relationLabel: "enters SQL runtime", variant: "service" },
+              { id: "clarify", label: "NEEDS_CLARIFICATION", subtitle: "no SQL runtime", relationLabel: "governance outcome", variant: "output" },
+              { id: "authority", label: "BLOCKED_AUTHORITY", subtitle: "no SQL runtime", relationLabel: "governance outcome", variant: "boundary" },
+              { id: "policy-block", label: "BLOCKED_POLICY", subtitle: "no SQL runtime", relationLabel: "governance outcome", variant: "boundary" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "runtime-admission",
+        label: "Runtime admission (ANSWER + SQL)",
+        summary: "The executor never accepts SQL directly from the model, the normalizer or the evaluator; execution requires an accepted immutable QueryPlan.",
+        variant: "control",
+        layout: { type: "rows", rows: [4, 4, 3] },
+        stages: [
+          {
+            id: "raw-sql",
+            nodes: [{ id: "raw-sql", label: "Selected SQL", subtitle: "from the ANSWER submission", variant: "service" }],
+            edge: { label: "parses" },
+          },
+          {
+            id: "parse",
+            nodes: [{ id: "parse", label: "sqlglot Parse", subtitle: "one statement, read-only", variant: "control" }],
+            edge: { label: "policy" },
+          },
+          {
+            id: "sql-policy",
+            nodes: [{ id: "sql-policy", label: "SQL / Object / Function Policy", subtitle: "governed access, complexity limits", variant: "control" }],
+            edge: { label: "checks grain" },
+          },
+          {
+            id: "grain",
+            nodes: [{ id: "grain", label: "GrainSafetyValidator", subtitle: "parent-measure fanout detection", variant: "analyzer" }],
+            edge: { label: "normalizes", variant: "async" },
+          },
+          {
+            id: "normalizer",
+            nodes: [{ id: "normalizer", label: "Grain-Safe Normalizer", subtitle: "narrow supported shape, fail-closed", variant: "control" }],
+            edge: { label: "re-validates" },
+          },
+          {
+            id: "revalidate",
+            nodes: [{ id: "revalidate", label: "Re-Parse + Re-Policy + Post-Grain", subtitle: "no raw unsafe fallback", variant: "control" }],
+            edge: { label: "plans" },
+          },
+          {
+            id: "explain",
+            nodes: [{ id: "explain", label: "PostgreSQL EXPLAIN", subtitle: "planner cost on analyzed state", variant: "analyzer" }],
+            edge: { label: "cost gate" },
+          },
+          {
+            id: "cost",
+            nodes: [{ id: "cost", label: "Query Cost Gate", subtitle: "frozen max rows / max cost", variant: "control" }],
+            edge: { label: "accepts" },
+          },
+          {
+            id: "query-plan",
+            nodes: [{ id: "query-plan", label: "Accepted QueryPlan", subtitle: "immutable, issued by the SQL safety service", variant: "storage" }],
+            edge: { label: "executes" },
+          },
+          {
+            id: "executor",
+            nodes: [{ id: "executor", label: "Restricted Read-Only Executor", subtitle: "reader role, statement timeout, bounded rows", variant: "service" }],
+            edge: { label: "returns" },
+          },
+          {
+            id: "result",
+            nodes: [{ id: "result", label: "Bounded Result", subtitle: "row-capped", variant: "output" }],
+          },
+        ],
+      },
+      {
+        id: "evaluation",
+        label: "Execution-based evaluation",
+        summary: "Truth decides whether the governed decision is correct and whether result-contract evaluation applies; it does not decide whether SQL enters runtime.",
+        variant: "async",
+        stages: [
+          {
+            id: "outcome",
+            nodes: [{ id: "outcome", label: "Runtime + Governance Outcome", subtitle: "recorded per case", variant: "output" }],
+            edge: { label: "scored against" },
+          },
+          {
+            id: "evaluator",
+            nodes: [{ id: "evaluator", label: "Execution-Based Evaluator", subtitle: "evaluator-only truth, off the request path", variant: "analyzer" }],
+            edge: { label: "uses" },
+          },
+          {
+            id: "fixtures",
+            nodes: [{ id: "fixtures", label: "Witnesses + Counterfactual Fixtures", subtitle: "2 reference witnesses, typed ResultContract", variant: "storage" }],
+            edge: { label: "yields" },
+          },
+          {
+            id: "score",
+            nodes: [{ id: "score", label: "Governed Task Success", subtitle: "78 / 90 on the frozen benchmark", variant: "output" }],
+          },
+        ],
+      },
+    ],
+    notes: [
+      "Runtime routing is submission-driven: an ANSWER + SQL enters the SQL runtime even when the truth is AMBIGUOUS, so a wrong governed decision still produces a typed outcome instead of a crash.",
+      "The grain-safe normalizer is intentionally narrow — additive parent measure, a declared 1:N relationship and a supported LEFT JOIN fanout shape — and stays fail-closed or non-target outside it. It is not a universal fanout solver.",
+      "PostgreSQL ANALYZE runs as environment preparation before reader planning, outside SqlSafetyService, the cost gate, the executor and the request path, so EXPLAIN costs are deterministic and excluded from request latency.",
+      "Reference SQL, fixtures and expected results are evaluator-only and never enter the model request; correctness is execution-based semantic correctness, not SQL string or AST equality.",
+      "These are results on a frozen 90-case synthetic governed benchmark under a documented one-shot contract, not general Text-to-SQL accuracy, production accuracy or universal SQL safety.",
+    ],
+  },
 } satisfies Record<string, ArchitectureDefinition>;
 
 export function getProjectArchitecture(projectId: string) {

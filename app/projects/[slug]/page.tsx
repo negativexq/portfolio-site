@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
 import { CommerceProjectCaseStudy } from "@/components/content/commerce-project-case-study";
+import { DecisionSqlCaseStudy } from "@/components/content/decision-sql-case-study";
 import { DbtFeatureLineageCaseStudy } from "@/components/content/dbt-feature-lineage-case-study";
 import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
@@ -16,6 +17,7 @@ import { StatusBadge } from "@/components/content/status-badge";
 import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
 import { dbtFeatureLineageMeta } from "@/data/dbt-feature-lineage";
+import { decisionSqlMeta, decisionSqlProjectUrl } from "@/data/decision-sql";
 import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
 import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
 import { knowledgeBaseRagMeta, knowledgeBaseRagProjectUrl } from "@/data/knowledge-base-rag";
@@ -134,6 +136,26 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
+  if (project.id === "decision-sql") {
+    return {
+      title: decisionSqlMeta.title,
+      description: decisionSqlMeta.description,
+      keywords: [...decisionSqlMeta.keywords],
+      alternates: { canonical: decisionSqlProjectUrl },
+      openGraph: {
+        type: "article",
+        url: decisionSqlProjectUrl,
+        title: decisionSqlMeta.title,
+        description: decisionSqlMeta.description,
+      },
+      twitter: {
+        card: "summary",
+        title: decisionSqlMeta.title,
+        description: decisionSqlMeta.description,
+      },
+    };
+  }
+
   if (project.id === "dbt-feature-lineage") {
     const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
     return {
@@ -215,6 +237,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             ? [...modelOpsMeta.keywords]
           : project.id === "knowledge-base-rag"
             ? [...knowledgeBaseRagMeta.keywords]
+          : project.id === "decision-sql"
+            ? [...decisionSqlMeta.keywords]
           : undefined,
     author: {
       "@type": "Person",
@@ -255,6 +279,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <KnowledgeBaseRagCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "decision-sql") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <DecisionSqlCaseStudy project={project} />
       </>
     );
   }
