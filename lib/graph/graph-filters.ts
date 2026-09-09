@@ -17,12 +17,17 @@ export const GRAPH_FILTERS: readonly {
   { id: "domains", label: "Domains" },
 ];
 
+// Concepts and evidence are per-project leaf nodes: ~97% of concept nodes and
+// every evidence node connect to exactly one project, so on first load they
+// bury the connective backbone (projects, shared technologies, domains,
+// experience, learning) under single-project tags. They start hidden and stay
+// one toggle away; the data model and machine-readable graph are unchanged.
 export const DEFAULT_GRAPH_FILTERS: GraphFilterState = {
   projects: true,
   technologies: true,
-  concepts: true,
+  concepts: false,
   experience: true,
-  evidence: true,
+  evidence: false,
   learning: true,
   domains: true,
 };
