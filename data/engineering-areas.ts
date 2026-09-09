@@ -38,7 +38,7 @@ export const engineeringAreas = [
     description:
       "Batch and near-real-time pipelines, transformation systems, quality controls and data lineage.",
     technologies: ["dbt", "Airflow", "Oracle", "sqlglot", "NetworkX"],
-    evidenceProjectIds: ["dbt-feature-lineage", "real-time-commerce-platform"],
+    evidenceProjectIds: ["decision-sql", "dbt-feature-lineage", "real-time-commerce-platform"],
     evidenceExperienceIds: ["fibabanka"],
   },
   {

@@ -29,6 +29,7 @@ const projectAnchors: Record<string, { x: number; y: number }> = {
   "agentic-customer-service-platform": { x: 5.6, y: 4.4 },
   "repo-context-forge": { x: 5.3, y: 1.4 },
   "dbt-feature-lineage": { x: -5.3, y: 1.4 },
+  "decision-sql": { x: -4.6, y: 3.9 },
   "terraform-docker-infrastructure-lab": { x: -2.8, y: -4.5 },
 };
 

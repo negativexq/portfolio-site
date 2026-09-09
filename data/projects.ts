@@ -516,7 +516,7 @@ const projectRecords = [
   {
     id: "real-time-commerce-platform",
     slug: "real-time-commerce-platform",
-    order: 4,
+    order: 5,
     title: "Real-Time Commerce Platform",
     category: "Distributed Systems / Streaming",
     status: "current",
@@ -626,7 +626,7 @@ const projectRecords = [
   {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 6,
+    order: 7,
     title: "Repo Context Forge",
     category: "Agent Infrastructure / Developer Tooling",
     status: "current",
@@ -678,7 +678,7 @@ const projectRecords = [
   {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 7,
+    order: 8,
     title: "dbt Feature Lineage",
     category: "Data Engineering / Lineage",
     status: "current",
@@ -770,7 +770,7 @@ const projectRecords = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 8,
+    order: 9,
     title: "Production RAG Platform",
     category: "Generative AI / Retrieval",
     status: "current",
@@ -814,7 +814,7 @@ const projectRecords = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 9,
+    order: 10,
     title: "Terraform Docker Infrastructure Lab",
     category: "Infrastructure as Code / Platform Engineering",
     status: "current",
@@ -874,7 +874,7 @@ const projectRecords = [
   {
     id: "cause-tune",
     slug: "cause-tune",
-    order: 5,
+    order: 6,
     title: "CauseTune",
     category: "Model Training / Fine-Tuning",
     status: "current",
@@ -1008,6 +1008,164 @@ const projectRecords = [
     roadmap: emptyRoadmap,
     relationships: [],
     githubUrl: "https://github.com/negativexq/cause-tune",
+  },
+  {
+    id: "decision-sql",
+    slug: "decision-sql",
+    order: 4,
+    title: "DecisionSQL",
+    category: "Structured Data / Governed Text-to-SQL",
+    status: "current",
+    flagship: true,
+    showCardProof: true,
+    cardProof: {
+      label: "Execution authority",
+      value: "SERVER-OWNED",
+      scope: "Model proposes SQL · deterministic admission decides",
+      qualifier:
+        "An ANSWER + SQL submission crosses a deterministic parse, policy, grain, EXPLAIN, cost and QueryPlan boundary before a read-only executor runs it. On the M48B.2 answerable funnel there were 0 parse, policy, semantic or cost rejections and 0 execution failures, with no unsafe raw fallback.",
+    },
+    summary:
+      "Governed one-shot Text-to-SQL for enterprise analytics: the model emits one typed decision, deterministic software owns SQL admission and read-only execution, and correctness is measured by execution against counterfactual database states.",
+    directAnswer:
+      "DecisionSQL is a governed one-shot Text-to-SQL system and execution-based benchmark where the model proposes a single typed decision — an answer with read-only SQL, a clarification, or an authority/policy block — and deterministic software owns parsing, policy, grain safety, cost admission and restricted execution before any SQL reaches PostgreSQL.",
+    whyItExists:
+      "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, semantically correct and safe to run: it keeps model proposal and execution authority separate, evaluates governance apart from query execution because some cases should refuse SQL entirely, and scores correctness by execution against counterfactual states rather than string similarity.",
+    heroMetrics: [
+      {
+        value: "78 / 90 = 86.7%",
+        label: "Governed task success",
+        context: "M48B.2 · frozen 90-case synthetic benchmark",
+        detail: "One-shot governed decisions on a frozen synthetic governed benchmark. Not general Text-to-SQL accuracy or production accuracy.",
+      },
+      {
+        value: "0 / 15",
+        label: "Unauthorized answers",
+        context: "Authority blocks held 15/15",
+        detail: "Every authority-blocked case that could not be answered through authorized relationships was refused; no unauthorized data was returned.",
+      },
+      {
+        value: "51 / 53 = 96.2%",
+        label: "Conditional runtime correctness",
+        context: "Given the model chose ANSWER",
+        detail: "Of the answerable cases where the model committed to ANSWER + SQL, runtime execution matched the result contract on the BASE state and across counterfactual states.",
+      },
+      {
+        value: "190 / 190",
+        label: "Mutants killed",
+        context: "Execution-based semantic evaluation · 0 surviving",
+        detail: "120/120 reference witnesses and 184/184 counterfactual fixture comparisons; mutants are intentionally wrong behaviours used to prove the fixtures discriminate semantic errors.",
+      },
+    ],
+    highlights: [
+      {
+        title: "The model proposes, deterministic software admits",
+        description:
+          "Problem: a model can emit plausible SQL that is unauthorized, unbounded or semantically wrong. Solution: an ANSWER + SQL submission crosses sqlglot parsing, SQL/object/function policy, grain-safety validation, PostgreSQL EXPLAIN, a cost gate and an accepted immutable QueryPlan before a restricted read-only executor runs it — 0 unsafe raw fallback, and the executor never accepts SQL directly from the model.",
+      },
+      {
+        title: "Governance is evaluated apart from execution",
+        description:
+          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is measured separately — authority 15/15 with 0 unauthorized answers, policy 6/6, ambiguity 6/9.",
+      },
+      {
+        title: "Correctness is execution-based, not string match",
+        description:
+          "Problem: on one database state wrong SQL can accidentally return the right rows. Solution: two independent reference witnesses, a typed ResultContract and counterfactual fixtures that change distributions so wrong semantics diverge — 190/190 mutants killed with 0 surviving across 184 fixture comparisons.",
+      },
+      {
+        title: "Server-owned grain safety",
+        description:
+          "Problem: joining a parent to many children can silently triple a SUM. Solution: fanout is a server-owned semantic contract with a deliberately narrow deterministic normalizer for the supported additive-parent, declared-1:N shape — 4/4 PARENT_MEASURE_FANOUT states normalized at 100% precision, 0 regressions, and normalized SQL still re-passes parse, policy, EXPLAIN and cost.",
+      },
+      {
+        title: "One-shot by design, provenance under discipline",
+        description:
+          "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or reflection, so model decision errors and server enforcement stay observable. The 90-response corpus was assembled with 0 retries and 0 duplicate attempts, request-hash compatibility verified, under a frozen prompt and planner-statistics contract.",
+      },
+    ],
+    technologies: [
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "SQLAlchemy",
+      "Alembic",
+      "sqlglot",
+      "Pydantic",
+      "pytest",
+      "Ruff",
+      "Mypy",
+      "OpenTelemetry",
+      "Docker Compose",
+    ],
+    concepts: [
+      "Governed Text-to-SQL",
+      "Typed Decision Contract",
+      "Deterministic Admission Boundary",
+      "SQL Parsing & Policy",
+      "Accepted QueryPlan",
+      "Restricted Read-Only Execution",
+      "Server-Owned Grain Safety",
+      "Grain-Safe Normalization",
+      "Execution-Based Evaluation",
+      "Counterfactual Fixtures",
+      "Mutation Testing",
+      "Cost Admission Gate",
+      "Deterministic Planner State",
+      "One-Shot Evaluation",
+      "Authority Enforcement",
+      "Policy Enforcement",
+      "Ambiguity Handling",
+      "Reproducible Benchmark",
+      "Observability",
+    ],
+    proofPoints: [
+      {
+        label: "Governed task success",
+        value: "78/90 = 86.7% governed task success",
+        scope: "M48B.2 · frozen 90-case synthetic governed benchmark",
+        qualifier:
+          "One-shot governed decisions under the documented runtime contract. Answerable end-to-end runtime task success accuracy was 51/60 = 85.0%. These are frozen synthetic benchmark results, not general or production Text-to-SQL accuracy.",
+      },
+      {
+        label: "Authority containment",
+        value: "15/15 authority · 0 unauthorized answers",
+        scope: "Governance evaluated separately from execution",
+        qualifier:
+          "Policy scored 6/6 and ambiguity 6/9; the three governance residuals are all in the ambiguity category. No authority-blocked case returned unauthorized data.",
+      },
+      {
+        label: "Runtime admission boundary",
+        value: "0 parse / policy / semantic / cost rejections · 0 execution failures",
+        scope: "Answerable funnel · 53 ANSWER submissions",
+        qualifier:
+          "Across the 53 cases where the model chose ANSWER, every submission passed parse, policy, semantic admission, cost and execution; 2 result mismatches remained, giving 51/53 = 96.2% conditional runtime correctness.",
+      },
+      {
+        label: "Server-owned grain normalization",
+        value: "4/4 fanout states normalized · 100% precision",
+        scope: "PARENT_MEASURE_FANOUT · supported shape only",
+        qualifier:
+          "0 normalization regressions, 0 unauthorized relationships introduced, 0 unsafe raw fallback. Outside the frozen additive-parent, declared-1:N shape the normalizer stays fail-closed; this is not universal grain repair.",
+      },
+      {
+        label: "Semantic discrimination",
+        value: "190/190 mutants killed · 0 surviving",
+        scope: "Execution-based evaluation · counterfactual fixtures",
+        qualifier:
+          "120/120 reference witnesses and 184/184 semantic fixture comparisons with 0 invalid mutants. Reference SQL is evidence of a valid implementation, never a canonical string the model must reproduce.",
+      },
+      {
+        label: "Branch-complete harness",
+        value: "360/360 scenarios · 16/16 truth × decision classes",
+        scope: "Validated before the remaining responses were generated",
+        qualifier:
+          "90 cases across 4 valid decisions, exercising 90 ANSWER runtime routes and 270 non-ANSWER bypasses, so a wrong model decision still produces a typed outcome instead of a harness crash.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/decision-sql",
   },
 ] satisfies readonly Project[];
 

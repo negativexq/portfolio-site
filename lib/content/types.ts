@@ -7,6 +7,7 @@ export type ProjectCategory =
   | "Generative AI / RAG Platform"
   | "MLOps / AI Platform"
   | "Model Training / Fine-Tuning"
+  | "Structured Data / Governed Text-to-SQL"
   | "Agent Infrastructure / Developer Tooling"
   | "Data Engineering / Lineage"
   | "Generative AI / Retrieval"
