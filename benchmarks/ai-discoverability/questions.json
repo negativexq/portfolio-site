@@ -80,15 +80,6 @@
     }
   },
   {
-    "id": "project-tech-modelops-control-plane",
-    "question": "What technologies does the \"ModelOps Control Plane\" project use?",
-    "source": {
-      "type": "project-technologies",
-      "id": "modelops-control-plane",
-      "slug": "modelops-control-plane"
-    }
-  },
-  {
     "id": "project-tech-knowledge-base-rag",
     "question": "What technologies does the \"Knowledge Base RAG\" project use?",
     "source": {
@@ -98,12 +89,39 @@
     }
   },
   {
+    "id": "project-tech-modelops-control-plane",
+    "question": "What technologies does the \"ModelOps Control Plane\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "modelops-control-plane",
+      "slug": "modelops-control-plane"
+    }
+  },
+  {
+    "id": "project-tech-decision-sql",
+    "question": "What technologies does the \"DecisionSQL\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "decision-sql",
+      "slug": "decision-sql"
+    }
+  },
+  {
     "id": "project-tech-real-time-commerce-platform",
     "question": "What technologies does the \"Real-Time Commerce Platform\" project use?",
     "source": {
       "type": "project-technologies",
       "id": "real-time-commerce-platform",
       "slug": "real-time-commerce-platform"
+    }
+  },
+  {
+    "id": "project-tech-cause-tune",
+    "question": "What technologies does the \"CauseTune\" project use?",
+    "source": {
+      "type": "project-technologies",
+      "id": "cause-tune",
+      "slug": "cause-tune"
     }
   },
   {
@@ -161,6 +179,24 @@
     }
   },
   {
+    "id": "project-proof-knowledge-base-rag",
+    "question": "What measured evidence or metric backs the \"Knowledge Base RAG\" project?",
+    "source": {
+      "type": "project-proof",
+      "id": "knowledge-base-rag",
+      "slug": "knowledge-base-rag"
+    }
+  },
+  {
+    "id": "project-concepts-knowledge-base-rag",
+    "question": "What engineering concepts does \"Knowledge Base RAG\" demonstrate?",
+    "source": {
+      "type": "project-concepts",
+      "id": "knowledge-base-rag",
+      "slug": "knowledge-base-rag"
+    }
+  },
+  {
     "id": "project-proof-modelops-control-plane",
     "question": "What measured evidence or metric backs the \"ModelOps Control Plane\" project?",
     "source": {
@@ -179,21 +215,21 @@
     }
   },
   {
-    "id": "project-proof-knowledge-base-rag",
-    "question": "What measured evidence or metric backs the \"Knowledge Base RAG\" project?",
+    "id": "project-proof-decision-sql",
+    "question": "What measured evidence or metric backs the \"DecisionSQL\" project?",
     "source": {
       "type": "project-proof",
-      "id": "knowledge-base-rag",
-      "slug": "knowledge-base-rag"
+      "id": "decision-sql",
+      "slug": "decision-sql"
     }
   },
   {
-    "id": "project-concepts-knowledge-base-rag",
-    "question": "What engineering concepts does \"Knowledge Base RAG\" demonstrate?",
+    "id": "project-concepts-decision-sql",
+    "question": "What engineering concepts does \"DecisionSQL\" demonstrate?",
     "source": {
       "type": "project-concepts",
-      "id": "knowledge-base-rag",
-      "slug": "knowledge-base-rag"
+      "id": "decision-sql",
+      "slug": "decision-sql"
     }
   },
   {
