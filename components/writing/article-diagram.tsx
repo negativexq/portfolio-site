@@ -1305,6 +1305,46 @@ function FrozenChangeControlDiagram() {
   );
 }
 
+function GrainFanoutNormalizationDiagram() {
+  const marker = "grain-fanout-arrow";
+  return (
+    <DiagramFrame
+      id="grain-fanout-normalization"
+      title="Server-owned grain safety for a parent measure under fanout"
+      description="Joining one parent row to several child rows through a one-to-many relationship duplicates the parent, so a naive SUM over the parent measure counts it once per child. A server-owned grain contract, not the model, detects this PARENT_MEASURE_FANOUT. Inside a narrow supported shape a deterministic normalizer preaggregates on the child side so the parent is joined once and the measure is counted once. Outside that shape it stays fail-closed. Normalized SQL is never trusted automatically: it re-passes parse, policy, EXPLAIN and the cost gate, with no raw unsafe fallback."
+      caption="The join is correct and the number is still wrong. A server-owned grain contract, not the model, decides when a deterministic child-side preaggregation is safe, and stays fail-closed everywhere else."
+      height={372}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={24} y={30} anchor="start">ONE PARENT MEASURE, A ONE-TO-MANY JOIN</Label>
+      <Node x={24} y={48} width={196} height={64} lines={["order #A1", "amount 100"]} />
+      <Node x={256} y={48} width={196} height={64} lines={["order_lines", "3 child rows"]} />
+      <Node x={500} y={48} width={352} height={64} lines={["naive SUM(order.amount) = 300", "the parent counted 3x"]} tone="stop" />
+      <Arrow d="M220 80 H251" marker={marker} />
+      <Arrow d="M452 80 H495" marker={marker} />
+
+      <Label x={24} y={134} anchor="start">SERVER-OWNED GRAIN CONTRACT, NOT THE MODEL</Label>
+      <Node x={24} y={150} width={300} height={64} lines={["GrainSafetyValidator", "detects PARENT_MEASURE_FANOUT"]} />
+      <Node x={560} y={150} width={292} height={64} lines={["outside the supported shape", "fail-closed / non-target"]} tone="stop" />
+      <Arrow d="M324 182 H555" marker={marker} dashed />
+
+      <Label x={24} y={236} anchor="start">SUPPORTED SHAPE: ADDITIVE PARENT + DECLARED 1:N + LEFT JOIN FANOUT</Label>
+      <Node x={24} y={252} width={236} height={64} lines={["child-side", "preaggregation"]} tone="accent" />
+      <Node x={296} y={252} width={196} height={64} lines={["join parent", "once"]} />
+      <Node x={536} y={252} width={316} height={64} lines={["SUM(order.amount) = 100", "counted once"]} tone="accent" />
+      <Arrow d="M174 214 V233 H142 V252" marker={marker} />
+      <Arrow d="M260 284 H291" marker={marker} />
+      <Arrow d="M492 284 H531" marker={marker} />
+
+      <rect className="diagram-result" x={150} y={330} width={580} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={346} textAnchor="middle">
+        Normalized SQL re-passes parse, policy, EXPLAIN and cost. No raw unsafe fallback.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1323,6 +1363,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "reranker-tradeoff": RerankerTradeoffDiagram,
   "agent-authority-boundary": AgentAuthorityBoundaryDiagram,
   "frozen-change-control": FrozenChangeControlDiagram,
+  "grain-fanout-normalization": GrainFanoutNormalizationDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

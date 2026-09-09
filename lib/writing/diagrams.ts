@@ -16,6 +16,7 @@ export const WRITING_DIAGRAM_IDS = [
   "reranker-tradeoff",
   "agent-authority-boundary",
   "frozen-change-control",
+  "grain-fanout-normalization",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
