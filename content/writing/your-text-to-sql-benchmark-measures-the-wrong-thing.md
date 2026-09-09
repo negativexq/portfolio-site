@@ -4,7 +4,7 @@ description: "Exact-match and single-state checks pass wrong SQL that happens to
 slug: your-text-to-sql-benchmark-measures-the-wrong-thing
 datePublished: 2026-09-09
 dateModified: 2026-09-09
-category: Data Engineering
+category: Governed Text-to-SQL
 tags:
   - Data Engineering
   - SQL

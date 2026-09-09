@@ -27,6 +27,12 @@ export const writingTopics = [
       "Model lifecycle as a control-plane problem — progressive delivery, delayed quality feedback, policy-driven promotion and reconciliation.",
   },
   {
+    slug: "text-to-sql",
+    title: "Governed Text-to-SQL",
+    description:
+      "Turning a natural-language request into a query that is allowed to run: deterministic SQL admission, server-owned grain safety and execution-based evaluation over changing states.",
+  },
+  {
     slug: "retrieval",
     title: "Retrieval & RAG",
     description:

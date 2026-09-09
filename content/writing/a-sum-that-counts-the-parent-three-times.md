@@ -4,7 +4,7 @@ description: "A join to a one-to-many child table can silently triple a parent m
 slug: a-sum-that-counts-the-parent-three-times
 datePublished: 2026-09-09
 dateModified: 2026-09-09
-category: Data Engineering
+category: Governed Text-to-SQL
 tags:
   - Data Engineering
   - SQL
