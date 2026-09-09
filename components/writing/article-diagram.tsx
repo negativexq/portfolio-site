@@ -1345,6 +1345,50 @@ function GrainFanoutNormalizationDiagram() {
   );
 }
 
+function ExecutionBasedEvaluationDiagram() {
+  const marker = "execution-eval-arrow";
+  return (
+    <DiagramFrame
+      id="execution-based-evaluation"
+      title="Why execution-based evaluation needs more than one database state"
+      description="On a single BASE database state, wrong SQL can accidentally return the same rows as correct SQL, so exact-match or single-state checks pass it. A counterfactual fixture changes the rows or distribution so the two semantics diverge: the wrong query fails the typed ResultContract while the correct query still satisfies it across states. Mutation testing proves the fixtures actually discriminate: 190 intentionally wrong mutants, 190 killed, 0 surviving, against 120 reference witnesses and 184 fixture comparisons with 0 invalid mutants. Correctness is execution across states, not one gold SQL string."
+      caption="One database state can hide a wrong query. Counterfactual fixtures make the semantics diverge, and mutation testing proves the fixtures can tell right from wrong."
+      height={510}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={30} anchor="start">ONE DATABASE STATE HIDES WRONG SEMANTICS</Label>
+      <Node x={28} y={48} width={200} height={64} lines={["candidate SQL"]} />
+      <Node x={278} y={48} width={200} height={64} lines={["BASE state", "one distribution"]} />
+      <Node x={536} y={48} width={316} height={64} lines={["returns the right rows", "this state can't tell them apart"]} tone="muted" />
+      <Arrow d="M228 80 H273" marker={marker} />
+      <Arrow d="M478 80 H531" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="152" x2="852" y2="152" />
+
+      <Label x={28} y={180} anchor="start">A COUNTERFACTUAL FIXTURE MAKES SEMANTICS DIVERGE</Label>
+      <Node x={28} y={206} width={248} height={64} lines={["counterfactual fixture", "changes rows / distribution"]} />
+      <Node x={340} y={176} width={300} height={52} lines={["wrong SQL diverges", "fails the ResultContract"]} tone="stop" />
+      <Node x={340} y={250} width={300} height={52} lines={["correct SQL holds", "still satisfies the contract"]} tone="accent" />
+      <Arrow d="M276 238 H300 V202 H337" marker={marker} />
+      <Arrow d="M276 238 H300 V276 H337" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="330" x2="852" y2="330" />
+
+      <Label x={28} y={358} anchor="start">MUTATION TESTING PROVES THE FIXTURES DISCRIMINATE</Label>
+      <Node x={28} y={376} width={220} height={64} lines={["190 mutants", "intentionally wrong"]} />
+      <Node x={308} y={376} width={248} height={64} lines={["190 killed", "0 surviving"]} tone="accent" />
+      <Node x={584} y={376} width={268} height={64} lines={["120 witnesses · 184 fixtures", "0 invalid mutants"]} />
+      <Arrow d="M248 408 H303" marker={marker} />
+
+      <rect className="diagram-result" x={150} y={468} width={580} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={484} textAnchor="middle">
+        Correctness is execution across states, not one gold SQL string.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1364,6 +1408,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "agent-authority-boundary": AgentAuthorityBoundaryDiagram,
   "frozen-change-control": FrozenChangeControlDiagram,
   "grain-fanout-normalization": GrainFanoutNormalizationDiagram,
+  "execution-based-evaluation": ExecutionBasedEvaluationDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {
