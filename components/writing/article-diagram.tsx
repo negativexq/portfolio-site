@@ -1389,6 +1389,58 @@ function ExecutionBasedEvaluationDiagram() {
   );
 }
 
+function SqlAdmissionQueryPlanDiagram() {
+  const marker = "sql-admission-arrow";
+  return (
+    <DiagramFrame
+      id="sql-admission-queryplan"
+      title="How an accepted QueryPlan, not raw SQL, reaches the executor"
+      description="The model's ANSWER + SQL is an untrusted proposal. It crosses an admission chain of deterministic gates: sqlglot parse, SQL and object policy, server-owned grain safety, PostgreSQL EXPLAIN and a cost gate. Only after clearing them does the SQL safety service issue an accepted, immutable QueryPlan, and the restricted read-only executor runs that plan under a reader role, a statement timeout and bounded rows. The executor accepts a QueryPlan, never raw SQL: a query submitted directly by the model, the normalizer or the evaluator carries no accepted plan, so it is refused. Execution is a capability the safety service grants, not a string the model emits."
+      caption="The admission chain ends in a capability object. The executor runs an accepted QueryPlan and refuses raw SQL from anyone, so passing every gate is the only path to execution."
+      height={500}
+    >
+      <ArrowMarker id={marker} />
+
+      <Label x={28} y={28} anchor="start">ADMISSION CHAIN: EVERY GATE BEFORE EXECUTION</Label>
+      <Node x={28} y={46} width={176} height={52} lines={["ANSWER + SQL", "untrusted proposal"]} />
+      <Node x={228} y={46} width={146} height={52} lines={["sqlglot parse"]} />
+      <Node x={398} y={46} width={146} height={52} lines={["SQL / object", "policy"]} />
+      <Node x={568} y={46} width={146} height={52} lines={["grain safety"]} />
+      <Arrow d="M204 72 H227" marker={marker} />
+      <Arrow d="M374 72 H397" marker={marker} />
+      <Arrow d="M544 72 H567" marker={marker} />
+
+      <Node x={228} y={138} width={146} height={52} lines={["PostgreSQL", "EXPLAIN"]} />
+      <Node x={398} y={138} width={146} height={52} lines={["cost gate"]} />
+      <Node x={592} y={138} width={260} height={52} lines={["accepted QueryPlan", "immutable, safety-service issued"]} tone="accent" />
+      <Arrow d="M641 98 V118 H301 V138" marker={marker} />
+      <Arrow d="M374 164 H397" marker={marker} />
+      <Arrow d="M544 164 H587" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="224" x2="852" y2="224" />
+
+      <Label x={28} y={250} anchor="start">THE EXECUTOR RUNS A QUERYPLAN, NOT SQL</Label>
+      <Node x={40} y={272} width={250} height={64} lines={["accepted QueryPlan", "the only thing it runs"]} tone="accent" />
+      <Node x={330} y={272} width={300} height={64} lines={["restricted read-only executor", "reader role, statement timeout, bounded rows"]} />
+      <Node x={670} y={272} width={182} height={64} lines={["bounded result"]} tone="accent" />
+      <Arrow d="M290 304 H325" marker={marker} />
+      <Arrow d="M630 304 H665" marker={marker} />
+
+      <line className="diagram-divider" x1="28" y1="360" x2="852" y2="360" />
+
+      <Label x={28} y={386} anchor="start">RAW SQL FROM ANYONE ELSE IS REFUSED</Label>
+      <Node x={40} y={404} width={330} height={52} lines={["raw SQL from the model,", "the normalizer or the evaluator"]} />
+      <Node x={470} y={404} width={382} height={52} lines={["carries no accepted QueryPlan", "the executor refuses it"]} tone="stop" />
+      <Arrow d="M370 430 H465" marker={marker} dashed />
+
+      <rect className="diagram-result" x={150} y={470} width={580} height={22} rx="6" />
+      <text className="diagram-result-text" x={440} y={486} textAnchor="middle">
+        Execution is a capability the safety service grants, not a string the model emits.
+      </text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1409,6 +1461,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "frozen-change-control": FrozenChangeControlDiagram,
   "grain-fanout-normalization": GrainFanoutNormalizationDiagram,
   "execution-based-evaluation": ExecutionBasedEvaluationDiagram,
+  "sql-admission-queryplan": SqlAdmissionQueryPlanDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

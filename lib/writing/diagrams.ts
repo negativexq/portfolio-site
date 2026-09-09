@@ -18,6 +18,7 @@ export const WRITING_DIAGRAM_IDS = [
   "frozen-change-control",
   "grain-fanout-normalization",
   "execution-based-evaluation",
+  "sql-admission-queryplan",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
