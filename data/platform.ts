@@ -72,7 +72,7 @@ export const platformNodes = [
     architectureDescription: "Governed access to structured data",
     decision: "The model proposes SQL. Deterministic software decides what may execute.",
     evidence: [
-      "155/180 = 86.11% governed task success",
+      "160/180 = 88.89% governed task success",
       "28/30 authority · unauthorized relation blocked before DB access",
       "180-case benchmark · 12 synthetic domains",
     ],
@@ -83,7 +83,7 @@ export const platformNodes = [
     ],
     details: {
       nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention. These are synthetic benchmark results, not production accuracy.",
-      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction. 86.11% is synthetic benchmark accuracy, not production accuracy.",
+      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction. 88.89% is synthetic benchmark accuracy, not production accuracy.",
       flow: ["schema retrieval", "semantic resolution", "SQL proposal", "sqlglot AST validation", "global policy", "request-scoped authority", "EXPLAIN cost gate", "read-only execution", "result validation"],
     },
   },

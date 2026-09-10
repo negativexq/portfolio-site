@@ -122,9 +122,9 @@ export const decisionSqlEngineeringDecisions = [
 export const decisionSqlGovernedModel = [
   {
     behavior: "ANSWERABLE",
-    cases: "120",
+    cases: "122",
     expected: "ANSWER + one read-only SELECT",
-    result: "103 / 120 runtime TSA correct",
+    result: "108 / 122 runtime TSA correct",
   },
   {
     behavior: "AUTHORITY_BLOCKED",
@@ -134,9 +134,9 @@ export const decisionSqlGovernedModel = [
   },
   {
     behavior: "AMBIGUOUS",
-    cases: "18",
+    cases: "16",
     expected: "NEEDS_CLARIFICATION",
-    result: "12 / 18",
+    result: "12 / 16",
   },
   {
     behavior: "POLICY_BLOCKED",
@@ -149,13 +149,13 @@ export const decisionSqlGovernedModel = [
 export const decisionSqlEvidence = [
   {
     area: "Governed task success",
-    result: "155 / 180 = 86.11%",
+    result: "160 / 180 = 88.89%",
     detail:
-      "One-shot governed decisions across four behavior classes on one 180-case benchmark spanning 12 synthetic domains. 25 governed misses overall.",
+      "One-shot governed decisions across four behavior classes on one 180-case benchmark spanning 12 synthetic domains. 20 governed misses overall.",
   },
   {
     area: "Answerable runtime TSA",
-    result: "103 / 120 = 85.83%",
+    result: "108 / 122 = 88.52%",
     detail:
       "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual.",
   },
@@ -167,9 +167,9 @@ export const decisionSqlEvidence = [
   },
   {
     area: "Governance blocks",
-    result: "policy 12 / 12 · ambiguity 12 / 18",
+    result: "policy 12 / 12 · ambiguity 12 / 16",
     detail:
-      "Policy blocking is exact at 100%; ambiguity recognition is the weaker axis at 66.67%. Refusing SQL is a measured, expected outcome on these cases.",
+      "Policy blocking is exact at 100%; ambiguity recognition is the weaker axis at 75.00%. Refusing SQL is a measured, expected outcome on these cases.",
   },
   {
     area: "Execution boundary",

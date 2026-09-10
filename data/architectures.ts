@@ -1043,7 +1043,7 @@ const architectures = {
           },
           {
             id: "score",
-            nodes: [{ id: "score", label: "Governed Task Success", subtitle: "155 / 180 on the benchmark", variant: "output" }],
+            nodes: [{ id: "score", label: "Governed Task Success", subtitle: "160 / 180 on the benchmark", variant: "output" }],
           },
         ],
       },

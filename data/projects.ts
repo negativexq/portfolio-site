@@ -1033,9 +1033,9 @@ const projectRecords = [
       "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, semantically correct and safe to run: it keeps model proposal and execution authority separate, evaluates governance apart from query execution because some cases should refuse SQL entirely, and scores correctness by execution against counterfactual states rather than string similarity.",
     heroMetrics: [
       {
-        value: "155 / 180",
+        value: "160 / 180",
         label: "Governed task success",
-        context: "86.11% · 180-case governed benchmark",
+        context: "88.89% · 180-case governed benchmark",
         detail: "One-shot governed decisions across 12 synthetic domains. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
       },
       {
@@ -1045,15 +1045,15 @@ const projectRecords = [
         detail: "Two cases where the model wrongly chose ANSWER on an authority-blocked request; request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       },
       {
-        value: "103 / 120",
+        value: "108 / 122",
         label: "Answerable runtime TSA",
-        context: "85.83% · BASE + counterfactual",
+        context: "88.52% · BASE + counterfactual",
         detail: "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state.",
       },
       {
         value: "12 / 12",
         label: "Policy blocks",
-        context: "100% · ambiguity 12/18 = 66.67%",
+        context: "100% · ambiguity 12/16 = 75.00%",
         detail: "Policy-blocked cases were refused exactly; ambiguity recognition is the weaker governance axis. Refusing SQL is a measured outcome, not a failure.",
       },
     ],
@@ -1066,7 +1066,7 @@ const projectRecords = [
       {
         title: "Governance is scored apart from execution",
         description:
-          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is scored separately — authority 28/30, policy 12/12, ambiguity 12/18. When the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
+          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is scored separately — authority 28/30, policy 12/12, ambiguity 12/16. When the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       },
       {
         title: "Correctness is execution-based, not string match",
@@ -1121,14 +1121,14 @@ const projectRecords = [
     proofPoints: [
       {
         label: "Governed task success",
-        value: "155/180 = 86.11% governed task success",
+        value: "160/180 = 88.89% governed task success",
         scope: "180-case governed benchmark · 12 synthetic domains",
         qualifier:
           "One-shot governed decisions across four behavior classes on one synthetic benchmark. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
       },
       {
         label: "Answerable runtime correctness",
-        value: "103/120 = 85.83% answerable runtime TSA",
+        value: "108/122 = 88.52% answerable runtime TSA",
         scope: "BASE + counterfactual execution",
         qualifier:
           "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual, which is why a single state is not enough.",
@@ -1142,7 +1142,7 @@ const projectRecords = [
       },
       {
         label: "Governance split",
-        value: "policy 12/12 = 100% · ambiguity 12/18 = 66.67%",
+        value: "policy 12/12 = 100% · ambiguity 12/16 = 75.00%",
         scope: "governance blocks scored separately from execution",
         qualifier:
           "Policy blocking is exact; ambiguity recognition is the weaker axis. Refusing to write SQL is a measured, expected outcome on the governance cases, not a failure.",
