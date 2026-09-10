@@ -29,7 +29,7 @@ DecisionSQL treats the model's `ANSWER + SQL` as a proposal and puts a determini
 
 ## A proposal is not permission
 
-The selected SQL does not run because it parsed. It runs, if it runs at all, after clearing an ordered chain of deterministic gates, each of which can reject it: `sqlglot` parse, then SQL and object policy, then server-owned grain safety, then a PostgreSQL `EXPLAIN`, then a cost gate. Parse enforces a single read-only statement. Policy enforces governed object access, function restrictions and complexity limits. Grain safety checks that a parent measure is not about to be multiplied by a fanout join. `EXPLAIN` and the cost gate reject a query whose planned cost or row count exceeds the frozen limits before a single row is read.
+The selected SQL does not run because it parsed. It runs, if it runs at all, after clearing an ordered chain of deterministic gates, each of which can reject it: `sqlglot` parse, then global SQL and object policy, then request-scoped relation authority, then server-owned grain safety, then a PostgreSQL `EXPLAIN`, then a cost gate. Parse enforces a single read-only statement. Global policy answers whether an object is queryable by the service at all. Request-scoped authority answers a different question: whether *this* request may use it. The server derives an immutable relation-level authority from the same governed schema context the model saw, structurally extracts the query's real table dependencies, and rejects an unauthorized relation before any database connection. Grain safety checks that a parent measure is not about to be multiplied by a fanout join. `EXPLAIN` and the cost gate reject a query whose planned cost or row count exceeds the frozen limits before a single row is read.
 
 None of these gates trusts the previous one to have been generous. Each is a separate check with its own reason to say no, and a query that fails any of them stops there.
 
@@ -47,9 +47,9 @@ That matters most for the normalizer, which rewrites SQL to fix fanout. A rewrit
 
 ## What the funnel actually shows
 
-When the boundary works, the failures move somewhere honest. On the frozen benchmark's answerable slice, 53 of the cases where the model chose to answer produced SQL, and across those 53 the admission chain recorded 0 parse rejections, 0 policy rejections, 0 semantic rejections, 0 cost rejections and 0 execution failures. Two results were wrong on their merits, which leaves conditional runtime correctness at 51 of 53, or 96.2%.
+When the boundary works, the failures move somewhere honest. The clearest case on the benchmark is `telecom_15`: the model was given an authority-blocked request and wrongly chose to answer, proposing a `SELECT` against a relation it was not authorized to use. That is a real governance mistake, and it counts as one. But the query never reached PostgreSQL. Request-scoped relation authority returned an authorization rejection with zero database connection, zero `EXPLAIN` and zero execution. The model's decision was wrong; the unsafe SQL was still stopped before it touched data.
 
-The useful reading of that is where the remaining error is not. It is not in parsing, policy, cost admission or execution infrastructure. The bottleneck is model decisioning: whether the model chose to answer at all, and whether the query it wrote meant the right thing. The admission chain did its job, which is to make sure a wrong query fails as a wrong answer rather than as an unsafe execution.
+That is the useful reading. A wrong answer stays a wrong answer, scored against the model, while the runtime keeps it from becoming an unsafe execution. The remaining errors on the benchmark cluster in model decisioning and SQL semantics, not in whether an unauthorized or unbounded query can slip through to the database. The admission chain does exactly one job, and it is not to make the model correct.
 
 ## Why authority belongs in the plan, not the prompt
 

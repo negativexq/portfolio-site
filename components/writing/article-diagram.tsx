@@ -1351,7 +1351,7 @@ function ExecutionBasedEvaluationDiagram() {
     <DiagramFrame
       id="execution-based-evaluation"
       title="Why execution-based evaluation needs more than one database state"
-      description="On a single BASE database state, wrong SQL can accidentally return the same rows as correct SQL, so exact-match or single-state checks pass it. A counterfactual fixture changes the rows or distribution so the two semantics diverge: the wrong query fails the typed ResultContract while the correct query still satisfies it across states. Mutation testing proves the fixtures actually discriminate: 190 intentionally wrong mutants, 190 killed, 0 surviving, against 120 reference witnesses and 184 fixture comparisons with 0 invalid mutants. Correctness is execution across states, not one gold SQL string."
+      description="On a single BASE database state, wrong SQL can accidentally return the same rows as correct SQL, so exact-match or single-state checks pass it. A counterfactual fixture changes the rows or distribution so the two semantics diverge: the wrong query fails the typed ResultContract while the correct query still satisfies it across states. Mutation testing checks that the fixtures can catch a deliberately wrong query, but a green suite proves only internal consistency, not that the gold answer encodes the semantics the user asked for, which is audited as a separate concern. Correctness is execution across states, not one gold SQL string."
       caption="One database state can hide a wrong query. Counterfactual fixtures make the semantics diverge, and mutation testing proves the fixtures can tell right from wrong."
       height={510}
     >
@@ -1375,10 +1375,10 @@ function ExecutionBasedEvaluationDiagram() {
 
       <line className="diagram-divider" x1="28" y1="330" x2="852" y2="330" />
 
-      <Label x={28} y={358} anchor="start">MUTATION TESTING PROVES THE FIXTURES DISCRIMINATE</Label>
-      <Node x={28} y={376} width={220} height={64} lines={["190 mutants", "intentionally wrong"]} />
-      <Node x={308} y={376} width={248} height={64} lines={["190 killed", "0 surviving"]} tone="accent" />
-      <Node x={584} y={376} width={268} height={64} lines={["120 witnesses · 184 fixtures", "0 invalid mutants"]} />
+      <Label x={28} y={358} anchor="start">MUTANTS CHECK THE FIXTURES; AUDIT CHECKS THE GOLD</Label>
+      <Node x={28} y={376} width={236} height={64} lines={["known-wrong mutants", "must be caught"]} />
+      <Node x={296} y={376} width={236} height={64} lines={["fixtures catch them", "the test is consistent"]} tone="accent" />
+      <Node x={564} y={376} width={288} height={64} lines={["green suite ≠ correct gold", "question → gold audited apart"]} tone="muted" />
       <Arrow d="M248 408 H303" marker={marker} />
 
       <rect className="diagram-result" x={150} y={468} width={580} height={22} rx="6" />
@@ -1395,46 +1395,49 @@ function SqlAdmissionQueryPlanDiagram() {
     <DiagramFrame
       id="sql-admission-queryplan"
       title="How an accepted QueryPlan, not raw SQL, reaches the executor"
-      description="The model's ANSWER + SQL is an untrusted proposal. It crosses an admission chain of deterministic gates: sqlglot parse, SQL and object policy, server-owned grain safety, PostgreSQL EXPLAIN and a cost gate. Only after clearing them does the SQL safety service issue an accepted, immutable QueryPlan, and the restricted read-only executor runs that plan under a reader role, a statement timeout and bounded rows. The executor accepts a QueryPlan, never raw SQL: a query submitted directly by the model, the normalizer or the evaluator carries no accepted plan, so it is refused. Execution is a capability the safety service grants, not a string the model emits."
-      caption="The admission chain ends in a capability object. The executor runs an accepted QueryPlan and refuses raw SQL from anyone, so passing every gate is the only path to execution."
-      height={500}
+      description="The model's ANSWER + SQL is an untrusted proposal. It crosses an admission chain of deterministic gates: sqlglot parse, global SQL policy, request-scoped relation authority, server-owned grain safety, PostgreSQL EXPLAIN and a cost gate. Global policy answers whether an object is queryable by the service; request-scoped authority answers whether this request may use it, rejecting an unauthorized relation before any database connection. Only after clearing every gate does the SQL safety service issue an accepted, immutable QueryPlan, and the restricted read-only executor runs that plan under a reader role, a statement timeout and bounded rows. The executor accepts a QueryPlan, never raw SQL: a query submitted directly by the model, the normalizer or the evaluator carries no accepted plan, so it is refused."
+      caption="The admission chain ends in a capability object. The executor runs an accepted QueryPlan and refuses raw SQL from anyone, so passing every gate, authority included, is the only path to execution."
+      height={520}
     >
       <ArrowMarker id={marker} />
 
-      <Label x={28} y={28} anchor="start">ADMISSION CHAIN: EVERY GATE BEFORE EXECUTION</Label>
-      <Node x={28} y={46} width={176} height={52} lines={["ANSWER + SQL", "untrusted proposal"]} />
-      <Node x={228} y={46} width={146} height={52} lines={["sqlglot parse"]} />
-      <Node x={398} y={46} width={146} height={52} lines={["SQL / object", "policy"]} />
-      <Node x={568} y={46} width={146} height={52} lines={["grain safety"]} />
-      <Arrow d="M204 72 H227" marker={marker} />
-      <Arrow d="M374 72 H397" marker={marker} />
-      <Arrow d="M544 72 H567" marker={marker} />
+      <Label x={24} y={28} anchor="start">ADMISSION CHAIN: EVERY GATE BEFORE EXECUTION</Label>
+      <Node x={24} y={44} width={150} height={50} lines={["ANSWER + SQL", "untrusted"]} />
+      <Node x={194} y={44} width={128} height={50} lines={["sqlglot parse"]} />
+      <Node x={342} y={44} width={150} height={50} lines={["global SQL", "policy"]} />
+      <Node x={512} y={44} width={200} height={50} lines={["request-scoped", "relation authority"]} />
+      <Arrow d="M174 69 H193" marker={marker} />
+      <Arrow d="M322 69 H341" marker={marker} />
+      <Arrow d="M492 69 H511" marker={marker} />
 
-      <Node x={228} y={138} width={146} height={52} lines={["PostgreSQL", "EXPLAIN"]} />
-      <Node x={398} y={138} width={146} height={52} lines={["cost gate"]} />
-      <Node x={592} y={138} width={260} height={52} lines={["accepted QueryPlan", "immutable, safety-service issued"]} tone="accent" />
-      <Arrow d="M641 98 V118 H301 V138" marker={marker} />
-      <Arrow d="M374 164 H397" marker={marker} />
-      <Arrow d="M544 164 H587" marker={marker} />
+      <Node x={194} y={126} width={150} height={50} lines={["grain safety"]} />
+      <Node x={364} y={126} width={140} height={50} lines={["PostgreSQL", "EXPLAIN"]} />
+      <Node x={524} y={126} width={130} height={50} lines={["cost gate"]} />
+      <Arrow d="M612 94 V110 H269 V126" marker={marker} />
+      <Arrow d="M344 151 H363" marker={marker} />
+      <Arrow d="M504 151 H523" marker={marker} />
 
-      <line className="diagram-divider" x1="28" y1="224" x2="852" y2="224" />
+      <Node x={300} y={196} width={300} height={52} lines={["accepted QueryPlan", "immutable, safety-service issued"]} tone="accent" />
+      <Arrow d="M589 176 V186 H450 V196" marker={marker} />
 
-      <Label x={28} y={250} anchor="start">THE EXECUTOR RUNS A QUERYPLAN, NOT SQL</Label>
-      <Node x={40} y={272} width={250} height={64} lines={["accepted QueryPlan", "the only thing it runs"]} tone="accent" />
-      <Node x={330} y={272} width={300} height={64} lines={["restricted read-only executor", "reader role, statement timeout, bounded rows"]} />
-      <Node x={670} y={272} width={182} height={64} lines={["bounded result"]} tone="accent" />
-      <Arrow d="M290 304 H325" marker={marker} />
-      <Arrow d="M630 304 H665" marker={marker} />
+      <line className="diagram-divider" x1="28" y1="272" x2="852" y2="272" />
 
-      <line className="diagram-divider" x1="28" y1="360" x2="852" y2="360" />
+      <Label x={28} y={298} anchor="start">THE EXECUTOR RUNS A QUERYPLAN, NOT SQL</Label>
+      <Node x={40} y={320} width={250} height={62} lines={["accepted QueryPlan", "the only thing it runs"]} tone="accent" />
+      <Node x={330} y={320} width={300} height={62} lines={["restricted read-only executor", "reader role, statement timeout, bounded rows"]} />
+      <Node x={670} y={320} width={182} height={62} lines={["bounded result"]} tone="accent" />
+      <Arrow d="M290 351 H325" marker={marker} />
+      <Arrow d="M630 351 H665" marker={marker} />
 
-      <Label x={28} y={386} anchor="start">RAW SQL FROM ANYONE ELSE IS REFUSED</Label>
-      <Node x={40} y={404} width={330} height={52} lines={["raw SQL from the model,", "the normalizer or the evaluator"]} />
-      <Node x={470} y={404} width={382} height={52} lines={["carries no accepted QueryPlan", "the executor refuses it"]} tone="stop" />
-      <Arrow d="M370 430 H465" marker={marker} dashed />
+      <line className="diagram-divider" x1="28" y1="406" x2="852" y2="406" />
 
-      <rect className="diagram-result" x={150} y={470} width={580} height={22} rx="6" />
-      <text className="diagram-result-text" x={440} y={486} textAnchor="middle">
+      <Label x={28} y={432} anchor="start">RAW SQL FROM ANYONE ELSE IS REFUSED</Label>
+      <Node x={40} y={450} width={330} height={50} lines={["raw SQL from the model,", "the normalizer or the evaluator"]} />
+      <Node x={470} y={450} width={382} height={50} lines={["carries no accepted QueryPlan", "the executor refuses it"]} tone="stop" />
+      <Arrow d="M370 475 H465" marker={marker} dashed />
+
+      <rect className="diagram-result" x={150} y={498} width={580} height={18} rx="6" />
+      <text className="diagram-result-text" x={440} y={511} textAnchor="middle">
         Execution is a capability the safety service grants, not a string the model emits.
       </text>
     </DiagramFrame>

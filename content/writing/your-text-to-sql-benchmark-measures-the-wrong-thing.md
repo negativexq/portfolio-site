@@ -44,11 +44,13 @@ The fix is to stop relying on one state. Alongside the base database, each case 
 
 That is what turns "returned the expected rows once" into "means the same thing as the reference across states." Correctness becomes a claim about behavior under changing data, which is the claim you actually wanted to make about a query.
 
-## Mutation testing proves the fixtures can tell right from wrong
+## Proving the fixtures can tell right from wrong, and its limit
 
 There is one more gap. A fixture suite that passes every correct query is only half the guarantee. You also need to know the fixtures would catch a wrong one, because a test that never fails is not evidence of anything.
 
-Mutation testing closes that gap. You take the correct behavior and deliberately break it in known ways, producing mutants that are wrong by construction, then check that the fixtures kill them. On the frozen benchmark this ran to 190 of 190 mutants killed, 0 surviving, with 0 invalid mutants, across 120 reference witnesses and 184 fixture comparisons. A surviving mutant would have meant a wrong query the fixtures could not distinguish, which is the specific thing you cannot afford to leave unmeasured.
+Mutation testing addresses that gap. You take the correct behavior and deliberately break it in known ways, producing mutants that are wrong by construction, then check that the fixtures kill them. A surviving mutant would mean a wrong query the fixtures could not distinguish, which is the specific thing you cannot afford to leave unmeasured. The concrete example the benchmark keeps pointing to is `healthcare_10`, a candidate that passes on the BASE state and fails a counterfactual: exactly the class of mistake a single-state check waves through.
+
+But this is where it pays to be honest about what a green test suite proves. Passing fixtures and killed mutants show the evaluation is internally consistent; they do not show that the gold answer encodes the semantics the user actually asked for. A benchmark can be self-consistent and still wrong at the specification. So the question-to-gold alignment, the result contract, the reference witnesses and the counterfactual validity have to be audited as separate concerns, not folded into one pass/fail number.
 
 ## What this costs and what it buys
 

@@ -72,19 +72,19 @@ export const platformNodes = [
     architectureDescription: "Governed access to structured data",
     decision: "The model proposes SQL. Deterministic software decides what may execute.",
     evidence: [
-      "78/90 = 86.7% governed task success",
-      "15/15 authority · 0 unauthorized answers",
-      "frozen 90-case synthetic benchmark",
+      "155/180 = 86.11% governed task success",
+      "28/30 authority · unauthorized relation blocked before DB access",
+      "180-case benchmark · 12 synthetic domains",
     ],
-    stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "SQL parse + policy", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "counterfactual evaluation", "OpenTelemetry"],
+    stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "counterfactual evaluation"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/decision-sql" },
       { label: "Case study", href: "/projects/decision-sql" },
     ],
     details: {
-      nextGate: "M49 classifies the remaining ambiguity and answerable failures by causal mechanism before the next intervention. These are frozen synthetic benchmark results, not production accuracy.",
-      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the M48B.2 run backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and no authority-blocked case returned unauthorized data. 86.7% is synthetic benchmark accuracy, not production accuracy.",
-      flow: ["schema retrieval", "semantic resolution", "SQL proposal", "sqlglot AST validation", "authorization", "EXPLAIN cost gate", "read-only execution", "result validation"],
+      nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention. These are synthetic benchmark results, not production accuracy.",
+      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction. 86.11% is synthetic benchmark accuracy, not production accuracy.",
+      flow: ["schema retrieval", "semantic resolution", "SQL proposal", "sqlglot AST validation", "global policy", "request-scoped authority", "EXPLAIN cost gate", "read-only execution", "result validation"],
     },
   },
   {
@@ -253,7 +253,7 @@ export const platformArchitectureLayers = [
     note: "Each plane proposes; the deterministic controls inside it decide.",
     columns: [
       { label: "Knowledge plane", status: "PROVEN", items: ["retrieval + reranking", "evidence construction", "citation validation", "fail-closed abstention"] },
-      { label: "Data plane", status: "PROVEN", items: ["schema retrieval", "SQL parse + policy", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution"] },
+      { label: "Data plane", status: "PROVEN", items: ["schema retrieval", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution"] },
       { label: "Action plane", status: "PROVEN", items: ["target resolution", "policy", "confirmation", "revalidation", "idempotent execution"] },
     ],
   },

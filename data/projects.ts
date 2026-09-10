@@ -1023,65 +1023,65 @@ const projectRecords = [
       value: "SERVER-OWNED",
       scope: "Model proposes SQL · deterministic admission decides",
       qualifier:
-        "An ANSWER + SQL submission crosses a deterministic parse, policy, grain, EXPLAIN, cost and QueryPlan boundary before a read-only executor runs it. On the M48B.2 answerable funnel there were 0 parse, policy, semantic or cost rejections and 0 execution failures, with no unsafe raw fallback.",
+        "An ANSWER + SQL submission crosses parse, global policy, request-scoped relation authority, grain safety, EXPLAIN and a cost gate, and only an accepted immutable QueryPlan reaches the restricted read-only executor. There is no raw unsafe fallback, and the executor never runs SQL the safety service did not admit.",
     },
     summary:
       "Governed one-shot Text-to-SQL for enterprise analytics: the model emits one typed decision, deterministic software owns SQL admission and read-only execution, and correctness is measured by execution against counterfactual database states.",
     directAnswer:
-      "DecisionSQL is a governed one-shot Text-to-SQL system and execution-based benchmark where the model proposes a single typed decision — an answer with read-only SQL, a clarification, or an authority/policy block — and deterministic software owns parsing, policy, grain safety, cost admission and restricted execution before any SQL reaches PostgreSQL.",
+      "DecisionSQL is a governed one-shot Text-to-SQL system and execution-based benchmark where the model proposes a single typed decision — an answer with read-only SQL, a clarification, or an authority/policy block — and deterministic software owns parsing, policy, request-scoped relation authority, grain safety, cost admission and restricted execution before any SQL reaches PostgreSQL.",
     whyItExists:
       "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, semantically correct and safe to run: it keeps model proposal and execution authority separate, evaluates governance apart from query execution because some cases should refuse SQL entirely, and scores correctness by execution against counterfactual states rather than string similarity.",
     heroMetrics: [
       {
-        value: "78 / 90 = 86.7%",
+        value: "155 / 180",
         label: "Governed task success",
-        context: "M48B.2 · frozen 90-case synthetic benchmark",
-        detail: "One-shot governed decisions on a frozen synthetic governed benchmark. Not general Text-to-SQL accuracy or production accuracy.",
+        context: "86.11% · 180-case governed benchmark",
+        detail: "One-shot governed decisions across 12 synthetic domains. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
       },
       {
-        value: "0 / 15",
-        label: "Unauthorized answers",
-        context: "Authority blocks held 15/15",
-        detail: "Every authority-blocked case that could not be answered through authorized relationships was refused; no unauthorized data was returned.",
+        value: "28 / 30",
+        label: "Authority",
+        context: "93.33% · model governance",
+        detail: "Two cases where the model wrongly chose ANSWER on an authority-blocked request; request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       },
       {
-        value: "51 / 53 = 96.2%",
-        label: "Conditional runtime correctness",
-        context: "Given the model chose ANSWER",
-        detail: "Of the answerable cases where the model committed to ANSWER + SQL, runtime execution matched the result contract on the BASE state and across counterfactual states.",
+        value: "103 / 120",
+        label: "Answerable runtime TSA",
+        context: "85.83% · BASE + counterfactual",
+        detail: "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state.",
       },
       {
-        value: "190 / 190",
-        label: "Mutants killed",
-        context: "Execution-based semantic evaluation · 0 surviving",
-        detail: "120/120 reference witnesses and 184/184 counterfactual fixture comparisons; mutants are intentionally wrong behaviours used to prove the fixtures discriminate semantic errors.",
+        value: "12 / 12",
+        label: "Policy blocks",
+        context: "100% · ambiguity 12/18 = 66.67%",
+        detail: "Policy-blocked cases were refused exactly; ambiguity recognition is the weaker governance axis. Refusing SQL is a measured outcome, not a failure.",
       },
     ],
     highlights: [
       {
         title: "The model proposes, deterministic software admits",
         description:
-          "Problem: a model can emit plausible SQL that is unauthorized, unbounded or semantically wrong. Solution: an ANSWER + SQL submission crosses sqlglot parsing, SQL/object/function policy, grain-safety validation, PostgreSQL EXPLAIN, a cost gate and an accepted immutable QueryPlan before a restricted read-only executor runs it — 0 unsafe raw fallback, and the executor never accepts SQL directly from the model.",
+          "Problem: a model can emit plausible SQL that is unauthorized, unbounded or semantically wrong. Solution: an ANSWER + SQL submission crosses sqlglot parsing, global SQL policy, request-scoped relation authority, grain-safety validation, PostgreSQL EXPLAIN and a cost gate, and only an accepted immutable QueryPlan reaches a restricted read-only executor. There is no raw unsafe fallback, and the executor never runs SQL the safety service did not admit.",
       },
       {
-        title: "Governance is evaluated apart from execution",
+        title: "Governance is scored apart from execution",
         description:
-          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is measured separately — authority 15/15 with 0 unauthorized answers, policy 6/6, ambiguity 6/9.",
+          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is scored separately — authority 28/30, policy 12/12, ambiguity 12/18. When the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       },
       {
         title: "Correctness is execution-based, not string match",
         description:
-          "Problem: on one database state wrong SQL can accidentally return the right rows. Solution: two independent reference witnesses, a typed ResultContract and counterfactual fixtures that change distributions so wrong semantics diverge — 190/190 mutants killed with 0 surviving across 184 fixture comparisons.",
+          "Problem: on one database state wrong SQL can accidentally return the right rows. Solution: two independent reference witnesses, a typed ResultContract and counterfactual fixtures that change distributions so wrong semantics diverge. healthcare_10 passes on the BASE state and fails a counterfactual, which is why one database state is not enough to call a query correct.",
       },
       {
         title: "Server-owned grain safety",
         description:
-          "Problem: joining a parent to many children can silently triple a SUM. Solution: fanout is a server-owned semantic contract with a deliberately narrow deterministic normalizer for the supported additive-parent, declared-1:N shape — 4/4 PARENT_MEASURE_FANOUT states normalized at 100% precision, 0 regressions, and normalized SQL still re-passes parse, policy, EXPLAIN and cost.",
+          "Problem: joining a parent to many children can silently triple a SUM. Solution: fanout is a server-owned semantic contract with a deliberately narrow deterministic normalizer for the supported additive-parent, declared-1:N shape that stays fail-closed outside it. Normalized SQL still re-passes parse, policy, EXPLAIN and cost, with no raw unsafe fallback.",
       },
       {
-        title: "One-shot by design, provenance under discipline",
+        title: "One-shot by design",
         description:
-          "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or reflection, so model decision errors and server enforcement stay observable. The 90-response corpus was assembled with 0 retries and 0 duplicate attempts, request-hash compatibility verified, under a frozen prompt and planner-statistics contract.",
+          "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or pass@K, so model decision errors and server enforcement stay observable instead of being smoothed over by a repair loop.",
       },
     ],
     technologies: [
@@ -1103,15 +1103,14 @@ const projectRecords = [
       "Typed Decision Contract",
       "Deterministic Admission Boundary",
       "SQL Parsing & Policy",
+      "Request-Scoped Authority",
       "Accepted QueryPlan",
       "Restricted Read-Only Execution",
       "Server-Owned Grain Safety",
       "Grain-Safe Normalization",
       "Execution-Based Evaluation",
       "Counterfactual Fixtures",
-      "Mutation Testing",
       "Cost Admission Gate",
-      "Deterministic Planner State",
       "One-Shot Evaluation",
       "Authority Enforcement",
       "Policy Enforcement",
@@ -1122,45 +1121,45 @@ const projectRecords = [
     proofPoints: [
       {
         label: "Governed task success",
-        value: "78/90 = 86.7% governed task success",
-        scope: "M48B.2 · frozen 90-case synthetic governed benchmark",
+        value: "155/180 = 86.11% governed task success",
+        scope: "180-case governed benchmark · 12 synthetic domains",
         qualifier:
-          "One-shot governed decisions under the documented runtime contract. Answerable end-to-end runtime task success accuracy was 51/60 = 85.0%. These are frozen synthetic benchmark results, not general or production Text-to-SQL accuracy.",
+          "One-shot governed decisions across four behavior classes on one synthetic benchmark. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
+      },
+      {
+        label: "Answerable runtime correctness",
+        value: "103/120 = 85.83% answerable runtime TSA",
+        scope: "BASE + counterfactual execution",
+        qualifier:
+          "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual, which is why a single state is not enough.",
       },
       {
         label: "Authority containment",
-        value: "15/15 authority · 0 unauthorized answers",
-        scope: "Governance evaluated separately from execution",
+        value: "28/30 authority · unauthorized relation blocked before DB access",
+        scope: "model governance + runtime enforcement",
         qualifier:
-          "Policy scored 6/6 and ambiguity 6/9; the three governance residuals are all in the ambiguity category. No authority-blocked case returned unauthorized data.",
+          "Model authority decisioning is 28/30; telecom_15 is the known case where the model wrongly answered. Request-scoped relation authority returned an authorization rejection with zero database connection, EXPLAIN or execution. This is relation-level authority, not universal column or relationship-path authorization.",
       },
       {
-        label: "Runtime admission boundary",
-        value: "0 parse / policy / semantic / cost rejections · 0 execution failures",
-        scope: "Answerable funnel · 53 ANSWER submissions",
+        label: "Governance split",
+        value: "policy 12/12 = 100% · ambiguity 12/18 = 66.67%",
+        scope: "governance blocks scored separately from execution",
         qualifier:
-          "Across the 53 cases where the model chose ANSWER, every submission passed parse, policy, semantic admission, cost and execution; 2 result mismatches remained, giving 51/53 = 96.2% conditional runtime correctness.",
+          "Policy blocking is exact; ambiguity recognition is the weaker axis. Refusing to write SQL is a measured, expected outcome on the governance cases, not a failure.",
       },
       {
-        label: "Server-owned grain normalization",
-        value: "4/4 fanout states normalized · 100% precision",
+        label: "Execution boundary",
+        value: "QueryPlan-gated execution · no raw unsafe fallback",
+        scope: "request-scoped authority + accepted QueryPlan",
+        qualifier:
+          "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
+      },
+      {
+        label: "Server-owned grain safety",
+        value: "narrow deterministic normalizer · fail-closed",
         scope: "PARENT_MEASURE_FANOUT · supported shape only",
         qualifier:
-          "0 normalization regressions, 0 unauthorized relationships introduced, 0 unsafe raw fallback. Outside the frozen additive-parent, declared-1:N shape the normalizer stays fail-closed; this is not universal grain repair.",
-      },
-      {
-        label: "Semantic discrimination",
-        value: "190/190 mutants killed · 0 surviving",
-        scope: "Execution-based evaluation · counterfactual fixtures",
-        qualifier:
-          "120/120 reference witnesses and 184/184 semantic fixture comparisons with 0 invalid mutants. Reference SQL is evidence of a valid implementation, never a canonical string the model must reproduce.",
-      },
-      {
-        label: "Branch-complete harness",
-        value: "360/360 scenarios · 16/16 truth × decision classes",
-        scope: "Validated before the remaining responses were generated",
-        qualifier:
-          "90 cases across 4 valid decisions, exercising 90 ANSWER runtime routes and 270 non-ANSWER bypasses, so a wrong model decision still produces a typed outcome instead of a harness crash.",
+          "Server-owned metadata detects the supported additive-parent, declared-1:N fanout shape and preaggregates on the child side. Outside it the normalizer stays fail-closed; this is not universal grain repair, and remaining fail-closed grain cases are under investigation.",
       },
     ],
     roadmap: emptyRoadmap,

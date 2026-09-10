@@ -51,8 +51,8 @@ That is the difference between a normalizer that is a convenience and one that i
 
 ## What the evidence does and does not say
 
-On the frozen benchmark this mechanism handled every case it was meant to: 4 of 4 `PARENT_MEASURE_FANOUT` states normalized, 100% normalization precision, 0 regressions, 0 unauthorized relationships introduced, and 0 unsafe raw fallbacks. The `subscription_04` case is the concrete end-to-end example where a raw fanout defect was corrected before execution.
+The honest version of the result is small on purpose. The normalizer acts only inside its declared shape, and the benchmark still records fail-closed grain rejections whose causes are being investigated rather than assumed to be runtime defects. That is the trade the design makes: a rewriter that refuses everything it cannot prove is worth more than one that guesses, because a wrong rewrite is a wrong answer that looks authoritative.
 
-Those numbers are scoped to the supported shape and the synthetic enterprise packs they were measured on. They are evidence that a narrow, server-owned grain contract works where it applies, not a claim of universal grain repair. The honest version of the result is small on purpose: the normalizer is trustworthy precisely because it refuses to act outside the case it can prove.
+Everything about the mechanism is scoped to the supported shape and the synthetic domains it was measured on. It is evidence that a narrow, server-owned grain contract works where it applies, not a claim of universal grain repair.
 
 The larger idea generalizes past this one bug. When a model proposes SQL over a real schema, the semantics that make an answer correct, grain included, belong to the server that owns the schema, not to the query that happened to parse. [DecisionSQL](/projects/decision-sql) treats grain safety as one of those server-owned boundaries rather than something to hope the model gets right.

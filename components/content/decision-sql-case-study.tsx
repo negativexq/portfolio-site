@@ -244,10 +244,10 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
               EXPLAIN and the cost gate before it can run.
             </p>
             <div className="decision-grain-stats">
-              <span><strong>4 / 4</strong> fanout states normalized</span>
-              <span><strong>100%</strong> precision</span>
-              <span><strong>0</strong> regressions</span>
-              <span><strong>0</strong> unsafe raw fallback</span>
+              <span><strong>Server-owned</strong> grain contract</span>
+              <span><strong>Narrow</strong> supported shape only</span>
+              <span><strong>Fail-closed</strong> outside it</span>
+              <span><strong>No</strong> raw unsafe fallback</span>
             </div>
           </section>
 

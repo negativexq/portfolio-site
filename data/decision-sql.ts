@@ -48,8 +48,12 @@ export const decisionSqlRuntimeFlow = [
     detail: "The model receives the question plus a governed context and emits exactly one decision. Runtime routing follows the parsed submission, not evaluator truth, so only ANSWER + SQL enters the SQL runtime.",
   },
   {
-    label: "Parse and policy",
-    detail: "sqlglot parses the selected SQL and the policy enforces one read-only statement, governed object access, function restrictions and complexity limits before anything else runs.",
+    label: "Parse and global policy",
+    detail: "sqlglot parses the selected SQL and the global policy enforces one read-only statement, governed object access, function restrictions and complexity limits before anything else runs.",
+  },
+  {
+    label: "Request-scoped relation authority",
+    detail: "Global policy answers whether an object is queryable by the service; request-scoped authority answers whether this request may use it. An immutable relation-level ExecutionAuthority, derived from the same governed SchemaContext, rejects an unauthorized relation before any database connection, EXPLAIN or execution.",
   },
   {
     label: "Grain safety",
@@ -76,7 +80,7 @@ export const decisionSqlBoundaryRows = [
       "The first-pass typed decision",
       "The proposed SQL when it chooses ANSWER",
       "Nothing about authorization or execution",
-      "No physical schema truth or grain semantics",
+      "No physical schema truth, relationship authority or grain semantics",
       "No right to run the query it wrote",
     ],
   },
@@ -84,7 +88,7 @@ export const decisionSqlBoundaryRows = [
     side: "Deterministic software owns",
     items: [
       "Typed decision validation",
-      "SQL parsing, policy and server-owned semantic metadata",
+      "SQL parsing, global policy and request-scoped relation authority",
       "Narrow grain-safe normalization",
       "PostgreSQL EXPLAIN, cost admission and QueryPlan creation",
       "Restricted read-only execution and result comparison",
@@ -111,84 +115,85 @@ export const decisionSqlEngineeringDecisions = [
   {
     title: "One-shot, with provenance discipline",
     description:
-      "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or reflection, which keeps model decision errors and server enforcement observable. The corpus was assembled with 0 retries and 0 duplicate attempts under a frozen prompt and planner-statistics contract, with request-hash compatibility verified.",
+      "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or pass@K, which keeps model decision errors and server enforcement observable instead of letting a repair loop smooth them over. Responses are admitted under exact provider-request fingerprinting and deterministic replay.",
   },
 ] as const;
 
 export const decisionSqlGovernedModel = [
   {
     behavior: "ANSWERABLE",
-    cases: "60",
+    cases: "120",
     expected: "ANSWER + one read-only SELECT",
-    result: "51 / 60 delivered correct",
+    result: "103 / 120 runtime TSA correct",
   },
   {
     behavior: "AUTHORITY_BLOCKED",
-    cases: "15",
+    cases: "30",
     expected: "BLOCKED_AUTHORITY",
-    result: "15 / 15 · 0 unauthorized answers",
+    result: "28 / 30 · runtime blocks the unauthorized relation",
   },
   {
     behavior: "AMBIGUOUS",
-    cases: "9",
+    cases: "18",
     expected: "NEEDS_CLARIFICATION",
-    result: "6 / 9",
+    result: "12 / 18",
   },
   {
     behavior: "POLICY_BLOCKED",
-    cases: "6",
+    cases: "12",
     expected: "BLOCKED_POLICY",
-    result: "6 / 6",
+    result: "12 / 12",
   },
 ] as const;
 
 export const decisionSqlEvidence = [
   {
     area: "Governed task success",
-    result: "78 / 90 = 86.7%",
+    result: "155 / 180 = 86.11%",
     detail:
-      "One-shot governed decisions across all four behaviors on the frozen synthetic benchmark. Answerable end-to-end runtime task success accuracy was 51 / 60 = 85.0%.",
+      "One-shot governed decisions across four behavior classes on one 180-case benchmark spanning 12 synthetic domains. 25 governed misses overall.",
   },
   {
-    area: "Runtime admission",
-    result: "0 rejections · 0 execution failures",
+    area: "Answerable runtime TSA",
+    result: "103 / 120 = 85.83%",
     detail:
-      "Across the 53 answerable cases where the model chose ANSWER, every submission passed parse, policy, semantic admission, cost and execution. 2 result mismatches remained, giving 51 / 53 = 96.2% conditional runtime correctness.",
+      "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual.",
   },
   {
-    area: "Grain normalization",
-    result: "4 / 4 · 100% precision",
+    area: "Authority",
+    result: "28 / 30 = 93.33%",
     detail:
-      "Every PARENT_MEASURE_FANOUT state was normalized with 0 regressions, 0 unauthorized relationships introduced and 0 unsafe raw fallback, inside the supported shape only.",
+      "Model authority decisioning. telecom_15 is the known case where the model wrongly chose ANSWER; request-scoped relation authority rejected the unauthorized relation with zero database connection, EXPLAIN or execution.",
   },
   {
-    area: "Semantic discrimination",
-    result: "190 / 190 mutants killed",
+    area: "Governance blocks",
+    result: "policy 12 / 12 · ambiguity 12 / 18",
     detail:
-      "120 / 120 reference witnesses and 184 / 184 counterfactual fixture comparisons with 0 invalid and 0 surviving mutants, proving the fixtures actually separate semantic errors.",
+      "Policy blocking is exact at 100%; ambiguity recognition is the weaker axis at 66.67%. Refusing SQL is a measured, expected outcome on these cases.",
   },
   {
-    area: "Branch-complete harness",
-    result: "360 / 360 scenarios",
+    area: "Execution boundary",
+    result: "QueryPlan-gated · no raw unsafe fallback",
     detail:
-      "90 cases across 4 valid decisions exercised 90 ANSWER runtime routes and 270 non-ANSWER bypasses, verified before the remaining responses were generated.",
+      "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
   },
 ] as const;
 
 export const decisionSqlStackGroups = [
   ["Runtime", "Python 3.12 + FastAPI + PostgreSQL"],
-  ["SQL safety", "sqlglot parse + policy + grain safety + cost gate"],
+  ["SQL safety", "sqlglot parse + global policy + request authority + grain safety + cost gate"],
   ["Execution", "Accepted QueryPlan + restricted read-only reader"],
   ["Data", "SQLAlchemy + Alembic + synthetic enterprise packs"],
-  ["Evaluation", "Counterfactual fixtures + reference witnesses + mutation testing"],
+  ["Evaluation", "Counterfactual fixtures + reference witnesses + result contracts"],
   ["Quality", "pytest + Ruff + mypy + OpenTelemetry"],
 ] as const;
 
 export const decisionSqlLimitations = [
-  "The evidence supports governed one-shot decision evaluation, deterministic SQL safety, the narrow grain-normalization mechanism, an accepted-QueryPlan execution boundary and reproducible planner state.",
+  "The evidence supports governed one-shot decision evaluation, deterministic SQL safety, the narrow grain-normalization mechanism, request-scoped relation authority and an accepted-QueryPlan execution boundary.",
   "It does not establish universal Text-to-SQL correctness, universal fanout or grain repair, or production readiness for arbitrary enterprise schemas.",
-  "The SQL policy is a deterministic application boundary, not complete tenant-level authorization or RLS coverage.",
-  "Numbers belong to the frozen runtime and benchmark contracts, on synthetic enterprise-style packs, not to production traffic.",
+  "The authority contract is relation-level; column-level and relationship-path authorization are separate boundaries and are not claimed as universally enforced.",
+  "Ambiguity recognition is the weaker governance axis on this benchmark, and remaining fail-closed grain cases are still under investigation.",
+  "Numbers belong to one frozen 180-case synthetic benchmark, not to production traffic.",
 ] as const;
 
 export const decisionSqlDeepDiveLinks = [
@@ -197,15 +202,19 @@ export const decisionSqlDeepDiveLinks = [
     href: "https://github.com/negativexq/decision-sql/blob/main/README.md",
   },
   {
-    label: "M48B.2 end-to-end summary",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m48b2_end_to_end_summary.md",
+    label: "Benchmark specification",
+    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/SPEC.md",
   },
   {
-    label: "Machine-readable summary",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m48b2_end_to_end_summary.json",
+    label: "Current benchmark evaluation",
+    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m532_post_m53_repaired_expansion_evaluation.md",
   },
   {
-    label: "Branch-complete runtime contract",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/manifests/m48b2_branch_complete_runtime_contract.json",
+    label: "Runtime authority safety report",
+    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m52s_runtime_authority_execution_safety.md",
+  },
+  {
+    label: "Machine-readable evaluation manifest",
+    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/manifests/m532_post_m53_repaired_expansion_evaluation_manifest.json",
   },
 ] as const;

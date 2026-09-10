@@ -917,7 +917,7 @@ const architectures = {
   "decision-sql": {
     projectId: "decision-sql",
     description:
-      "A natural-language analytics request is answered against a model-visible, governed context, and the model emits exactly one typed decision. Only an ANSWER + SQL submission enters the SQL runtime; clarifications and authority or policy blocks never do. The selected SQL then crosses a deterministic admission chain — sqlglot parse, SQL policy, grain-safety validation, an optional narrow normalizer, re-validation, PostgreSQL EXPLAIN, a cost gate and an accepted immutable QueryPlan — before a restricted read-only executor runs it. Correctness is scored off the request path by executing against BASE and counterfactual database states, with evaluator-only truth that never reaches the model.",
+      "A natural-language analytics request is answered against a model-visible, governed context, and the model emits exactly one typed decision. Only an ANSWER + SQL submission enters the SQL runtime; clarifications and authority or policy blocks never do. The selected SQL then crosses a deterministic admission chain — sqlglot parse, global SQL policy, request-scoped relation authority, grain-safety validation, an optional narrow normalizer, re-validation, PostgreSQL EXPLAIN, a cost gate and an accepted immutable QueryPlan — before a restricted read-only executor runs it. Correctness is scored off the request path by executing against BASE and counterfactual database states, with evaluator-only truth that never reaches the model.",
     paths: [
       {
         id: "decision-path",
@@ -957,7 +957,7 @@ const architectures = {
         label: "Runtime admission (ANSWER + SQL)",
         summary: "The executor never accepts SQL directly from the model, the normalizer or the evaluator; execution requires an accepted immutable QueryPlan.",
         variant: "control",
-        layout: { type: "rows", rows: [4, 4, 3] },
+        layout: { type: "rows", rows: [4, 4, 4] },
         stages: [
           {
             id: "raw-sql",
@@ -971,7 +971,12 @@ const architectures = {
           },
           {
             id: "sql-policy",
-            nodes: [{ id: "sql-policy", label: "SQL / Object / Function Policy", subtitle: "governed access, complexity limits", variant: "control" }],
+            nodes: [{ id: "sql-policy", label: "Global SQL / Object Policy", subtitle: "is this object queryable at all", variant: "control" }],
+            edge: { label: "authorizes" },
+          },
+          {
+            id: "authority",
+            nodes: [{ id: "authority", label: "Request-Scoped Relation Authority", subtitle: "may this request use it · rejects before DB connection", variant: "control" }],
             edge: { label: "checks grain" },
           },
           {
@@ -1038,7 +1043,7 @@ const architectures = {
           },
           {
             id: "score",
-            nodes: [{ id: "score", label: "Governed Task Success", subtitle: "78 / 90 on the frozen benchmark", variant: "output" }],
+            nodes: [{ id: "score", label: "Governed Task Success", subtitle: "155 / 180 on the benchmark", variant: "output" }],
           },
         ],
       },
@@ -1048,7 +1053,7 @@ const architectures = {
       "The grain-safe normalizer is intentionally narrow — additive parent measure, a declared 1:N relationship and a supported LEFT JOIN fanout shape — and stays fail-closed or non-target outside it. It is not a universal fanout solver.",
       "PostgreSQL ANALYZE runs as environment preparation before reader planning, outside SqlSafetyService, the cost gate, the executor and the request path, so EXPLAIN costs are deterministic and excluded from request latency.",
       "Reference SQL, fixtures and expected results are evaluator-only and never enter the model request; correctness is execution-based semantic correctness, not SQL string or AST equality.",
-      "These are results on a frozen 90-case synthetic governed benchmark under a documented one-shot contract, not general Text-to-SQL accuracy, production accuracy or universal SQL safety.",
+      "These are results on one 180-case synthetic governed benchmark across 12 domains under a documented one-shot contract, not general Text-to-SQL accuracy, production accuracy or universal SQL safety.",
     ],
   },
 } satisfies Record<string, ArchitectureDefinition>;
