@@ -1,6 +1,7 @@
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
 import { learningItems } from "@/data/learning";
+import type { LearningItem } from "@/lib/content/types";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
 import {
@@ -450,7 +451,14 @@ export function buildEngineeringGraph(): EngineeringGraphData {
     addEdge(fastMcpId, mcpId, "built-on", "implements MCP", "implemented by FastMCP");
   }
 
-  for (const item of learningItems) {
+  // `learning.ts` types its array with `satisfies`, which preserves each
+  // item's literal `status` rather than widening to `LearningItem["status"]`.
+  // Whenever every current item happens to share one status literal (as when
+  // the last "planned" item graduates to "learning"), a `=== "planned"`
+  // comparison below would otherwise become a compile error with no items
+  // left to trigger it. Widen here so the comparison stays valid regardless
+  // of what the data currently contains.
+  for (const item of learningItems as readonly LearningItem[]) {
     const itemId = `learning:${item.id}`;
     const connectedProjects = projects.filter((project) => item.connectedProjectIds.includes(project.id));
     addNode({

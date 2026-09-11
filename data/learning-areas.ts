@@ -22,8 +22,8 @@ export const learningAreas: readonly LearningAreaMeta[] = [
     name: "Platform Infrastructure",
     index: "03",
     description: "Infrastructure provisioning, workload orchestration and observability extend containerized AI systems along distinct operational boundaries.",
-    foundation: "Containerized services and observable release workflows",
-    direction: "Remote state, cloud infrastructure and workload orchestration",
+    foundation: "Kubernetes workload orchestration, GitOps, autoscaling and observable release workflows, validated with real failure drills on a local cluster",
+    direction: "Remote state, cloud infrastructure and GPU-aware scheduling",
   },
   {
     name: "Software Systems Engineering",

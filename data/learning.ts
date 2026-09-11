@@ -127,20 +127,21 @@ export const learningItems = [
       "Security scanning",
     ],
     evidenceTarget:
-      "Explore remote state, environment/state isolation, cloud infrastructure, CI plan workflows and workload orchestration without presenting them as demonstrated capability yet.",
-    connectedProjectIds: ["terraform-docker-infrastructure-lab"],
+      "Explore remote state, environment/state isolation, cloud infrastructure and CI plan workflows without presenting them as demonstrated capability yet — AWS Terraform in ml-platform-infrastructure is design and static-validation only (fmt, validate, tflint), with no plan or apply run against a cloud account.",
+    connectedProjectIds: ["terraform-docker-infrastructure-lab", "ml-platform-infrastructure"],
     connectedAreaIds: ["ai-ml-platform"],
     connectedLearningIds: ["ai-platform-kubernetes"],
   },
   {
     id: "ai-platform-kubernetes",
     title: "AI Platform on Kubernetes",
-    status: "planned",
+    status: "learning",
+    maturityLabel: "Building",
     area: "Platform Infrastructure",
     rationale:
-      "Extending containerized AI platform work toward production orchestration, with emphasis on model serving, rollout control, resource isolation, scaling and observability.",
+      "Moved from containerized services to a working local Kubernetes platform: an inference service with autoscaling, rollout control and resource isolation, validated with real failure drills rather than left as a deployment description.",
     previewSummary:
-      "Moving model serving and rollout control onto orchestrated, resource-isolated infrastructure.",
+      "A local Kubernetes platform with autoscaling, rollout control and drilled failure recovery, GPU scheduling and cloud orchestration still open.",
     topics: [
       "Model serving",
       "Application workloads",
@@ -156,8 +157,8 @@ export const learningItems = [
       "Workload isolation",
     ],
     evidenceTarget:
-      "Deploy an existing ModelOps or RAG workload on Kubernetes with health checks, resource controls, rollout strategy and observable service behavior.",
-    connectedProjectIds: ["modelops-control-plane"],
+      "ml-platform-infrastructure demonstrates HPA autoscaling (2↔6 replicas), health/readiness-gated rollouts, a PodDisruptionBudget, NetworkPolicy-enforced workload isolation and Prometheus/Grafana/Alertmanager observability on a local kind cluster, with 8 faults injected against the running cluster rather than simulated. Still open: GPU scheduling, Kubernetes Secrets management, and literally hosting the existing ModelOps or RAG workloads on this substrate rather than a dedicated inference service.",
+    connectedProjectIds: ["ml-platform-infrastructure", "modelops-control-plane"],
     connectedAreaIds: ["ai-ml-platform"],
     connectedLearningIds: [],
   },
@@ -184,11 +185,12 @@ export const learningItems = [
       "Evaluation telemetry",
     ],
     evidenceTarget:
-      "Define and validate an observable AI service workflow with end-to-end traces, platform metrics, failure classification and a small set of explicit SLIs.",
+      "Define and validate an observable AI service workflow with end-to-end traces, platform metrics, failure classification and a small set of explicit SLIs. ml-platform-infrastructure has 5 promtool-tested Alertmanager rules on static thresholds; burn-rate / error-budget alerting is not yet built.",
     connectedProjectIds: [
       "modelops-control-plane",
       "knowledge-base-rag",
       "agentic-customer-service-platform",
+      "ml-platform-infrastructure",
     ],
     connectedAreaIds: ["ai-ml-platform", "generative-ai-rag"],
     connectedLearningIds: [],
