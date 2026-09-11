@@ -626,7 +626,7 @@ const projectRecords = [
   {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 7,
+    order: 8,
     title: "Repo Context Forge",
     category: "Agent Infrastructure / Developer Tooling",
     status: "current",
@@ -678,7 +678,7 @@ const projectRecords = [
   {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 8,
+    order: 9,
     title: "dbt Feature Lineage",
     category: "Data Engineering / Lineage",
     status: "current",
@@ -770,7 +770,7 @@ const projectRecords = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 9,
+    order: 10,
     title: "Production RAG Platform",
     category: "Generative AI / Retrieval",
     status: "current",
@@ -814,7 +814,7 @@ const projectRecords = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 10,
+    order: 11,
     title: "Terraform Docker Infrastructure Lab",
     category: "Infrastructure as Code / Platform Engineering",
     status: "current",
@@ -874,7 +874,7 @@ const projectRecords = [
   {
     id: "cause-tune",
     slug: "cause-tune",
-    order: 6,
+    order: 7,
     title: "CauseTune",
     category: "Model Training / Fine-Tuning",
     status: "current",
@@ -1165,6 +1165,163 @@ const projectRecords = [
     roadmap: emptyRoadmap,
     relationships: [],
     githubUrl: "https://github.com/negativexq/decision-sql",
+  },
+  {
+    id: "ml-platform-infrastructure",
+    slug: "ml-platform-infrastructure",
+    order: 6,
+    title: "ML Platform Infrastructure",
+    category: "AI Infrastructure / Platform Engineering",
+    status: "current",
+    flagship: true,
+    showCardProof: true,
+    cardProof: {
+      label: "Reproducibility",
+      value: "PROVEN, NOT ASSUMED",
+      scope: "Destroyed cluster · images · build cache",
+      qualifier:
+        "make local-up followed by make local-test reached 11/11 acceptance checks in 901s (~15 min) after the cluster, images and build cache were destroyed first. Status is local-v1.0.0: the Kubernetes implementation (M0–M12) is validated and frozen. AWS (M13+) has not started — no cloud resource has been created, and Terraform is at the design/static-validation level only (fmt, validate, tflint; no plan, no apply).",
+    },
+    summary:
+      "Local ML platform reference implementation on Kubernetes: an inference service, its full MLflow/PostgreSQL/MinIO lifecycle, GitOps with Argo CD, HPA autoscaling, security hardening and observability, validated with real failure drills instead of documentation claims.",
+    directAnswer:
+      "ML Platform Infrastructure is a local Kubernetes reference implementation of an ML serving platform: Git is the source of truth, Argo CD applies it, an inference service runs behind an HPA and a PodDisruptionBudget, its MLflow/PostgreSQL/MinIO lifecycle is governed by a default-deny NetworkPolicy, and Prometheus/Grafana/Alertmanager cover observability. Every headline number is measured against the running cluster: load tests, autoscaling events, injected faults and a full rebuild-from-scratch reproducibility check.",
+    whyItExists:
+      "An architecture diagram of an ML platform is a claim; running it, breaking it on purpose and timing the recovery is evidence. This project keeps that distinction explicit: GitOps reconciliation speed, autoscaling behavior, pod recovery, a NetworkPolicy deny rule and eight injected faults are all measured against a live kind cluster rather than described. AWS is designed as code (Terraform, cost model, migration doc) but is explicitly marked not-yet-applied, so the local evidence is never mistaken for a cloud deployment claim.",
+    heroMetrics: [
+      {
+        value: "645,809 REQUESTS",
+        label: "Load test, 0% errors",
+        context: "k6 · saturated 2,935 req/s",
+        detail: "Saturated /predict p95 latency was 32.9 ms on the local kind cluster under k6 load.",
+      },
+      {
+        value: "2 → 6 IN 71s",
+        label: "HPA scale-up under load",
+        context: "Scale-down 6 → 2 in ~230s, stepped",
+        detail: "Horizontal Pod Autoscaler behavior measured end-to-end against real CPU-driven load, not simulated.",
+      },
+      {
+        value: "12–15s / ~1.4s",
+        label: "Pod recovery / drift reconciliation",
+        context: "Deleted pod replacement · Argo CD self-heal",
+        detail: "A deleted pod has a replacement serving in 12–15s. Argo CD detects and reconciles config drift in about 1.4 seconds, independent of its own ~3 min Git poll.",
+      },
+      {
+        value: "11/11 IN 901s",
+        label: "Reproducibility from scratch",
+        context: "M11 · cluster, images, build cache destroyed first",
+        detail: "make local-up then make local-test passed every acceptance check after a full teardown, proving the repository alone is sufficient, not a pre-warmed environment.",
+      },
+    ],
+    highlights: [
+      {
+        title: "GitOps has two reconciliation speeds, on purpose",
+        description:
+          "Problem: a GitOps system that only polls Git looks reconciled long after the cluster actually drifted. Solution: Argo CD watches live cluster state continuously and self-heals drift in about 1.4 seconds, while independently polling Git on its own ~3 min cadence — so a manual edit is reverted almost instantly, and a Git commit lands on the next poll, and the two are never confused with each other.",
+      },
+      {
+        title: "Eight faults injected against the running cluster, not simulated",
+        description:
+          "Problem: a failure-engineering table written from documentation describes intent, not behavior. Solution: pod crashes, invalid model artifacts, artifact-store outages, config drift, bad rollouts and node drains were actually triggered against the live cluster, with detection and recovery timed rather than assumed — for example a deleted pod's replacement is serving in 12–15s, and an artifact-store outage keeps 100% of requests at 200 while the pod is held out of Service endpoints.",
+      },
+      {
+        title: "A NetworkPolicy deny rule was verified, not assumed",
+        description:
+          "Problem: a default-deny NetworkPolicy YAML file is a stated intention, not proof of enforcement. Solution: inference → PostgreSQL was actually attempted and confirmed denied against the running cluster, alongside a Pod Security Standards: restricted boundary that rejected even the security drill's own probe pods on its first run until they were made PSS-compliant.",
+      },
+      {
+        title: "Reproducibility proven from a destroyed environment",
+        description:
+          "Problem: 'it works on my machine' style setups are rarely re-provable once state has accumulated. Solution: the cluster, container images and build cache were destroyed first, then make local-up and make local-test were run from the repository alone, reaching 11/11 acceptance checks in about 15 minutes with no manual step and no pre-existing resource.",
+      },
+      {
+        title: "Defects found by running automation, not written around",
+        description:
+          "Blocking model-load hid a slow artifact store behind /health until it moved to a background thread. A green kubectl rollout still dropped 1 request in 90 until a preStop hook drained connections. A Prometheus counter with no data looked identical to zero errors until or vector(0) was added, twice. Each defect is a specific, fixed mechanism, not a general reliability claim.",
+      },
+    ],
+    technologies: [
+      "Kubernetes",
+      "kind",
+      "Helm",
+      "Argo CD",
+      "Terraform",
+      "MLflow",
+      "PostgreSQL",
+      "MinIO",
+      "FastAPI",
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "k6",
+      "GitHub Actions",
+    ],
+    concepts: [
+      "GitOps",
+      "Progressive Delivery",
+      "Horizontal Pod Autoscaling",
+      "Pod Disruption Budget",
+      "NetworkPolicy Default-Deny",
+      "Pod Security Standards",
+      "Fault Injection",
+      "Reproducible Infrastructure",
+      "Stateful Persistence & Recovery",
+      "SLO / Alerting",
+      "Observability",
+      "ML Lifecycle Management",
+      "Security Hardening",
+      "Infrastructure as Code",
+      "Cost Modeling",
+      "Chaos Engineering",
+    ],
+    proofPoints: [
+      {
+        label: "Load test",
+        value: "645,809 requests · 0% errors",
+        scope: "k6 · local kind cluster",
+        qualifier:
+          "Saturated throughput 2,935 req/s at a saturated /predict p95 of 32.9 ms. Measured against this local cluster, not an estimate or a claim about production traffic.",
+      },
+      {
+        label: "Autoscaling",
+        value: "2 → 6 replicas in 71s",
+        scope: "HPA on CPU · M10",
+        qualifier:
+          "Scale-down back to 2 replicas after load takes roughly 230s and is stepped rather than immediate, matching Kubernetes' conservative default scale-down behavior.",
+      },
+      {
+        label: "Recovery timing",
+        value: "12–15s pod · ~1.4s drift",
+        scope: "M2 pod recovery · M4 GitOps reconciliation",
+        qualifier:
+          "A deleted pod has a replacement serving in 12–15s. Argo CD detects and self-heals configuration drift in about 1.4 seconds, independent of its own ~3 min Git poll cadence.",
+      },
+      {
+        label: "Reproducibility",
+        value: "11/11 acceptance in 901s",
+        scope: "M11 · destroyed cluster, images, build cache",
+        qualifier:
+          "make local-up then make local-test passed every check after a full teardown of the cluster, container images and build cache, proving the repository alone is sufficient with no manual step.",
+      },
+      {
+        label: "Failure engineering",
+        value: "8 faults injected against the live cluster",
+        scope: "Not simulated · detection and recovery timed",
+        qualifier:
+          "Representative scenarios: pod crash (replacement in 12–15s), artifact-store outage (100% requests still 200 while unready, 0 restarts), config drift (self-heal ~1.4s), bad rollout (maxUnavailable: 0 keeps old replicas serving), node drain of a stateful pod (PostgreSQL/MinIO reschedule automatically).",
+      },
+      {
+        label: "Security boundary",
+        value: "NetworkPolicy deny verified by test",
+        scope: "inference → PostgreSQL directly · M9",
+        qualifier:
+          "The default-deny NetworkPolicy's block on inference reaching PostgreSQL directly was confirmed against the running cluster rather than assumed from the policy file; Pod Security Standards: restricted is enforced cluster-wide.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/ml-platform-infrastructure",
   },
 ] satisfies readonly Project[];
 

@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { AgenticProjectCaseStudy } from "@/components/content/agentic-project-case-study";
 import { CommerceProjectCaseStudy } from "@/components/content/commerce-project-case-study";
 import { DecisionSqlCaseStudy } from "@/components/content/decision-sql-case-study";
+import { MlPlatformInfrastructureCaseStudy } from "@/components/content/ml-platform-infrastructure-case-study";
 import { DbtFeatureLineageCaseStudy } from "@/components/content/dbt-feature-lineage-case-study";
 import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
@@ -18,6 +19,7 @@ import { TagList } from "@/components/content/tag-list";
 import { getProjectArchitecture } from "@/data/architectures";
 import { dbtFeatureLineageMeta } from "@/data/dbt-feature-lineage";
 import { decisionSqlMeta, decisionSqlProjectUrl } from "@/data/decision-sql";
+import { mlPlatformInfrastructureMeta, mlPlatformInfrastructureProjectUrl } from "@/data/ml-platform-infrastructure";
 import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-platform";
 import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
 import { knowledgeBaseRagMeta, knowledgeBaseRagProjectUrl } from "@/data/knowledge-base-rag";
@@ -156,6 +158,26 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
+  if (project.id === "ml-platform-infrastructure") {
+    return {
+      title: mlPlatformInfrastructureMeta.title,
+      description: mlPlatformInfrastructureMeta.description,
+      keywords: [...mlPlatformInfrastructureMeta.keywords],
+      alternates: { canonical: mlPlatformInfrastructureProjectUrl },
+      openGraph: {
+        type: "article",
+        url: mlPlatformInfrastructureProjectUrl,
+        title: mlPlatformInfrastructureMeta.title,
+        description: mlPlatformInfrastructureMeta.description,
+      },
+      twitter: {
+        card: "summary",
+        title: mlPlatformInfrastructureMeta.title,
+        description: mlPlatformInfrastructureMeta.description,
+      },
+    };
+  }
+
   if (project.id === "dbt-feature-lineage") {
     const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
     return {
@@ -239,6 +261,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             ? [...knowledgeBaseRagMeta.keywords]
           : project.id === "decision-sql"
             ? [...decisionSqlMeta.keywords]
+          : project.id === "ml-platform-infrastructure"
+            ? [...mlPlatformInfrastructureMeta.keywords]
           : undefined,
     author: {
       "@type": "Person",
@@ -288,6 +312,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <DecisionSqlCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "ml-platform-infrastructure") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <MlPlatformInfrastructureCaseStudy project={project} />
       </>
     );
   }

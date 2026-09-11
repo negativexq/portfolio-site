@@ -8,6 +8,7 @@ export type ProjectCategory =
   | "MLOps / AI Platform"
   | "Model Training / Fine-Tuning"
   | "Structured Data / Governed Text-to-SQL"
+  | "AI Infrastructure / Platform Engineering"
   | "Agent Infrastructure / Developer Tooling"
   | "Data Engineering / Lineage"
   | "Generative AI / Retrieval"

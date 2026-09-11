@@ -26,6 +26,7 @@ const projectAnchors: Record<string, { x: number; y: number }> = {
   "production-rag-platform": { x: 7.3, y: -5.1 },
   "modelops-control-plane": { x: 0.2, y: -6.7 },
   "cause-tune": { x: 2.9, y: -8.4 },
+  "ml-platform-infrastructure": { x: -1.6, y: -5.1 },
   "agentic-customer-service-platform": { x: 5.6, y: 4.4 },
   "repo-context-forge": { x: 5.3, y: 1.4 },
   "dbt-feature-lineage": { x: -5.3, y: 1.4 },
