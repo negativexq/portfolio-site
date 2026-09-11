@@ -4033,6 +4033,69 @@ a {
   line-height: 1.5;
 }
 
+/* One status can cover two different questions at once — e.g. a component's
+   core engine is PROVEN while its platform-wide integration is still
+   EVOLVING. Shown as small paired badges rather than forcing the node's one
+   top-level status to average the two. */
+.platform-detail-substatuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+}
+
+.platform-detail-substatuses > div {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.platform-detail-substatuses > div > span:last-child {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.platform-detail-consumers ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.platform-detail-consumers li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+.platform-detail-consumers li > span:first-child {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.platform-detail-consumers li > span:last-child {
+  font: 650 0.6rem/1.3 var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.platform-detail-consumers li[data-consumer-status="implemented"] {
+  border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
+}
+
+.platform-detail-consumers li[data-consumer-status="implemented"] > span:last-child {
+  color: var(--accent);
+}
+
+.platform-detail-consumers li[data-consumer-status="contract"] > span:last-child {
+  color: var(--muted);
+}
+
 .platform-detail-next-gate {
   border-top-style: dashed;
 }

@@ -179,10 +179,14 @@ function PlatformDetailPanel({
       <h3>{node.title}</h3>
       <p className="platform-detail-purpose">{node.purpose}</p>
 
-      {node.details.currentFoundation ? (
-        <div className="platform-detail-group">
-          <p className="platform-proof-label">Current foundation</p>
-          <p>{node.details.currentFoundation}</p>
+      {node.details.subStatuses ? (
+        <div className="platform-detail-group platform-detail-substatuses">
+          {node.details.subStatuses.map((sub) => (
+            <div key={sub.label}>
+              <span className={statusClass(sub.status)}>{sub.status}</span>
+              <span>{sub.label}</span>
+            </div>
+          ))}
         </div>
       ) : null}
 
@@ -218,10 +222,10 @@ function PlatformDetailPanel({
         </div>
       ) : null}
 
-      {node.details.targetEvolution ? (
+      {node.details.implementedCore ? (
         <div className="platform-detail-group platform-detail-evolution">
-          <p className="platform-proof-label">Target evolution</p>
-          <ul>{node.details.targetEvolution.map((item) => <li key={item}>{item}</li>)}</ul>
+          <p className="platform-proof-label">Implemented core</p>
+          <ul>{node.details.implementedCore.map((item) => <li key={item}>{item}</li>)}</ul>
         </div>
       ) : null}
 
@@ -230,6 +234,20 @@ function PlatformDetailPanel({
           <p className="platform-proof-label">Two routing questions</p>
           <div><strong>Capability routing</strong><span>{node.details.routingDistinction.capability}</span></div>
           <div><strong>Model routing</strong><span>{node.details.routingDistinction.model}</span></div>
+        </div>
+      ) : null}
+
+      {node.details.consumers ? (
+        <div className="platform-detail-group platform-detail-consumers">
+          <p className="platform-proof-label">Consumers</p>
+          <ul>
+            {node.details.consumers.map((consumer) => (
+              <li key={consumer.name} data-consumer-status={consumer.status.toLowerCase()}>
+                <span>{consumer.name}</span>
+                <span>{consumer.status === "IMPLEMENTED" ? "end-to-end" : "contract-tested"}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       ) : null}
 

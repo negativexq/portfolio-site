@@ -18,11 +18,19 @@ export type PlatformNode = {
   links: readonly PlatformLink[];
   details: {
     currentGoal?: string;
-    currentFoundation?: string;
     milestone?: string;
     nextGate?: string;
     objective?: string;
-    targetEvolution?: readonly string[];
+    /** Capabilities that are actually implemented now, not a future target —
+     * distinct from `evidence`, which is measured results. */
+    implementedCore?: readonly string[];
+    /** Consumers of a shared component, split by whether the integration is
+     * real (end-to-end) or currently only a contract/evaluation fixture. */
+    consumers?: readonly { name: string; status: "IMPLEMENTED" | "CONTRACT" }[];
+    /** Independent sub-statuses shown inside one node's detail panel, e.g. a
+     * component whose core is PROVEN while its platform-wide role is still
+     * EVOLVING. Keeps the top-level `status` from having to average the two. */
+    subStatuses?: readonly { label: string; status: PlatformStatus }[];
     routingDistinction?: {
       capability: string;
       model: string;
@@ -118,26 +126,53 @@ export const platformNodes = [
     stage: "MODEL RUNTIME",
     title: "Adaptive Model Router",
     status: "EVOLVING",
-    role: "Model selection inside bounded subsystems",
-    purpose: "A broader routing abstraction evolving from the implemented Cost-Aware LLM Router.",
-    architectureDescription: "Model selection inside bounded AI subsystems",
-    decision: "Routing chooses computation; it never grants authority.",
-    evidence: [],
-    stack: ["task-aware", "quality-aware", "latency-aware", "privacy-aware"],
-    links: [],
+    role: "Shared model-compute selection across bounded subsystems",
+    purpose: "Shared model-compute routing across bounded AI subsystems: the router selects computation, it does not grant permissions.",
+    architectureDescription: "Shared model-compute selection",
+    decision: "Routing chooses computation; it never grants authority. Model choice never changes permissions.",
+    evidence: [
+      "374 tests passing, 3 skipped · strict mypy · Ruff, verified by the CI release gate",
+      "0 critical regressions, 100% quality retention (synthetic offline evaluation)",
+      "26.76% projected cost reduction vs. a strong-only baseline (synthetic evaluation, not a production savings claim)",
+      "~6.5k routing decisions/sec — local pure-routing characterization, not provider/API throughput",
+    ],
+    stack: ["FastAPI", "provider-neutral registry v2", "deterministic release gate", "shadow/canary policy lifecycle", "strict mypy", "Ruff"],
+    links: [
+      { label: "GitHub", href: "https://github.com/negativexq/adaptive-model-router" },
+      { label: "Architecture", href: "https://github.com/negativexq/adaptive-model-router/blob/main/docs/architecture.md" },
+    ],
     details: {
-      currentGoal: "Generalize the existing cost-aware routing foundation into an adaptive model runtime.",
-      currentFoundation: "Cost-Aware LLM Router",
-      milestone: "Keep capability routing separate from model routing: first choose the subsystem, then choose the model inside it.",
-      nextGate: "Define comparable quality, latency, cost, capability, and local-only signals before broadening the router contract.",
-      objective: "Use the smallest and cheapest model that reliably satisfies the task’s quality, latency, privacy and capability requirements.",
-      targetEvolution: ["task-aware", "capability-aware", "complexity-aware", "quality-aware", "latency-aware", "cost-aware", "privacy / local-only aware", "health-aware", "fallback / escalation aware"],
+      currentGoal: "The router's core is implemented and passes a deterministic release gate: eligibility, quality/latency/cost selection, health-aware fallback and quality escalation all exist and are enforced before any provider call. What is EVOLVING is not the router itself — it is the platform-wide shared-runtime role this page draws: only the Coding Agent adapter is a real end-to-end integration today, and Knowledge RAG, DecisionSQL and Agent Runtime remain contract-tested fixtures, not wired consumers. By design, model lifecycle approval belongs to ModelOps Control Plane; this router only selects eligible compute for a request the platform already approved. The two are not yet connected.",
+      milestone: "Keep capability routing separate from model routing: the bounded subsystem decides which capability handles a request; the router only decides which eligible model computes it.",
+      nextGate: "A 24-case frozen real coding-agent benchmark (coding-agent-real-v1) is defined but has not been executed against a paid provider — no real coding-agent or provider-performance result exists yet.",
+      objective: "Use the smallest and cheapest eligible model that satisfies a request's quality, latency, privacy, capability and budget requirements — never the strongest model by default.",
+      implementedCore: [
+        "task & caller-supplied capability context",
+        "complexity, risk & required quality",
+        "latency priority & expected cost",
+        "privacy, locality & hard budget",
+        "health-aware eligibility",
+        "availability fallback",
+        "quality escalation",
+        "protected minimum model tiers",
+        "provider-neutral model registry (cheap / balanced / strong)",
+      ],
+      consumers: [
+        { name: "Coding Agent", status: "IMPLEMENTED" },
+        { name: "Knowledge RAG", status: "CONTRACT" },
+        { name: "DecisionSQL", status: "CONTRACT" },
+        { name: "Agent Runtime", status: "CONTRACT" },
+      ],
+      subStatuses: [
+        { label: "Core routing engine", status: "PROVEN" },
+        { label: "Platform-wide integration", status: "EVOLVING" },
+      ],
       routingDistinction: {
         capability: "Which subsystem should handle the request?",
-        model: "Which model should perform the AI work inside that subsystem?",
+        model: "Which eligible model should compute it inside that subsystem?",
       },
-      why: "The objective is to use the smallest and cheapest model that reliably satisfies the task's quality, latency, privacy, and capability requirements.",
-      flow: ["task + constraints", "candidate model classes", "quality / latency / cost", "local-only policy", "fallback / escalation"],
+      why: "EVOLVING describes the platform-wide shared-runtime role, not the router's own engine — that engine is implemented and release-gated.",
+      flow: ["task + capability + constraints", "hard eligibility (health, privacy, budget)", "quality / latency / cost selection", "provider-neutral model registry", "provider or local runtime", "fallback / escalation if needed"],
     },
   },
   {
@@ -262,7 +297,7 @@ export const platformArchitectureLayers = [
     band: "Shared model runtime",
     note: "Model choice never changes permissions.",
     columns: [
-      { label: "Adaptive Model Router", status: "EVOLVING", items: ["task · capability · complexity aware", "quality · latency · cost aware", "privacy and local-only aware", "health · fallback · escalation"] },
+      { label: "Adaptive Model Router", status: "EVOLVING", items: ["core routing engine: PROVEN", "task · capability · complexity aware", "quality · latency · cost · budget aware", "health · fallback · escalation", "1 real integration · 3 contract-tested"] },
       { label: "Model tiers", status: "NEXT", items: ["specialist SLM", "general reasoning LLM", "vision and multimodal"] },
       { label: "Inference providers", items: ["local open models", "OpenAI-compatible APIs"] },
     ],
