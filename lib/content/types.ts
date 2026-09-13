@@ -54,11 +54,12 @@ export type ProjectHighlight = {
 };
 
 /**
- * A single repository inside a SupportingLabGroup. Deliberately not a
- * `Project` — these render only inside Projects -> Supporting Work and
- * must never appear in `data/projects.ts` or reach `lib/graph/build-graph.ts`,
- * so they carry no graph-relevant fields (no id used as a graph node key,
- * no concepts/technologies/proofPoints).
+ * A single lab inside a SupportingLabGroup — a subdirectory of one monorepo,
+ * not a standalone repository. Deliberately not a `Project` — these render
+ * only inside Projects -> Supporting Work and must never appear in
+ * `data/projects.ts` or reach `lib/graph/build-graph.ts`, so they carry no
+ * graph-relevant fields (no id used as a graph node key, no
+ * concepts/technologies/proofPoints).
  */
 export type SupportingLab = {
   repo: string;
@@ -67,14 +68,16 @@ export type SupportingLab = {
   githubUrl: string;
 };
 
-/** A cohesive group of related supporting-work repositories, rendered as one
- * card with an internal progression rather than one card per repository.
- * Graph-excluded by construction — see SupportingLab. */
+/** A cohesive group of related supporting-work labs, rendered as one card
+ * with an internal progression rather than one card per lab. Graph-excluded
+ * by construction — see SupportingLab. `githubUrl` is the group's own
+ * monorepo root; each lab's `githubUrl` points at its subdirectory. */
 export type SupportingLabGroup = {
   id: string;
   title: string;
   summary: string;
   theme: string;
+  githubUrl?: string;
   labs: readonly SupportingLab[];
 };
 

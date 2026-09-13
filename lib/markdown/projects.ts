@@ -34,6 +34,7 @@ export function renderSupportingLabGroup(group: SupportingLabGroup, headingLevel
     heading(headingLevel, escapeMarkdown(group.title)),
     escapeMarkdown(group.summary),
     `_${escapeMarkdown(group.theme)}_`,
+    ...(group.githubUrl ? [`Repository: ${group.githubUrl}`] : []),
   ]);
   const labs = group.labs
     .map(

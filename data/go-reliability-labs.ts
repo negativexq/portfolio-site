@@ -5,54 +5,59 @@ import type { SupportingLabGroup } from "@/lib/content/types";
 // Engineering Graph nodes, edges, or accessible-list entries. It renders
 // only in Projects -> Supporting Work. Do not merge this into
 // data/projects.ts or import it from lib/graph/*.
+//
+// These six labs were originally six standalone repositories and are now
+// consolidated as subdirectories of one monorepo, github.com/negativexq/
+// go-resilience-labs. Each lab's githubUrl below points at its subdirectory.
 export const goReliabilityLabs: SupportingLabGroup = {
   id: "go-reliability-labs",
-  title: "Go Reliability Labs",
+  title: "Go Resilience Labs",
   summary:
     "A focused series of six Go labs exploring how backend systems remain predictable under load, concurrency, and partial failure — covering latency measurement, idempotency, admission control, dependency resilience, backpressure, and end-to-end deadline budgeting.",
   theme: "Predictable backend behavior under load and failure.",
+  githubUrl: "https://github.com/negativexq/go-resilience-labs",
   labs: [
     {
-      repo: "go-api-prober",
+      repo: "api-prober",
       label: "Measure",
       description:
         "Bounded-concurrency HTTP probing with throughput measurement, latency percentiles, status distributions, connection reuse, graceful cancellation, and race-tested concurrency.",
-      githubUrl: "https://github.com/negativexq/go-api-prober",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/api-prober",
     },
     {
-      repo: "go-idempotency-lab",
+      repo: "idempotency",
       label: "Correctness",
       description:
         "Concurrent idempotent request handling backed by PostgreSQL transactions and UNIQUE constraints, preventing duplicate side effects while safely replaying completed results.",
-      githubUrl: "https://github.com/negativexq/go-idempotency-lab",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/idempotency",
     },
     {
-      repo: "go-rate-limiter",
+      repo: "rate-limiter",
       label: "Admission Control",
       description:
         "Local token-bucket and Redis-backed distributed rate limiting with atomic decisions, explicit rate-limit responses, and concurrency-tested global limits.",
-      githubUrl: "https://github.com/negativexq/go-rate-limiter",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/rate-limiter",
     },
     {
-      repo: "go-retry-circuit-breaker",
+      repo: "retry-circuit-breaker",
       label: "Resilience",
       description:
         "Dependency-free bounded retries with exponential backoff and jitter, retryable HTTP classification, response-body lifecycle handling, and a concurrency-safe circuit breaker.",
-      githubUrl: "https://github.com/negativexq/go-retry-circuit-breaker",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/retry-circuit-breaker",
     },
     {
-      repo: "go-backpressure-lab",
+      repo: "backpressure",
       label: "Overload Control",
       description:
         "Bounded queues and fixed workers demonstrating saturation behavior, enqueue timeouts, explicit overload rejection, context cancellation, stats, and graceful draining.",
-      githubUrl: "https://github.com/negativexq/go-backpressure-lab",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/backpressure",
     },
     {
-      repo: "go-deadline-budget-lab",
+      repo: "deadline-budget",
       label: "Time Budget",
       description:
         "End-to-end deadline propagation with child timeout budgeting, safety reserves, fail-fast budget exhaustion, budget-aware retries, and parent-child deadline guarantees.",
-      githubUrl: "https://github.com/negativexq/go-deadline-budget-lab",
+      githubUrl: "https://github.com/negativexq/go-resilience-labs/tree/main/deadline-budget",
     },
   ],
 };

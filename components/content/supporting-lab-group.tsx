@@ -36,6 +36,14 @@ export function SupportingLabGroupCard({ group }: SupportingLabGroupCardProps) {
           ))}
         </ol>
       </div>
+      {group.githubUrl ? (
+        <div className="project-card-actions">
+          <a href={group.githubUrl} target="_blank" rel="noreferrer">
+            GitHub <ArrowUpRight aria-hidden="true" size={14} />
+            <span className="sr-only"> for {group.title} (opens in a new tab)</span>
+          </a>
+        </div>
+      ) : null}
     </article>
   );
 }
