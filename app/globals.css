@@ -1057,6 +1057,21 @@ a {
   text-transform: uppercase;
 }
 
+/* The group-level repo link sits beside the card title, the same way each
+   lab's own link sits beside its repo name — not in a bottom action row,
+   which on this card ends up hundreds of pixels below the title because of
+   the six-item progression list. */
+.lab-group-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+.lab-group-link {
+  margin-top: 0;
+}
+
 .lab-progression-link:hover,
 .lab-progression-link:focus-visible {
   color: var(--accent);

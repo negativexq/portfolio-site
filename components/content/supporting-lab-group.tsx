@@ -15,7 +15,15 @@ export function SupportingLabGroupCard({ group }: SupportingLabGroupCardProps) {
       </div>
       <div className="project-card-body">
         <p className="project-category">{group.theme}</p>
-        <h3>{group.title}</h3>
+        <div className="lab-group-heading">
+          <h3>{group.title}</h3>
+          {group.githubUrl ? (
+            <a className="lab-progression-link lab-group-link" href={group.githubUrl} target="_blank" rel="noreferrer">
+              GitHub <ArrowUpRight aria-hidden="true" size={13} />
+              <span className="sr-only"> for {group.title} (opens in a new tab)</span>
+            </a>
+          ) : null}
+        </div>
         <p className="project-summary">{group.summary}</p>
         <ol className="lab-progression" aria-label={`${group.title} progression`}>
           {group.labs.map((lab, index) => (
@@ -36,14 +44,6 @@ export function SupportingLabGroupCard({ group }: SupportingLabGroupCardProps) {
           ))}
         </ol>
       </div>
-      {group.githubUrl ? (
-        <div className="project-card-actions">
-          <a href={group.githubUrl} target="_blank" rel="noreferrer">
-            GitHub <ArrowUpRight aria-hidden="true" size={14} />
-            <span className="sr-only"> for {group.title} (opens in a new tab)</span>
-          </a>
-        </div>
-      ) : null}
     </article>
   );
 }
