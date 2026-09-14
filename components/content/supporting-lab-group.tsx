@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { SupportingLabGroup } from "@/lib/content/types";
 import { StatusBadge } from "./status-badge";
 
@@ -38,6 +38,12 @@ export function SupportingLabGroupCard({ group }: SupportingLabGroupCardProps) {
       </div>
       {group.githubUrl ? (
         <div className="project-card-actions">
+          {/* Matches every other project card's first action in text and
+              markup so it renders at the same width, holding GitHub at the
+              same offset — see .lab-group-actions-spacer. */}
+          <span className="lab-group-actions-spacer" aria-hidden="true">
+            View case study <ArrowRight size={15} />
+          </span>
           <a href={group.githubUrl} target="_blank" rel="noreferrer">
             GitHub <ArrowUpRight aria-hidden="true" size={14} />
             <span className="sr-only"> for {group.title} (opens in a new tab)</span>

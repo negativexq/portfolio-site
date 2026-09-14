@@ -981,6 +981,17 @@ a {
   padding-top: 1rem;
 }
 
+/* This card has no "View case study" link, only GitHub — but every other
+   project card's GitHub sits after one, so a bare GitHub link here would
+   start at the column's leading edge instead of where readers expect it.
+   A hidden spacer rendering the same text renders at the same width as a
+   real "View case study" link, holding GitHub at the identical offset
+   without hardcoding a pixel value that copy or font changes could break. */
+.lab-group-actions-spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .project-card-actions a:first-child {
   color: var(--foreground);
 }
