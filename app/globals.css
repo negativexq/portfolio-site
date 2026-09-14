@@ -999,12 +999,6 @@ a {
   border-top: 1px solid var(--border-strong);
 }
 
-/* This card has no per-card actions row (each lab links out individually),
-   so its body fills the actions column too instead of leaving it blank. */
-.lab-group-card .project-card-body {
-  grid-column: 2 / -1;
-}
-
 .lab-progression {
   margin: 1.5rem 0 0;
   border-top: 1px solid var(--border);
@@ -8290,13 +8284,6 @@ a {
 
   .project-card-actions {
     grid-column: auto;
-  }
-
-  /* At the single-column breakpoint the grid only has one explicit track;
-     "2 / -1" would otherwise create an implicit second column and place
-     the body beside .project-card-meta instead of below it. */
-  .lab-group-card .project-card-body {
-    grid-column: 1 / -1;
   }
 
   .area-card {
