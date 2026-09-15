@@ -885,14 +885,14 @@ const projectRecords = [
       value: "+34.03 pp diagnosis exact match",
       scope: "Frozen 144-case synthetic benchmark",
       qualifier:
-        "Experiment 02: untouched Qwen3-4B scored 65.28%, the tuned adapter 99.31%. The benchmark was frozen before training and excluded from checkpoint selection; 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
+        "Experiment 02: untouched Qwen3-4B scored 65.28%, the tuned adapter 99.31%. The benchmark was frozen before training and excluded from checkpoint selection. A fresh, independent 120-case blind challenge (E05) later confirmed the gain held at 98.33%; a cheaper alternative recipe (E04) did not hold as well on the same challenge. 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
     },
     summary:
-      "LLM fine-tuning laboratory for measuring specialization gain, training dynamics, generalization and failure behavior under constrained hardware, with a frozen benchmark and base-vs-tuned evidence.",
+      "LLM fine-tuning laboratory that measures specialization gain against a frozen benchmark, then re-tests it on a fresh blind challenge, cross-model replication, failure-boundary and cost trade-off studies — not just one training run.",
     directAnswer:
-      "CauseTune is a QLoRA fine-tuning laboratory that freezes a held-out benchmark, measures the untouched base model's capability gap, runs one controlled specialization, then re-measures base versus tuned on the same frozen evaluation with quality, efficiency and failure analysis kept as separate evidence.",
+      "CauseTune is a QLoRA fine-tuning laboratory that freezes a held-out benchmark, measures the untouched base model's capability gap, runs a controlled specialization, then tests whether the gain survives a fresh blind challenge, a second model family, and an adversarial failure boundary, with quality, efficiency and failure analysis kept as separate, honestly scoped evidence.",
     whyItExists:
-      "A single accuracy number does not show whether fine-tuning added a real capability, whether it generalized, or what it cost. CauseTune keeps the benchmark frozen before training, selects checkpoints on validation only, and reports the gain as specific failure modes disappearing rather than one headline score — so a specialization claim is inspectable, not asserted.",
+      "A single accuracy number does not show whether fine-tuning added a real capability, whether it generalizes past the benchmark it was measured on, or what it cost. CauseTune keeps the benchmark frozen before training, selects checkpoints on validation only, and then goes further: v1.0 re-tested the confirmed gain on data the adapter never saw, on a second model family, and under evidence deliberately made ambiguous — so a specialization claim is inspectable and stress-tested, not asserted once and left alone.",
     heroMetrics: [
       {
         value: "65.28% → 99.31%",
@@ -901,22 +901,22 @@ const projectRecords = [
         detail: "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training. +34.03 pp; synthetic benchmark accuracy, not production accuracy.",
       },
       {
-        value: "100 / 600 STEPS",
-        label: "Early stop, no forced budget",
-        context: "validation_no_improvement",
-        detail: "Diagnosis hit the validation ceiling by step 25; early stopping ended the run at step 100, avoiding 500 of 600 optimizer updates (83.33%).",
+        value: "98.33%",
+        label: "Held on a fresh blind challenge",
+        context: "E05 · independent 120-case set, base 66.67%",
+        detail: "The E02 adapter was retested on a challenge it never saw during training or checkpoint selection. The gain survived, only 0.98 pp below its frozen-benchmark score.",
       },
       {
-        value: "5.312 GiB",
-        label: "Peak allocated VRAM",
-        context: "8 GB RTX 5070 Laptop · 0.814% trainable",
-        detail: "33,030,144 trainable parameters over a 4.06B logical model. Peak allocated VRAM, not framework reserved-memory accounting.",
+        value: "-5.83 pp",
+        label: "A cheaper recipe that didn't hold",
+        context: "E04 vs E02, same fresh E05 challenge",
+        detail: "E04 saturated validation at 100% diagnosis, but regressed against E02 once measured on data neither adapter had seen. Validation performance did not guarantee generalization.",
       },
       {
-        value: "26.8% → 99.2%",
-        label: "One-variable causal fix",
-        context: "Experiment 01 · M5 → M6 validation",
-        detail: "Changing only the training order from unshuffled to a deterministic seeded shuffle recovered held-out accuracy; balanced data still produced pathological single-class optimizer windows.",
+        value: "9 / 48 = 18.75%",
+        label: "False-confident diagnosis at the boundary",
+        context: "E07 · ambiguous / insufficient evidence",
+        detail: "Under sufficient evidence the E04 adapter reached 100% accuracy, but at the failure boundary it stated a confident diagnosis 18.75% of the time when the evidence did not support one.",
       },
     ],
     highlights: [
@@ -926,24 +926,29 @@ const projectRecords = [
           "Problem: a benchmark the model was tuned against measures memorization, not capability. Solution: the challenge benchmark and evaluation contract are established and hashed before training, excluded from the train and validation data, and never used for checkpoint selection.",
       },
       {
-        title: "The gain is specific failure modes disappearing",
+        title: "The gain survived an independent fresh challenge",
         description:
-          "Problem: an aggregate delta hides whether the model got better or just shifted errors. Solution: base-vs-tuned is decomposed into mechanically observed transitions — 49 cases went base-wrong to tuned-correct against 1 regression — and per-family behavior, so configuration_regression (0% → 100%) and disk_io_saturation (25% → 100%) are visible individually.",
+          "Problem: a frozen benchmark can still be a proxy the model quietly overfit to. Solution: v1.0's E05 retested the E02 adapter on a completely independent 120-case blind challenge it never saw during training or checkpoint selection — diagnosis held at 98.33% against an untouched-base 66.67%, only 0.98 pp below the original frozen-benchmark result.",
       },
       {
-        title: "Efficiency measured, not assumed",
+        title: "A cheaper recipe that validation couldn't catch",
         description:
-          "Problem: fine-tuning claims often ignore what the run cost. Solution: peak allocated VRAM (5.312 GiB on an 8 GB laptop GPU), trainable-parameter share (0.814%), optimizer steps actually consumed (100 of 600) and wall time are reported as first-class results alongside quality.",
+          "Problem: validation saturating at 100% looks like a finished result. Solution: E04's cost-optimized recipe hit 100% diagnosis, resolution and strict-JSON on validation, but E05's fresh blind challenge exposed a 5.83 pp diagnosis regression against E02 on the same held-out data — preserved as evidence rather than retroactively explained away.",
+      },
+      {
+        title: "Confidently wrong is measured, not assumed",
+        description:
+          "Problem: a specialized model can sound certain even when the evidence does not support a diagnosis. Solution: E07 tested sufficient, insufficient, contradictory, ambiguous and out-of-taxonomy evidence directly — 100% accuracy when evidence was sufficient, but a 18.75% (9/48) false-confident diagnosis rate at the boundary, reported as a real limitation, not smoothed into an aggregate score.",
+      },
+      {
+        title: "Cross-model replication, honestly scoped",
+        description:
+          "Problem: a result on one model family is easy to overstate as general. Solution: E06 ran the same controlled methodology on microsoft/Phi-4-mini-instruct — untouched baseline 0% diagnosis, tuned 63.33% (38/60) — reported as limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
       },
       {
         title: "A causal training-order diagnosis",
         description:
           "Experiment 01 isolated one training-affecting variable: an unshuffled class-contiguous order collapsed held-out accuracy to 26.8% because the final optimizer windows were single-class, while a deterministic seeded shuffle recovered it to 99.2%. Train loss alone was insufficient evidence.",
-      },
-      {
-        title: "Integrity controls over convenience",
-        description:
-          "No benchmark-informed oversampling, no LLM judge, no manual output repair, no alternate-checkpoint fishing. Malformed outputs were scored as produced, and metrics were recomputed offline from the persisted 144 predictions without regenerating model outputs.",
       },
     ],
     technologies: [
@@ -955,6 +960,7 @@ const projectRecords = [
       "TRL",
       "QLoRA",
       "Qwen3-4B",
+      "Phi-4-mini",
       "pytest",
     ],
     concepts: [
@@ -974,6 +980,11 @@ const projectRecords = [
       "VRAM Profiling",
       "Deterministic Training",
       "Base-vs-Tuned Measurement",
+      "Fresh Blind Evaluation",
+      "Cross-Model Replication",
+      "Failure-Boundary Evaluation",
+      "False-Confidence Measurement",
+      "Cost / Quality Trade-off Analysis",
     ],
     proofPoints: [
       {
@@ -1003,6 +1014,34 @@ const projectRecords = [
         scope: "Experiment 01 · M5 unshuffled vs M6 seeded shuffle",
         qualifier:
           "Changing only the training order from class-contiguous to a deterministic seed-42 shuffle recovered held-out performance; all 250 optimizer windows became mixed-class instead of terminal single-class.",
+      },
+      {
+        label: "Fresh blind confirmation vs a regression",
+        value: "E02 98.33% held · E04 92.50% regressed -5.83 pp",
+        scope: "E05 · independent 120-case blind challenge",
+        qualifier:
+          "Neither adapter had seen this challenge. The original E02 adapter's gain held close to its frozen-benchmark score; E04's cost-optimized recipe, which had saturated validation at 100%, regressed against E02 once tested on unseen data.",
+      },
+      {
+        label: "Cross-model replication",
+        value: "0% -> 63.33% (38/60) diagnosis exact",
+        scope: "E06 · microsoft/Phi-4-mini-instruct",
+        qualifier:
+          "Same controlled methodology, separate frozen held-out benchmark, untouched-baseline 0% diagnosis and 0% strict-JSON compliance. Limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
+      },
+      {
+        label: "Failure-boundary false confidence",
+        value: "9/48 = 18.75% false-confident diagnosis",
+        scope: "E07 · ambiguous / insufficient / contradictory evidence",
+        qualifier:
+          "The E04 adapter reached 100% accuracy on sufficient-evidence cases but stated a confident diagnosis 18.75% of the time when the evidence at the boundary did not support one.",
+      },
+      {
+        label: "Cost / quality trade-off",
+        value: "Classified: lower-cost, not quality-preserving",
+        scope: "E08 · efficiency-frontier study",
+        qualifier:
+          "E04 reduced training corpus size and wall-clock cost versus E02, but the classification accounts for the E05 blind-challenge regression: cheaper was not quality-preserving once fresh generalization was included.",
       },
     ],
     roadmap: emptyRoadmap,

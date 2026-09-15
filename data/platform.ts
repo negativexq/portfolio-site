@@ -228,19 +228,19 @@ export const platformNodes = [
     purpose: "A measured specialization path from base model to evaluated candidate.",
     decision: "Specialization only counts if it beats the untouched base model on a benchmark frozen before training and excluded from checkpoint selection.",
     evidence: [
-      "65.28% → 99.31% diagnosis exact match",
-      "frozen 144-case synthetic benchmark",
-      "5.312 GiB peak VRAM · 0.814% trainable",
+      "65.28% → 99.31% diagnosis exact match, held at 98.33% on a fresh blind challenge",
+      "cross-model replication on a second model family (Phi-4-mini)",
+      "18.75% false-confident diagnosis measured at the failure boundary",
     ],
-    stack: ["QLoRA", "PEFT", "Qwen3-4B", "frozen benchmark", "validation-only selection", "failure-mode analysis", "VRAM profiling"],
+    stack: ["QLoRA", "PEFT", "Qwen3-4B", "frozen benchmark", "fresh blind evaluation", "failure-boundary testing", "cross-model replication"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/cause-tune" },
       { label: "Case study", href: "/projects/cause-tune" },
     ],
     details: {
-      nextGate: "A candidate still has to clear offline evaluation before ModelOps can manage its canary lifecycle; the open scientific step is whether the gain survives a fresh blind benchmark.",
-      why: "The training and evaluation loop is proven to produce a measured gain that decomposes into specific failure modes disappearing, not one headline score. What is not yet claimed: that it survives a new blind benchmark or real production traffic, and the candidate is not yet wired into the ModelOps canary lifecycle. 99.31% is synthetic benchmark accuracy, not production accuracy.",
-      flow: ["base model", "CauseTune / QLoRA", "offline evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
+      nextGate: "The open scientific step — whether the gain survives a fresh blind benchmark — is answered for the original recipe (98.33% held) and answered negatively for a cheaper alternative (-5.83 pp). What remains is wiring an evaluated candidate into the ModelOps canary lifecycle; no candidate has been promoted there yet.",
+      why: "The training and evaluation loop is proven to produce a measured gain that decomposes into specific failure modes disappearing, not one headline score, and v1.0 went further: the same gain was re-tested on an independent blind challenge, a second model family, and an adversarial failure boundary. A cheaper recipe that looked finished on validation did not survive that retest, and the working adapter still has a measured 18.75% false-confident diagnosis rate at the evidence boundary. The candidate is not yet wired into the ModelOps canary lifecycle. 99.31% is synthetic benchmark accuracy, not production accuracy.",
+      flow: ["base model", "CauseTune / QLoRA", "fresh blind evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
     },
   },
 ] as const satisfies readonly PlatformNode[];
