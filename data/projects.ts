@@ -885,41 +885,46 @@ const projectRecords = [
       value: "+34.03 pp diagnosis exact match",
       scope: "Frozen 144-case synthetic benchmark",
       qualifier:
-        "Experiment 02: untouched Qwen3-4B scored 65.28%, the tuned adapter 99.31%. The benchmark was frozen before training and excluded from checkpoint selection. A fresh, independent 120-case blind challenge (E05) later confirmed the gain held at 98.33%; a cheaper alternative recipe (E04) did not hold as well on the same challenge. 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
+        "Untouched Qwen3-4B scored 65.28% on a benchmark frozen before training and excluded from checkpoint selection; the tuned adapter reached 99.31%. A second, independent blind challenge the adapter never saw later confirmed the gain held at 98.33%, while a cheaper alternative recipe did not hold as well on the same challenge. 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
     },
     summary:
-      "LLM fine-tuning laboratory that measures specialization gain against a frozen benchmark, then re-tests it on a fresh blind challenge, cross-model replication, failure-boundary and cost trade-off studies — not just one training run.",
+      "LLM fine-tuning laboratory built around the full craft, not one training run: capability-gap measurement, QLoRA recipe selection under a hardware and data budget, held-out generalization testing, failure-mode and calibration analysis, and cross-model replication.",
     directAnswer:
-      "CauseTune is a QLoRA fine-tuning laboratory that freezes a held-out benchmark, measures the untouched base model's capability gap, runs a controlled specialization, then tests whether the gain survives a fresh blind challenge, a second model family, and an adversarial failure boundary, with quality, efficiency and failure analysis kept as separate, honestly scoped evidence.",
+      "CauseTune is a QLoRA fine-tuning laboratory that measures a model's capability gap, selects a training recipe under a frozen validation-only study, then treats the resulting gain as a claim to stress-test rather than a result to publish: does it survive data the adapter never saw, a second model architecture, and evidence deliberately made ambiguous. Quality, efficiency and failure behavior are kept as separate, honestly scoped evidence.",
     whyItExists:
-      "A single accuracy number does not show whether fine-tuning added a real capability, whether it generalizes past the benchmark it was measured on, or what it cost. CauseTune keeps the benchmark frozen before training, selects checkpoints on validation only, and then goes further: v1.0 re-tested the confirmed gain on data the adapter never saw, on a second model family, and under evidence deliberately made ambiguous — so a specialization claim is inspectable and stress-tested, not asserted once and left alone.",
+      "A single accuracy number does not show whether fine-tuning added a real capability, whether it generalizes past the benchmark it was measured on, or what it cost. CauseTune keeps the benchmark frozen before training, selects checkpoints and recipes on validation only, and then goes further: the confirmed gain is re-tested on data the adapter never saw, on a second model family, and under evidence deliberately made ambiguous — the same discipline a fine-tuning recipe needs before anyone trusts it past the benchmark it was tuned on.",
     heroMetrics: [
       {
         value: "65.28% → 99.31%",
         label: "Diagnosis exact match",
-        context: "Experiment 02 · frozen 144-case benchmark",
+        context: "Frozen 144-case benchmark",
         detail: "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training. +34.03 pp; synthetic benchmark accuracy, not production accuracy.",
       },
       {
         value: "98.33%",
         label: "Held on a fresh blind challenge",
-        context: "E05 · independent 120-case set, base 66.67%",
-        detail: "The E02 adapter was retested on a challenge it never saw during training or checkpoint selection. The gain survived, only 0.98 pp below its frozen-benchmark score.",
+        context: "Independent 120-case set · base 66.67%",
+        detail: "The adapter was retested on a challenge it never saw during training or checkpoint selection. The gain survived, only 0.98 pp below its frozen-benchmark score.",
       },
       {
         value: "-5.83 pp",
         label: "A cheaper recipe that didn't hold",
-        context: "E04 vs E02, same fresh E05 challenge",
-        detail: "E04 saturated validation at 100% diagnosis, but regressed against E02 once measured on data neither adapter had seen. Validation performance did not guarantee generalization.",
+        context: "Cost-optimized recipe vs. the original, same challenge",
+        detail: "The cheaper recipe saturated validation at 100% diagnosis, but regressed against the original once measured on data neither adapter had seen. Validation performance did not guarantee generalization.",
       },
       {
         value: "9 / 48 = 18.75%",
         label: "False-confident diagnosis at the boundary",
-        context: "E07 · ambiguous / insufficient evidence",
-        detail: "Under sufficient evidence the E04 adapter reached 100% accuracy, but at the failure boundary it stated a confident diagnosis 18.75% of the time when the evidence did not support one.",
+        context: "Ambiguous / insufficient evidence cases",
+        detail: "Under sufficient evidence the adapter reached 100% accuracy, but at the failure boundary it stated a confident diagnosis 18.75% of the time when the evidence did not support one.",
       },
     ],
     highlights: [
+      {
+        title: "A recipe chosen under a budget, not guessed",
+        description:
+          "Problem: LoRA rank, learning rate and training-data volume are usually picked by intuition or copied from a blog post. Solution: a frozen, validation-only study swept data volume, adapter capacity and learning rate under a fixed hardware budget before any number was reported, so the selected recipe is a defensible choice, not a lucky run.",
+      },
       {
         title: "Frozen benchmark before any training",
         description:
@@ -928,27 +933,27 @@ const projectRecords = [
       {
         title: "The gain survived an independent fresh challenge",
         description:
-          "Problem: a frozen benchmark can still be a proxy the model quietly overfit to. Solution: v1.0's E05 retested the E02 adapter on a completely independent 120-case blind challenge it never saw during training or checkpoint selection — diagnosis held at 98.33% against an untouched-base 66.67%, only 0.98 pp below the original frozen-benchmark result.",
+          "Problem: a frozen benchmark can still be a proxy the model quietly overfit to. Solution: the tuned adapter was retested on a second, completely independent blind challenge it never saw during training or checkpoint selection — diagnosis held at 98.33% against an untouched-base 66.67%, only 0.98 pp below the original frozen-benchmark result.",
       },
       {
-        title: "A cheaper recipe that validation couldn't catch",
+        title: "Validation saturation is not proof of generalization",
         description:
-          "Problem: validation saturating at 100% looks like a finished result. Solution: E04's cost-optimized recipe hit 100% diagnosis, resolution and strict-JSON on validation, but E05's fresh blind challenge exposed a 5.83 pp diagnosis regression against E02 on the same held-out data — preserved as evidence rather than retroactively explained away.",
+          "Problem: a recipe hitting 100% on validation looks finished. Solution: a cheaper, cost-optimized recipe reached 100% diagnosis, resolution and strict-JSON on validation, but the same independent blind challenge exposed a 5.83 pp diagnosis regression against the original recipe — preserved as evidence instead of retroactively explained away.",
       },
       {
-        title: "Confidently wrong is measured, not assumed",
+        title: "Calibration under ambiguous evidence, not just accuracy",
         description:
-          "Problem: a specialized model can sound certain even when the evidence does not support a diagnosis. Solution: E07 tested sufficient, insufficient, contradictory, ambiguous and out-of-taxonomy evidence directly — 100% accuracy when evidence was sufficient, but a 18.75% (9/48) false-confident diagnosis rate at the boundary, reported as a real limitation, not smoothed into an aggregate score.",
+          "Problem: a specialized model can sound certain even when the evidence does not support a diagnosis, and accuracy alone never surfaces that. Solution: sufficient, insufficient, contradictory, ambiguous and out-of-taxonomy evidence were tested directly — 100% accuracy when evidence was sufficient, but an 18.75% (9/48) false-confident diagnosis rate at the boundary, reported as a real limitation.",
       },
       {
         title: "Cross-model replication, honestly scoped",
         description:
-          "Problem: a result on one model family is easy to overstate as general. Solution: E06 ran the same controlled methodology on microsoft/Phi-4-mini-instruct — untouched baseline 0% diagnosis, tuned 63.33% (38/60) — reported as limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
+          "Problem: a result on one model family is easy to overstate as general. Solution: the same controlled methodology was rerun on a second, architecturally different model (Phi-4-mini) — untouched baseline 0% diagnosis, tuned 63.33% (38/60) — reported as limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
       },
       {
         title: "A causal training-order diagnosis",
         description:
-          "Experiment 01 isolated one training-affecting variable: an unshuffled class-contiguous order collapsed held-out accuracy to 26.8% because the final optimizer windows were single-class, while a deterministic seeded shuffle recovered it to 99.2%. Train loss alone was insufficient evidence.",
+          "One training-affecting variable was isolated by holding everything else fixed: an unshuffled class-contiguous order collapsed held-out accuracy to 26.8% because the final optimizer windows were single-class, while a deterministic seeded shuffle recovered it to 99.2%. Train loss alone was insufficient evidence.",
       },
     ],
     technologies: [
