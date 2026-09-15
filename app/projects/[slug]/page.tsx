@@ -334,30 +334,30 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     );
   }
 
+  // Section labels feed only the sidebar SectionIndex now. Every section used
+  // to repeat its own numbered eyebrow ("01 / Overview") above its heading —
+  // every bespoke case-study template on the site (DecisionSQL, ModelOps,
+  // Knowledge Base RAG, dbt Feature Lineage) already skips that and goes
+  // straight to a plain <h2>, and this template now matches them.
   const sections = [
-    { id: "overview", navLabel: "Overview", kickerText: "Overview" },
+    { id: "overview", navLabel: "Overview" },
     ...(project.highlights && project.highlights.length > 0
-      ? [{ id: "highlights", navLabel: "Highlights", kickerText: "Engineering highlights" }]
+      ? [{ id: "highlights", navLabel: "Highlights" }]
       : []),
     ...(projectArchitecture
-      ? [{ id: "architecture", navLabel: "Architecture", kickerText: "Architecture" }]
+      ? [{ id: "architecture", navLabel: "Architecture" }]
       : []),
     ...(project.evolvedFrom
-      ? [{ id: "evolution", navLabel: "Evolution", kickerText: "Project evolution" }]
+      ? [{ id: "evolution", navLabel: "Evolution" }]
       : []),
-    { id: "concepts", navLabel: "Concepts", kickerText: "Engineering concepts" },
-    { id: "evidence", navLabel: "Evidence", kickerText: "Proof & evidence" },
-    { id: "stack", navLabel: "Stack", kickerText: "Technology stack" },
+    { id: "concepts", navLabel: "Concepts" },
+    { id: "evidence", navLabel: "Evidence" },
+    { id: "stack", navLabel: "Stack" },
     ...(project.roadmap.length > 0
-      ? [{ id: "roadmap", navLabel: "Roadmap", kickerText: "Next phase" }]
+      ? [{ id: "roadmap", navLabel: "Roadmap" }]
       : []),
   ];
   const sectionIndex = sections.map((section) => [section.id, section.navLabel] as const);
-  const kicker = (id: string) => {
-    const index = sections.findIndex((section) => section.id === id);
-    const section = sections[index];
-    return `${String(index + 1).padStart(2, "0")} / ${section.kickerText}`;
-  };
 
   return (
     <main>
@@ -385,7 +385,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         <div className="detail-content">
           <section id="overview" className="detail-section">
-            <p className="detail-kicker">{kicker("overview")}</p>
             <h2>Why it exists</h2>
             <p>{project.directAnswer}</p>
             <p>{project.whyItExists}</p>
@@ -393,7 +392,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {project.highlights && project.highlights.length > 0 ? (
             <section id="highlights" className="detail-section">
-              <p className="detail-kicker">{kicker("highlights")}</p>
               <h2>What makes this different</h2>
               <div className="highlight-grid">
                 {project.highlights.map((highlight) => (
@@ -408,7 +406,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {projectArchitecture ? (
             <section id="architecture" className="detail-section">
-              <p className="detail-kicker">{kicker("architecture")}</p>
               <h2>System architecture</h2>
               <p>{projectArchitecture.description}</p>
               <ArchitectureDiagram architecture={projectArchitecture} />
@@ -417,7 +414,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {project.evolvedFrom && evolvedFromProject ? (
             <section id="evolution" className="detail-section">
-              <p className="detail-kicker">{kicker("evolution")}</p>
               <h2>
                 {evolvedFromProject.title} → {project.title}
               </h2>
@@ -434,13 +430,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           ) : null}
 
           <section id="concepts" className="detail-section">
-            <p className="detail-kicker">{kicker("concepts")}</p>
             <h2>System concerns made explicit</h2>
             <TagList items={project.concepts} label={`${project.title} engineering concepts`} />
           </section>
 
           <section id="evidence" className="detail-section">
-            <p className="detail-kicker">{kicker("evidence")}</p>
             <h2>Measured or reproducible signals</h2>
             {project.proofPoints.length > 0 ? (
               <div className="proof-grid">
@@ -454,7 +448,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </section>
 
           <section id="stack" className="detail-section">
-            <p className="detail-kicker">{kicker("stack")}</p>
             <h2>Current implementation</h2>
             <TagList items={project.technologies} label={`${project.title} technology stack`} />
           </section>
@@ -463,7 +456,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <section id="roadmap" className="detail-section roadmap-section">
               <div className="roadmap-heading">
                 <div>
-                  <p className="detail-kicker">{kicker("roadmap")}</p>
                   <h2>Infrastructure evolution</h2>
                 </div>
                 <StatusBadge status="planned" />
@@ -477,7 +469,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {relatedProjects.length > 0 ? (
             <section className="detail-section">
-              <p className="detail-kicker">Related work</p>
               <h2>Project evolution</h2>
               <div className="related-projects">
                 {relatedProjects.map(({ project: relatedProject, label }) => (
@@ -493,7 +484,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {relatedWriting.length > 0 ? (
             <section className="detail-section">
-              <p className="detail-kicker">Related writing</p>
               <h2>Engineering notes</h2>
               <div className="related-projects">
                 {relatedWriting.map((article) => (
