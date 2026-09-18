@@ -6,7 +6,7 @@ const projectRecords = [
   {
     id: "agentic-customer-service-platform",
     slug: "agentic-customer-service-platform",
-    order: 1,
+    order: 2,
     title: "Agentic Customer Service Platform",
     category: "AI Reliability / Execution Infrastructure",
     status: "current",
@@ -186,7 +186,7 @@ const projectRecords = [
   {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
-    order: 3,
+    order: 4,
     title: "ModelOps Control Plane",
     category: "MLOps / AI Platform",
     status: "current",
@@ -339,7 +339,7 @@ const projectRecords = [
   {
     id: "knowledge-base-rag",
     slug: "knowledge-base-rag",
-    order: 2,
+    order: 3,
     title: "Knowledge Base RAG",
     category: "Generative AI / RAG Platform",
     status: "current",
@@ -516,7 +516,7 @@ const projectRecords = [
   {
     id: "real-time-commerce-platform",
     slug: "real-time-commerce-platform",
-    order: 5,
+    order: 6,
     title: "Real-Time Commerce Platform",
     category: "Distributed Systems / Streaming",
     status: "current",
@@ -1056,7 +1056,7 @@ const projectRecords = [
   {
     id: "decision-sql",
     slug: "decision-sql",
-    order: 4,
+    order: 5,
     title: "DecisionSQL",
     category: "Structured Data / Governed Text-to-SQL",
     status: "current",
@@ -1213,7 +1213,7 @@ const projectRecords = [
   {
     id: "ml-platform-infrastructure",
     slug: "ml-platform-infrastructure",
-    order: 6,
+    order: 1,
     title: "ML Platform Infrastructure",
     category: "AI Infrastructure / Platform Engineering",
     status: "current",
