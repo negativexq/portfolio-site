@@ -1444,6 +1444,41 @@ function SqlAdmissionQueryPlanDiagram() {
   );
 }
 
+function DeterministicInvestigationLoopDiagram() {
+  const marker = "det-investigation-arrow";
+  return (
+    <DiagramFrame
+      id="deterministic-investigation-loop"
+      title="Deterministic incident investigation loop"
+      description="From an incident, a deterministic RCA engine forms hypotheses and information gaps. A bounded investigator selects one legal read-only observation at a time; each observation is normalized into a typed Finding before hypotheses are rebuilt and verified. An unresolved gap loops back for another read, and a resolved investigation yields a root cause and causal path. An optional LLM may only break ties between equally ranked reads and never creates evidence, findings, or the diagnosis."
+      caption="The loop runs autonomously, but authority is deterministic: evidence, findings, confidence, and the root cause are never decided by a model."
+      height={330}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={498} y={40} anchor="middle">optional LLM: tie-break among equal reads only</Label>
+
+      <Node x={40} y={80} width={120} height={64} lines={["Incident", "alert + cutoff"]} />
+      <Node x={200} y={80} width={172} height={64} lines={["Deterministic RCA", "hypotheses · gaps"]} tone="accent" />
+      <Node x={412} y={80} width={172} height={64} lines={["Investigator", "select one legal read"]} tone="muted" />
+      <Node x={624} y={80} width={150} height={64} lines={["One read-only", "observation"]} />
+      <Arrow d="M160 112 H196" marker={marker} />
+      <Arrow d="M372 112 H408" marker={marker} />
+      <Arrow d="M584 112 H620" marker={marker} />
+
+      <Arrow d="M699 144 V222" marker={marker} />
+
+      <Node x={624} y={226} width={150} height={64} lines={["Normalize →", "typed Finding"]} tone="accent" />
+      <Node x={412} y={226} width={172} height={64} lines={["Rebuild +", "verify"]} tone="accent" />
+      <Node x={200} y={226} width={172} height={64} lines={["Root cause +", "causal path"]} tone="accent" />
+      <Arrow d="M624 258 H588" marker={marker} />
+      <Arrow d="M412 258 H376" marker={marker} />
+
+      <Arrow d="M498 226 V148" marker={marker} dashed />
+      <Label x={508} y={190} anchor="start">remaining gap</Label>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1465,6 +1500,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "grain-fanout-normalization": GrainFanoutNormalizationDiagram,
   "execution-based-evaluation": ExecutionBasedEvaluationDiagram,
   "sql-admission-queryplan": SqlAdmissionQueryPlanDiagram,
+  "deterministic-investigation-loop": DeterministicInvestigationLoopDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

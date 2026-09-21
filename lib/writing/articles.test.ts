@@ -14,8 +14,8 @@ import { getWritingTopicGroup, getWritingTopicGroups } from "./topics.ts";
 test("published articles exclude drafts and remain date sorted", () => {
   const all = getAllArticles();
   const published = getPublishedArticles();
-  assert.equal(all.length, 21);
-  assert.equal(published.length, 20);
+  assert.equal(all.length, 22);
+  assert.equal(published.length, 21);
   assert.ok(published.every((article) => article.draft === false));
   assert.ok(published.every((article, index) => index === 0 || published[index - 1].datePublished >= article.datePublished));
   assert.equal(getPublishedArticleBySlug("redis-cache-stampede"), undefined);
