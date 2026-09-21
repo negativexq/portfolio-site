@@ -1175,6 +1175,117 @@ const architectures = {
       "Docker Compose was retired once the full local Kubernetes platform was reached; everything in this diagram runs inside the kind cluster.",
     ],
   },
+  "agentic-sre": {
+    projectId: "agentic-sre",
+    description:
+      "Deterministic root-cause analysis sits at the center. From an alert and an observation cutoff, the RCA engine forms hypotheses and information gaps from typed Findings. A bounded investigation runtime then spends one legal, read-only observation at a time against Kubernetes objects and Events, Alertmanager, Loki, traces and configured snapshots. Every observation enters the EvidenceStore and is normalized into a typed Finding before hypotheses are rebuilt and verification and resolution re-run. The output is a root entity, confidence, resolution state, evidence and a causal path, plus a proposed remediation that is returned to an operator and never executed. An LLM is optional and the measured benchmark path used zero model calls.",
+    paths: [
+      {
+        id: "rca-loop",
+        label: "Deterministic RCA loop",
+        summary: "The engine forms hypotheses, the bounded investigator spends one legal read, and evidence is normalized into a Finding before the diagnosis can change.",
+        variant: "control",
+        layout: { type: "rows", rows: [2, 2, 2] },
+        stages: [
+          {
+            id: "incident",
+            nodes: [{ id: "incident", label: "Alert + observation cutoff", subtitle: "changes and symptoms at the boundary", variant: "client" }],
+            edge: { label: "seeds" },
+          },
+          {
+            id: "rca",
+            nodes: [{ id: "rca", label: "Deterministic RCA", subtitle: "hypotheses · information gaps", variant: "control" }],
+            edge: { label: "requests one read" },
+          },
+          {
+            id: "investigator",
+            nodes: [{ id: "investigator", label: "Bounded investigator", subtitle: "select · validate scope + budget", variant: "analyzer" }],
+            edge: { label: "executes read-only", variant: "control" },
+          },
+          {
+            id: "read",
+            nodes: [{ id: "read", label: "One legal observation", subtitle: "turn · tool · wall-time · per-gap limits", variant: "service" }],
+            edge: { label: "stores" },
+          },
+          {
+            id: "evidence-store",
+            nodes: [{ id: "evidence-store", label: "EvidenceStore → normalization", subtitle: "typed Finding", variant: "control" }],
+            edge: { label: "rebuild + verify", relation: "branch" },
+          },
+          {
+            id: "resolution",
+            nodes: [
+              { id: "diagnosis", label: "Root cause + causal path", subtitle: "confidence · resolution · evidence", variant: "output" },
+              { id: "gap", label: "Remaining gap", subtitle: "loops back for one more read", variant: "boundary" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "observation-path",
+        label: "Observation sources",
+        summary: "Bounded, read-only observation over the incident's telemetry; Secrets are deliberately not read.",
+        variant: "observability",
+        layout: { type: "rows", rows: [2, 2] },
+        stages: [
+          {
+            id: "k8s",
+            nodes: [
+              { id: "k8s-objects", label: "Kubernetes objects + Events", subtitle: "versions · warnings", variant: "observability" },
+              { id: "alertmanager", label: "Alertmanager", subtitle: "incident context", variant: "observability" },
+            ],
+            edge: { label: "read-only", variant: "observability" },
+          },
+          {
+            id: "signals",
+            nodes: [
+              { id: "loki", label: "Loki logs · traces", subtitle: "bounded, replayable", variant: "observability" },
+              { id: "snapshots", label: "Snapshot data", subtitle: "configured sources", variant: "storage" },
+            ],
+            edge: { label: "feeds", variant: "observability", relation: "merge" },
+          },
+          {
+            id: "surface",
+            nodes: [{ id: "surface", label: "Legal observation surface", subtitle: "allowlisted capabilities only", variant: "control" }],
+            edge: { label: "one read at a time" },
+          },
+          {
+            id: "secrets",
+            nodes: [{ id: "secrets", label: "Secrets", subtitle: "deliberately not read", variant: "boundary" }],
+          },
+        ],
+      },
+      {
+        id: "control-plane",
+        label: "Control plane and remediation",
+        summary: "Incident lifecycle, persistence and reporting; remediation is proposed for an operator and never executed.",
+        variant: "primary",
+        stages: [
+          {
+            id: "control",
+            nodes: [{ id: "control", label: "Control plane", subtitle: "FastAPI · lifecycle · persistence", variant: "service" }],
+            edge: { label: "surfaces" },
+          },
+          {
+            id: "report",
+            nodes: [{ id: "report", label: "CLI · HTML/UI report", subtitle: "root cause · evidence · causal path", variant: "output" }],
+            edge: { label: "proposes" },
+          },
+          {
+            id: "remediation",
+            nodes: [{ id: "remediation", label: "Proposed remediation", subtitle: "operator reviews · never auto-executed", variant: "boundary" }],
+          },
+        ],
+      },
+    ],
+    notes: [
+      "The investigator and the judge are separate: an optional LLM policy can choose among already-legal reads, but deterministic normalization, hypothesis rebuilding, verification and root-cause resolution stay authoritative, and the measured benchmark path used zero model calls.",
+      "Every observation is normalized into a typed Finding before it can move a hypothesis; on the frozen TEST25 run, 2,226 new evidence references became 244 Findings across 150 bounded reads with zero tool errors.",
+      "NO_DATA is treated as neutral rather than evidence for a theory, and invalid actions, duplicate reads, tool errors and exhausted budgets terminate safely with the current deterministic diagnosis.",
+      "Kubernetes access is read-only and Secrets are deliberately not read; remediation is returned as a proposal for an operator and is never executed, with no arbitrary shell or cluster-write path.",
+      "The blind TEST25 result (21/25 exact-root, 0 model calls) is evidence on a pinned 25-scenario ITBench-Lite set with predictions hashed before grading, not a universal production accuracy guarantee.",
+    ],
+  },
 } satisfies Record<string, ArchitectureDefinition>;
 
 export function getProjectArchitecture(projectId: string) {

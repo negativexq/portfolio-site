@@ -47,7 +47,7 @@ export default function ProjectsPage() {
             id="featured-projects"
             eyebrow="Featured work"
             title="Flagship systems"
-            description="Six current projects selected for depth, engineering evidence and relevance to AI platform work."
+            description="Seven current projects selected for depth, engineering evidence and relevance to AI platform work."
           />
           <div className="project-grid">
             {flagshipProjects.map((project, index) => (

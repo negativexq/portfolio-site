@@ -1367,6 +1367,192 @@ const projectRecords = [
     relationships: [],
     githubUrl: "https://github.com/negativexq/ml-platform-infrastructure",
   },
+  {
+    id: "agentic-sre",
+    slug: "agentic-sre",
+    order: 12,
+    title: "Agentic SRE",
+    category: "Agent Systems / AI Platform",
+    status: "current",
+    flagship: true,
+    showCardProof: true,
+    cardProof: {
+      label: "Root-cause judgment",
+      value: "DETERMINISTIC",
+      scope: "Investigator proposes reads · deterministic RCA decides",
+      qualifier:
+        "A bounded, read-only investigator acquires evidence one legal read at a time; deterministic normalization, hypothesis rebuilding, verification and root-cause selection own the diagnosis. On the frozen blind ITBench-Lite TEST25 holdout it reached 21/25 (84%) exact-root agreement with 0 model calls. This is a measured 25-scenario benchmark result, not a universal production accuracy guarantee.",
+    },
+    summary:
+      "Evidence-driven root-cause analysis engine for Kubernetes incidents: a bounded, read-only investigator gathers evidence over changes, events, logs, traces, dependencies and topology, while a deterministic RCA engine — not the model — makes the final root-cause judgment.",
+    directAnswer:
+      "Agentic SRE is a Kubernetes incident root-cause analysis system that separates the investigator from the judge. A bounded state machine selects one legal, read-only observation at a time; every observation is normalized into a typed Finding before it can move a hypothesis, and deterministic verification and resolution own the root cause. An LLM is optional and the measured benchmark path uses zero model calls; the model can choose among already-legal reads but can never create evidence, findings, hypotheses or the final diagnosis.",
+    whyItExists:
+      "An incident root-cause tool becomes a trust problem the moment it can act on a cluster or hand an operator an unverified answer. A plausible model guess is not a diagnosis. Agentic SRE keeps evidence acquisition and root-cause judgment separate: the investigator is bounded and read-only, the judge is deterministic and auditable, and the whole architecture was frozen and evaluated on a blind holdout whose predictions were hashed before grading — so accuracy, calibration and safety are measured as distinct evidence rather than asserted as one headline.",
+    heroMetrics: [
+      {
+        value: "21/25 (84%)",
+        label: "Blind exact-root agreement",
+        context: "Frozen ITBench-Lite TEST25 holdout",
+        detail: "All 25 bounded predictions were persisted and SHA256-hashed before any full-source diagnosis was graded; only an exact canonical root entity counts. Synthetic 25-scenario benchmark, not production accuracy.",
+      },
+      {
+        value: "0 MODEL CALLS",
+        label: "Measured benchmark path",
+        context: "Deterministic investigation policy",
+        detail: "The graded run made zero model calls. An LLM is optional and can only choose among already-legal reads; it never owns the diagnosis.",
+      },
+      {
+        value: "9/9 VERIFIED",
+        label: "Confidence calibration",
+        context: "TEST25 · LIKELY 11/12 · UNVERIFIED 1/4",
+        detail: "Confidence tiers are reported honestly rather than collapsed into one accuracy figure; NO_DATA is treated as neutral, not as evidence for a theory.",
+      },
+      {
+        value: "150 READS · 0 ERRORS",
+        label: "Bounded investigation",
+        context: "6 validated reads/incident across 25 incidents",
+        detail: "One read at a time from a legal observation surface: 2,226 new evidence references normalized into 244 typed Findings, with 0 tool errors.",
+      },
+    ],
+    highlights: [
+      {
+        title: "The investigator and the judge are separate",
+        description:
+          "Problem: an LLM can turn a plausible-sounding answer into an unverified diagnosis. Solution: a bounded state machine only selects legal, read-only observations, while deterministic normalization, hypothesis rebuilding, verification and root-cause resolution stay authoritative — so the model can acquire evidence but never owns the judgment, and the measured path uses 0 model calls.",
+      },
+      {
+        title: "A blind holdout, hashed before grading",
+        description:
+          "Problem: a benchmark the architecture was tuned against measures fit, not capability. Solution: TEST25 was held out until the architecture was frozen; all 25 bounded predictions were persisted and SHA256-hashed before any full-source diagnosis was opened, and only an exact canonical root entity counts — a same-workload or nearby entity does not — for the 21/25 (84%) result.",
+      },
+      {
+        title: "Evidence becomes typed Findings before it moves a diagnosis",
+        description:
+          "Problem: a raw observation should not silently shift a root-cause hypothesis. Solution: every observation flows through EvidenceStore → normalization → typed Finding before it can change anything, and only then are hypotheses rebuilt and verified — on the frozen run, 2,226 new evidence references were normalized into 244 Findings along an auditable path.",
+      },
+      {
+        title: "Calibration is reported, not just accuracy",
+        description:
+          "Problem: a confidently wrong diagnosis is worse than an honest abstention. Solution: confidence tiers are published as measured — VERIFIED 9/9, LIKELY 11/12, UNVERIFIED 1/4 on TEST25 — and NO_DATA is neutral rather than proof against a hypothesis, with 95 NO_DATA observations recorded on the graded run instead of being forced into a theory.",
+      },
+      {
+        title: "Read-only by design, remediation never executed",
+        description:
+          "Problem: an autonomous SRE agent that can write to a cluster is a blast-radius problem. Solution: Kubernetes access is read-only, Secrets are deliberately not read, only allowlisted observation capabilities can run, and remediation is returned as a proposal for an operator — there is no arbitrary shell execution or autonomous cluster write path.",
+      },
+      {
+        title: "Causal topology, not graph proximity",
+        description:
+          "Problem: being near a symptom in a graph does not make an entity the cause. Solution: ownership, configuration use, declared dependencies, policies, fault targets, scaling relationships and workload topology are interpreted as explicit directional relations, so a diagnosis carries a real causal path rather than a proximity guess.",
+      },
+      {
+        title: "A real cluster lifecycle gate beside the benchmark",
+        description:
+          "Problem: a benchmark-only system may not survive a live incident path. Solution: a Kind lifecycle gate exercises the product against a real cluster — healthy workload → injected rollout failure → Prometheus alert → Alertmanager incident → persisted observations and RCA → proposed rollback → stable resolved replay — as evidence complementary to the frozen benchmark, not a claim that every fault class has a live scenario.",
+      },
+    ],
+    technologies: [
+      "Python",
+      "FastAPI",
+      "LangGraph",
+      "Pydantic",
+      "SQLAlchemy",
+      "Alembic",
+      "PostgreSQL",
+      "Uvicorn",
+      "Kubernetes",
+      "Kind",
+      "Prometheus",
+      "Alertmanager",
+      "Loki",
+      "Tempo",
+      "Chaos Mesh",
+      "OpenTelemetry",
+      "Docker",
+      "Ruff",
+      "Mypy",
+      "pytest",
+    ],
+    concepts: [
+      "Deterministic Root-Cause Analysis",
+      "Investigator / Judge Separation",
+      "Bounded Evidence Acquisition",
+      "Read-Only Investigation",
+      "Typed Findings",
+      "Causal Topology",
+      "Directional Causal Paths",
+      "Hypothesis Rebuilding",
+      "Deterministic Verification",
+      "Confidence Calibration",
+      "Blind Holdout Evaluation",
+      "Frozen Benchmark",
+      "Prediction Hashing",
+      "NO_DATA Neutrality",
+      "Evidence Provenance",
+      "Incident Lifecycle",
+      "Proposed-Not-Executed Remediation",
+      "Bounded State Machine",
+      "LangGraph Orchestration",
+      "Chaos Fault Injection",
+      "Reproducible Trajectories",
+      "Observability",
+    ],
+    proofPoints: [
+      {
+        label: "Blind holdout root agreement",
+        value: "21/25 (84%)",
+        scope: "ITBench-Lite TEST25 · frozen holdout",
+        qualifier:
+          "Exact canonical-root agreement against a separate full-source deterministic diagnosis, graded by scenario ID; a same-workload or nearby entity does not count. All 25 bounded predictions were persisted and SHA256-hashed before grading, on the pinned ITBench-Lite revision d0916b0 with manifest 08a5e56. Synthetic 25-scenario benchmark, not a universal production accuracy guarantee.",
+      },
+      {
+        label: "Development split kept separate from holdout",
+        value: "10/10 · 31/35 (88.6%)",
+        scope: "DEV10 dev split · combined 35",
+        qualifier:
+          "DEV10 is the development split used while building the frozen architecture and is reported apart from the blind TEST25 evidence so development results are never confused with holdout results. Combined figure is DEV10 + TEST25.",
+      },
+      {
+        label: "Confidence calibration",
+        value: "9/9 · 11/12 · 1/4",
+        scope: "VERIFIED · LIKELY · UNVERIFIED · TEST25",
+        qualifier:
+          "Calibration on the blind run: VERIFIED predictions were 9/9 correct, LIKELY 11/12, UNVERIFIED 1/4. Reported so a confidence label carries measured meaning rather than being decorative.",
+      },
+      {
+        label: "Deterministic investigation",
+        value: "0 model calls",
+        scope: "Deterministic policy · graded run",
+        qualifier:
+          "The measured benchmark path made zero model calls. An optional LLM policy can choose among already-legal semantic observation actions, but it cannot create evidence, Findings, hypotheses or the final root cause.",
+      },
+      {
+        label: "Bounded investigation trace",
+        value: "150 reads · 0 tool errors",
+        scope: "6 validated reads/incident · 25 incidents",
+        qualifier:
+          "One validated physical read at a time under explicit turn, tool, wall-time, per-gap, invalid-action and no-progress limits. The run acquired 2,226 new evidence references, emitted 244 normalized Findings, made 37 decision-relevant calls and recorded 95 NO_DATA observations with 0 tool errors.",
+      },
+      {
+        label: "Read-only trust boundary",
+        value: "0 cluster writes",
+        scope: "Read-only observation · Secrets excluded",
+        qualifier:
+          "Kubernetes observation is read-only, Secrets are deliberately not read, only in-scope allowlisted observation capabilities can run, and remediation is proposed but never executed. There is no arbitrary shell execution or autonomous cluster write capability.",
+      },
+      {
+        label: "Frozen, reproducible evidence",
+        value: "architecture + predictions hashed",
+        scope: "commit 8ccce16 · prediction SHA256 879cab5…",
+        qualifier:
+          "The architecture was frozen at commit 8ccce16 before TEST25 grading and no production code was changed after the holdout results were visible; the prediction artifact was SHA256-hashed (879cab5…) and the dataset revision and manifest are pinned, so the run is reproducible rather than a one-off claim.",
+      },
+    ],
+    roadmap: emptyRoadmap,
+    relationships: [],
+    githubUrl: "https://github.com/negativexq/agentic-sre",
+  },
 ] satisfies readonly Project[];
 
 // `order` is the single source of truth for presentation sequence, so array

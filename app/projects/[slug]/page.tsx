@@ -9,6 +9,7 @@ import { MlPlatformInfrastructureCaseStudy } from "@/components/content/ml-platf
 import { DbtFeatureLineageCaseStudy } from "@/components/content/dbt-feature-lineage-case-study";
 import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
+import { AgenticSreCaseStudy } from "@/components/content/agentic-sre-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
@@ -24,6 +25,7 @@ import { agenticMeta, agenticProjectUrl } from "@/data/agentic-customer-service-
 import { commerceMeta, commerceProjectUrl } from "@/data/real-time-commerce-platform";
 import { knowledgeBaseRagMeta, knowledgeBaseRagProjectUrl } from "@/data/knowledge-base-rag";
 import { modelOpsMeta, modelOpsProjectUrl } from "@/data/modelops-control-plane";
+import { agenticSreMeta, agenticSreProjectUrl } from "@/data/agentic-sre";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
 import { personId } from "@/lib/seo/person";
@@ -178,6 +180,26 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
+  if (project.id === "agentic-sre") {
+    return {
+      title: agenticSreMeta.title,
+      description: agenticSreMeta.description,
+      keywords: [...agenticSreMeta.keywords],
+      alternates: { canonical: agenticSreProjectUrl },
+      openGraph: {
+        type: "article",
+        url: agenticSreProjectUrl,
+        title: agenticSreMeta.title,
+        description: agenticSreMeta.description,
+      },
+      twitter: {
+        card: "summary",
+        title: agenticSreMeta.title,
+        description: agenticSreMeta.description,
+      },
+    };
+  }
+
   if (project.id === "dbt-feature-lineage") {
     const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
     return {
@@ -263,6 +285,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             ? [...decisionSqlMeta.keywords]
           : project.id === "ml-platform-infrastructure"
             ? [...mlPlatformInfrastructureMeta.keywords]
+          : project.id === "agentic-sre"
+            ? [...agenticSreMeta.keywords]
           : undefined,
     author: {
       "@type": "Person",
@@ -321,6 +345,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <>
         <JsonLd data={projectJsonLd} />
         <MlPlatformInfrastructureCaseStudy project={project} />
+      </>
+    );
+  }
+
+  if (project.id === "agentic-sre") {
+    return (
+      <>
+        <JsonLd data={projectJsonLd} />
+        <AgenticSreCaseStudy project={project} />
       </>
     );
   }
