@@ -53,6 +53,14 @@ export type ProjectHighlight = {
   description: string;
 };
 
+/** A single question/answer pair. Feeds FAQPage JSON-LD on a project page so
+ * answer engines can lift a scoped, verified Q&A. Answers must reflect content
+ * that is genuinely on the page — no invented claims. */
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 /**
  * A single lab inside a SupportingLabGroup — a subdirectory of one monorepo,
  * not a standalone repository. Deliberately not a `Project` — these render
@@ -104,6 +112,9 @@ export type Project = {
   highlights?: readonly ProjectHighlight[];
   /** Whether the compact card should show its first proof point. */
   showCardProof?: boolean;
+  /** Optional hand-authored FAQ. When absent, a project page derives a baseline
+   * Q&A from directAnswer and whyItExists for FAQPage JSON-LD. */
+  faqs?: readonly FaqItem[];
   roadmap: readonly RoadmapItem[];
   relationships: readonly ProjectRelationship[];
   evolvedFrom?: ProjectEvolution;

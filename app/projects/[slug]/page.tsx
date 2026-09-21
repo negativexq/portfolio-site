@@ -263,8 +263,19 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     article.relatedProjects.includes(project.id),
   );
   const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
-  const projectJsonLd = {
-    "@context": "https://schema.org",
+
+  // FAQPage feeds answer engines a scoped, verified Q&A. When a project has no
+  // hand-authored FAQ, derive a baseline from the two description fields every
+  // project carries and that are rendered on the page, so no answer is invented.
+  const faqEntries =
+    project.faqs && project.faqs.length > 0
+      ? project.faqs
+      : [
+          { question: `What is ${project.title}?`, answer: project.directAnswer },
+          { question: `What problem does ${project.title} solve?`, answer: project.whyItExists },
+        ];
+
+  const softwareSourceCodeJsonLd = {
     "@type": "SoftwareSourceCode",
     "@id": `${projectUrl}#software-source-code`,
     name: project.title,
@@ -293,6 +304,34 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       "@id": personId(profile),
       name: profile.name,
     },
+  };
+
+  const faqJsonLd = {
+    "@type": "FAQPage",
+    "@id": `${projectUrl}#faq`,
+    mainEntity: faqEntries.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  const breadcrumbJsonLd = {
+    "@type": "BreadcrumbList",
+    "@id": `${projectUrl}#breadcrumb`,
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://omerfkoc.dev" },
+      { "@type": "ListItem", position: 2, name: "Projects", item: "https://omerfkoc.dev/projects" },
+      { "@type": "ListItem", position: 3, name: project.title, item: projectUrl },
+    ],
+  };
+
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [softwareSourceCodeJsonLd, faqJsonLd, breadcrumbJsonLd],
   };
 
   if (project.id === "agentic-customer-service-platform") {
