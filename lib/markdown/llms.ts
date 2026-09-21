@@ -1,4 +1,4 @@
-import type { Profile } from "../content/types";
+import type { Profile, Project } from "../content/types";
 import type { WritingArticleSummary } from "../writing/types.ts";
 import { joinBlocks } from "./helpers.ts";
 
@@ -24,7 +24,11 @@ const HUMAN_ROUTES: readonly { path: string; description: string }[] = [
   { path: "/resume", description: "Resume overview" },
 ];
 
-export function renderLlmsTxt(profile: Profile, articles: readonly WritingArticleSummary[] = []): string {
+export function renderLlmsTxt(
+  profile: Profile,
+  articles: readonly WritingArticleSummary[] = [],
+  projects: readonly Project[] = [],
+): string {
   const base = profile.links.website.replace(/\/$/, "");
   const listOf = (routes: readonly { path: string; description: string }[]) =>
     routes.map((route) => `- ${base}${route.path} — ${route.description}`).join("\n");
@@ -36,6 +40,10 @@ export function renderLlmsTxt(profile: Profile, articles: readonly WritingArticl
     listOf(MACHINE_READABLE_RESOURCES),
     "## Human-readable website",
     listOf(HUMAN_ROUTES),
+    projects.length > 0 ? "## Projects" : undefined,
+    projects.length > 0
+      ? projects.map((project) => `- ${base}/projects/${project.slug} — ${project.summary}`).join("\n")
+      : undefined,
     articles.length > 0 ? "## Published writing" : undefined,
     articles.length > 0
       ? articles.map((article) => `- ${base}/writing/${article.slug} — ${article.description}`).join("\n")
