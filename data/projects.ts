@@ -186,7 +186,7 @@ const projectRecords = [
   {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
-    order: 4,
+    order: 5,
     title: "ModelOps Control Plane",
     category: "MLOps / AI Platform",
     status: "current",
@@ -339,7 +339,7 @@ const projectRecords = [
   {
     id: "knowledge-base-rag",
     slug: "knowledge-base-rag",
-    order: 3,
+    order: 4,
     title: "Knowledge Base RAG",
     category: "Generative AI / RAG Platform",
     status: "current",
@@ -516,7 +516,7 @@ const projectRecords = [
   {
     id: "real-time-commerce-platform",
     slug: "real-time-commerce-platform",
-    order: 6,
+    order: 7,
     title: "Real-Time Commerce Platform",
     category: "Distributed Systems / Streaming",
     status: "current",
@@ -626,7 +626,7 @@ const projectRecords = [
   {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 8,
+    order: 9,
     title: "Repo Context Forge",
     category: "Agent Infrastructure / Developer Tooling",
     status: "current",
@@ -678,7 +678,7 @@ const projectRecords = [
   {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 9,
+    order: 10,
     title: "dbt Feature Lineage",
     category: "Data Engineering / Lineage",
     status: "current",
@@ -770,7 +770,7 @@ const projectRecords = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 10,
+    order: 11,
     title: "Production RAG Platform",
     category: "Generative AI / Retrieval",
     status: "current",
@@ -814,7 +814,7 @@ const projectRecords = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 11,
+    order: 12,
     title: "Terraform Docker Infrastructure Lab",
     category: "Infrastructure as Code / Platform Engineering",
     status: "current",
@@ -874,7 +874,7 @@ const projectRecords = [
   {
     id: "cause-tune",
     slug: "cause-tune",
-    order: 7,
+    order: 8,
     title: "CauseTune",
     category: "Model Training / Fine-Tuning",
     status: "current",
@@ -1056,7 +1056,7 @@ const projectRecords = [
   {
     id: "decision-sql",
     slug: "decision-sql",
-    order: 5,
+    order: 6,
     title: "DecisionSQL",
     category: "Structured Data / Governed Text-to-SQL",
     status: "current",
@@ -1370,7 +1370,7 @@ const projectRecords = [
   {
     id: "agentic-sre",
     slug: "agentic-sre",
-    order: 12,
+    order: 3,
     title: "Agentic SRE",
     category: "Agent Systems / AI Platform",
     status: "current",
