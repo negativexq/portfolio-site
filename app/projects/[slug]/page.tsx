@@ -28,8 +28,13 @@ import { modelOpsMeta, modelOpsProjectUrl } from "@/data/modelops-control-plane"
 import { agenticSreMeta, agenticSreProjectUrl } from "@/data/agentic-sre";
 import { profile } from "@/data/profile";
 import { getProjectById, getProjectBySlug, projects } from "@/data/projects";
+import {
+  getProjectFaqs,
+  getProjectRelatedWriting,
+  getRelatedProjects,
+  isPlatformProject,
+} from "@/lib/content/project-links";
 import { personId } from "@/lib/seo/person";
-import { getPublishedArticles } from "@/lib/writing/articles";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -47,23 +52,27 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (!project) return {};
 
+  // Search titles skip the site-name suffix so the descriptive part fits.
+  const seoTitle = project.seoTitle ?? project.title;
+  const metaDescription = project.metaDescription ?? project.summary;
+
   if (project.id === "agentic-customer-service-platform") {
     return {
-      title: agenticMeta.title,
-      description: agenticMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...agenticMeta.keywords],
       alternates: { canonical: agenticProjectUrl },
       openGraph: {
         type: "article",
         url: agenticProjectUrl,
-        title: agenticMeta.title,
-        description: agenticMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [{ url: agenticMeta.image, width: 1440, height: 900, alt: agenticMeta.imageAlt }],
       },
       twitter: {
         card: "summary_large_image",
-        title: agenticMeta.title,
-        description: agenticMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [agenticMeta.image],
       },
     };
@@ -71,21 +80,21 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (project.id === "real-time-commerce-platform") {
     return {
-      title: commerceMeta.title,
-      description: commerceMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...commerceMeta.keywords],
       alternates: { canonical: commerceProjectUrl },
       openGraph: {
         type: "article",
         url: commerceProjectUrl,
-        title: commerceMeta.title,
-        description: commerceMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [{ url: commerceMeta.image, width: 920, height: 1690, alt: commerceMeta.imageAlt }],
       },
       twitter: {
         card: "summary_large_image",
-        title: commerceMeta.title,
-        description: commerceMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [commerceMeta.image],
       },
     };
@@ -93,21 +102,21 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (project.id === "modelops-control-plane") {
     return {
-      title: modelOpsMeta.title,
-      description: modelOpsMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...modelOpsMeta.keywords],
       alternates: { canonical: modelOpsProjectUrl },
       openGraph: {
         type: "article",
         url: modelOpsProjectUrl,
-        title: modelOpsMeta.title,
-        description: modelOpsMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [{ url: modelOpsMeta.image, width: 1280, height: 1500, alt: modelOpsMeta.imageAlt }],
       },
       twitter: {
         card: "summary_large_image",
-        title: modelOpsMeta.title,
-        description: modelOpsMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [modelOpsMeta.image],
       },
     };
@@ -115,15 +124,15 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (project.id === "knowledge-base-rag") {
     return {
-      title: knowledgeBaseRagMeta.title,
-      description: knowledgeBaseRagMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...knowledgeBaseRagMeta.keywords],
       alternates: { canonical: knowledgeBaseRagProjectUrl },
       openGraph: {
         type: "article",
         url: knowledgeBaseRagProjectUrl,
-        title: knowledgeBaseRagMeta.title,
-        description: knowledgeBaseRagMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [{
           url: knowledgeBaseRagMeta.image,
           width: 1249,
@@ -133,8 +142,8 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       },
       twitter: {
         card: "summary_large_image",
-        title: knowledgeBaseRagMeta.title,
-        description: knowledgeBaseRagMeta.description,
+        title: seoTitle,
+        description: metaDescription,
         images: [knowledgeBaseRagMeta.image],
       },
     };
@@ -142,60 +151,60 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (project.id === "decision-sql") {
     return {
-      title: decisionSqlMeta.title,
-      description: decisionSqlMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...decisionSqlMeta.keywords],
       alternates: { canonical: decisionSqlProjectUrl },
       openGraph: {
         type: "article",
         url: decisionSqlProjectUrl,
-        title: decisionSqlMeta.title,
-        description: decisionSqlMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
       twitter: {
         card: "summary",
-        title: decisionSqlMeta.title,
-        description: decisionSqlMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
     };
   }
 
   if (project.id === "ml-platform-infrastructure") {
     return {
-      title: mlPlatformInfrastructureMeta.title,
-      description: mlPlatformInfrastructureMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...mlPlatformInfrastructureMeta.keywords],
       alternates: { canonical: mlPlatformInfrastructureProjectUrl },
       openGraph: {
         type: "article",
         url: mlPlatformInfrastructureProjectUrl,
-        title: mlPlatformInfrastructureMeta.title,
-        description: mlPlatformInfrastructureMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
       twitter: {
         card: "summary",
-        title: mlPlatformInfrastructureMeta.title,
-        description: mlPlatformInfrastructureMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
     };
   }
 
   if (project.id === "agentic-sre") {
     return {
-      title: agenticSreMeta.title,
-      description: agenticSreMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...agenticSreMeta.keywords],
       alternates: { canonical: agenticSreProjectUrl },
       openGraph: {
         type: "article",
         url: agenticSreProjectUrl,
-        title: agenticSreMeta.title,
-        description: agenticSreMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
       twitter: {
         card: "summary",
-        title: agenticSreMeta.title,
-        description: agenticSreMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
     };
   }
@@ -203,27 +212,27 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   if (project.id === "dbt-feature-lineage") {
     const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
     return {
-      title: dbtFeatureLineageMeta.title,
-      description: dbtFeatureLineageMeta.description,
+      title: { absolute: seoTitle },
+      description: metaDescription,
       keywords: [...dbtFeatureLineageMeta.keywords],
       alternates: { canonical: projectUrl },
       openGraph: {
         type: "article",
         url: projectUrl,
-        title: dbtFeatureLineageMeta.title,
-        description: dbtFeatureLineageMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
       twitter: {
         card: "summary",
-        title: dbtFeatureLineageMeta.title,
-        description: dbtFeatureLineageMeta.description,
+        title: seoTitle,
+        description: metaDescription,
       },
     };
   }
 
   return {
-    title: project.title,
-    description: project.summary,
+    title: { absolute: seoTitle },
+    description: metaDescription,
     alternates: { canonical: `/projects/${project.slug}` },
   };
 }
@@ -234,46 +243,17 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   if (!project) notFound();
 
-  const outgoing = project.relationships
-    .map((relationship) => {
-      const relatedProject = getProjectById(relationship.targetProjectId);
-      return relatedProject ? { project: relatedProject, label: relationship.label } : null;
-    })
-    .filter((item) => item !== null);
-
-  const incoming = projects.flatMap((candidate) =>
-    candidate.relationships
-      .filter((relationship) => relationship.targetProjectId === project.id)
-      // Already told as a full narrative in the Evolution section above —
-      // skip it here so the case study doesn't say the same thing twice.
-      .filter(() => candidate.id !== project.evolvedFrom?.fromProjectId)
-      .map((relationship) => ({
-        project: candidate,
-        label: relationship.type === "evolved-into" ? "Evolved from" : relationship.label,
-      })),
-  );
-
-  const relatedProjects = [...outgoing, ...incoming];
+  const relatedProjects = getRelatedProjects(project);
+  const onPlatform = isPlatformProject(project);
   const evolvedFromProject = project.evolvedFrom
     ? getProjectById(project.evolvedFrom.fromProjectId)
     : undefined;
 
   const projectArchitecture = getProjectArchitecture(project.id);
-  const relatedWriting = getPublishedArticles().filter((article) =>
-    article.relatedProjects.includes(project.id),
-  );
+  const relatedWriting = getProjectRelatedWriting(project.id);
   const projectUrl = `https://omerfkoc.dev/projects/${project.slug}`;
 
-  // FAQPage feeds answer engines a scoped, verified Q&A. When a project has no
-  // hand-authored FAQ, derive a baseline from the two description fields every
-  // project carries and that are rendered on the page, so no answer is invented.
-  const faqEntries =
-    project.faqs && project.faqs.length > 0
-      ? project.faqs
-      : [
-          { question: `What is ${project.title}?`, answer: project.directAnswer },
-          { question: `What problem does ${project.title} solve?`, answer: project.whyItExists },
-        ];
+  const faqEntries = getProjectFaqs(project);
 
   const softwareSourceCodeJsonLd = {
     "@type": "SoftwareSourceCode",
@@ -539,9 +519,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             </section>
           ) : null}
 
-          {relatedProjects.length > 0 ? (
+          {relatedProjects.length > 0 || onPlatform ? (
             <section className="detail-section">
-              <h2>Project evolution</h2>
+              <h2>Related projects</h2>
               <div className="related-projects">
                 {relatedProjects.map(({ project: relatedProject, label }) => (
                   <Link key={relatedProject.id} href={`/projects/${relatedProject.slug}`}>
@@ -550,6 +530,13 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                     <ArrowRight aria-hidden="true" size={16} />
                   </Link>
                 ))}
+                {onPlatform ? (
+                  <Link href="/platform">
+                    <span>Platform architecture</span>
+                    <strong>Where {project.title} fits in the platform</strong>
+                    <ArrowRight aria-hidden="true" size={16} />
+                  </Link>
+                ) : null}
               </div>
             </section>
           ) : null}

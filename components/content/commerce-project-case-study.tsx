@@ -18,6 +18,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort } from "./project-related";
 
 type CommerceProjectCaseStudyProps = {
   project: Project;
@@ -36,6 +37,7 @@ const sections = [
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -319,6 +321,8 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
               benchmark must not be read as the throughput of the interactive Demo Control path.
             </p>
           </section>
+
+          <ProjectInShort project={project} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

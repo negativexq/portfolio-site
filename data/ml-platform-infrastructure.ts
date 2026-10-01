@@ -1,9 +1,6 @@
 export const mlPlatformInfrastructureProjectUrl = "https://omerfkoc.dev/projects/ml-platform-infrastructure";
 
 export const mlPlatformInfrastructureMeta = {
-  title: "ML Platform Infrastructure",
-  description:
-    "A local ML platform reference implementation on Kubernetes: an inference service, its full MLflow/PostgreSQL/MinIO lifecycle, GitOps, autoscaling, security hardening and observability, validated with real failure drills instead of descriptions.",
   keywords: [
     "ML platform infrastructure",
     "Kubernetes",

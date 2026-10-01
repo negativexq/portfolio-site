@@ -1,9 +1,6 @@
 export const modelOpsProjectUrl = "https://omerfkoc.dev/projects/modelops-control-plane";
 
 export const modelOpsMeta = {
-  title: "ModelOps Control Plane",
-  description:
-    "Policy-driven ML release control plane for progressive canary traffic, delayed ground-truth quality gates, automated promotion and rollback, and desired-versus-observed router reconciliation.",
   image: "/projects/modelops-control-plane/deployment-detail.png",
   imageAlt: "ModelOps deployment detail showing canary traffic, quality metrics and desired versus observed router revision.",
   keywords: [

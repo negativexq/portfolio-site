@@ -16,6 +16,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 // Reuses the modelops-* visual system: like ModelOps and ML Platform
 // Infrastructure, this is a "proposes / decides" control loop measured against
@@ -37,6 +38,8 @@ const sections = [
   ["methodology", "Blind methodology"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -271,6 +274,10 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
               {agenticSreLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
             </ul>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

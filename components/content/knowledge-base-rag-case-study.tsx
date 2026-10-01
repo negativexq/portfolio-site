@@ -19,6 +19,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 type KnowledgeBaseRagCaseStudyProps = {
   project: Project;
@@ -37,6 +38,8 @@ const sections = [
   ["evolution", "Evolution"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -330,6 +333,10 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
               {knowledgeBaseRagLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
             </ul>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} showWriting={false} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

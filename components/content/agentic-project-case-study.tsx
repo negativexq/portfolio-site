@@ -18,6 +18,7 @@ import {
 } from "@/data/agentic-customer-service-platform";
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { AgenticSectionIndex } from "./agentic-section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 type AgenticProjectCaseStudyProps = {
   project: Project;
@@ -37,6 +38,8 @@ const sections = [
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["release", "Release posture"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -325,6 +328,10 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
               provisioning, multi-region operation, regulatory compliance or unrestricted capacity.
             </p>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} showWriting={false} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

@@ -1,9 +1,6 @@
 export const commerceProjectUrl = "https://omerfkoc.dev/projects/real-time-commerce-platform";
 
 export const commerceMeta = {
-  title: "Real-Time Commerce Platform",
-  description:
-    "Production-oriented event-driven commerce platform with at-least-once Kafka processing, idempotent business effects, transactional persistence, fraud outbox delivery, and measured performance limits.",
   image: "/projects/real-time-commerce-platform/event-lifecycle.svg",
   imageAlt: "Event lifecycle from Kafka delivery through idempotent persistence and offset commit.",
   keywords: [

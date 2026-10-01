@@ -115,6 +115,12 @@ export type Project = {
   /** Optional hand-authored FAQ. When absent, a project page derives a baseline
    * Q&A from directAnswer and whyItExists for FAQPage JSON-LD. */
   faqs?: readonly FaqItem[];
+  /** Search-result title: the project name first, then what it does. Kept
+   * near 60 characters; `title` stays the on-page name. */
+  seoTitle?: string;
+  /** Search-result description, kept near 155 characters. `summary` and
+   * `directAnswer` stay full length because cards, llms.txt and JSON-LD use them. */
+  metaDescription?: string;
   roadmap: readonly RoadmapItem[];
   relationships: readonly ProjectRelationship[];
   evolvedFrom?: ProjectEvolution;

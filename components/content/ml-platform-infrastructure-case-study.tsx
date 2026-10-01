@@ -16,6 +16,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 // Reuses the modelops-* visual system: both projects are the same "release
 // control loop, measured against the real system" shape at a different layer
@@ -36,6 +37,8 @@ const sections = [
   ["evidence", "Evidence"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -244,6 +247,10 @@ export function MlPlatformInfrastructureCaseStudy({ project }: MlPlatformInfrast
               {mlPlatformInfrastructureLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
             </ul>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

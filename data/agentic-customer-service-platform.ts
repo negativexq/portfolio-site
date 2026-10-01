@@ -1,9 +1,6 @@
 export const agenticProjectUrl = "https://omerfkoc.dev/projects/agentic-customer-service-platform";
 
 export const agenticMeta = {
-  title: "Agentic Customer Service Platform",
-  description:
-    "Production-oriented Agentic AI Control Plane for customer-service workflows: LLM semantic proposals, deterministic execution controls, grounded RAG, confirmation and revalidation.",
   image: "/projects/agentic-customer-service-platform/refund-happy-path.png",
   imageAlt: "Agentic Ops operator console showing a refund request held at a confirmation boundary.",
   keywords: [

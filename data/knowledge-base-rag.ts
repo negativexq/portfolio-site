@@ -1,9 +1,6 @@
 export const knowledgeBaseRagProjectUrl = "https://omerfkoc.dev/projects/knowledge-base-rag";
 
 export const knowledgeBaseRagMeta = {
-  title: "Knowledge Base RAG",
-  description:
-    "Local-first multilingual RAG platform with tenant-scoped hybrid retrieval, measured reranking, support-unit evidence construction, occurrence-aware validation and preregistered evaluation gates.",
   image: "/projects/knowledge-base-rag/rag-overview.jpg",
   imageAlt:
     "Knowledge Base RAG operations console showing source health, recent syncs, security state and the active Qdrant index.",

@@ -1,9 +1,6 @@
 import type { Metric } from "@/lib/content/types";
 
 export const dbtFeatureLineageMeta = {
-  title: "dbt Feature Lineage",
-  description:
-    "A local-first developer tool for exploring dbt model dependencies, column lineage, query flow and downstream impact without a live warehouse connection.",
   keywords: [
     "dbt",
     "dbt Core",

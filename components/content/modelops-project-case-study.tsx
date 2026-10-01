@@ -17,6 +17,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 type ModelOpsProjectCaseStudyProps = {
   project: Project;
@@ -34,6 +35,8 @@ const sections = [
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -283,6 +286,10 @@ export function ModelOpsProjectCaseStudy({ project }: ModelOpsProjectCaseStudyPr
               evolution steps, not claims about the current implementation.
             </p>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} showWriting={false} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

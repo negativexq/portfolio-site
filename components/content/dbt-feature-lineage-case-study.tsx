@@ -19,6 +19,7 @@ import { MetricGrid } from "./metric-grid";
 import { MotionController } from "@/components/motion/motion-controller";
 import { SectionIndex } from "./section-index";
 import { StatusBadge } from "./status-badge";
+import { ProjectInShort } from "./project-related";
 
 type DbtFeatureLineageCaseStudyProps = {
   project: Project;
@@ -35,6 +36,7 @@ const sections = [
   ["showcase", "Product proof"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -281,6 +283,8 @@ export function DbtFeatureLineageCaseStudy({ project }: DbtFeatureLineageCaseStu
               <li>Projects that depend on generated or unavailable files may produce incomplete analysis.</li>
             </ul>
           </section>
+
+          <ProjectInShort project={project} />
 
           <section id="deep-dive" className="detail-section" data-reveal>
             <p className="detail-kicker">Deep dive</p>

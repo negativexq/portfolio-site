@@ -1,9 +1,6 @@
 export const agenticSreProjectUrl = "https://omerfkoc.dev/projects/agentic-sre";
 
 export const agenticSreMeta = {
-  title: "Agentic SRE",
-  description:
-    "Evidence-driven root-cause analysis engine for Kubernetes incidents: a bounded, read-only investigator gathers evidence while a deterministic RCA engine — not the model — makes the final root-cause judgment, measured on a frozen blind ITBench-Lite holdout with zero model calls.",
   keywords: [
     "Agentic SRE",
     "root cause analysis",

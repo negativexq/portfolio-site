@@ -1,9 +1,6 @@
 export const decisionSqlProjectUrl = "https://omerfkoc.dev/projects/decision-sql";
 
 export const decisionSqlMeta = {
-  title: "DecisionSQL",
-  description:
-    "Governed one-shot Text-to-SQL for enterprise analytics: the model emits one typed decision, deterministic software owns SQL admission and read-only execution, and correctness is measured by execution against counterfactual database states.",
   keywords: [
     "governed text-to-SQL",
     "deterministic SQL safety",

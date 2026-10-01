@@ -1308,6 +1308,25 @@ a {
   color: var(--muted);
 }
 
+.section-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+}
+
+.page-hero .section-link-row {
+  margin-top: 1.5rem;
+}
+
+.section-link-row .machine-readable-link {
+  margin-top: 0;
+}
+
+.area-list + .section-link {
+  margin-top: 1.75rem;
+}
+
 .page-section,
 .graph-preview-section {
   border-top: 0;
@@ -2061,6 +2080,27 @@ a {
 
 .related-projects strong {
   font-size: 0.86rem;
+}
+
+.project-in-short {
+  display: grid;
+  gap: 1.6rem;
+  max-width: var(--reading);
+  margin: 0;
+}
+
+.project-in-short dt {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.project-in-short dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.78;
 }
 
 /* Agentic platform case-study surface */

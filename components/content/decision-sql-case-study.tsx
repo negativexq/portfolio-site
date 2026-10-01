@@ -16,6 +16,7 @@ import {
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 
 // Reuses the rag-* visual system: DecisionSQL is the structured-data sibling of
 // Knowledge Base RAG — the same governed evidence, benchmark and boundary layout.
@@ -35,6 +36,8 @@ const sections = [
   ["evidence", "Evidence"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
+  ["in-short", "In short"],
+  ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -333,6 +336,10 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
               {decisionSqlLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
             </ul>
           </section>
+
+          <ProjectInShort project={project} />
+
+          <ProjectRelated project={project} />
 
           <section id="deep-dive" className="detail-section">
             <h2>Deep dive</h2>

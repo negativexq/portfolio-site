@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: WritingPageProps): Promise<Me
   const canonical = `/writing/${article.slug}`;
   const title = article.seoTitle ?? article.title;
   return {
-    title,
+    // The author is already in BlogPosting JSON-LD; the suffix only pushes
+    // long article titles past the search-result width.
+    title: { absolute: title },
     description: article.description,
     alternates: { canonical },
     openGraph: {

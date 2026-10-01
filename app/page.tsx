@@ -106,6 +106,9 @@ export default function Home() {
               <EngineeringAreaCard key={area.id} area={area} index={index + 1} />
             ))}
           </div>
+          <Link className="section-link" href="/learning">
+            See what I am learning next <ArrowRight aria-hidden="true" size={15} />
+          </Link>
         </div>
       </section>
 
@@ -126,9 +129,14 @@ export default function Home() {
           <p className="separation-note">
             Professional experience informs the engineering questions explored in public projects; the public repositories are independent work.
           </p>
-          <Link className="section-link" href="/experience">
-            Explore experience <ArrowRight aria-hidden="true" size={15} />
-          </Link>
+          <div className="section-link-row">
+            <Link className="section-link" href="/experience">
+              Explore experience <ArrowRight aria-hidden="true" size={15} />
+            </Link>
+            <Link className="section-link" href="/resume">
+              View resume <ArrowRight aria-hidden="true" size={15} />
+            </Link>
+          </div>
         </div>
       </section>
 
