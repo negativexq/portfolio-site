@@ -6,11 +6,16 @@ import {
   agenticSreBoundaryRows,
   agenticSreCalibration,
   agenticSreCapabilities,
+  agenticSreConnectorFacts,
+  agenticSreCoverageDimensions,
   agenticSreDeepDiveLinks,
   agenticSreEngineeringDecisions,
   agenticSreEvidence,
   agenticSreLimitations,
+  agenticSreMeasurements,
   agenticSreStackGroups,
+  agenticSreStreamComparison,
+  agenticSreTestbedSlices,
   agenticSreWorkflow,
 } from "@/data/agentic-sre";
 import { ArchitectureDiagram } from "./architecture-diagram";
@@ -20,8 +25,8 @@ import { ProjectInShort, ProjectRelated } from "./project-related";
 
 // Reuses the modelops-* visual system: like ModelOps and ML Platform
 // Infrastructure, this is a "proposes / decides" control loop measured against
-// the real system — here the model proposes reads and a deterministic engine
-// owns the root-cause judgment.
+// the real system — here the investigator proposes reads and a deterministic
+// engine owns the root-cause judgment.
 type AgenticSreCaseStudyProps = {
   project: Project;
 };
@@ -29,13 +34,15 @@ type AgenticSreCaseStudyProps = {
 const sections = [
   ["principle", "Principle"],
   ["capabilities", "What it does"],
-  ["workflow", "Evidence loop"],
-  ["boundaries", "Trust boundary"],
   ["architecture", "Architecture"],
+  ["connector", "Connector boundary"],
+  ["workflow", "Evidence loop"],
+  ["boundaries", "Investigator vs judge"],
+  ["coverage", "Coverage"],
   ["decisions", "Engineering decisions"],
-  ["calibration", "Calibration"],
+  ["measurements", "Two measurements"],
+  ["testbed", "Testbed"],
   ["evidence", "Evidence"],
-  ["methodology", "Blind methodology"],
   ["stack", "Stack"],
   ["posture", "Limitations"],
   ["in-short", "In short"],
@@ -55,9 +62,9 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
         <p className="modelops-hero-category">{project.category}</p>
         <h1>{project.title}</h1>
         <p className="project-detail-summary">
-          An evidence-driven root-cause analysis engine for Kubernetes incidents. A bounded,
-          read-only investigator gathers evidence over changes, events, logs, traces, dependencies
-          and topology, while a deterministic RCA engine — not the model — makes the final
+          An evidence-driven root-cause analysis engine for Kubernetes incidents. A Connector inside
+          the cluster streams changes and answers bounded read-only requests, an investigator spends
+          one legal read at a time, and a deterministic RCA engine — not a model — makes the
           root-cause judgment.
         </p>
         <blockquote className="modelops-hero-principle">
@@ -67,7 +74,7 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Frozen blind ITBench-Lite holdout · deterministic path · 0 model calls</span>
+          <span>Deterministic judgment · in-cluster Connector · 0 model calls</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />
@@ -82,23 +89,25 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
             <h2>An LLM can guess. Only evidence can diagnose.</h2>
             <p>
               The engine does not ask a model what caused an incident. It acquires bounded, read-only
-              evidence, normalizes that evidence into typed Findings, and rebuilds a deterministic
-              diagnosis. An LLM is optional and the measured benchmark path used zero model calls; the
-              model may choose among already-legal reads but can never create evidence, Findings,
-              hypotheses or the final root cause.
+              evidence, normalizes it into typed Findings, and rebuilds a deterministic diagnosis. An
+              LLM is optional and every reported measurement ran with zero model calls; a model may
+              choose among already-legal reads but can never create evidence, Findings, hypotheses or
+              the root cause.
             </p>
             <p>
-              Accuracy, calibration and safety are measured as distinct evidence: 21/25 exact-root
-              agreement on a frozen blind holdout is reported separately from confidence calibration
-              and from the read-only trust boundary, rather than compressed into one score.
+              Correctness, abstention and safety are kept as separate evidence: ground-truth accuracy
+              on ITBench-Lite, a live suite of faults staged on a running cluster, an instrumented
+              testbed whose truth is recorded, and a read-only trust boundary — rather than one
+              headline score.
             </p>
           </section>
 
           <section id="capabilities" className="detail-section">
             <h2>What the system does</h2>
             <p>
-              A deterministic RCA engine, a bounded investigation runtime around it, and the
-              observation and control plane that feed and surface an incident.
+              A deterministic RCA engine, a bounded investigator around it, a Connector that is the only
+              component touching the customer cluster, and a control plane that stores replayable
+              diagnoses.
             </p>
             <div className="modelops-capability-grid">
               {agenticSreCapabilities.map((group) => (
@@ -112,8 +121,59 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
             </div>
           </section>
 
+          {architecture ? (
+            <section id="architecture" className="detail-section">
+              <h2>Architecture</h2>
+              <p>
+                Five layers: the RCA engine, the investigation runtime, the observation sources, the
+                Connector and the control plane. In remote mode the control plane holds no customer
+                credential; everything it knows about the cluster arrives through the Connector as
+                typed requests and gap-aware streams, and every diagnosis is stored with its frozen
+                evidence manifest.
+              </p>
+              <ArchitectureDiagram architecture={architecture} />
+            </section>
+          ) : null}
+
+          <section id="connector" className="detail-section">
+            <h2>The control plane holds no customer credential</h2>
+            <p>
+              The Connector is the only component that touches the customer environment. That makes the
+              trust boundary something you can deploy, not only describe.
+            </p>
+            <div className="modelops-decision-list">
+              {agenticSreConnectorFacts.map((fact) => (
+                <article key={fact.title}>
+                  <h3>{fact.title}</h3>
+                  <p>{fact.description}</p>
+                </article>
+              ))}
+            </div>
+            <p>
+              Inside the stream mode the Connector no longer polls. It lists each scope once and then
+              watches it, so a change is on the stream as soon as the API server announces it. When a
+              watch cannot resume, only that scope gets a gap and is listed again.
+            </p>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE watch versus polling measurements" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Measured on the lab</th><th scope="col">Watch</th><th scope="col">Polling every 15 s</th></tr>
+                </thead>
+                <tbody>
+                  {agenticSreStreamComparison.map((row) => (
+                    <tr key={row.measure}><th scope="row">{row.measure}</th><td>{row.watch}</td><td>{row.polling}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="detail-muted">
+              Lab measurements from 2026-09-30 and 10-01. The stream mode is opt-in, and the Connector
+              still uses static 90-day certificates; enrollment and rotation are not built yet.
+            </p>
+          </section>
+
           <section id="workflow" className="detail-section">
-            <h2>One observation, normalized before it can move a diagnosis</h2>
+            <h2>From a cluster change to a stored diagnosis</h2>
             <p>
               Investigation is a controlled loop, not an open-ended chat. Every new observation returns
               through the same deterministic path before it is allowed to change anything.
@@ -129,18 +189,13 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
                 </li>
               ))}
             </ol>
-            <p className="detail-muted">
-              observation → EvidenceStore → normalization → Finding → hypothesis rebuild → verification
-              → resolution. The same RCA and normalization code runs for initial observations and new
-              investigation evidence.
-            </p>
           </section>
 
           <section id="boundaries" className="detail-section">
-            <h2>A read-only trust boundary, judgment kept out of the model</h2>
+            <h2>The investigator chooses where to look, not what is true</h2>
             <p>
-              The investigator can acquire evidence but never owns the diagnosis, and the whole system
-              can observe a cluster but never change it. Both boundaries are explicit.
+              The investigator can acquire evidence but never owns the diagnosis, and the system can
+              observe a cluster but never change it.
             </p>
             <div className="modelops-comparison" role="region" aria-label="Agentic SRE investigation and judgment boundary" tabIndex={0}>
               <table>
@@ -160,25 +215,35 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
                 </tbody>
               </table>
             </div>
-            <p className="modelops-inline-note">
-              Kubernetes observation is read-only and Secrets are deliberately not read. Invalid
-              actions, duplicate reads, tool errors, NO_DATA and exhausted budgets terminate safely with
-              the current deterministic diagnosis rather than forcing an answer.
-            </p>
           </section>
 
-          {architecture ? (
-            <section id="architecture" className="detail-section">
-              <h2>Architecture</h2>
-              <p>
-                Deterministic RCA sits at the center: it forms hypotheses and information gaps, the
-                bounded investigator spends one legal read at a time, and every observation is
-                normalized into a Finding before hypotheses are rebuilt and resolved. Kubernetes access
-                stays read-only and remediation is proposed, never executed.
-              </p>
-              <ArchitectureDiagram architecture={architecture} />
-            </section>
-          ) : null}
+          <section id="coverage" className="detail-section">
+            <h2>It records what it could not see</h2>
+            <p>
+              A diagnosis may use evidence the Connector observed by the cutoff, however late it arrived,
+              and source times never decide membership. What it may conclude from absence is a separate
+              question, so every diagnosis records two dimensions per scope.
+            </p>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE coverage dimensions" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Dimension</th><th scope="col">Values</th><th scope="col">What it records</th></tr>
+                </thead>
+                <tbody>
+                  {agenticSreCoverageDimensions.map((row) => (
+                    <tr key={row.dimension}><th scope="row">{row.dimension}</th><td>{row.values}</td><td>{row.meaning}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="modelops-inline-note">
+              In live checks, delivery was proven in all 60 measured waits, at a median of about 2 s
+              after the cutoff and at most 7.0 s. The record is provenance today: the rules that infer
+              from absence do not read it yet and will adopt it one at a time, each measured on the
+              testbed first. Continuity also survives a control-plane restart when the stream provably
+              resumes where it stopped.
+            </p>
+          </section>
 
           <section id="decisions" className="detail-section">
             <h2>Engineering decisions that keep the diagnosis honest</h2>
@@ -192,39 +257,83 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
             </div>
           </section>
 
-          <section id="calibration" className="detail-section">
-            <h2>Calibration, not just accuracy</h2>
+          <section id="measurements" className="detail-section">
+            <h2>Two measurements that answer different questions</h2>
             <p>
-              A confidently wrong diagnosis is worse than an honest abstention, so confidence tiers are
-              reported as measured on the blind TEST25 run rather than collapsed into one accuracy
-              figure.
+              The bounded investigator was first measured against the engine&apos;s own full-source
+              diagnosis. That number shows how much a read budget loses, not whether the answer is
+              right, so ground-truth accuracy is reported separately and leads.
             </p>
-            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE confidence calibration on TEST25" tabIndex={0}>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE ITBench-Lite TEST25 measurements" tabIndex={0}>
               <table>
                 <thead>
-                  <tr><th scope="col">Confidence</th><th scope="col">Correct</th><th scope="col">Total</th></tr>
+                  <tr><th scope="col">Measurement</th><th scope="col">TEST25</th><th scope="col">What it compares</th></tr>
+                </thead>
+                <tbody>
+                  {agenticSreMeasurements.map((row) => (
+                    <tr key={row.measurement}><th scope="row">{row.measurement}</th><td>{row.result}</td><td>{row.compares}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Confidence is calibrated against the same ground truth, not against agreement:
+            </p>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE confidence against ground truth" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Confidence</th><th scope="col">TEST25</th><th scope="col">All 31 scoreable</th></tr>
                 </thead>
                 <tbody>
                   {agenticSreCalibration.map((row) => (
-                    <tr key={row.confidence}><th scope="row">{row.confidence}</th><td>{row.correct}</td><td>{row.total}</td></tr>
+                    <tr key={row.confidence}><th scope="row">{row.confidence}</th><td>{row.test25}</td><td>{row.all}</td></tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <p className="detail-muted">
-              NO_DATA is treated as neutral rather than proof against a hypothesis; the graded run
-              recorded 95 NO_DATA observations that were held as neutral instead of forced into a theory.
+              TEST25 was blind when the architecture was frozen, and no production code changed after
+              its results were visible. Since 2026-09-28 all 35 published scenarios are development data:
+              they protect against regressions but no longer estimate generalization. Four labels that
+              match nothing in their own scenario snapshot are excluded from the denominators.
+            </p>
+          </section>
+
+          <section id="testbed" className="detail-section">
+            <h2>Measured against a world whose truth is recorded</h2>
+            <p>
+              Published benchmarks cannot supply what a verified mechanism needs: the exact execution, the
+              first effect at the target, the propagation and the recovery. The instrumented testbed
+              injects faults on a kind cluster with Chaos Mesh, records a seven-field timeline and the
+              causal chain from producers the engine never sees, and freezes its manifest before any run.
+            </p>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE testbed results" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Fault</th><th scope="col">Cause and instance named</th><th scope="col">Execution witness</th></tr>
+                </thead>
+                <tbody>
+                  {agenticSreTestbedSlices.map((row) => (
+                    <tr key={row.fault}><th scope="row">{row.fault}</th><td>{row.causeNamed}</td><td>{row.witness}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="detail-muted">
+              Development tier, engine 2.1.0: 0 false strong authority and 0 false RESOLVED across every
+              slice. These are small runs, not a benchmark, and there is no held-out testbed result yet.
+              The testbed has already found real defects, including a rule that gave strong authority to
+              an experiment that had ended 40 minutes before the incident.
             </p>
           </section>
 
           <section id="evidence" className="detail-section">
-            <h2>Selected benchmark evidence</h2>
+            <h2>Selected evidence</h2>
             <p>
-              Blind accuracy, the development split, calibration, bounded investigation and the trust
-              boundary describe different claims. They stay separate instead of being compressed into
-              one number.
+              Accuracy, abstention, latency, coverage and the trust boundary are different claims. They
+              stay separate instead of being compressed into one number.
             </p>
-            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE benchmark evidence" tabIndex={0}>
+            <div className="modelops-evidence-table" role="region" aria-label="Agentic SRE evidence" tabIndex={0}>
               <table>
                 <thead>
                   <tr><th scope="col">Evidence slice</th><th scope="col">Current result</th><th scope="col">What it means</th></tr>
@@ -236,22 +345,6 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
                 </tbody>
               </table>
             </div>
-          </section>
-
-          <section id="methodology" className="detail-section">
-            <h2>A blind holdout, hashed before grading</h2>
-            <p>
-              TEST25 was held out until the architecture was frozen. For the holdout, all 25 bounded
-              predictions were persisted and SHA256-hashed before any full-source diagnosis was opened,
-              and grading then compared exact canonical root entities by scenario ID — a same-workload
-              or nearby entity does not count as a match.
-            </p>
-            <p className="detail-muted">
-              The run used the pinned ITBench-Lite revision d0916b0 with manifest 08a5e56, the
-              architecture was frozen at commit 8ccce16, and the prediction artifact was hashed
-              (879cab5…), so the 21/25 result is reproducible rather than a one-off claim. It is
-              evidence on this pinned 25-scenario set, not a universal production accuracy guarantee.
-            </p>
           </section>
 
           <section id="stack" className="detail-section">
@@ -267,8 +360,7 @@ export function AgenticSreCaseStudy({ project }: AgenticSreCaseStudyProps) {
             <h2>Controlled evaluation, with explicit limits</h2>
             <p>
               Agentic SRE is suitable for controlled evaluation and read-only incident-assistance
-              workflows, with a real kind lifecycle gate and a frozen blind benchmark. It is not a
-              universal replacement for an experienced SRE.
+              workflows. It is not a universal replacement for an experienced SRE.
             </p>
             <ul>
               {agenticSreLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}

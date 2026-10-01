@@ -1178,8 +1178,73 @@ const architectures = {
   "agentic-sre": {
     projectId: "agentic-sre",
     description:
-      "Deterministic root-cause analysis sits at the center. From an alert and an observation cutoff, the RCA engine forms hypotheses and information gaps from typed Findings. A bounded investigation runtime then spends one legal, read-only observation at a time against Kubernetes objects and Events, Alertmanager, Loki, traces and configured snapshots. Every observation enters the EvidenceStore and is normalized into a typed Finding before hypotheses are rebuilt and verification and resolution re-run. The output is a root entity, confidence, resolution state, evidence and a causal path, plus a proposed remediation that is returned to an operator and never executed. An LLM is optional and the measured benchmark path used zero model calls.",
+      "In remote mode a Connector runs inside the customer cluster, holds every credential with read-only RBAC and no Secrets, lists and watches each scope, and dials out to the control plane over gRPC with mutual TLS; nothing is exposed inbound. Inside the control plane, the alert stream opens or continues incidents and the change stream feeds an evidence journal that records object versions, observation times and explicit gaps. Each diagnosis revision freezes its evidence manifest. The deterministic RCA engine forms hypotheses and information gaps, a bounded investigator spends one legal read at a time through the Connector with every read taped, and each observation becomes a typed Finding before verification and resolution run again. The stored revision carries its coverage record and digests, and remediation is proposed for an operator, never executed.",
     paths: [
+      {
+        id: "connector-boundary",
+        label: "Connector boundary",
+        summary: "The Connector is the only component that touches the cluster; it dials out, and the control plane holds no customer credential.",
+        variant: "control",
+        stages: [
+          {
+            id: "cluster-sources",
+            nodes: [
+              { id: "kube-api", label: "Kubernetes API", subtitle: "objects + Events · list + watch", variant: "observability" },
+              { id: "alertmanager", label: "Alertmanager", subtitle: "alerts", variant: "observability" },
+              { id: "telemetry", label: "Prometheus · Loki · Tempo", subtitle: "bounded queries", variant: "observability" },
+            ],
+            edge: { label: "reads", variant: "observability", relation: "merge" },
+          },
+          {
+            id: "connector",
+            nodes: [{ id: "connector", label: "Connector", subtitle: "dials out over gRPC · read-only RBAC", variant: "control" }],
+            edge: { label: "mTLS", variant: "control" },
+          },
+          {
+            id: "gateway",
+            nodes: [{ id: "gateway", label: "Gateway", subtitle: "control plane · no customer credential", variant: "service" }],
+          },
+        ],
+      },
+      {
+        id: "control-plane-flow",
+        label: "Control plane data flow",
+        summary: "Streams become an evidence journal, each revision freezes its manifest, and the stored diagnosis carries its coverage record and digests.",
+        variant: "primary",
+        layout: { type: "rows", rows: [3, 2] },
+        stages: [
+          {
+            id: "intake",
+            nodes: [
+              { id: "incident-intake", label: "Incident intake", subtitle: "alert occurrences · episodes", variant: "service" },
+              { id: "evidence-journal", label: "Evidence journal", subtitle: "versions · observation times · gaps", variant: "storage" },
+            ],
+            edge: { label: "freeze", relation: "merge" },
+          },
+          {
+            id: "manifest",
+            nodes: [{ id: "manifest", label: "Evidence manifest", subtitle: "frozen per diagnosis revision", variant: "storage" }],
+            edge: { label: "feeds" },
+          },
+          {
+            id: "engine",
+            nodes: [{ id: "engine", label: "Deterministic RCA + investigator", subtitle: "reads via the Connector, each one taped", variant: "control" }],
+            edge: { label: "stores", variant: "control" },
+          },
+          {
+            id: "revision",
+            nodes: [{ id: "revision", label: "Diagnosis revision", subtitle: "coverage record · digests", variant: "output" }],
+            edge: { label: "surfaces", relation: "branch" },
+          },
+          {
+            id: "surfaces",
+            nodes: [
+              { id: "console", label: "Console · API · reports", subtitle: "single · competing · not established", variant: "output" },
+              { id: "remediation", label: "Proposed remediation", subtitle: "operator reviews · never executed", variant: "boundary" },
+            ],
+          },
+        ],
+      },
       {
         id: "rca-loop",
         label: "Deterministic RCA loop",
@@ -1200,11 +1265,11 @@ const architectures = {
           {
             id: "investigator",
             nodes: [{ id: "investigator", label: "Bounded investigator", subtitle: "select · validate scope + budget", variant: "analyzer" }],
-            edge: { label: "executes read-only", variant: "control" },
+            edge: { label: "executes", variant: "control" },
           },
           {
             id: "read",
-            nodes: [{ id: "read", label: "One legal observation", subtitle: "turn · tool · wall-time · per-gap limits", variant: "service" }],
+            nodes: [{ id: "read", label: "One legal observation", subtitle: "through the Connector · within budget", variant: "service" }],
             edge: { label: "stores" },
           },
           {
@@ -1215,75 +1280,19 @@ const architectures = {
           {
             id: "resolution",
             nodes: [
-              { id: "diagnosis", label: "Root cause + causal path", subtitle: "confidence · resolution · evidence", variant: "output" },
+              { id: "diagnosis", label: "Leader by claim tier", subtitle: "causal path · confidence · resolution", variant: "output" },
               { id: "gap", label: "Remaining gap", subtitle: "loops back for one more read", variant: "boundary" },
             ],
           },
         ],
       },
-      {
-        id: "observation-path",
-        label: "Observation sources",
-        summary: "Bounded, read-only observation over the incident's telemetry; Secrets are deliberately not read.",
-        variant: "observability",
-        layout: { type: "rows", rows: [2, 2] },
-        stages: [
-          {
-            id: "k8s",
-            nodes: [
-              { id: "k8s-objects", label: "Kubernetes objects + Events", subtitle: "versions · warnings", variant: "observability" },
-              { id: "alertmanager", label: "Alertmanager", subtitle: "incident context", variant: "observability" },
-            ],
-            edge: { label: "read-only", variant: "observability" },
-          },
-          {
-            id: "signals",
-            nodes: [
-              { id: "loki", label: "Loki logs · traces", subtitle: "bounded, replayable", variant: "observability" },
-              { id: "snapshots", label: "Snapshot data", subtitle: "configured sources", variant: "storage" },
-            ],
-            edge: { label: "feeds", variant: "observability", relation: "merge" },
-          },
-          {
-            id: "surface",
-            nodes: [{ id: "surface", label: "Legal observation surface", subtitle: "allowlisted capabilities only", variant: "control" }],
-            edge: { label: "one read at a time" },
-          },
-          {
-            id: "secrets",
-            nodes: [{ id: "secrets", label: "Secrets", subtitle: "deliberately not read", variant: "boundary" }],
-          },
-        ],
-      },
-      {
-        id: "control-plane",
-        label: "Control plane and remediation",
-        summary: "Incident lifecycle, persistence and reporting; remediation is proposed for an operator and never executed.",
-        variant: "primary",
-        stages: [
-          {
-            id: "control",
-            nodes: [{ id: "control", label: "Control plane", subtitle: "FastAPI · lifecycle · persistence", variant: "service" }],
-            edge: { label: "surfaces" },
-          },
-          {
-            id: "report",
-            nodes: [{ id: "report", label: "CLI · HTML/UI report", subtitle: "root cause · evidence · causal path", variant: "output" }],
-            edge: { label: "proposes" },
-          },
-          {
-            id: "remediation",
-            nodes: [{ id: "remediation", label: "Proposed remediation", subtitle: "operator reviews · never auto-executed", variant: "boundary" }],
-          },
-        ],
-      },
     ],
     notes: [
-      "The investigator and the judge are separate: an optional LLM policy can choose among already-legal reads, but deterministic normalization, hypothesis rebuilding, verification and root-cause resolution stay authoritative, and the measured benchmark path used zero model calls.",
-      "Every observation is normalized into a typed Finding before it can move a hypothesis; on the frozen TEST25 run, 2,226 new evidence references became 244 Findings across 150 bounded reads with zero tool errors.",
-      "NO_DATA is treated as neutral rather than evidence for a theory, and invalid actions, duplicate reads, tool errors and exhausted budgets terminate safely with the current deterministic diagnosis.",
-      "Kubernetes access is read-only and Secrets are deliberately not read; remediation is returned as a proposal for an operator and is never executed, with no arbitrary shell or cluster-write path.",
-      "The blind TEST25 result (21/25 exact-root, 0 model calls) is evidence on a pinned 25-scenario ITBench-Lite set with predictions hashed before grading, not a universal production accuracy guarantee.",
+      "The investigator and the judge are separate: an optional LLM policy can choose among already-legal reads, but normalization, hypothesis rebuilding, verification and root-cause resolution stay deterministic, and every reported measurement ran with zero model calls.",
+      "In remote mode the control plane holds no customer credential. Secrets are denied twice, by read-only RBAC and by the Connector's deny list; the Connector uses static 90-day certificates, and enrollment and rotation are not built yet.",
+      "The Connector watches each scope instead of polling: on the lab a change reached the journal at a median of 1.2 s, down from 21.5 s, and a watch that cannot resume gaps only its own scope. The stream mode is opt-in.",
+      "Evidence is admitted by when the Connector observed it. Each revision records per-scope source continuity and transport completeness; that record is provenance today, not yet read by the rules that infer from absence.",
+      "Each revision freezes its evidence manifest and the ordered tape of provider reads, so offline replay can verify the manifest, tape and epistemic digests. Remediation is proposed for an operator and never executed.",
     ],
   },
 } satisfies Record<string, ArchitectureDefinition>;

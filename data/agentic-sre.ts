@@ -1,5 +1,7 @@
 export const agenticSreProjectUrl = "https://omerfkoc.dev/projects/agentic-sre";
 
+const repo = "https://github.com/negativexq/agentic-sre";
+
 export const agenticSreMeta = {
   keywords: [
     "Agentic SRE",
@@ -7,6 +9,8 @@ export const agenticSreMeta = {
     "Kubernetes incidents",
     "deterministic RCA",
     "read-only investigation",
+    "Kubernetes connector",
+    "mTLS",
     "ITBench",
     "incident intelligence",
     "observability",
@@ -18,53 +22,61 @@ export const agenticSreCapabilities = [
   {
     title: "Deterministic RCA engine",
     items: [
-      "Typed causal signals over changes, events, dependencies and topology",
-      "Hypothesis rebuild, verification, confidence and resolution owned in code",
-      "Root-entity selection with an explicit causal path, not an opaque answer",
+      "Evidence becomes typed Findings before it can move a hypothesis",
+      "Verification, confidence, resolution and root-cause selection owned in code",
+      "Strong authority only from an observed execution and its incident effect",
     ],
   },
   {
-    title: "Bounded investigation runtime",
+    title: "Bounded investigation",
     items: [
-      "One validated read at a time from a legal observation surface",
-      "Explicit turn, tool, wall-time, per-gap and no-progress limits",
-      "Optional LLM policy chooses among already-legal reads — never creates evidence",
+      "One validated, read-only read at a time from a legal observation surface",
+      "Explicit turn, tool, wall-time, per-gap and no-progress budgets",
+      "An optional LLM may choose among legal reads — never evidence or the root",
     ],
   },
   {
-    title: "Observation and control plane",
+    title: "Connector and evidence streams",
     items: [
-      "Kubernetes object versions and Events, Alertmanager, Loki, traces, snapshots",
-      "Incident lifecycle, persistence, API, CLI and HTML/UI reporting",
-      "Read-only access; remediation is proposed for an operator, never executed",
+      "In-cluster Connector holds every credential and dials out over mTLS",
+      "Watch-driven change and alert streams with explicit per-scope gaps",
+      "Each diagnosis records, per scope, what it could and could not see",
+    ],
+  },
+  {
+    title: "Control plane and console",
+    items: [
+      "Evidence journal and a manifest frozen per diagnosis revision",
+      "Offline replay verifies manifests, read tapes and epistemic digests",
+      "Operator console: single, competing or not-established leading actor",
     ],
   },
 ] as const;
 
 export const agenticSreWorkflow = [
   {
-    label: "Alert and observation cutoff",
-    detail: "Investigation starts from an alert and an explicit observation cutoff, reconstructing the changes and symptoms visible at the incident boundary.",
+    label: "The Connector streams the cluster",
+    detail: "Inside the cluster, the Connector lists each scope once and then watches it. Changes and alerts reach the control plane as cursor-paged streams, and a scope that cannot resume gets an explicit gap instead of a silent hole.",
+  },
+  {
+    label: "Intake freezes the evidence",
+    detail: "An alert opens or continues an incident. The evidence journal records object versions and observation times, and each diagnosis revision freezes its own evidence manifest.",
   },
   {
     label: "Deterministic RCA forms hypotheses",
-    detail: "The engine identifies candidate causal actors and open information gaps from typed Findings — before any bounded read is spent.",
+    detail: "The engine identifies candidate causal actors and open information gaps from typed Findings before any bounded read is spent.",
   },
   {
-    label: "Investigator selects one legal read",
-    detail: "A bounded state machine picks a single validated, read-only observation for the most valuable gap, checks scope and budget, then executes exactly one read.",
+    label: "The investigator spends one legal read",
+    detail: "A bounded state machine picks a single validated read for the most valuable gap and executes it through the Connector. Every read is recorded on an ordered tape.",
   },
   {
     label: "Evidence becomes a typed Finding",
-    detail: "The observation enters the EvidenceStore and is normalized into a typed Finding; nothing can move a diagnosis until it has crossed this boundary.",
+    detail: "The observation is normalized into a Finding, hypotheses are rebuilt, and verification and resolution run again. A remaining gap loops back for another read within budget.",
   },
   {
-    label: "Hypotheses rebuilt, then verified",
-    detail: "The same deterministic RCA and normalization code rebuilds hypotheses and re-runs verification and resolution — remaining gaps loop back for another bounded read.",
-  },
-  {
-    label: "Root cause, confidence and proposal",
-    detail: "The run finalizes a root entity, confidence, resolution state, evidence and causal path, plus a proposed remediation that is returned to an operator and never executed.",
+    label: "A diagnosis revision is stored",
+    detail: "The leader is chosen by the strength of its claim, the revision stores its coverage record and digests, and the console shows a single actor, competing actors or not established. Remediation is proposed, never executed.",
   },
 ] as const;
 
@@ -73,19 +85,61 @@ export const agenticSreBoundaryRows = [
     side: "Investigator may (read-only)",
     items: [
       "select one legal, in-scope observation at a time",
-      "read Kubernetes object versions, Events and configured snapshots",
-      "read bounded Loki logs, traces and Alertmanager context",
+      "read objects, Events, logs and traces through typed Connector requests",
+      "stop safely on invalid actions, NO_DATA or an exhausted budget",
       "an optional LLM may choose among already-legal reads",
     ],
   },
   {
-    side: "Deterministic judge owns · model never does",
+    side: "Deterministic engine owns · the model never does",
     items: [
       "normalizing observations into typed Findings",
       "rebuilding hypotheses, verification, confidence and resolution",
       "selecting the root entity and its causal path",
-      "Secrets are not read; remediation is proposed, never executed",
+      "granting strong authority to a cause",
     ],
+  },
+] as const;
+
+export const agenticSreConnectorFacts = [
+  {
+    title: "It dials out; nothing is exposed inbound",
+    description: "In remote mode the control plane never connects to a customer cluster. The Connector runs inside it, holds every credential and dials out over gRPC with mutual TLS.",
+  },
+  {
+    title: "Typed, bounded, audited requests",
+    description: "Objects, Events, logs, resource pressure, traffic and traces through typed requests only. There is no shell and no free-form query.",
+  },
+  {
+    title: "Secrets are excluded twice",
+    description: "Once by read-only RBAC and again by the Connector's own deny list.",
+  },
+  {
+    title: "Streams with explicit gaps",
+    description: "Alerts and changes arrive as cursor-paged streams with epochs and explicit gap records for a Connector restart, buffer expiry or an unreachable backend, so the engine knows what it could not have seen.",
+  },
+  {
+    title: "Proven equivalent over the wire",
+    description: "Recorded real data survives the wire unchanged: direct and over-the-wire epistemic digests are identical on the migration gate.",
+  },
+] as const;
+
+export const agenticSreStreamComparison = [
+  { measure: "Event, source → journal (median / p90)", polling: "21.5 s / 27.1 s", watch: "1.2 s / 1.9 s" },
+  { measure: "API requests per minute", polling: "about 116", watch: "about 10" },
+  { measure: "Three-hour soak: failures / global re-snapshots", polling: "—", watch: "0 / 0" },
+] as const;
+
+export const agenticSreCoverageDimensions = [
+  {
+    dimension: "Source continuity",
+    values: "CONTINUOUS · GAPPED (with intervals) · UNKNOWN",
+    meaning: "Whether the Connector observed the scope without interruption up to the cutoff.",
+  },
+  {
+    dimension: "Transport completeness",
+    values: "PROVEN · NOT_PROVEN",
+    meaning: "Whether the change stream, kept moving by a heartbeat, has been read past the cutoff. A diagnosis waits for this proof for at most 10 s.",
   },
 ] as const;
 
@@ -93,119 +147,141 @@ export const agenticSreEngineeringDecisions = [
   {
     title: "The investigator and the judge are separate",
     description:
-      "An LLM can turn a plausible answer into an unverified diagnosis, so the model is confined to selecting already-legal reads. Deterministic normalization, hypothesis rebuilding, verification and root-cause resolution stay authoritative, and the measured benchmark path runs with zero model calls.",
+      "A model can turn a plausible answer into an unverified diagnosis, so the investigator only chooses legal reads. Normalization, hypothesis rebuilding, verification and root-cause resolution stay deterministic, and every reported measurement ran with zero model calls.",
   },
   {
-    title: "Evidence is typed before it can move a hypothesis",
+    title: "Strong authority is earned, not assumed",
     description:
-      "A raw observation should not silently shift a root cause. Every observation flows through EvidenceStore → normalization → typed Finding before hypotheses are rebuilt; on the frozen run 2,226 new evidence references became 244 Findings along an auditable path.",
+      "A cause reaches strong authority only when a rule shows an execution witness and an incident effect at the exact target instance — a recorded quota rejection, or a chaos experiment's observed interval connected to the onset. Spawned or Applied alone confers nothing, and RESOLVED additionally requires every declared symptom to be covered, so it stays rare on purpose.",
   },
   {
-    title: "NO_DATA is neutral, not evidence for a theory",
+    title: "A ranking's first place is not a cause",
     description:
-      "A missing signal is reported as missing rather than counted against a hypothesis. The frozen run recorded 95 NO_DATA observations that were held as neutral, keeping absent telemetry from being turned into false support.",
+      "Before the change, 23 of 122 testbed incidents led with an actor whose every finding was more than an hour old, and tied top scores were broken by name order. The leader is now chosen by the tier of its claim, and ties and missing evidence are shown as competing or not established. The change is presentation only; the stored diagnosis and its digest are untouched.",
   },
   {
-    title: "Causal topology, not graph proximity",
+    title: "Evidence belongs by when it was observed",
     description:
-      "Being near a symptom in a graph does not make an entity the cause. Ownership, configuration use, declared dependencies, policies, fault targets, scaling relationships and workload topology are interpreted as explicit directional relations, so a diagnosis carries a real causal path.",
+      "A diagnosis may use evidence the Connector observed by the cutoff, however late it reached the control plane, and source times never decide membership. Late evidence is not lost, and hindsight does not leak in.",
   },
   {
-    title: "The architecture was frozen before it was graded",
+    title: "NO_DATA is neutral, not evidence against a theory",
     description:
-      "A benchmark the system was tuned against measures fit, not capability. The architecture was frozen at a pinned commit, TEST25 was held out, and all 25 bounded predictions were persisted and SHA256-hashed before any full-source diagnosis was opened — no code changed after holdout results were visible.",
+      "A missing signal is reported as missing rather than counted against a hypothesis. The new per-scope coverage record is provenance today: the rules that infer from absence will read it one at a time, each measured on the testbed first.",
+  },
+  {
+    title: "Every diagnosis can be replayed",
+    description:
+      "Each revision freezes its evidence manifest and the ordered tape of provider reads, and offline replay verifies the manifest, tape and epistemic digests. Replay reproduces the persisted evidence; it cannot recover evidence that was never captured.",
+  },
+] as const;
+
+export const agenticSreMeasurements = [
+  {
+    measurement: "Ground-truth accuracy",
+    result: "17/22 (77.3%)",
+    compares: "The deterministic full-source diagnosis against the published ITBench-Lite label, exact canonical match only. This is the correctness measure.",
+  },
+  {
+    measurement: "Full-source agreement",
+    result: "21/25",
+    compares: "The bounded prediction against the same engine's own full-source diagnosis, with predictions hashed before comparison. It measures information lost under a read budget, not correctness.",
   },
 ] as const;
 
 export const agenticSreCalibration = [
+  { confidence: "VERIFIED", test25: "8/10", all: "13/16" },
+  { confidence: "LIKELY", test25: "9/15", all: "13/19" },
+] as const;
+
+export const agenticSreTestbedSlices = [
   {
-    confidence: "VERIFIED",
-    correct: "9",
-    total: "9",
+    fault: "Network delay on payment-service",
+    causeNamed: "3/3 of 3 valid runs",
+    witness: "0/3 — a delay leaves no pod-level failure",
   },
   {
-    confidence: "LIKELY",
-    correct: "11",
-    total: "12",
+    fault: "CPU stress on order-service",
+    causeNamed: "3/3 of 3 valid runs",
+    witness: "1/3",
   },
   {
-    confidence: "UNVERIFIED",
-    correct: "1",
-    total: "4",
+    fault: "Environment change rolled out to payment-service",
+    causeNamed: "1/1 (phase 0)",
+    witness: "0 — no rollout rule yet",
   },
 ] as const;
 
 export const agenticSreEvidence = [
   {
-    area: "Blind TEST25 holdout",
-    result: "21/25 (84%) exact root · 0 model calls",
-    detail: "Predictions persisted and SHA256-hashed before grading; only an exact canonical root entity counts. Synthetic 25-scenario benchmark, not production accuracy.",
+    area: "ITBench-Lite TEST25",
+    result: "17/22 (77.3%) · 0 model calls",
+    detail: "Ground-truth accuracy of the full-source path. Blind when the architecture was frozen; since 2026-09-28 all 35 scenarios are development data, so this is regression evidence, not a generalization estimate. Four unmatchable labels are excluded (raw 17/25).",
   },
   {
-    area: "Development split",
-    result: "10/10 exact root",
-    detail: "DEV10 is the split used while building the frozen architecture, reported apart from the blind holdout so development evidence is never confused with it.",
+    area: "All 35 ITBench-Lite scenarios",
+    result: "26/31 (83.9%)",
+    detail: "The full development regression set, with DEV10 at 9/9. Raw 26/35.",
   },
   {
-    area: "Combined",
-    result: "31/35 (88.6%)",
-    detail: "DEV10 + TEST25 together, kept as a separate line rather than a headline that hides the blind-vs-development distinction.",
+    area: "Bounded vs full-source",
+    result: "21/25 agreement",
+    detail: "Six validated reads per incident, 150 reads, 0 tool errors. Measures information loss, not correctness; the bounded path's own ground-truth accuracy has not been established.",
   },
   {
-    area: "Confidence calibration",
-    result: "VERIFIED 9/9 · LIKELY 11/12 · UNVERIFIED 1/4",
-    detail: "Confidence tiers carry measured meaning; a confident label is not decorative and NO_DATA stays neutral.",
+    area: "Live scenario suite",
+    result: "25/25 expected outcomes",
+    detail: "25 faults staged on a running cluster, graded on the stored diagnosis: 16/16 root-cause actors, 9/9 abstentions, 0 fabricated RESOLVED. A 6-scenario holdout tier is kept out of engine changes; the labels are in-house with no external validity.",
   },
   {
-    area: "Bounded investigation",
-    result: "150 reads · 0 tool errors",
-    detail: "Six validated reads per incident across 25 incidents: 2,226 new evidence references, 244 normalized Findings, 37 decision-relevant calls, 95 NO_DATA observations.",
+    area: "Watch-driven change stream",
+    result: "1.2 s median · p90 1.9 s",
+    detail: "Source to evidence journal on the lab, down from 21.5 s with polling, with about 12× fewer API requests; a three-hour soak ran with 0 failures.",
+  },
+  {
+    area: "Coverage proof",
+    result: "60/60 deliveries proven",
+    detail: "Every measured wait proved delivery past the cutoff, at a median of about 2 s and at most 7.0 s; none timed out.",
+  },
+  {
+    area: "Instrumented testbed",
+    result: "3 fault families · development tier",
+    detail: "The injected cause and its exact instance were named in every valid run, with 0 false strong authority and 0 false RESOLVED. Small runs, not a benchmark.",
   },
   {
     area: "Trust boundary",
     result: "0 cluster writes",
-    detail: "Read-only observation with Secrets excluded and allowlisted capabilities only; remediation is proposed but never executed, and there is no arbitrary shell path.",
+    detail: "Read-only RBAC with Secrets denied twice, typed requests only, and remediation proposed but never executed.",
   },
 ] as const;
 
 export const agenticSreStackGroups = [
-  ["RCA engine", "Deterministic signals · causal topology · verification · resolution"],
-  ["Investigation runtime", "Bounded LangGraph state machine · validated read-only tools"],
-  ["Observation sources", "Kubernetes objects + Events · Alertmanager · Loki · traces · snapshots"],
-  ["Control plane", "FastAPI + SQLAlchemy + Alembic + PostgreSQL · CLI · HTML/UI reporting"],
-  ["Live validation", "kind + Prometheus + Alertmanager + Chaos Mesh lifecycle gate"],
-  ["Benchmark", "ITBench-Lite · frozen revision + manifest · hashed predictions"],
-  ["Quality gates", "Ruff · Mypy · pytest · pre-commit · OpenTelemetry"],
+  ["RCA engine", "Python · deterministic causal rules · LangGraph-orchestrated bounded investigation"],
+  ["Connector", "gRPC over mutual TLS · read-only RBAC · watch-driven, cursor-paged streams"],
+  ["Control plane", "FastAPI · SQLAlchemy · Alembic · PostgreSQL evidence journal"],
+  ["Operator console", "React · TypeScript · Vite · TanStack Query · server-sent events · PDF/Markdown/JSON reports"],
+  ["Observation sources", "Kubernetes objects + Events · Alertmanager · Prometheus · Loki · Tempo"],
+  ["Testbed", "kind · Chaos Mesh · frozen manifests · recorded ground-truth timeline"],
+  ["Quality gates", "Ruff · Mypy · pytest · OpenTelemetry"],
 ] as const;
 
 export const agenticSreLimitations = [
-  "Current generalization evidence is the frozen 25-scenario blind TEST25 run; larger and more diverse production datasets are still needed. 84% is a measured benchmark result, not a universal accuracy guarantee.",
-  "The diagnosis is deterministic, but bounded query windows and captured telemetry can miss older or unavailable decisive evidence.",
-  "Captured Loki data is replayable evidence, not a complete historical log archive, and investigation runs under fixed turn, read, wall-time and per-gap budgets.",
-  "Some diagnoses depend on the configured read APIs and their authentication; built-in read endpoints are unauthenticated by default and are an operator responsibility.",
-  "The supported deployment is single-process / single-replica rather than highly available.",
-  "It is evidence-driven RCA, not formal causal inference, and there is no autonomous remediation, arbitrary shell execution or cluster write capability.",
+  "The only blind generalization evidence, TEST25, has been folded into the development set; a new held-out measurement is being built on the testbed. The bounded path's own ground-truth accuracy has not been established.",
+  "The testbed covers three fault families with a few development-tier runs each. There is no held-out result yet.",
+  "Coverage is recorded on every diagnosis, but the rules that infer from absence do not read it yet; until each is changed and measured on the testbed, they behave as before.",
+  "Strong authority needs an observed execution and a pod-level effect, so a latency-only fault yields a correctly named but non-strong cause.",
+  "The Connector uses static 90-day certificates; enrollment, rotation, Helm packaging and multi-tenancy are not built, and the stream mode is opt-in.",
+  "The control plane runs as a single replica, read endpoints are unauthenticated by default, and the local PostgreSQL has no durable volume, so evidence durability is not production-grade.",
+  "Bounded windows and captured telemetry can miss decisive evidence, captured Loki data is not a full archive, and traffic and trace queries have no live readers yet.",
+  "It is evidence-driven RCA, not formal causal inference, and there is no remediation, shell or cluster-write capability.",
 ] as const;
 
 export const agenticSreDeepDiveLinks = [
-  {
-    label: "Architecture details",
-    href: "https://github.com/negativexq/agentic-sre/blob/main/docs/architecture.md",
-  },
-  {
-    label: "Evaluation methodology",
-    href: "https://github.com/negativexq/agentic-sre/blob/main/evals/README.md",
-  },
-  {
-    label: "Frozen benchmark report",
-    href: "https://github.com/negativexq/agentic-sre/blob/main/evals/results/v1.1.2/README.md",
-  },
-  {
-    label: "Architecture decision records",
-    href: "https://github.com/negativexq/agentic-sre/tree/main/docs/adr",
-  },
-  {
-    label: "Release documentation",
-    href: "https://github.com/negativexq/agentic-sre/tree/main/docs/releases",
-  },
+  { label: "Connector boundary contract", href: `${repo}/blob/main/docs/architecture/connector-boundary-contract.md` },
+  { label: "Causal semantics contract", href: `${repo}/blob/main/docs/architecture/m21-causal-semantics-contract.md` },
+  { label: "Evidence timing and coverage design", href: `${repo}/blob/main/docs/architecture/late-evidence-design.md` },
+  { label: "Testbed scenarios and results", href: `${repo}/blob/main/docs/architecture/testbed-scenarios-design.md` },
+  { label: "Live-suite methodology", href: `${repo}/blob/main/docs/benchmarks/live-suite.md` },
+  { label: "ITBench-Lite benchmark report", href: `${repo}/blob/main/evals/results/v1.1.2/README.md` },
+  { label: "Roadmap", href: `${repo}/blob/main/docs/architecture/roadmap.md` },
 ] as const;
