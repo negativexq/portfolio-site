@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: WritingPageProps): Promise<Me
   if (!article) return {};
   const canonical = `/writing/${article.slug}`;
   const title = article.seoTitle ?? article.title;
+  const image = `${canonical}/opengraph-image?v=${article.dateModified ?? article.datePublished}`;
   return {
     // The author is already in BlogPosting JSON-LD; the suffix only pushes
     // long article titles past the search-result width.
@@ -47,13 +48,13 @@ export async function generateMetadata({ params }: WritingPageProps): Promise<Me
       modifiedTime: article.dateModified ?? article.datePublished,
       tags: [...article.tags],
       authors: [profile.name],
-      images: [{ url: "/opengraph-image", alt: `${article.title} by ${profile.name}` }],
+      images: [{ url: image, width: 1200, height: 630, alt: `${article.title} by ${profile.name}` }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: article.description,
-      images: ["/opengraph-image"],
+      images: [{ url: image, alt: `${article.title} by ${profile.name}` }],
     },
   };
 }
