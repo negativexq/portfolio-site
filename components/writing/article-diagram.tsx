@@ -340,7 +340,7 @@ function RefundExecutionSequenceDiagram() {
       id="refund-execution-sequence"
       title="Refund request, confirmation, and guarded database commit"
       description="Illustrative sequence, read from top to bottom. The user requests a refund; the agent submits a typed proposal to the control plane. Policy requires confirmation and persists the action. The user reviews and confirms that same action. Revalidation rejects expired confirmation without a write. If confirmation is valid, the business service checks and protects current eligibility; a changed order state blocks the write. Only the eligible path commits the local mutation and idempotency receipt together in PostgreSQL, then reports the committed outcome to the user. External payment processing is outside this diagram."
-      caption="Required local database safety contract. The refund path's protection against concurrent order-status changes remains an implementation requirement."
+      caption="Safety contract for a local refund request: confirmation binds the action; eligibility must remain protected through the database commit."
       height={900}
     >
       <ArrowMarker id={marker} />
