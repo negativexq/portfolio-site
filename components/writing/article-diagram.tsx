@@ -340,7 +340,7 @@ function RefundExecutionSequenceDiagram() {
       id="refund-execution-sequence"
       title="Refund request, confirmation, and guarded database commit"
       description="Illustrative sequence, read from top to bottom. The user requests a refund; the agent submits a typed proposal to the control plane. Policy requires confirmation and persists the action. The user reviews and confirms that same action. Revalidation rejects expired confirmation without a write. If confirmation is valid, the business service checks and protects current eligibility; a changed order state blocks the write. Only the eligible path commits the local mutation and idempotency receipt together in PostgreSQL, then reports the committed outcome to the user. External payment processing is outside this diagram."
-      caption="Illustrative local database flow. Expired confirmation and changed eligibility stop execution; approval alone cannot authorize the commit."
+      caption="Required local database safety contract. The refund path's protection against concurrent order-status changes remains an implementation requirement."
       height={900}
     >
       <ArrowMarker id={marker} />
@@ -370,7 +370,7 @@ function RefundExecutionSequenceDiagram() {
 
       <Label x={540} y={598}>Valid approval</Label>
       <Arrow d="M450 574 V610 H620 V623" marker={marker} />
-      <Node x={540} y={630} width={160} height={64} lines={["Check eligibility", "protect write conditions"]} tone="accent" />
+      <Node x={540} y={630} width={160} height={64} lines={["Check eligibility", "required write guards"]} tone="accent" />
       <Arrow d="M540 662 H307" marker={marker} />
       <Node x={60} y={634} width={240} height={56} lines={["Order state changed", "STOP: no mutation"]} tone="stop" />
 

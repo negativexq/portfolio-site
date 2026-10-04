@@ -17,7 +17,7 @@ relatedWriting:
   - agent-prompt-injection-guardrails
   - rag-citation-integrity
 draft: false
-seoTitle: "Designing Guardrails for Tool-Using AI Agents"
+seoTitle: "Designing Guardrails for Production AI Agents"
 ---
 An agent guardrail should decide what reaches a real system when the model is wrong. Prompt instructions can improve model behavior, but they cannot enforce customer ownership, make a confirmation survive a restart, prevent duplicate writes, or determine whether an order is still cancellable.
 
@@ -69,20 +69,22 @@ The tests cover the lifecycle directly. They verify that a Risk 2 request stays 
 
 Revalidation is not enough if business state can change between the check and the write. The business service must enforce the relevant preconditions at the mutation boundary, using a transaction with appropriate locking or a conditional update. Otherwise, an order could become ineligible after the agent checks it but before cancellation commits. Confirmation authorizes the stored action; it does not override current business rules.
 
+The inspected implementation makes this distinction concrete. [Cancellation](https://github.com/negativexq/agentic-customer-service-platform/blob/dbf52feedc61fbfa38216373133439f48cee11c0/app/tools/orders.py) rechecks ownership and status under a `SELECT FOR UPDATE` row lock in the mutation transaction. [Refund-request creation](https://github.com/negativexq/agentic-customer-service-platform/blob/dbf52feedc61fbfa38216373133439f48cee11c0/app/tools/refunds.py) repeats validation before insertion, and a [partial unique index](https://github.com/negativexq/agentic-customer-service-platform/blob/dbf52feedc61fbfa38216373133439f48cee11c0/app/models/entities.py) prevents concurrent active refund requests for the same order. That refund path does not lock the order row or condition insertion on its expected status. Its duplicate-request protection therefore does not establish a general guarantee against concurrent order-status changes.
+
 ## Follow one refund through the boundaries
 
-Consider an illustrative request: "Refund order ORD-1042 because the item arrived damaged." The identifier and reason come from the user's message; eligibility comes from authenticated business data. The model's interpretation alone establishes neither ownership nor permission to refund.
+Consider an illustrative request: "Refund order ORD-1042 because the item arrived damaged." The identifier and reason come from the user's message; eligibility comes from authenticated business data. The model's interpretation alone establishes neither ownership nor permission to refund. The sequence below describes the required safety contract; full protection against concurrent order-status changes remains a requirement for the refund path described above.
 
 1. The model proposes a refund intent with the order reference and stated reason. Schema validation checks its structure, and grounding checks that the proposed arguments are supported.
 2. The server resolves the order within the authenticated customer's scope and checks refund eligibility. An unrelated order or unsupported argument stops the request here.
 3. Policy routes the validated refund to confirmation. The server persists the exact action under a stable `action_id`; no refund mutation has occurred.
 4. The user reviews and confirms that action. A changed order, amount, or reason must be treated as a changed proposal, with fresh validation and approval.
-5. Revalidation checks identity, conversation, expiry, arguments, and current eligibility. The business service also protects the relevant preconditions at the write boundary.
+5. Revalidation checks identity, conversation, expiry, arguments, and current eligibility. To close the check-to-write race, the business service must also protect the relevant preconditions at the write boundary.
 6. For the local database effect, the mutation and its idempotency receipt commit together. The response describes the committed outcome rather than the model's intended outcome.
 
 :::diagram refund-execution-sequence
 
-Suppose another operator completes the refund while the user is considering the confirmation. The stored proposal can still be the one the user approved, but it is no longer eligible. Execution must stop and explain that the order's refund state has changed. Approval does not reserve the business state.
+Suppose another operator creates an active refund request while the user is considering the confirmation. The stored proposal can still be the one the user approved, but creating another active request is no longer eligible. Execution must stop and explain that a refund request already exists. Approval does not reserve the business state.
 
 The confirmation surface is part of this design. It should show the operation, order identifier, affected items where relevant, and the amount and currency when money is involved. Those details should come from the validated action and authoritative business data. A generic "Proceed?" or a model-written summary can hide a mismatch between what the user thinks they approved and what the tool will receive.
 
@@ -90,9 +92,9 @@ The confirmation surface is part of this design. It should show the operation, o
 
 Every business write needs a stable action identity. Agent writes use the server-generated `action_id`; direct operator APIs require an `Idempotency-Key`. The service commits the idempotency receipt in the same PostgreSQL transaction as the mutation.
 
-If a read fails transiently, bounded retry may help. Writes follow a stricter recovery contract. When the system cannot tell whether a write committed, it returns `UNKNOWN_WRITE_OUTCOME` with `recovery_action="no_replay"`. The caller must preserve the original action identity rather than submit a replacement action with a new key. A new key could turn an ambiguous success into a duplicate mutation.
+If a read fails transiently, bounded retry may help. Writes follow a stricter recovery contract. When the system cannot tell whether a write committed, it returns `UNKNOWN_WRITE_OUTCOME` with `recovery_action="no_replay"`. Recovery must preserve the original action identity and reconcile using the same stable key. Creating a replacement action with a new key could turn an ambiguous success into a duplicate mutation.
 
-The caller can reconcile with the same key. Idempotency can make a same-key retry safe when the endpoint guarantees it, but this runtime's `no_replay` response tells the caller to reconcile before attempting further execution. The database receipt, not an in-memory retry counter, decides whether the effect already exists. The same key must remain bound to the same customer, operation, and arguments; it cannot authorize a different write.
+The database receipt determines whether the effect already exists. The idempotent service returns the prior result when the same scoped key and request match a committed receipt; a same-key retry does not create a second effect. The agent runtime's `no_replay` response is a recovery policy that stops automatic execution after an uncertain commit, not a claim that same-key retries inherently duplicate writes. The key remains bound to the actor, tenant, operation, customer, and request fingerprint; it cannot authorize a different write.
 
 ## Keep external effects outside the local guarantee
 
@@ -134,15 +136,15 @@ For example, "Yes, but first, what is your refund policy?" should not count as a
 
 The repository keeps semantic, operational, resilience, and real-LLM evidence separate, with each denominator preserved rather than merged into one score. A single task-success number would blur questions that need different answers.
 
-The deterministic suites cover 110 general scenarios, a 40-scenario safety slice, and 28 resilience scenarios. They use a fake structured-decision provider to exercise the control plane reproducibly. Prospective runs then measure live-model executions against a frozen bilingual dataset and an exact model and provider configuration.
+The deterministic suites cover 110 general scenarios, a 40-scenario safety slice, and 28 resilience scenarios. They use a fake structured-decision provider to exercise the control plane reproducibly. Prospective runs then measure live-model evaluation attempts against a frozen bilingual dataset and an exact model and provider configuration. An attempt can be blocked before any business tool executes.
 
-The evaluation distinguishes unsafe semantic proposals, unsafe executable survivors, and unsafe executions. Here, an executable survivor is an unsafe proposal admitted to an execution-capable workflow, including a pending action that still requires confirmation. It does not mean the action has permission to run immediately.
+The evaluation distinguishes unsafe semantic proposals, proposals that survive deterministic pre-execution containment, and unsafe executions. The report names the middle metric `unsafe executable survivors`. Here, these containment survivors include unsafe proposals admitted to a pending-action workflow that still requires confirmation. They have survived the earlier guards, but they do not yet have permission to execute.
 
-An earlier prospective run observed 29 unsafe semantic proposals. Deterministic guards stopped 26 before admission to that workflow, and three reached a confirmation-required pending action without executing. The confirmation boundary prevented an immediate effect, but the system still held unsafe actions that a later approval could potentially authorize. Zero unsafe executions therefore did not establish zero unsafe executable survivors.
+An earlier prospective run observed 29 unsafe semantic proposals. Deterministic guards stopped 26 before admission to that workflow, and three reached a confirmation-required pending action without executing. The confirmation boundary prevented an immediate effect, but the system still held unsafe actions that a later approval could potentially authorize. Zero unsafe executions therefore did not establish that every unsafe proposal was stopped before entering a pending-action workflow.
 
-Closing that gap was primarily architectural: semantic grounding and destructive-target admissibility checks, followed by a targeted prompt-contract fix when the remaining gap was isolated to unsupported refund-reason provenance. The reported sequence of five evaluations reduced unsafe executable survivors from 15 to 3, then recorded zero in each of the next three evaluations. Those counts describe successive runs, not a pooled success rate.
+Closing most of that gap was architectural: semantic grounding and destructive-target admissibility checks. The remaining provenance failure was then addressed with a targeted prompt-contract fix. The reported sequence of five evaluations reduced containment survivors from 15 to 3, then recorded zero in each of the next three evaluations. Those counts describe successive runs, not a pooled success rate.
 
-The current prospective run reports the following results across 540 measured executions:
+The current prospective run reports 0 unsafe executions across 540 measured semantic-safety attempts:
 
 | Observation | Count |
 | --- | ---: |
@@ -154,9 +156,9 @@ The current prospective run reports the following results across 540 measured ex
 | Unauthorized mutations | 0 |
 | Duplicate mutations | 0 |
 
-The repository's [release evidence](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/release-evidence.md) and [real-LLM QA report](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/security/real-llm-production-qa-report.md) provide the evidence context. The 540 executions are the full measured run; the 30 unsafe proposals are the observed subset used to assess this containment funnel.
+The repository's [release evidence](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/release-evidence.md) identifies the D2c experiment as `d2c_m6_29_semantic_v3_20260822T011436Z`, bound to source commit `3ae1489fcb9350ddf7f6319e3a67bf7aa5d7f859`, contract `semantic_decision_v3`, and dataset `live_eval_v2`. The [real-LLM QA report](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/security/real-llm-production-qa-report.md) provides additional QA context. The 540 attempts are the full measured run, including attempts stopped by guards; the 30 unsafe proposals are the observed subset used to assess this containment funnel.
 
-That is evidence for one source, prompt, model, provider, and contract binding. It does not claim that model errors stopped happening. It claims that deterministic containment caught them before they became executable.
+That is evidence for one source, prompt, model, provider, and contract binding. It does not claim that model errors stopped happening. It claims that deterministic containment stopped the observed unsafe proposals before admission to an execution workflow.
 
 ## Boundaries are the guardrail
 

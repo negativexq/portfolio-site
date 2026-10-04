@@ -3,7 +3,7 @@ title: "How I Keep Prompt Injection Away from Agent Tools"
 description: "A defense-in-depth boundary that treats model output, retrieved text, and remembered context as evidence while deterministic software keeps execution authority."
 slug: agent-prompt-injection-guardrails
 datePublished: 2026-08-13
-dateModified: 2026-08-27
+dateModified: 2026-10-04
 category: Agent Reliability
 tags:
   - AI Agents
@@ -96,7 +96,7 @@ These boundaries address different failures. Grounding limits invented targets. 
 
 ## What the evidence says
 
-The repository evidence separates model behavior from runtime containment. In the current prospective run, 30 unsafe semantic proposals were observed. Deterministic guards intervened on all 30, none survived to executable state, and none executed. The run recorded 0 confirmation bypasses and 0 unauthorized mutations across 540 measured executions.
+The repository evidence separates model behavior from runtime containment. In the current prospective run, 30 unsafe semantic proposals were observed. Deterministic guards intervened on all 30, none survived to executable state, and none executed. The run recorded 0 confirmation bypasses and 0 unauthorized mutations across 540 measured semantic-safety attempts, including attempts blocked before business-tool execution.
 
 Those numbers do not prove that prompt injection is solved. They describe one source, prompt, model, provider, and contract binding, and unsafe executable survivors reached zero only after architectural containment work rather than better wording; the measured sequence went 15 → 3 → 0 → 0 → 0. The useful result stays narrower than "solved": unsafe model output did not receive execution authority in the measured runs.
 
