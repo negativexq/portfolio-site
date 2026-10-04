@@ -325,6 +325,64 @@ function AgentPolicyDiagram() {
   );
 }
 
+function RefundExecutionSequenceDiagram() {
+  const marker = "refund-sequence-arrow";
+  const participants = [
+    { x: 100, lines: ["User"] },
+    { x: 270, lines: ["Agent"] },
+    { x: 450, lines: ["Control plane"] },
+    { x: 620, lines: ["Business service"] },
+    { x: 790, lines: ["PostgreSQL"] },
+  ];
+
+  return (
+    <DiagramFrame
+      id="refund-execution-sequence"
+      title="Refund request, confirmation, and guarded database commit"
+      description="Illustrative sequence, read from top to bottom. The user requests a refund; the agent submits a typed proposal to the control plane. Policy requires confirmation and persists the action. The user reviews and confirms that same action. Revalidation rejects expired confirmation without a write. If confirmation is valid, the business service checks and protects current eligibility; a changed order state blocks the write. Only the eligible path commits the local mutation and idempotency receipt together in PostgreSQL, then reports the committed outcome to the user. External payment processing is outside this diagram."
+      caption="Illustrative local database flow. Expired confirmation and changed eligibility stop execution; approval alone cannot authorize the commit."
+      height={900}
+    >
+      <ArrowMarker id={marker} />
+      {participants.map(({ x, lines }) => (
+        <g key={x}>
+          <line className="diagram-external-boundary" x1={x} y1={78} x2={x} y2={860} />
+          <Node x={x - 70} y={24} width={140} height={54} lines={lines} />
+        </g>
+      ))}
+
+      <Label x={185} y={115}>Request refund</Label>
+      <Arrow d="M100 132 H263" marker={marker} />
+      <Label x={360} y={170}>Typed proposal</Label>
+      <Arrow d="M270 187 H443" marker={marker} />
+
+      <Node x={370} y={214} width={160} height={64} lines={["Policy", "require confirmation"]} tone="accent" />
+      <Arrow d="M450 278 V297" marker={marker} />
+      <Node x={370} y={304} width={160} height={64} lines={["Persist pending action", "identity + scope + TTL"]} tone="accent" />
+      <Label x={275} y={404}>Show stored action for review</Label>
+      <Arrow d="M450 368 V420 H107" marker={marker} />
+      <Label x={275} y={462}>Confirm the same action</Label>
+      <Arrow d="M100 480 H450 V503" marker={marker} />
+
+      <Node x={370} y={510} width={160} height={64} lines={["Revalidate", "scope + expiry + args"]} tone="accent" />
+      <Arrow d="M370 542 H307" marker={marker} />
+      <Node x={60} y={514} width={240} height={56} lines={["Expired confirmation", "STOP: no mutation"]} tone="stop" />
+
+      <Label x={540} y={598}>Valid approval</Label>
+      <Arrow d="M450 574 V610 H620 V623" marker={marker} />
+      <Node x={540} y={630} width={160} height={64} lines={["Check eligibility", "protect write conditions"]} tone="accent" />
+      <Arrow d="M540 662 H307" marker={marker} />
+      <Node x={60} y={634} width={240} height={56} lines={["Order state changed", "STOP: no mutation"]} tone="stop" />
+
+      <Label x={705} y={718}>Eligible at write</Label>
+      <Arrow d="M620 694 V734 H790 V747" marker={marker} />
+      <Node x={710} y={754} width={160} height={64} lines={["One local transaction", "mutation + receipt"]} tone="accent" />
+      <Label x={450} y={849}>Return committed outcome</Label>
+      <Arrow d="M790 818 V866 H107" marker={marker} />
+    </DiagramFrame>
+  );
+}
+
 function CommerceProcessingLifecycleDiagram() {
   const marker = "commerce-lifecycle-arrow";
   return (
@@ -1485,6 +1543,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "agent-trust-boundary": AgentTrustBoundaryDiagram,
   "rag-citation-pipeline": RagCitationDiagram,
   "agent-policy-flow": AgentPolicyDiagram,
+  "refund-execution-sequence": RefundExecutionSequenceDiagram,
   "commerce-processing-lifecycle": CommerceProcessingLifecycleDiagram,
   "model-promotion-control-loop": ModelPromotionControlLoopDiagram,
   "confirmation-lifecycle": ConfirmationLifecycleDiagram,

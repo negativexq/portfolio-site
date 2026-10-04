@@ -3,7 +3,7 @@ title: "Designing Guardrails for Production AI Agents"
 description: "A practical execution model for tool-using agents built from typed proposals, deterministic policy, durable confirmation, revalidation, idempotency, and audit."
 slug: production-agent-guardrails
 datePublished: 2026-08-12
-dateModified: 2026-08-27
+dateModified: 2026-10-04
 category: Agent Reliability
 tags:
   - AI Agents
@@ -33,7 +33,7 @@ The model can still choose the wrong intent or propose an unsafe action. The nex
 
 ## Put risk on the tool registry
 
-Risk belongs to server-owned tool metadata. The current registry maps read operations to Risk 0, support-ticket creation to Risk 1, cancellation and refund to Risk 2, and human escalation to Risk 3.
+Risk belongs to server-owned tool metadata. In this application's registry, read operations map to Risk 0, support-ticket creation to Risk 1, cancellation and refund to Risk 2, and human escalation to Risk 3. These are application-specific routing categories, not a universal scale of agent risk.
 
 The default policy is small enough to inspect:
 
@@ -67,13 +67,40 @@ Before execution, revalidation checks:
 
 The tests cover the lifecycle directly. They verify that a Risk 2 request stays pending, confirmation executes the exact stored action once, stale business state blocks execution, expired actions fail, and pending actions cannot cross customer or conversation boundaries.
 
+Revalidation is not enough if business state can change between the check and the write. The business service must enforce the relevant preconditions at the mutation boundary, using a transaction with appropriate locking or a conditional update. Otherwise, an order could become ineligible after the agent checks it but before cancellation commits. Confirmation authorizes the stored action; it does not override current business rules.
+
+## Follow one refund through the boundaries
+
+Consider an illustrative request: "Refund order ORD-1042 because the item arrived damaged." The identifier and reason come from the user's message; eligibility comes from authenticated business data. The model's interpretation alone establishes neither ownership nor permission to refund.
+
+1. The model proposes a refund intent with the order reference and stated reason. Schema validation checks its structure, and grounding checks that the proposed arguments are supported.
+2. The server resolves the order within the authenticated customer's scope and checks refund eligibility. An unrelated order or unsupported argument stops the request here.
+3. Policy routes the validated refund to confirmation. The server persists the exact action under a stable `action_id`; no refund mutation has occurred.
+4. The user reviews and confirms that action. A changed order, amount, or reason must be treated as a changed proposal, with fresh validation and approval.
+5. Revalidation checks identity, conversation, expiry, arguments, and current eligibility. The business service also protects the relevant preconditions at the write boundary.
+6. For the local database effect, the mutation and its idempotency receipt commit together. The response describes the committed outcome rather than the model's intended outcome.
+
+:::diagram refund-execution-sequence
+
+Suppose another operator completes the refund while the user is considering the confirmation. The stored proposal can still be the one the user approved, but it is no longer eligible. Execution must stop and explain that the order's refund state has changed. Approval does not reserve the business state.
+
+The confirmation surface is part of this design. It should show the operation, order identifier, affected items where relevant, and the amount and currency when money is involved. Those details should come from the validated action and authoritative business data. A generic "Proceed?" or a model-written summary can hide a mismatch between what the user thinks they approved and what the tool will receive.
+
 ## Make writes replay-aware
 
 Every business write needs a stable action identity. Agent writes use the server-generated `action_id`; direct operator APIs require an `Idempotency-Key`. The service commits the idempotency receipt in the same PostgreSQL transaction as the mutation.
 
-If a read fails transiently, bounded retry may help. Writes follow a stricter rule. When the system cannot tell whether a write committed, it returns `UNKNOWN_WRITE_OUTCOME` with `recovery_action="no_replay"`. Automatically trying again could turn an ambiguous success into a duplicate mutation.
+If a read fails transiently, bounded retry may help. Writes follow a stricter recovery contract. When the system cannot tell whether a write committed, it returns `UNKNOWN_WRITE_OUTCOME` with `recovery_action="no_replay"`. The caller must preserve the original action identity rather than submit a replacement action with a new key. A new key could turn an ambiguous success into a duplicate mutation.
 
-The caller can reconcile with the same key. The database receipt, not an in-memory retry counter, decides whether the effect already exists.
+The caller can reconcile with the same key. Idempotency can make a same-key retry safe when the endpoint guarantees it, but this runtime's `no_replay` response tells the caller to reconcile before attempting further execution. The database receipt, not an in-memory retry counter, decides whether the effect already exists. The same key must remain bound to the same customer, operation, and arguments; it cannot authorize a different write.
+
+## Keep external effects outside the local guarantee
+
+The PostgreSQL transaction protects effects committed inside that database. It cannot atomically commit a refund at an external payment provider. A local receipt alone therefore cannot establish that money moved exactly once.
+
+For a deployment that adds an external payment integration, the design needs a durable payment-operation identity, provider-side idempotency, and reconciliation of uncertain outcomes. One option is to commit the refund request and an outbox record together, then let a worker submit the provider request under a stable key. The [transactional outbox pattern](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html) closes the gap between a local state change and recording work for delivery; duplicate delivery still requires idempotent handling.
+
+Provider guarantees must be checked separately, including key retention and parameter matching. [Stripe's idempotency contract](https://docs.stripe.com/api/idempotent_requests), for example, defines how repeated keys and changed parameters are handled. If the provider response is lost, keep the operation unresolved until its outcome can be reconciled. The user-facing status should distinguish a recorded refund request from a completed payment refund. These are requirements for that integration, not capabilities established by the local database evidence in this article.
 
 ## Audit the lifecycle without using audit as authority
 
@@ -83,7 +110,25 @@ Events use deterministic IDs derived from run, action, stage, and outcome, so re
 
 Audit is evidence. Authentication, policy, business state, confirmation validity, and idempotency never consult it. That separation avoids making an observability store part of the authorization path.
 
-There is one important transaction boundary: pre-write audit must succeed before a protected mutation starts. Post-commit audit failure is surfaced as an operational problem but does not make the business write replayable. The idempotency receipt remains authoritative.
+There is one important execution boundary: pre-write audit must succeed before a protected mutation starts. This is a fail-closed availability tradeoff: if that audit step is unavailable, the protected write is blocked. Post-commit audit failure is surfaced as an operational problem but does not justify submitting a new business action. The idempotency receipt remains authoritative.
+
+The lifecycle makes the expected failure behavior explicit:
+
+| Failure | Required behavior |
+| --- | --- |
+| Backend restarts while confirmation is pending | Recover the stored action; check scope and expiry before accepting confirmation. Recovery does not grant approval. |
+| Confirmation arrives twice or concurrently | Resolve both attempts against the same action identity; prevent a second business effect at the database boundary. |
+| Eligibility changes before the write | Block the mutation and explain the changed business state. |
+| Confirmation expires | Reject execution; any renewed proposal needs validation and fresh confirmation. |
+| Write outcome is unknown | Preserve the original key and reconcile; do not create a replacement action. |
+| Pre-write audit fails | Block the protected mutation. |
+| Post-commit audit fails | Surface the audit failure while preserving the committed business outcome. |
+
+## Make blocked requests recoverable for the user
+
+Strict grounding and bounded confirmation parsing have a usability cost: they can stop a legitimate request whose target or approval is unclear. The recovery path should ask for the missing detail and show the stored action again, rather than silently relax the execution rule.
+
+For example, "Yes, but first, what is your refund policy?" should not count as approval. The agent can answer the question while keeping the refund unexecuted, then request explicit confirmation when the user returns to it. If the target remains ambiguous or the request requires an exception to business rules, the dedicated human-handling path should carry the validated context. Escalation transfers the unresolved request; it does not authorize the original mutation.
 
 ## Evaluate the containment path in layers
 
@@ -91,9 +136,25 @@ The repository keeps semantic, operational, resilience, and real-LLM evidence se
 
 The deterministic suites cover 110 general scenarios, a 40-scenario safety slice, and 28 resilience scenarios. They use a fake structured-decision provider to exercise the control plane reproducibly. Prospective runs then measure live-model executions against a frozen bilingual dataset and an exact model and provider configuration.
 
-An earlier prospective run made a useful distinction visible. It observed 29 unsafe semantic proposals, deterministic guards stopped 26 before executable state, and three reached a confirmation-required proposal without executing. Nothing unsafe executed, but the runtime had not yet contained every unsafe proposal before executable state. Those are different results, and only the second one is a containment claim.
+The evaluation distinguishes unsafe semantic proposals, unsafe executable survivors, and unsafe executions. Here, an executable survivor is an unsafe proposal admitted to an execution-capable workflow, including a pending action that still requires confirmation. It does not mean the action has permission to run immediately.
 
-Closing that gap was architectural rather than prompt tuning: semantic grounding and destructive-target admissibility checks, then a prompt-contract fix once the remaining gap was isolated to unsupported refund-reason provenance. Across that sequence, unsafe executable survivors went 15 → 3 → 0 → 0 → 0. The current prospective run observed 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, and 0 unsafe executions across 540 measured executions, with 0 confirmation bypasses, 0 unauthorized mutations, and 0 duplicate mutations.
+An earlier prospective run observed 29 unsafe semantic proposals. Deterministic guards stopped 26 before admission to that workflow, and three reached a confirmation-required pending action without executing. The confirmation boundary prevented an immediate effect, but the system still held unsafe actions that a later approval could potentially authorize. Zero unsafe executions therefore did not establish zero unsafe executable survivors.
+
+Closing that gap was primarily architectural: semantic grounding and destructive-target admissibility checks, followed by a targeted prompt-contract fix when the remaining gap was isolated to unsupported refund-reason provenance. The reported sequence of five evaluations reduced unsafe executable survivors from 15 to 3, then recorded zero in each of the next three evaluations. Those counts describe successive runs, not a pooled success rate.
+
+The current prospective run reports the following results across 540 measured executions:
+
+| Observation | Count |
+| --- | ---: |
+| Unsafe semantic proposals | 30 |
+| Deterministic guard interventions on those proposals | 30 |
+| Unsafe executable survivors | 0 |
+| Unsafe executions | 0 |
+| Confirmation bypasses | 0 |
+| Unauthorized mutations | 0 |
+| Duplicate mutations | 0 |
+
+The repository's [release evidence](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/release-evidence.md) and [real-LLM QA report](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/security/real-llm-production-qa-report.md) provide the evidence context. The 540 executions are the full measured run; the 30 unsafe proposals are the observed subset used to assess this containment funnel.
 
 That is evidence for one source, prompt, model, provider, and contract binding. It does not claim that model errors stopped happening. It claims that deterministic containment caught them before they became executable.
 

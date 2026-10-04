@@ -4,6 +4,7 @@ export const WRITING_DIAGRAM_IDS = [
   "agent-trust-boundary",
   "rag-citation-pipeline",
   "agent-policy-flow",
+  "refund-execution-sequence",
   "commerce-processing-lifecycle",
   "model-promotion-control-loop",
   "confirmation-lifecycle",
