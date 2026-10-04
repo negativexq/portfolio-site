@@ -1057,124 +1057,346 @@ const architectures = {
     ],
   },
   "ml-platform-infrastructure": {
-    projectId: "ml-platform-infrastructure",
-    description:
-      "Git is the only source of truth: Helm charts, GitOps manifests and Terraform for the two Argo CD applications, platform-local and inference-local. Argo CD watches live cluster state continuously and self-heals drift in about 1.4 seconds, independent of its own roughly 3-minute Git poll. Client traffic reaches only the inference Service, which is fronted by an HPA scaling 2 to 6 replicas on CPU and a PodDisruptionBudget of minAvailable=1. A default-deny NetworkPolicy allows inference to call MLflow, and MLflow to reach PostgreSQL and MinIO, but denies inference from reaching PostgreSQL directly — verified by test, not assumed from the policy file. Prometheus scrapes the inference service and feeds Grafana and a 5-rule, promtool-tested Alertmanager.",
-    paths: [
-      {
-        id: "gitops-path",
-        label: "GitOps deployment",
-        summary: "Git is the source of truth; Argo CD applies it, watching live state continuously while polling Git on its own slower cadence.",
-        variant: "control",
-        layout: { type: "rows", rows: [3, 1] },
-        stages: [
-          {
-            id: "git-source",
-            nodes: [{ id: "git-source", label: "Git", subtitle: "helm/ · gitops/ · infra/terraform/", variant: "storage" }],
-            edge: { label: "poll ~3 min" },
-          },
-          {
-            id: "argocd",
-            nodes: [{ id: "argocd", label: "Argo CD", subtitle: "platform-local · inference-local", variant: "control" }],
-            edge: { label: "watch + self-heal ~1.4s", variant: "control" },
-          },
-          {
-            id: "cluster",
-            nodes: [{ id: "cluster", label: "kind cluster", subtitle: "Pod Security Standards: restricted", variant: "service" }],
-            edge: { label: "applies" },
-          },
-          {
-            id: "reconcile-note",
-            nodes: [{ id: "reconcile-note", label: "Two independent loops", subtitle: "live watch ~1.4s vs Git poll ~3 min", variant: "observability" }],
-          },
-        ],
-      },
-      {
-        id: "traffic-path",
-        label: "Inference traffic",
-        summary: "The Service is the only entry point; HPA and a PodDisruptionBudget govern how the Deployment absorbs load and voluntary disruption.",
-        variant: "primary",
-        stages: [
-          {
-            id: "client",
-            nodes: [{ id: "client", label: "Client", subtitle: "k6 load test · requests", variant: "client" }],
-            edge: { label: "GET/POST" },
-          },
-          {
-            id: "service",
-            nodes: [{ id: "service", label: "inference Service", subtitle: "/health · /ready · /predict · /metrics", variant: "service" }],
-            edge: { label: "routes" },
-          },
-          {
-            id: "deployment",
-            nodes: [{ id: "deployment", label: "inference Deployment", subtitle: "HPA 2↔6 on CPU · PDB minAvailable=1", variant: "service" }],
-          },
-        ],
-      },
-      {
-        id: "ml-lifecycle-path",
-        label: "ML lifecycle",
-        summary: "NetworkPolicy default-deny allows inference → MLflow → PostgreSQL/MinIO, and denies inference from reaching PostgreSQL directly.",
-        variant: "control",
-        layout: { type: "rows", rows: [2, 2] },
-        stages: [
-          {
-            id: "inference-node",
-            nodes: [{ id: "inference-node", label: "inference", subtitle: "allowed", variant: "service" }],
-            edge: { label: "allowed" },
-          },
-          {
-            id: "mlflow",
-            nodes: [{ id: "mlflow", label: "MLflow", subtitle: "tracking", variant: "service" }],
-            edge: { label: "allowed", relation: "branch" },
-          },
-          {
-            id: "ml-storage",
-            nodes: [
-              { id: "postgres", label: "PostgreSQL", subtitle: "StatefulSet + PVC", variant: "storage" },
-              { id: "minio", label: "MinIO", subtitle: "StatefulSet + PVC", variant: "storage" },
-            ],
-          },
-          {
-            id: "denied",
-            nodes: [{ id: "denied", label: "inference → PostgreSQL directly", subtitle: "denied, verified by test", variant: "boundary" }],
-          },
-        ],
-      },
-      {
-        id: "observability-path",
-        label: "Observability",
-        summary: "Metrics feed both a dashboard and an alerting path with rules validated by promtool before deployment.",
-        variant: "observability",
-        stages: [
-          {
-            id: "metrics-source",
-            nodes: [{ id: "metrics-source", label: "inference /metrics", subtitle: "scraped", variant: "service" }],
-            edge: { label: "scrapes", variant: "observability" },
-          },
-          {
-            id: "prometheus",
-            nodes: [{ id: "prometheus", label: "Prometheus", subtitle: "5 rules, promtool-tested", variant: "observability" }],
-            edge: { label: "feeds", variant: "observability", relation: "branch" },
-          },
-          {
-            id: "obs-sinks",
-            nodes: [
-              { id: "grafana", label: "Grafana", subtitle: "dashboards", variant: "output" },
-              { id: "alertmanager", label: "Alertmanager", subtitle: "static thresholds", variant: "output" },
-            ],
-          },
-        ],
-      },
+    "projectId": "ml-platform-infrastructure",
+    "description": "Target ML Platform architecture: a project-scoped web workspace and management API commit lifecycle intent to PostgreSQL. Reconcilers drive Kubernetes, Argo Workflows, MLflow and KServe toward desired state. A separate inference gateway governs prediction, streaming chat and function calls. OIDC roles, quotas, audit and telemetry span these boundaries.",
+    "paths": [
+        {
+            "id": "management-plane",
+            "label": "Control plane and reconciliation",
+            "summary": "The API records desired state; asynchronous reconcilers turn that intent into external resources.",
+            "variant": "control",
+            "layout": {
+                "type": "rows",
+                "rows": [
+                    3,
+                    2
+                ]
+            },
+            "stages": [
+                {
+                    "id": "workspace",
+                    "nodes": [
+                        {
+                            "id": "ui",
+                            "label": "Web workspace",
+                            "subtitle": "React · same-origin session",
+                            "variant": "client"
+                        }
+                    ],
+                    "edge": {
+                        "label": "OIDC + project roles"
+                    }
+                },
+                {
+                    "id": "api",
+                    "nodes": [
+                        {
+                            "id": "api",
+                            "label": "Control plane API",
+                            "subtitle": "authorize · validate · audit",
+                            "variant": "control"
+                        }
+                    ],
+                    "edge": {
+                        "label": "commit intent"
+                    }
+                },
+                {
+                    "id": "state",
+                    "nodes": [
+                        {
+                            "id": "db",
+                            "label": "PostgreSQL",
+                            "subtitle": "lifecycle truth · trace context",
+                            "variant": "storage"
+                        }
+                    ],
+                    "edge": {
+                        "label": "read desired state",
+                        "variant": "async"
+                    }
+                },
+                {
+                    "id": "reconcilers",
+                    "nodes": [
+                        {
+                            "id": "reconcilers",
+                            "label": "Reconcilers",
+                            "subtitle": "projects · runs · deployments · rollouts",
+                            "variant": "control"
+                        }
+                    ],
+                    "edge": {
+                        "label": "apply + observe",
+                        "relation": "branch"
+                    }
+                },
+                {
+                    "id": "systems",
+                    "nodes": [
+                        {
+                            "id": "kubernetes",
+                            "label": "Kubernetes + Argo",
+                            "subtitle": "namespaces · quotas · workflow DAGs",
+                            "variant": "service"
+                        },
+                        {
+                            "id": "registry-serving",
+                            "label": "MLflow + KServe",
+                            "subtitle": "aliases · immutable serving revisions",
+                            "variant": "service"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "inference-plane",
+            "label": "Inference data plane",
+            "summary": "Prediction traffic bypasses the management API. Caller scope, endpoint readiness and budgets are checked at the gateway.",
+            "variant": "primary",
+            "layout": {
+                "type": "rows",
+                "rows": [
+                    2,
+                    2
+                ]
+            },
+            "stages": [
+                {
+                    "id": "caller",
+                    "nodes": [
+                        {
+                            "id": "caller",
+                            "label": "External caller",
+                            "subtitle": "API key or OIDC token",
+                            "variant": "client"
+                        }
+                    ],
+                    "edge": {
+                        "label": "predict · chat · invoke"
+                    }
+                },
+                {
+                    "id": "gateway",
+                    "nodes": [
+                        {
+                            "id": "gateway",
+                            "label": "Inference gateway",
+                            "subtitle": "endpoint scope · limits · usage",
+                            "variant": "boundary"
+                        }
+                    ],
+                    "edge": {
+                        "label": "forward / stream"
+                    }
+                },
+                {
+                    "id": "serving",
+                    "nodes": [
+                        {
+                            "id": "serving",
+                            "label": "KServe + Knative",
+                            "subtitle": "revision routing · canary split",
+                            "variant": "service"
+                        }
+                    ],
+                    "edge": {
+                        "label": "serve",
+                        "relation": "branch"
+                    }
+                },
+                {
+                    "id": "runtimes",
+                    "nodes": [
+                        {
+                            "id": "classic",
+                            "label": "MLflow server",
+                            "subtitle": "classic model inference",
+                            "variant": "service"
+                        },
+                        {
+                            "id": "llm",
+                            "label": "vLLM",
+                            "subtitle": "OpenAI-compatible chat",
+                            "variant": "service"
+                        },
+                        {
+                            "id": "functions",
+                            "label": "Container function",
+                            "subtitle": "JSON invoke · scale to zero",
+                            "variant": "service"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "lifecycle",
+            "label": "Training to serving",
+            "summary": "Run lineage, evaluation and promotion govern which artifact becomes an immutable deployment revision.",
+            "variant": "control",
+            "layout": {
+                "type": "rows",
+                "rows": [
+                    3,
+                    2
+                ]
+            },
+            "stages": [
+                {
+                    "id": "training",
+                    "nodes": [
+                        {
+                            "id": "training",
+                            "label": "Job / pipeline",
+                            "subtitle": "Argo Workflows · run lineage",
+                            "variant": "service"
+                        }
+                    ],
+                    "edge": {
+                        "label": "register output"
+                    }
+                },
+                {
+                    "id": "versions",
+                    "nodes": [
+                        {
+                            "id": "versions",
+                            "label": "Model version",
+                            "subtitle": "MLflow or Hugging Face",
+                            "variant": "storage"
+                        }
+                    ],
+                    "edge": {
+                        "label": "acceptance thresholds"
+                    }
+                },
+                {
+                    "id": "evaluation",
+                    "nodes": [
+                        {
+                            "id": "evaluation",
+                            "label": "Evaluation",
+                            "subtitle": "candidate or rejected",
+                            "variant": "analyzer"
+                        }
+                    ],
+                    "edge": {
+                        "label": "promote"
+                    }
+                },
+                {
+                    "id": "promotion",
+                    "nodes": [
+                        {
+                            "id": "champion",
+                            "label": "Champion",
+                            "subtitle": "registry alias reconciliation",
+                            "variant": "control"
+                        }
+                    ],
+                    "edge": {
+                        "label": "create revision"
+                    }
+                },
+                {
+                    "id": "release",
+                    "nodes": [
+                        {
+                            "id": "revision",
+                            "label": "Deployment revision",
+                            "subtitle": "canary gates · rollback",
+                            "variant": "output"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "telemetry",
+            "label": "Observability",
+            "summary": "Durable trace context connects API changes to background work. Metrics inform both operations and release decisions.",
+            "variant": "observability",
+            "layout": {
+                "type": "rows",
+                "rows": [
+                    2,
+                    2
+                ]
+            },
+            "stages": [
+                {
+                    "id": "sources",
+                    "nodes": [
+                        {
+                            "id": "telemetry-sources",
+                            "label": "API · reconcilers · gateway",
+                            "subtitle": "traces · metrics · structured logs",
+                            "variant": "service"
+                        }
+                    ],
+                    "edge": {
+                        "label": "export",
+                        "variant": "observability"
+                    }
+                },
+                {
+                    "id": "collector",
+                    "nodes": [
+                        {
+                            "id": "collector",
+                            "label": "OTel Collector",
+                            "subtitle": "shared telemetry pipeline",
+                            "variant": "observability"
+                        }
+                    ],
+                    "edge": {
+                        "label": "route",
+                        "relation": "branch"
+                    }
+                },
+                {
+                    "id": "stores",
+                    "nodes": [
+                        {
+                            "id": "prometheus",
+                            "label": "Prometheus",
+                            "subtitle": "health + revision metrics",
+                            "variant": "observability"
+                        },
+                        {
+                            "id": "tempo",
+                            "label": "Tempo",
+                            "subtitle": "request-to-reconciler traces",
+                            "variant": "observability"
+                        }
+                    ],
+                    "edge": {
+                        "label": "inspect"
+                    }
+                },
+                {
+                    "id": "operations",
+                    "nodes": [
+                        {
+                            "id": "monitor",
+                            "label": "Monitor + Grafana",
+                            "subtitle": "health · trends · alerts",
+                            "variant": "output"
+                        }
+                    ]
+                }
+            ]
+        }
     ],
-    notes: [
-      "Argo CD's two reconciliation paths run at very different speeds: continuous live-state watching self-heals drift in about 1.4 seconds, while its independent Git poll defaults to roughly every 3 minutes — a Git commit lands slower than a manual edit gets reverted.",
-      "NetworkPolicy denying inference from reaching PostgreSQL directly was verified by test against the running cluster, not assumed from the policy YAML, matching the project's stated preference for drills over descriptions.",
-      "PostgreSQL and MinIO run single-replica by design — an intentionally non-HA local lab, not a production high-availability claim.",
-      "Terraform for AWS (M13+) is at the design and static-validation level only (fmt, validate, tflint); no plan or apply has been run against an AWS account, and no cloud resource has been created.",
-      "Docker Compose was retired once the full local Kubernetes platform was reached; everything in this diagram runs inside the kind cluster.",
-    ],
-  },
+    "notes": [
+        "Target architecture: PostgreSQL owns lifecycle intent; reconcilers own convergence with external systems.",
+        "The UI calls the platform API rather than Kubernetes, Argo, MLflow or KServe directly.",
+        "GPU quotas constrain deployment and canary requests; immutable revisions retain runtime settings.",
+        "Infrastructure-foundation measurements are reported separately below and describe the original local inference service."
+    ]
+},
   "agentic-sre": {
     projectId: "agentic-sre",
     description:

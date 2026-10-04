@@ -1,92 +1,75 @@
 export const mlPlatformInfrastructureProjectUrl = "https://omerfkoc.dev/projects/ml-platform-infrastructure";
 
 export const mlPlatformInfrastructureMeta = {
-  keywords: [
-    "ML platform infrastructure",
-    "Kubernetes",
-    "GitOps",
-    "Argo CD",
-    "MLflow",
-    "autoscaling",
-    "chaos engineering",
-    "SRE",
-    "observability",
-  ],
+  keywords: ["ML platform", "ML control plane", "Kubernetes", "KServe", "Argo Workflows", "MLflow", "inference gateway", "canary rollout", "OIDC", "LLM serving"],
 } as const;
 
 export const mlPlatformInfrastructureCapabilities = [
-  {
-    title: "GitOps deployment",
-    items: [
-      "Git is the source of truth: Helm charts, GitOps manifests, Terraform",
-      "Argo CD watches live cluster state continuously, drift reverted in ~1.4s",
-      "Argo CD polls Git independently on a ~3 min default cadence",
-    ],
-  },
-  {
-    title: "ML lifecycle on Kubernetes",
-    items: [
-      "Inference service behind a Kubernetes Service, HPA 2↔6 on CPU",
-      "MLflow tracking backed by PostgreSQL and MinIO, both StatefulSets with PVCs",
-      "Pod Disruption Budget minAvailable=1 keeps the service up during voluntary disruption",
-    ],
-  },
-  {
-    title: "Security and observability",
-    items: [
-      "NetworkPolicy default-deny plus an explicit allow-list, verified not assumed",
-      "Pod Security Standards: restricted, enforced cluster-wide",
-      "Prometheus scrapes /metrics; Grafana dashboards; Alertmanager with 5 promtool-tested rules",
-    ],
-  },
+  { title: "Projects and access", items: ["Project namespaces, resource quotas and GPU budgets", "OIDC sign-in with user and group memberships", "Invoker, viewer, operator and admin roles with fail-closed policy and audit"] },
+  { title: "Training and model lifecycle", items: ["Argo Workflows jobs and multi-step pipeline DAGs", "Run logs, step timelines, retry, cancellation and model lineage", "Evaluation thresholds, candidate/champion promotion and MLflow alias reconciliation"] },
+  { title: "Serving and release control", items: ["Immutable deployment revisions and manual rollback", "Canary steps gated on error rate, p95 latency and minimum traffic", "Automatic rollback when a canary fails its release gates"] },
+  { title: "LLMs and functions", items: ["Hugging Face model versions and KServe/vLLM runtime design", "OpenAI-compatible streaming chat and project GPU quotas", "Container functions with Knative scaling and JSON invoke endpoints"] },
+  { title: "Inference gateway", items: ["Separate data plane for predict, chat and function traffic", "Per-caller API keys, endpoint exposure and request/token limits", "Caller usage, request IDs and a consistent error contract"] },
+  { title: "Web UI and monitoring", items: ["React workspace for runs, models, deployments, members and API access", "Preview consequential changes before applying them", "Monitor, Grafana, Prometheus and traces from requests through reconcilers"] },
 ] as const;
 
 export const mlPlatformInfrastructureWorkflow = [
-  {
-    label: "Fresh cluster, nothing pre-existing",
-    detail: "make local-up builds a kind cluster, bootstraps GitOps, runs the ML lifecycle and stands up observability from a clean checkout, in roughly 15 minutes.",
-  },
-  {
-    label: "Argo CD applies from Git",
-    detail: "Applications platform-local and inference-local are reconciled from helm/, gitops/ and infra/terraform/ — no manual kubectl apply.",
-  },
-  {
-    label: "Two independent reconciliation loops",
-    detail: "Argo CD watches live cluster state continuously and self-heals in ~1.4s; it polls Git on its own ~3 min cadence. A manual edit is reverted almost instantly; a Git commit lands on the next poll.",
-  },
-  {
-    label: "Traffic reaches a governed boundary",
-    detail: "The inference Service is the only path in. NetworkPolicy denies inference → PostgreSQL directly; the allowed path is inference → MLflow → PostgreSQL / MinIO.",
-  },
-  {
-    label: "Load, faults and recovery are measured, not assumed",
-    detail: "k6 load tests, HPA scale events, pod deletion, Argo drift, and 8 injected faults are run against the live cluster and timed.",
-  },
-  {
-    label: "make local-test closes the loop",
-    detail: "An 11-check acceptance suite runs against the live cluster; M11 proved the whole sequence again from a destroyed cluster, images and build cache.",
-  },
+  { label: "Create a project and establish access", detail: "The control plane records the project and memberships; the project reconciler targets a dedicated namespace with quotas, limits and network policy." },
+  { label: "Run a training job or pipeline", detail: "A job or DAG becomes desired state. Reconcilers submit Argo workflows and bring run status, steps and failure reasons back into the platform." },
+  { label: "Evaluate and promote a version", detail: "Register an MLflow artifact or Hugging Face version, evaluate it against acceptance thresholds, then promote an eligible candidate. Model-alias reconciliation aligns the registry with platform state." },
+  { label: "Create an immutable serving revision", detail: "An authorized request checks version eligibility, runtime kind and GPU quota, then commits the revision, desired deployment state and audit context to PostgreSQL." },
+  { label: "Reconcile and gate the rollout", detail: "Deployment reconciliation targets KServe readiness. The rollout loop shifts canary traffic, reads revision metrics and advances or rolls back according to its gates." },
+  { label: "Expose an endpoint through the gateway", detail: "Callers use scoped API keys or OIDC tokens. The separate gateway resolves ready endpoints, applies limits, forwards or streams the response and records usage." },
 ] as const;
 
 export const mlPlatformInfrastructureBoundaryRows = [
-  {
-    side: "Allowed",
-    items: [
-      "inference → MLflow (tracking calls)",
-      "MLflow → PostgreSQL (metadata)",
-      "MLflow → MinIO (artifacts)",
-      "Prometheus → inference /metrics (scrape)",
-    ],
-  },
-  {
-    side: "Denied and verified",
-    items: [
-      "inference → PostgreSQL directly",
-      "any pod outside the allow-list → ml-platform namespace",
-      "any workload outside Pod Security Standards: restricted",
-      "unauthenticated /predict traffic (Service boundary only)",
-    ],
-  },
+  { side: "Management plane", items: ["Browser → same-origin API with signed session and CSRF protection", "Project policy controls each management operation", "PostgreSQL owns lifecycle intent and audit", "Reconcilers drive external systems through typed ports"] },
+  { side: "Inference data plane", items: ["Callers → separate gateway with API key or OIDC token", "Endpoint exposure and caller scope checked before forwarding", "Request or token budgets applied to calls", "Prediction traffic bypasses the management API"] },
+] as const;
+
+export const mlPlatformInfrastructureDesignDecisions = [
+  { title: "Commit intent before touching infrastructure", description: "An API request records desired state and returns. Reconcilers compare that intent with external state and apply deterministic resources, so an interrupted operation can be resumed on a later pass." },
+  { title: "Separate management from prediction traffic", description: "The control plane governs projects and lifecycle changes. The inference gateway has its own process and pods, allowing prediction traffic and management operations to scale independently." },
+  { title: "Keep domain rules behind ports", description: "Domain and application layers import no frameworks or external SDKs. Kubernetes, Argo, MLflow, KServe, Prometheus and identity sit behind adapters; composition roots wire the implementation." },
+  { title: "Preserve the release decision", description: "Immutable revisions bind an artifact to its runtime settings. Canary gates assess the candidate revision's error rate, p95 latency and traffic; a failed gate drives rollback instead of declaring a deployment healthy from readiness alone." },
+  { title: "Carry identity and trace context through reconciliation", description: "Lifecycle changes retain actor and trace context in durable state. Audit explains who requested the change, while reconciler spans connect asynchronous work back to that request." },
+] as const;
+
+export const mlPlatformInfrastructureScreenshots = [
+  { src: "/projects/ml-platform-infrastructure/01-home.png", width: 2880, height: 2472, alt: "ML Platform home showing project counts, active runs, deployments and recent activity in the local demo", caption: "Home: platform health and work needing attention" },
+  { src: "/projects/ml-platform-infrastructure/02-projects.png", width: 2880, height: 2200, alt: "ML Platform projects workspace with resource counts and project navigation", caption: "Projects: choose a workspace" },
+  { src: "/projects/ml-platform-infrastructure/03-project-overview.png", width: 2880, height: 2942, alt: "Credit Risk project overview with runs, model resources and deployment state", caption: "Credit Risk: one project's model lifecycle" },
+] as const;
+
+export const mlPlatformInfrastructureStackGroups = [
+  ["Control plane", "Python + FastAPI, PostgreSQL + SQLAlchemy + Alembic"],
+  ["Web workspace", "React + TypeScript, typed OpenAPI client"],
+  ["Identity", "OIDC + Keycloak, project roles, signed sessions"],
+  ["Training", "Argo Workflows, jobs and pipeline DAGs"],
+  ["Models", "MLflow registry + Hugging Face Hub"],
+  ["Serving architecture", "KServe + Knative, MLflow server, vLLM and container functions"],
+  ["Observability", "OpenTelemetry Collector + Prometheus + Tempo + Grafana"],
+  ["Infrastructure", "Kubernetes + Helm + Argo CD; Terraform for EKS, RDS and S3"],
+] as const;
+
+export const mlPlatformInfrastructureDeploymentTargets = [
+  { area: "Cluster", local: "kind", cloud: "EKS" },
+  { area: "Lifecycle database", local: "PostgreSQL", cloud: "RDS PostgreSQL" },
+  { area: "Artifacts", local: "MinIO", cloud: "S3" },
+  { area: "Images", local: "Local container images", cloud: "ECR" },
+  { area: "Identity", local: "Keycloak", cloud: "Organization OIDC provider" },
+  { area: "Ingress", local: "ingress-nginx + cert-manager", cloud: "ALB or ingress + ACM" },
+] as const;
+
+export const mlPlatformInfrastructureDeepDiveLinks = [
+  { label: "Platform architecture", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/architecture.md" },
+  { label: "Identity and roles", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/identity.md" },
+  { label: "Gateway and API keys", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/gateway.md" },
+  { label: "Web UI", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/ui.md" },
+  { label: "Observability", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/observability.md" },
+  { label: "Platform roadmap", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/roadmap.md" },
+  { label: "Infrastructure failure drills", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/history/failure-engineering.md" },
+  { label: "AWS infrastructure design", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/history/aws-architecture.md" },
 ] as const;
 
 export const mlPlatformInfrastructureEngineeringDecisions = [
@@ -180,47 +163,5 @@ export const mlPlatformInfrastructureEvidence = [
     area: "Security boundary",
     result: "NetworkPolicy deny verified",
     detail: "inference → PostgreSQL directly is denied and confirmed by test, not assumed from the policy YAML; Pod Security Standards: restricted is enforced.",
-  },
-] as const;
-
-export const mlPlatformInfrastructureStackGroups = [
-  ["Orchestration", "Kubernetes (kind) + Helm + Argo CD"],
-  ["ML lifecycle", "MLflow + PostgreSQL + MinIO, StatefulSets with PVCs"],
-  ["Inference", "FastAPI inference service, HPA 2↔6, PDB minAvailable=1"],
-  ["Observability", "Prometheus + Grafana + Alertmanager, 5 promtool-tested rules"],
-  ["Security", "NetworkPolicy default-deny + Pod Security Standards: restricted"],
-  ["IaC (design-only)", "Terraform: fmt / validate / tflint, no plan / apply yet"],
-  ["Load / verification", "k6 load testing + make local-test 11-check acceptance suite"],
-] as const;
-
-export const mlPlatformInfrastructureLimitations = [
-  "Status is local-v1.0.0: the local Kubernetes implementation (M0–M12) is validated and frozen. AWS (M13+) has not started — no cloud resource has been created.",
-  "Terraform is at the design and static-validation level only (fmt, validate, tflint). No terraform plan or apply has been run against an AWS account.",
-  "PostgreSQL and MinIO run single-replica by design; this is an intentionally non-HA local lab, not a claim of production high availability.",
-  "Alerting uses static thresholds; there is no burn-rate or error-budget alerting yet.",
-  "make local-up and make local-test were proven manually from a destroyed-and-rebuilt environment, but do not yet run automatically in CI.",
-  "All committed credentials are disposable local-development defaults (for example MinIO's own upstream minioadmin/minioadmin). No production credentials, cloud secrets or customer data are included.",
-] as const;
-
-export const mlPlatformInfrastructureDeepDiveLinks = [
-  {
-    label: "Milestone roadmap",
-    href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/roadmap.md",
-  },
-  {
-    label: "Architecture notes",
-    href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/architecture.md",
-  },
-  {
-    label: "Failure engineering",
-    href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/failure-engineering.md",
-  },
-  {
-    label: "AWS migration design",
-    href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/aws-architecture.md",
-  },
-  {
-    label: "M0–M12 evidence transcripts",
-    href: "https://github.com/negativexq/ml-platform-infrastructure/tree/main/docs/evidence",
   },
 ] as const;

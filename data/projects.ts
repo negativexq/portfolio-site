@@ -1240,26 +1240,25 @@ const projectRecords = [
     id: "ml-platform-infrastructure",
     slug: "ml-platform-infrastructure",
     order: 1,
-    title: "ML Platform Infrastructure",
-    seoTitle: "ML Platform Infrastructure: Kubernetes, GitOps, Failure Drills",
-    metaDescription: "Local ML platform on Kubernetes with MLflow, Argo CD GitOps, autoscaling and NetworkPolicy, validated by eight injected faults and a rebuild from scratch.",
+    title: "ML Platform",
+    seoTitle: "ML Platform: Training, Model Lifecycle and Inference Gateway",
+    metaDescription: "Self-hosted ML platform designed around a PostgreSQL control plane, project-scoped access, training pipelines, canary releases and an inference gateway.",
     category: "AI Infrastructure / Platform Engineering",
     status: "current",
     flagship: true,
     showCardProof: true,
     cardProof: {
-      label: "Reproducibility",
-      value: "PROVEN, NOT ASSUMED",
-      scope: "Destroyed cluster · images · build cache",
-      qualifier:
-        "make local-up followed by make local-test reached 11/11 acceptance checks in 901s (~15 min) after the cluster, images and build cache were destroyed first. Status is local-v1.0.0: the Kubernetes implementation (M0–M12) is validated and frozen. AWS (M13+) has not started — no cloud resource has been created, and Terraform is at the design/static-validation level only (fmt, validate, tflint; no plan, no apply).",
+      label: "Platform architecture",
+      value: "CONTROL + DATA PLANES",
+      scope: "PostgreSQL intent · asynchronous reconciliation",
+      qualifier: "A project-scoped management API records lifecycle intent; reconcilers target Kubernetes, Argo, MLflow and KServe. A separate gateway handles prediction, streaming chat and function calls.",
     },
     summary:
-      "Local ML platform reference implementation on Kubernetes: an inference service, its full MLflow/PostgreSQL/MinIO lifecycle, GitOps with Argo CD, HPA autoscaling, security hardening and observability, validated with real failure drills instead of documentation claims.",
+      "A self-hosted ML platform designed around a PostgreSQL control plane, project-scoped access, asynchronous reconciliation and a separate inference gateway for models, LLMs and container functions.",
     directAnswer:
-      "ML Platform Infrastructure is a local Kubernetes reference implementation of an ML serving platform: Git is the source of truth, Argo CD applies it, an inference service runs behind an HPA and a PodDisruptionBudget, its MLflow/PostgreSQL/MinIO lifecycle is governed by a default-deny NetworkPolicy, and Prometheus/Grafana/Alertmanager cover observability. Every headline number is measured against the running cluster: load tests, autoscaling events, injected faults and a full rebuild-from-scratch reproducibility check.",
+      "ML Platform brings training, model evaluation, promotion and serving into one project-scoped workspace. Its architecture separates a PostgreSQL-backed management API and reconcilers from an inference gateway, with OIDC roles, immutable revisions, canary gates and usage metering. Kubernetes, Argo Workflows, MLflow and KServe provide the infrastructure behind those lifecycle contracts.",
     whyItExists:
-      "An architecture diagram of an ML platform is a claim; running it, breaking it on purpose and timing the recovery is evidence. This project keeps that distinction explicit: GitOps reconciliation speed, autoscaling behavior, pod recovery, a NetworkPolicy deny rule and eight injected faults are all measured against a live kind cluster rather than described. AWS is designed as code (Terraform, cost model, migration doc) but is explicitly marked not-yet-applied, so the local evidence is never mistaken for a cloud deployment claim.",
+      "Training a model is only one step in operating it. Teams also need ownership, evaluation rules, release decisions, serving access and a way to recover interrupted infrastructure changes. This platform organizes those concerns around durable lifecycle intent and distinct control and data planes, extending the original Kubernetes inference foundation into a shared ML workspace.",
     heroMetrics: [
       {
         value: "645,809 REQUESTS",
@@ -1287,78 +1286,25 @@ const projectRecords = [
       },
     ],
     highlights: [
-      {
-        title: "GitOps has two reconciliation speeds, on purpose",
-        description:
-          "Problem: a GitOps system that only polls Git looks reconciled long after the cluster actually drifted. Solution: Argo CD watches live cluster state continuously and self-heals drift in about 1.4 seconds, while independently polling Git on its own ~3 min cadence — so a manual edit is reverted almost instantly, and a Git commit lands on the next poll, and the two are never confused with each other.",
-      },
-      {
-        title: "Eight faults injected against the running cluster, not simulated",
-        description:
-          "Problem: a failure-engineering table written from documentation describes intent, not behavior. Solution: pod crashes, invalid model artifacts, artifact-store outages, config drift, bad rollouts and node drains were actually triggered against the live cluster, with detection and recovery timed rather than assumed — for example a deleted pod's replacement is serving in 12–15s, and an artifact-store outage keeps 100% of requests at 200 while the pod is held out of Service endpoints.",
-      },
-      {
-        title: "A NetworkPolicy deny rule was verified, not assumed",
-        description:
-          "Problem: a default-deny NetworkPolicy YAML file is a stated intention, not proof of enforcement. Solution: inference → PostgreSQL was actually attempted and confirmed denied against the running cluster, alongside a Pod Security Standards: restricted boundary that rejected even the security drill's own probe pods on its first run until they were made PSS-compliant.",
-      },
-      {
-        title: "Reproducibility proven from a destroyed environment",
-        description:
-          "Problem: 'it works on my machine' style setups are rarely re-provable once state has accumulated. Solution: the cluster, container images and build cache were destroyed first, then make local-up and make local-test were run from the repository alone, reaching 11/11 acceptance checks in about 15 minutes with no manual step and no pre-existing resource.",
-      },
-      {
-        title: "Defects found by running automation, not written around",
-        description:
-          "Blocking model-load hid a slow artifact store behind /health until it moved to a background thread. A green kubectl rollout still dropped 1 request in 90 until a preStop hook drained connections. A Prometheus counter with no data looked identical to zero errors until or vector(0) was added, twice. Each defect is a specific, fixed mechanism, not a general reliability claim.",
-      },
+      { title: "Durable intent and reconciliation", description: "The API commits lifecycle intent to PostgreSQL; reconcilers target external infrastructure and report observed state. Deterministic resource identities and idempotent application support recovery after interrupted work." },
+      { title: "A project-scoped ML lifecycle", description: "Training jobs and pipeline DAGs lead to registered model versions, evaluation thresholds, candidate/champion promotion and immutable serving revisions, with identity and audit carried through each change." },
+      { title: "A separate inference data plane", description: "The gateway governs predict, streaming chat and JSON function endpoints with scoped caller access, API keys, request/token limits and usage metering, independent of management traffic." },
+      { title: "Release gates beyond readiness", description: "Canary decisions use the candidate revision's error rate, p95 latency and minimum traffic. A failed gate drives rollback; a running pod alone is not the release decision." },
     ],
-    technologies: [
-      "Kubernetes",
-      "kind",
-      "Helm",
-      "Argo CD",
-      "Terraform",
-      "MLflow",
-      "PostgreSQL",
-      "MinIO",
-      "FastAPI",
-      "Prometheus",
-      "Grafana",
-      "Alertmanager",
-      "k6",
-      "GitHub Actions",
-    ],
-    concepts: [
-      "GitOps",
-      "Progressive Delivery",
-      "Horizontal Pod Autoscaling",
-      "Pod Disruption Budget",
-      "NetworkPolicy Default-Deny",
-      "Pod Security Standards",
-      "Fault Injection",
-      "Reproducible Infrastructure",
-      "Stateful Persistence & Recovery",
-      "SLO / Alerting",
-      "Observability",
-      "ML Lifecycle Management",
-      "Security Hardening",
-      "Infrastructure as Code",
-      "Cost Modeling",
-      "Chaos Engineering",
-    ],
+    technologies: ["Python", "Kubernetes", "KServe", "FastAPI", "React", "TypeScript", "PostgreSQL", "SQLAlchemy", "Alembic", "Argo Workflows", "MLflow", "Knative", "vLLM", "Hugging Face", "Keycloak", "OpenTelemetry", "Prometheus", "Tempo", "Grafana", "Helm", "Argo CD", "Terraform", "MinIO", "k6"],
+    concepts: ["ML Control Plane", "Asynchronous Reconciliation", "Project-Scoped Authorization", "OIDC", "Training Pipelines", "Model Evaluation and Promotion", "Immutable Deployment Revisions", "Canary Release Gates", "Inference Gateway", "Usage Metering", "GPU Quotas", "Hexagonal Architecture", "GitOps", "Fault Injection"],
     proofPoints: [
       {
-        label: "Load test",
+        label: "Foundation load test",
         value: "645,809 requests · 0% errors",
-        scope: "k6 · local kind cluster",
+        scope: "Original inference foundation · local kind cluster",
         qualifier:
           "Saturated throughput 2,935 req/s at a saturated /predict p95 of 32.9 ms. Measured against this local cluster, not an estimate or a claim about production traffic.",
       },
       {
         label: "Autoscaling",
         value: "2 → 6 replicas in 71s",
-        scope: "HPA on CPU · M10",
+        scope: "Original infrastructure · HPA on CPU · M10",
         qualifier:
           "Scale-down back to 2 replicas after load takes roughly 230s and is stepped rather than immediate, matching Kubernetes' conservative default scale-down behavior.",
       },
