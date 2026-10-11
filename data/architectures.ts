@@ -1439,7 +1439,7 @@ const architectures = {
             id: "intake",
             nodes: [
               { id: "incident-intake", label: "Incident intake", subtitle: "alert occurrences · episodes", variant: "service" },
-              { id: "evidence-journal", label: "Evidence journal", subtitle: "versions · observation times · gaps", variant: "storage" },
+              { id: "evidence-journal", label: "Evidence journal", subtitle: "PostgreSQL · versions · times · gaps", variant: "storage" },
             ],
             edge: { label: "freeze", relation: "merge" },
           },
@@ -1450,7 +1450,7 @@ const architectures = {
           },
           {
             id: "engine",
-            nodes: [{ id: "engine", label: "Deterministic RCA + investigator", subtitle: "reads via the Connector, each one taped", variant: "control" }],
+            nodes: [{ id: "engine", label: "Deterministic RCA engine", subtitle: "bounded investigator gathers evidence", variant: "control" }],
             edge: { label: "stores", variant: "control" },
           },
           {
@@ -1511,9 +1511,9 @@ const architectures = {
     ],
     notes: [
       "The investigator and the judge are separate: an optional LLM policy can choose among already-legal reads, but normalization, hypothesis rebuilding, verification and root-cause resolution stay deterministic, and every reported measurement ran with zero model calls.",
-      "In remote mode the control plane holds no customer credential. Secrets are denied twice, by read-only RBAC and by the Connector's deny list; the Connector uses static 90-day certificates, and enrollment and rotation are not built yet.",
+      "In remote mode the control plane holds no customer credential. Secrets are denied twice, by read-only RBAC and by the Connector's deny list; preflight, one-time enrollment, certificate rotation, revocation and Helm packaging are implemented and lab-validated.",
       "The Connector watches each scope instead of polling: on the lab a change reached the journal at a median of 1.2 s, down from 21.5 s, and a watch that cannot resume gaps only its own scope. The stream mode is opt-in.",
-      "Evidence is admitted by when the Connector observed it. Each revision records per-scope source continuity and transport completeness; that record is provenance today, not yet read by the rules that infer from absence.",
+      "Evidence is admitted by when the Connector observed it. Each revision records per-scope source continuity and transport completeness; configuration frontier closure now requires continuous observation and proven delivery; missing observations remain limitations.",
       "Each revision freezes its evidence manifest and the ordered tape of provider reads, so offline replay can verify the manifest, tape and epistemic digests. Remediation is proposed for an operator and never executed.",
     ],
   },

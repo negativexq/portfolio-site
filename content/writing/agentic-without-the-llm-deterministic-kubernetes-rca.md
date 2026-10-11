@@ -22,6 +22,8 @@ relatedWriting:
   - decision-authority-execution-observability
 ---
 
+> Historical engineering note: the measurements below belong to the frozen architecture of this publication. See the [current Agentic SRE case study](/projects/agentic-sre) for the Connector, console, causal semantics and later held-out evaluations.
+
 Most "agentic SRE" systems are associated with an LLM deciding what telemetry to inspect and reasoning its way toward a diagnosis. [Agentic SRE](/projects/agentic-sre) can support an LLM policy, but that is not how I measured it.
 
 In the frozen benchmark configuration, no model was used anywhere in the investigation loop. Semantic intent selection, physical evidence selection, evidence normalization, hypothesis rebuilding, confidence, and root-cause resolution were all deterministic.
