@@ -1,16 +1,18 @@
 export const mlPlatformInfrastructureProjectUrl = "https://omerfkoc.dev/projects/ml-platform-infrastructure";
 
 export const mlPlatformInfrastructureMeta = {
-  keywords: ["ML platform", "ML control plane", "Kubernetes", "KServe", "Argo Workflows", "MLflow", "inference gateway", "canary rollout", "OIDC", "LLM serving"],
+  keywords: ["ML platform", "ML control plane", "Kubernetes", "KServe", "Argo Workflows", "MLflow", "inference gateway", "canary rollout", "OIDC", "LLM serving", "Batch inference", "Dataset lineage", "Model monitoring", "Go gateway"],
 } as const;
 
 export const mlPlatformInfrastructureCapabilities = [
   { title: "Projects and access", items: ["Project namespaces, resource quotas and GPU budgets", "OIDC sign-in with user and group memberships", "Invoker, viewer, operator and admin roles with fail-closed policy and audit"] },
+  { title: "Data and recurring execution", items: ["Cron schedules with timezone, concurrency and missed-run policies", "Typed parameters and immutable execution snapshots", "S3/MinIO connections, versioned CSV/Parquet datasets and recorded lineage"] },
+  { title: "Batch inference and model quality", items: ["Pinned model manifests, bounded scoring and versioned prediction outputs", "PSI and missing-rate drift; regression and classification quality reports", "Dataset-triggered monitoring with date-matched feedback and restart-safe intent"] },
   { title: "Training and model lifecycle", items: ["Argo Workflows jobs and multi-step pipeline DAGs", "Run logs, step timelines, retry, cancellation and model lineage", "Evaluation thresholds, candidate/champion promotion and MLflow alias reconciliation"] },
   { title: "Serving and release control", items: ["Immutable deployment revisions and manual rollback", "Canary steps gated on error rate, p95 latency and minimum traffic", "Automatic rollback when a canary fails its release gates"] },
-  { title: "LLMs and functions", items: ["Hugging Face model versions and KServe/vLLM runtime design", "OpenAI-compatible streaming chat and project GPU quotas", "Container functions with Knative scaling and JSON invoke endpoints"] },
-  { title: "Inference gateway", items: ["Separate data plane for predict, chat and function traffic", "Per-caller API keys, endpoint exposure and request/token limits", "Caller usage, request IDs and a consistent error contract"] },
-  { title: "Web UI and monitoring", items: ["React workspace for runs, models, deployments, members and API access", "Preview consequential changes before applying them", "Monitor, Grafana, Prometheus and traces from requests through reconcilers"] },
+  { title: "LLMs and functions", items: ["Full-commit-pinned Hugging Face versions; GPU/vLLM acceptance remains open", "OpenAI-compatible streaming chat and project GPU quotas", "Container functions with Knative scaling and JSON invoke endpoints"] },
+  { title: "Inference gateway", items: ["Go data plane for predict, chat and function traffic; Python rollback option", "Per-caller API keys, endpoint exposure and request/token limits", "Caller usage, request IDs and a consistent error contract"] },
+  { title: "Web UI and monitoring", items: ["React workspace for schedules, datasets, lineage, quality reports and serving", "Preview consequential changes before applying them", "Monitor, Grafana, Prometheus and traces from requests through reconcilers"] },
 ] as const;
 
 export const mlPlatformInfrastructureWorkflow = [
@@ -36,13 +38,17 @@ export const mlPlatformInfrastructureDesignDecisions = [
 ] as const;
 
 export const mlPlatformInfrastructureScreenshots = [
-  { src: "/projects/ml-platform-infrastructure/01-home.png", width: 2880, height: 2472, alt: "ML Platform home showing project counts, active runs, deployments and recent activity in the local demo", caption: "Home: platform health and work needing attention" },
-  { src: "/projects/ml-platform-infrastructure/02-projects.png", width: 2880, height: 2200, alt: "ML Platform projects workspace with resource counts and project navigation", caption: "Projects: choose a workspace" },
-  { src: "/projects/ml-platform-infrastructure/03-project-overview.png", width: 2880, height: 2942, alt: "Credit Risk project overview with runs, model resources and deployment state", caption: "Credit Risk: one project's model lifecycle" },
+  { src: "/projects/ml-platform-infrastructure/07-model-monitoring.png", width: 1440, height: 1237, alt: "Synthetic Credit Risk quality report with feature drift, missing values, feedback coverage, accuracy and macro F1", caption: "Model monitoring: distinguish drift, coverage and predictive quality" },
+  { src: "/projects/ml-platform-infrastructure/04-schedules.png", width: 1440, height: 1020, alt: "Synthetic Credit Risk schedules showing recurring scoring, quality review, timezone and next execution", caption: "Schedules: recurring work with recorded execution history" },
+  { src: "/projects/ml-platform-infrastructure/05-dataset-lineage.png", width: 1440, height: 1413, alt: "Synthetic prediction dataset showing immutable versions, schema and recorded input, model, run and output lineage", caption: "Dataset lineage: inspect the identities behind an output" },
+  { src: "/projects/ml-platform-infrastructure/06-batch-inference.png", width: 1440, height: 1020, alt: "Synthetic Credit Risk batch inference definition with pinned input and model versions and Parquet output", caption: "Batch inference: bind a model and data to a reproducible run" },
+  { src: "/projects/ml-platform-infrastructure/08-pipeline-run.png", width: 1440, height: 1631, alt: "Synthetic completed training pipeline with DAG, step timeline, model lineage and readable execution logs", caption: "Pipeline runs: connect execution steps, logs and model lineage" },
 ] as const;
 
 export const mlPlatformInfrastructureStackGroups = [
   ["Control plane", "Python + FastAPI, PostgreSQL + SQLAlchemy + Alembic"],
+  ["Inference gateway", "Go + PostgreSQL budgets + OpenTelemetry; Python rollback runtime"],
+  ["Data and quality", "S3/MinIO catalog, bounded batch workers, PSI and feedback metrics"],
   ["Web workspace", "React + TypeScript, typed OpenAPI client"],
   ["Identity", "OIDC + Keycloak, project roles, signed sessions"],
   ["Training", "Argo Workflows, jobs and pipeline DAGs"],
@@ -62,6 +68,14 @@ export const mlPlatformInfrastructureDeploymentTargets = [
 ] as const;
 
 export const mlPlatformInfrastructureDeepDiveLinks = [
+  { label: "Million-row NYC acceptance", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-08/million-row-acceptance/README.md" },
+  { label: "Dataset-triggered monitoring evidence", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-08/monitoring-automation/README.md" },
+  { label: "Current status and open gates", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/status.md" },
+  { label: "Go gateway migration and verification", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-07/observability/gateway-go-migration.md" },
+  { label: "Scheduling and execution snapshots", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/scheduling.md" },
+  { label: "Data catalog and lineage", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/data-catalog.md" },
+  { label: "Batch inference contract", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/batch-inference.md" },
+  { label: "Model monitoring contract", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/model-monitoring.md" },
   { label: "Platform architecture", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/architecture.md" },
   { label: "Identity and roles", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/identity.md" },
   { label: "Gateway and API keys", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/gateway.md" },

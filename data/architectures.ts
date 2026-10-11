@@ -1058,7 +1058,7 @@ const architectures = {
   },
   "ml-platform-infrastructure": {
     "projectId": "ml-platform-infrastructure",
-    "description": "Target ML Platform architecture: a project-scoped web workspace and management API commit lifecycle intent to PostgreSQL. Reconcilers drive Kubernetes, Argo Workflows, MLflow and KServe toward desired state. A separate inference gateway governs prediction, streaming chat and function calls. OIDC roles, quotas, audit and telemetry span these boundaries.",
+    "description": "ML Platform architecture: a project-scoped web workspace and management API commit lifecycle intent to PostgreSQL. Reconcilers drive Kubernetes, Argo Workflows, MLflow and KServe toward desired state. A separate Go inference gateway governs prediction, streaming chat and function calls. OIDC roles, quotas, audit and telemetry span these boundaries.",
     "paths": [
         {
             "id": "management-plane",
@@ -1122,7 +1122,7 @@ const architectures = {
                         {
                             "id": "reconcilers",
                             "label": "Reconcilers",
-                            "subtitle": "projects · runs · deployments · rollouts",
+                            "subtitle": "schedules · runs · publications · rollouts",
                             "variant": "control"
                         }
                     ],
@@ -1183,7 +1183,7 @@ const architectures = {
                         {
                             "id": "gateway",
                             "label": "Inference gateway",
-                            "subtitle": "endpoint scope · limits · usage",
+                            "subtitle": "Go · endpoint scope · shared budgets",
                             "variant": "boundary"
                         }
                     ],
@@ -1218,7 +1218,7 @@ const architectures = {
                         {
                             "id": "llm",
                             "label": "vLLM",
-                            "subtitle": "OpenAI-compatible chat",
+                            "subtitle": "GPU acceptance pending",
                             "variant": "service"
                         },
                         {
@@ -1226,6 +1226,92 @@ const architectures = {
                             "label": "Container function",
                             "subtitle": "JSON invoke · scale to zero",
                             "variant": "service"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "data-quality",
+            "label": "Scheduled scoring and model quality",
+            "summary": "Freeze execution identities, publish versioned predictions and trigger an independent monitoring run through a transactional publication event.",
+            "variant": "control",
+            "layout": {
+                "type": "rows",
+                "rows": [
+                    3,
+                    2
+                ]
+            },
+            "stages": [
+                {
+                    "id": "scheduled-data",
+                    "nodes": [
+                        {
+                            "id": "scheduled-data",
+                            "label": "Schedule + dataset",
+                            "subtitle": "processing date \u00b7 immutable snapshot",
+                            "variant": "control"
+                        }
+                    ],
+                    "edge": {
+                        "label": "dispatch Argo run",
+                        "variant": "async"
+                    }
+                },
+                {
+                    "id": "batch-worker",
+                    "nodes": [
+                        {
+                            "id": "batch-worker",
+                            "label": "Batch worker",
+                            "subtitle": "verified model + bounded Parquet scoring",
+                            "variant": "service"
+                        }
+                    ],
+                    "edge": {
+                        "label": "publish + commit",
+                        "variant": "async"
+                    }
+                },
+                {
+                    "id": "output-catalog",
+                    "nodes": [
+                        {
+                            "id": "output-catalog",
+                            "label": "S3 + dataset catalog",
+                            "subtitle": "version \u00b7 integrity \u00b7 producer lineage",
+                            "variant": "storage"
+                        }
+                    ],
+                    "edge": {
+                        "label": "transactional outbox",
+                        "variant": "async"
+                    }
+                },
+                {
+                    "id": "quality-worker",
+                    "nodes": [
+                        {
+                            "id": "quality-worker",
+                            "label": "Monitoring rule + worker",
+                            "subtitle": "pinned reference \u00b7 date-matched feedback",
+                            "variant": "control"
+                        }
+                    ],
+                    "edge": {
+                        "label": "persist report",
+                        "variant": "async"
+                    }
+                },
+                {
+                    "id": "quality-report",
+                    "nodes": [
+                        {
+                            "id": "quality-report",
+                            "label": "Model quality report",
+                            "subtitle": "PSI \u00b7 coverage \u00b7 predictive metrics",
+                            "variant": "storage"
                         }
                     ]
                 }
@@ -1391,10 +1477,10 @@ const architectures = {
         }
     ],
     "notes": [
-        "Target architecture: PostgreSQL owns lifecycle intent; reconcilers own convergence with external systems.",
+        "PostgreSQL owns lifecycle intent; reconcilers own convergence with external systems.",
         "The UI calls the platform API rather than Kubernetes, Argo, MLflow or KServe directly.",
         "GPU quotas constrain deployment and canary requests; immutable revisions retain runtime settings.",
-        "Infrastructure-foundation measurements are reported separately below and describe the original local inference service."
+        "CPU lifecycle and scheduled scoring are local lab evidence; GPU/vLLM and AWS acceptance remain open. Historical foundation throughput does not transfer to the current gateway."
     ]
 },
   "agentic-sre": {

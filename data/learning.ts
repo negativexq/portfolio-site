@@ -157,7 +157,7 @@ export const learningItems = [
       "Workload isolation",
     ],
     evidenceTarget:
-      "ml-platform-infrastructure demonstrates HPA autoscaling (2↔6 replicas), health/readiness-gated rollouts, a PodDisruptionBudget, NetworkPolicy-enforced workload isolation and Prometheus/Grafana/Alertmanager observability on a local kind cluster, with 8 faults injected against the running cluster rather than simulated. Still open: GPU scheduling, Kubernetes Secrets management, and literally hosting the existing ModelOps or RAG workloads on this substrate rather than a dedicated inference service.",
+      "ml-platform-infrastructure demonstrates HPA autoscaling (2↔6 replicas), health/readiness-gated rollouts, a PodDisruptionBudget, NetworkPolicy-enforced workload isolation and Prometheus/Grafana/Alertmanager observability on a local kind cluster, with 8 faults injected against the running cluster rather than simulated. The expanded platform now has project Secret CRUD and lab rotation/recovery evidence, plus a verified CPU training-to-serving lifecycle. Still open: GPU/vLLM acceptance, AWS deployment, broader recovery drills, and hosting the separate ModelOps or RAG repositories on this substrate.",
     connectedProjectIds: ["ml-platform-infrastructure", "modelops-control-plane"],
     connectedAreaIds: ["ai-ml-platform"],
     connectedLearningIds: [],
