@@ -9375,34 +9375,104 @@ a {
 }
 
 /* Agentic SRE extends the existing editorial case-study system. */
+.sre-case-study .project-detail-hero {
+  padding-block: clamp(1.5rem, 3.4vw, 3rem) 3rem;
+}
 .sre-case-study .project-detail-hero h1 {
+  margin: 0 0 1.1rem;
   font-size: clamp(3rem, 5.2vw, 5rem);
   line-height: 1.05;
   letter-spacing: -0.035em;
 }
-.sre-case-study .back-link { margin-bottom: 1.5rem; }
-
+.sre-case-study .back-link { margin-bottom: 1rem; min-height: 44px; }
 .sre-hero-composition {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(2rem, 5vw, 5rem);
-  margin-top: 2rem;
+  margin-top: 1rem;
+}
+.sre-hero-copy { min-width: 0; max-width: 32rem; }
+.sre-hero-category {
+  margin: 0 0 1rem;
+  color: var(--accent);
+  font: 650 0.68rem/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .sre-positioning {
-  max-width: 25ch;
-  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  max-width: 24ch;
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.025em;
   text-wrap: balance;
 }
-.sre-hero-composition > div > p:not(.sre-positioning) { max-width: 65ch; }
-.sre-hero-preview { min-width: 0; margin: 0; }
+.sre-hero-copy .project-detail-summary {
+  max-width: 44ch;
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+.sre-hero-differentiator {
+  max-width: 48ch;
+  margin: 1rem 0 1.5rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.sre-hero-copy .modelops-hero-actions { gap: 0.5rem 1.3rem; }
+.sre-hero-copy .modelops-hero-actions a { min-height: 48px; }
+.sre-hero-copy .modelops-hero-actions .text-link { margin-left: 0; }
+.sre-hero-preview { min-width: 0; width: 100%; max-width: 31.25rem; margin: 0 0 0 auto; }
+.sre-hero-preview .modelops-screenshot-frame { background: #15191d; }
 .sre-hero-preview figcaption,
 .sre-metric-sources {
-  margin-top: 0.85rem;
+  margin-top: 0.75rem;
   color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.sre-case-study .project-detail-hero .metric-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2rem;
+}
+.sre-case-study .project-detail-hero .metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 1.25rem;
+}
+.sre-case-study .project-detail-hero .metric-item dt,
+.sre-case-study .project-detail-hero .metric-item dd { display: contents; }
+.sre-case-study .project-detail-hero .metric-value {
+  order: 0;
+  margin: 0;
+  font-size: clamp(1.55rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+}
+.sre-case-study .project-detail-hero .metric-item dd > span:first-child {
+  order: 1;
+  color: var(--foreground);
+  font-size: 0.85rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.sre-case-study .project-detail-hero .metric-context {
+  order: 2;
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.sre-case-study .project-detail-hero .metric-detail {
+  order: 3;
+  margin: 0;
   font-size: 0.75rem;
   line-height: 1.6;
 }
@@ -9440,8 +9510,29 @@ a {
 .sre-holdout-result h4 { margin: 0; font-size: 0.9rem; }
 .sre-holdout-result p { margin-bottom: 0; }
 @media (max-width: 800px) {
-  .sre-hero-composition { grid-template-columns: minmax(0, 1fr); }
-  .sre-positioning { max-width: 30ch; }
+  .sre-hero-composition { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .sre-hero-copy { max-width: 38rem; }
+  .sre-positioning { max-width: 24ch; }
+  .sre-hero-copy .project-detail-summary { font-size: 1rem; line-height: 1.6; }
+  .sre-hero-preview { max-width: 31.25rem; margin-inline: auto; }
+  .sre-case-study .project-detail-hero .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sre-case-study .project-detail-hero .metric-item { padding: 1rem 0.85rem; }
+  .sre-case-study .project-detail-hero .metric-item:nth-child(odd) { border-left: 0; }
+  .sre-case-study .project-detail-hero .metric-item:nth-child(even) { border-left: 1px solid var(--border); }
+  .sre-case-study .project-detail-hero .metric-item:nth-child(-n + 2) { border-top: 0; }
+  .sre-case-study .project-detail-hero .metric-item:nth-child(n + 3) { border-top: 1px solid var(--border); }
   .sre-source-roles > div,
   .sre-resolution-states > div { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .sre-case-study .project-detail-hero { padding-top: 1rem; }
+  .sre-case-study .back-link { margin-bottom: 0.5rem; }
+  .sre-hero-composition { margin-top: 0.5rem; }
+  .sre-hero-category { margin-bottom: 0.75rem; font-size: 0.625rem; }
+  .sre-case-study .project-detail-hero h1 { margin-bottom: 1rem; font-size: 2.75rem; }
+  .sre-positioning { margin-bottom: 1rem; }
+  .sre-hero-differentiator { margin: 0.75rem 0 1rem; }
+  .sre-hero-copy .modelops-hero-actions { flex-direction: row; flex-wrap: wrap; }
+  .sre-hero-copy .modelops-hero-actions .button { flex: 1 0 100%; justify-content: center; }
+  .sre-hero-copy .modelops-hero-actions .text-link { min-height: 44px; }
 }

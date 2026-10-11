@@ -56,21 +56,18 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
           <ArrowLeft aria-hidden="true" size={14} /> All projects
         </Link>
         <div className="sre-hero-composition">
-          <div>
-            <h1>Agentic SRE</h1>
-            <p className="sre-positioning">
-              Evidence-Driven Kubernetes Incident Investigation
-            </p>
+          <div className="sre-hero-copy">
+            <p className="sre-hero-category">Kubernetes · Incident investigation</p>
+            <h1>{project.title}</h1>
+            <p className="sre-positioning">Evidence-driven root cause analysis.</p>
             <p className="project-detail-summary">
-              An evidence-driven SRE platform that investigates Kubernetes
-              incidents through bounded, read-only observation and produces
-              deterministic, replayable root-cause diagnoses.
+              A read-only Kubernetes incident investigation platform that gathers
+              evidence, verifies causal claims deterministically, and produces
+              replayable diagnoses.
             </p>
-            <p>
-              From an alert to an auditable explanation: an in-cluster Connector
-              captures evidence, a deterministic engine tests causal claims, and
-              an operator console makes the investigation inspectable. LLMs are
-              optional and never own the final causal judgment.
+            <p className="sre-hero-differentiator">
+              No LLM-generated verdicts. Every conclusion must be supported by
+              evidence.
             </p>
             <div className="modelops-hero-actions">
               <a
@@ -100,12 +97,12 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
                 height={1606}
                 alt="Actual Agentic SRE console on seeded demo data: Causal X-Ray graph beside investigation and selected evidence"
                 preload
-                sizes="(max-width: 800px) 100vw, 600px"
+                loading="eager"
+                sizes="(max-width: 800px) calc(100vw - 32px), 500px"
               />
             </a>
             <figcaption>
-              Actual React/TypeScript console · seeded demonstration, not
-              production incident data.{" "}
+              Operator console · seeded demo, not production data.{" "}
               <Source href={agenticSreSources.screenshots}>
                 Capture provenance
               </Source>
