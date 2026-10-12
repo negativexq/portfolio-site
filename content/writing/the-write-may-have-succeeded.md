@@ -75,7 +75,7 @@ Stable identity enables correlation and reconciliation; it does not prove an eff
 | --- | --- |
 | Matching committed receipt | Return the previous result. |
 | Pending or in progress | Wait, poll, or return pending. |
-| Authoritative evidence proves no effect occurred | Consider a controlled retry after current authorization and policy checks. |
+| Authoritative evidence proves no effect occurred | Consider a controlled retry after current authorization, policy, confirmation, and business-state checks. |
 | Outcome remains uncertain | Keep `UNKNOWN`; no blind replay. Escalate or reconcile later. |
 | Identity matches but payload/fingerprint conflicts | Reject. |
 
@@ -111,7 +111,9 @@ In [the tests](https://github.com/negativexq/agentic-customer-service-platform/b
 
 ## What this changes for an agent
 
-The agent should not respond to a timeout by confidently saying “I failed, so I will try again.” It should preserve the action identity, record the uncertain result, and let the deterministic control plane reconcile the business state.
+The agent should not respond to a timeout by confidently saying “I failed, so I will try again.” It should preserve the action identity, record the uncertain result, prevent blind replay, and route the outcome through an explicit reconciliation procedure.
+
+The execution path reports `UNKNOWN_WRITE_OUTCOME` with `recovery_action="no_replay"`; configured audit records an `unknown` execution event. The [incident runbook](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/runbooks/idempotency-incident.md) describes receipt lookup and an approved reconciliation path. These are detection and recovery controls, not an automated background reconciliation workflow.
 
 The [Agentic Customer Service Platform case study](/projects/agentic-customer-service-platform) shows how confirmation, revalidation, and idempotent execution fit together. The [architecture notes](https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/architecture.md) describe PostgreSQL ownership of business state, idempotency, and durable projections. [Designing Guardrails for Production AI Agents](/writing/production-agent-guardrails) explains the authorization boundary.
 

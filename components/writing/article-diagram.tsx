@@ -626,11 +626,13 @@ function ConfirmationLifecycleDiagram() {
 function UnknownWriteOutcomeDiagram() {
   const marker = "unknown-write-arrow";
   return (
+    <>
+      <style>{".article-content:has(#unknown-write-outcome-title) { min-width: 0; }"}</style>
     <DiagramFrame
       id="unknown-write-outcome"
       title="Recovering from an unknown write outcome"
-      description="A confirmed action carries a stable identity into a local PostgreSQL write. A timeout leaves the commit outcome unknown. Reconciliation uses the same scoped identity and committed receipt. A missing receipt does not rule out in-flight writes or stale reads. Return a matching prior result, wait for pending work, reject a conflicting payload, or retain UNKNOWN and reconcile later. A retry requires evidence of no effect and current authorization, policy and business-state checks. Local receipts do not establish external payment effects."
-      caption="Stable identity correlates attempts. Committed evidence establishes the local effect; unresolved outcomes remain uncertain."
+      description="A confirmed action carries a stable identity into a local PostgreSQL write. A timeout leaves the commit outcome unknown. An explicit reconciliation procedure uses the same scoped identity and committed receipt; this is a recovery contract, not an automated worker. A missing receipt does not rule out in-flight writes or stale reads. Return a matching prior result, wait for pending work, reject a conflicting payload, or retain UNKNOWN and reconcile later. A controlled retry requires authoritative evidence of no effect and current authorization, policy, confirmation and business-state checks. Local receipts do not establish external payment effects."
+      caption="Recovery contract, not an automated reconciliation worker. Stable identity correlates attempts. Committed evidence establishes the local effect; unresolved outcomes remain uncertain."
       height={700}
     >
       <ArrowMarker id={marker} />
@@ -689,7 +691,7 @@ function UnknownWriteOutcomeDiagram() {
         y={312}
         width={472}
         height={76}
-        lines={["reconcile under the same action identity", "idempotency receipt + database constraints"]}
+        lines={["explicit reconciliation procedure", "same identity · receipt + database constraints"]}
         tone="accent"
       />
       <path className="diagram-failure-mark" d="M173 396 l10 10 m0 -10 l-10 10" />
@@ -719,6 +721,7 @@ function UnknownWriteOutcomeDiagram() {
         Collapsing these into one retry path hides the risk.
       </text>
     </DiagramFrame>
+    </>
   );
 }
 
