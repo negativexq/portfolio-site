@@ -629,8 +629,8 @@ function UnknownWriteOutcomeDiagram() {
     <DiagramFrame
       id="unknown-write-outcome"
       title="Recovering from an unknown write outcome"
-      description="A confirmed action carries a stable action identity into execution. The caller observes one of three things: a normal response, an explicit failure that committed nothing, or a timeout that proves nothing about what the database did. That third case is an unknown outcome. Retrying it blindly under a new identity is indistinguishable from a fresh request, so recovery instead reconciles under the same action identity using the idempotency receipt and database constraints. Reconciliation alone is not permission: revalidation still re-checks actor, scope, target, policy, confirmation binding and current business state, and the result is one of three distinct states rather than a single retry path."
-      caption="An exception describes what the caller observed. A receipt, a current-state check and a stable action identity describe what actually happened."
+      description="A confirmed action carries a stable identity into a local PostgreSQL write. A timeout leaves the commit outcome unknown. Reconciliation uses the same scoped identity and committed receipt. A missing receipt does not rule out in-flight writes or stale reads. Return a matching prior result, wait for pending work, reject a conflicting payload, or retain UNKNOWN and reconcile later. A retry requires evidence of no effect and current authorization, policy and business-state checks. Local receipts do not establish external payment effects."
+      caption="Stable identity correlates attempts. Committed evidence establishes the local effect; unresolved outcomes remain uncertain."
       height={700}
     >
       <ArrowMarker id={marker} />
@@ -654,13 +654,13 @@ function UnknownWriteOutcomeDiagram() {
       <Arrow d="M153 154 V174" marker={marker} />
       <Arrow d="M435 154 V174" marker={marker} />
       <Arrow d="M722 154 V174" marker={marker} />
-      <Node x={28} y={180} width={250} height={72} lines={["normal response", "receipt recorded"]} />
+      <Node x={28} y={180} width={250} height={72} lines={["commit acknowledged", "local effect + receipt"]} />
       <Node
         x={310}
         y={180}
         width={250}
         height={72}
-        lines={["explicit failure", "no effect committed", "safe to retry"]}
+        lines={["proven no effect", "retry requires", "current checks"]}
       />
       <Node
         x={592}
@@ -681,7 +681,7 @@ function UnknownWriteOutcomeDiagram() {
         y={312}
         width={300}
         height={76}
-        lines={["blind retry with a new identity", "indistinguishable from", "a new refund"]}
+        lines={["blind retry with a new identity", "indistinguishable from", "a new refund request"]}
         tone="stop"
       />
       <Node
@@ -693,7 +693,7 @@ function UnknownWriteOutcomeDiagram() {
         tone="accent"
       />
       <path className="diagram-failure-mark" d="M173 396 l10 10 m0 -10 l-10 10" />
-      <Label x={178} y={422}>a second business effect</Label>
+      <Label x={178} y={422}>risk of a second effect</Label>
 
       <Arrow d="M616 388 V410 H500 V428" marker={marker} />
       <Node
@@ -710,9 +710,9 @@ function UnknownWriteOutcomeDiagram() {
       <Arrow d="M158 540 V558" marker={marker} />
       <Arrow d="M440 540 V558" marker={marker} />
       <Arrow d="M722 540 V558" marker={marker} />
-      <Node x={28} y={564} width={260} height={70} lines={["already applied", "return the existing receipt"]} tone="accent" />
-      <Node x={310} y={564} width={260} height={70} lines={["safe to continue", "execute exactly once"]} tone="accent" />
-      <Node x={592} y={564} width={260} height={70} lines={["cannot continue", "needs a fresh decision"]} tone="muted" />
+      <Node x={28} y={564} width={260} height={70} lines={["matching committed receipt", "return the prior result"]} tone="accent" />
+      <Node x={310} y={564} width={260} height={70} lines={["proven no effect + checks", "consider controlled retry"]} tone="accent" />
+      <Node x={592} y={564} width={260} height={70} lines={["pending / UNKNOWN / conflict", "wait / reconcile / reject"]} tone="muted" />
 
       <rect className="diagram-result" x={196} y={658} width={488} height={22} rx="6" />
       <text className="diagram-result-text" x={440} y={674} textAnchor="middle">
