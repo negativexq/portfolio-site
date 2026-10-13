@@ -26,7 +26,11 @@ export type GraphEdgeType =
   | "part-of"
   | "built-on";
 
+export type GraphAreaId = "ai-ml-platform" | "generative-ai-rag" | "agent-infrastructure" | "data-engineering" | "distributed-systems";
+
 export type GraphMetadata = {
+  areas?: readonly GraphAreaId[];
+  overview?: boolean;
   category?: string;
   company?: string;
   role?: string;
@@ -94,6 +98,7 @@ export type GraphFilterGroup =
 export type GraphFilterState = Record<GraphFilterGroup, boolean>;
 
 export type SigmaNodeAttributes = {
+  labelColor?: string;
   x: number;
   y: number;
   size: number;

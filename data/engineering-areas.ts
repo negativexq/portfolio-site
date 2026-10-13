@@ -47,7 +47,7 @@ export const engineeringAreas = [
     description:
       "Stateful agent workflows with deterministic control boundaries, confirmation and recovery, secure tool interfaces, evaluation and observability.",
     technologies: ["LangGraph", "MCP", "FastMCP", "PostgreSQL", "OpenTelemetry"],
-    evidenceProjectIds: ["agentic-customer-service-platform", "repo-context-forge"],
+    evidenceProjectIds: ["agentic-customer-service-platform", "agentic-sre", "repo-context-forge"],
     evidenceExperienceIds: [],
   },
 ] satisfies readonly EngineeringArea[];

@@ -29,3 +29,8 @@ yarn-error.log*
 .pnpm-debug.log*
 .DS_Store
 *.pem
+
+# Local design review artifacts
+.impeccable/review/
+.impeccable/hook.cache.json
+.impeccable/config.local.json

@@ -60,13 +60,29 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
       <button className="graph-detail-close" type="button" onClick={onClose} aria-label="Close node details">
         <X aria-hidden="true" size={16} />
       </button>
-      <p className="detail-kicker">{NODE_TYPE_LABELS[node.type]}</p>
+
       <h2>{node.label}</h2>
       <span className={`status-badge status-${node.status}`}>{STATUS_LABELS[node.status]}</span>
       <p className="graph-detail-description">{node.description}</p>
 
       {node.metadata.category ? (
         <p className="graph-detail-category">{node.metadata.category}</p>
+      ) : null}
+
+      {node.href || node.metadata.githubUrl ? (
+        <div className="graph-detail-actions">
+          {node.href ? (
+            <Link href={node.href}>
+              {actionLabel(node)} <ArrowRight aria-hidden="true" size={14} />
+            </Link>
+          ) : null}
+          {node.metadata.githubUrl ? (
+            <a href={node.metadata.githubUrl} target="_blank" rel="noreferrer">
+              GitHub <ArrowUpRight aria-hidden="true" size={14} />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ) : null}
+        </div>
       ) : null}
 
       {node.metadata.role || node.metadata.period ? (
@@ -82,20 +98,6 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
         <div className="graph-detail-proof">
           <span>Context / qualifier</span>
           <p>{node.metadata.qualifier}</p>
-        </div>
-      ) : null}
-
-      {node.type === "project" && node.metadata.keyTechnologies?.length ? (
-        <div className="graph-detail-group">
-          <h3>Key technologies</h3>
-          <ul>{node.metadata.keyTechnologies.map((item) => <li key={item}>{item}</li>)}</ul>
-        </div>
-      ) : null}
-
-      {node.type === "project" && node.metadata.keyConcepts?.length ? (
-        <div className="graph-detail-group">
-          <h3>Key concepts</h3>
-          <ul>{node.metadata.keyConcepts.map((item) => <li key={item}>{item}</li>)}</ul>
         </div>
       ) : null}
 
@@ -146,8 +148,8 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
       ) : null}
 
       {connections.length > 0 ? (
-        <div className="graph-connections">
-          <h3>Direct relationships</h3>
+        <details className="graph-connections" open={node.type !== "project"}>
+          <summary>Explore relationships ({connections.length})</summary>
           {relationshipGroups.map((group) => {
             const groupedConnections = connections.filter(({ node: connectedNode }) => (
               (group.types as readonly string[]).includes(connectedNode.type)
@@ -168,24 +170,10 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
               </section>
             );
           })}
-        </div>
+        </details>
       ) : null}
 
-      {node.href || node.metadata.githubUrl ? (
-        <div className="graph-detail-actions">
-          {node.href ? (
-            <Link href={node.href}>
-              {actionLabel(node)} <ArrowRight aria-hidden="true" size={14} />
-            </Link>
-          ) : null}
-          {node.metadata.githubUrl ? (
-            <a href={node.metadata.githubUrl} target="_blank" rel="noreferrer">
-              GitHub <ArrowUpRight aria-hidden="true" size={14} />
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          ) : null}
-        </div>
-      ) : null}
+
     </aside>
   );
 }
