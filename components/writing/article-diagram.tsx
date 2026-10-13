@@ -1540,6 +1540,92 @@ function DeterministicInvestigationLoopDiagram() {
   );
 }
 
+function AgentEvidenceFeedbackLoopDiagram() {
+  const marker = "agent-evidence-feedback-arrow";
+  return (
+    <DiagramFrame
+      id="agent-evidence-feedback-loop"
+      title="An evidence-guided engineering loop"
+      description="Observe a registered workload, identify a likely bottleneck, and state a falsifiable hypothesis. The coding agent modifies the implementation in isolation. A controlled rerun measures the candidate, and an independent verifier checks correctness, performance and resource budgets. Its verdict accepts or rejects the patch. Rejected candidates return to diagnosis; missing evidence can leave the task unresolved. This is a proposed process, not a measured optimization result."
+      caption="The agent proposes the change. Workload evidence informs it; an independent verifier decides acceptance."
+      height={430}
+    >
+      <style>{".article-content:has(#agent-evidence-feedback-loop-title) { min-width: 0; }"}</style>
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">PROPOSED PROCESS · NO SELF-GRADED SUCCESS</Label>
+      <Node x={28} y={62} width={240} height={80} lines={["Observe + identify", "workload · revision · gaps"]} tone="accent" />
+      <Node x={320} y={62} width={240} height={80} lines={["Hypothesize", "prediction + falsifying evidence"]} />
+      <Node x={612} y={62} width={240} height={80} lines={["Modify", "isolated candidate patch"]} />
+      <Arrow d="M268 102 H314" marker={marker} />
+      <Arrow d="M560 102 H606" marker={marker} />
+      <Arrow d="M732 142 V224" marker={marker} />
+      <Node x={612} y={230} width={240} height={80} lines={["Measure", "same workload + resources"]} tone="accent" />
+      <Node x={320} y={230} width={240} height={80} lines={["Verify independently", "correctness · latency · CPU · memory"]} tone="accent" />
+      <Node x={28} y={230} width={240} height={80} lines={["Accept or revert", "retain verdict + run artifacts"]} />
+      <Arrow d="M612 270 H566" marker={marker} />
+      <Arrow d="M320 270 H274" marker={marker} />
+      <Arrow d="M148 230 V148" marker={marker} dashed />
+      <Label x={160} y={190} anchor="start">rejected / unresolved</Label>
+      <rect className="diagram-result" x={196} y={366} width={488} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={385} textAnchor="middle">A plausible diagnosis becomes a testable intervention.</text>
+    </DiagramFrame>
+  );
+}
+
+function ObservabilityOptimizationArchitectureDiagram() {
+  const marker = "observability-optimization-arrow";
+  return (
+    <DiagramFrame
+      id="observability-optimization-architecture"
+      title="Proposed observability-driven optimization architecture"
+      description="A coding agent edits an isolated worktree used by a reproducible application runtime. A controlled benchmark runner executes registered workloads. OpenTelemetry exports traces, metrics and sanitized logs to Tempo, Prometheus and Loki. A separate profiler produces Pyroscope data or profile artifacts. A read-only evidence interface correlates these signals with build metadata and source, returning measurements, hypotheses and gaps to the agent. Benchmark artifacts and the candidate revision reach an independent verifier whose protected contract decides acceptance, revision or reversion. This design is proposed and grants no deployment authority."
+      caption="Proposed architecture. Evidence access and patch generation are separate from workload control and final acceptance."
+      height={880}
+    >
+      <style>{".article-content:has(#observability-optimization-architecture-title) { min-width: 0; }"}</style>
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">CODING WORKSPACE AND PROTECTED VERIFICATION</Label>
+      <Node x={28} y={62} width={200} height={76} lines={["Coding agent", "Codex / Claude Code"]} />
+      <Node x={304} y={62} width={240} height={76} lines={["Isolated worktree", "candidate revision"]} />
+      <Node x={640} y={62} width={212} height={76} lines={["Independent verifier", "protected contract"]} tone="accent" />
+      <Arrow d="M228 100 H298" marker={marker} />
+      <Arrow d="M544 100 H634" marker={marker} />
+      <Label x={590} y={88}>patch</Label>
+      <Arrow d="M746 62 V44 H128 V56" marker={marker} dashed />
+
+      <Node x={28} y={250} width={200} height={86} lines={["Agent Evidence Interface", "read-only evidence queries", "measurements ≠ hypotheses"]} tone="accent" />
+      <Node x={304} y={250} width={240} height={86} lines={["Application runtime", "gateway · DB · controlled upstream", "isolated resources + credentials"]} />
+      <Node x={640} y={250} width={212} height={86} lines={["Benchmark runner", "registered arrivals + inputs", "client measurements"]} />
+      <Arrow d="M424 138 V244" marker={marker} />
+      <Label x={436} y={194} anchor="start">build + run</Label>
+      <Arrow d="M640 293 H550" marker={marker} />
+      <Arrow d="M128 250 V144" marker={marker} />
+      <Label x={140} y={194} anchor="start">evidence + gaps</Label>
+
+      <Node x={28} y={440} width={200} height={86} lines={["Telemetry stores", "Tempo · Prometheus · Loki", "traces · metrics · logs"]} tone="accent" />
+      <Node x={304} y={440} width={240} height={86} lines={["OpenTelemetry Collector", "bounded collection + export"]} />
+      <Node x={640} y={440} width={212} height={86} lines={["Bounded profiler", "CPU / allocation / waiting", "diagnostic collection settings"]} />
+      <Arrow d="M424 336 V434" marker={marker} />
+      <Arrow d="M304 483 H234" marker={marker} />
+      <Arrow d="M128 440 V342" marker={marker} />
+      <Arrow d="M544 293 H590 V483 H634" marker={marker} />
+
+      <Node x={28} y={634} width={200} height={76} lines={["Build + source index", "SHA · digest · symbols"]} />
+      <Node x={304} y={634} width={240} height={76} lines={["Immutable run artifacts", "workload identity + outcomes"]} tone="accent" />
+      <Node x={640} y={634} width={212} height={76} lines={["Pyroscope / profiles", "source attribution + gaps"]} />
+      <Arrow d="M746 526 V628" marker={marker} />
+      <Arrow d="M228 672 H260 V293 H234" marker={marker} dashed />
+      <Arrow d="M746 710 V748 H10 V293 H22" marker={marker} dashed />
+      <Arrow d="M852 293 H868 V606 H424 V628" marker={marker} />
+      <Arrow d="M544 672 H610 V174 H746 V144" marker={marker} />
+
+      <Label x={440} y={776}>VERDICT: ACCEPT · REVISE · REVERT · UNRESOLVED</Label>
+      <rect className="diagram-result" x={196} y={812} width={488} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={831} textAnchor="middle">Acceptance produces a reviewed artifact, not a deployment.</text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1563,6 +1649,8 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "execution-based-evaluation": ExecutionBasedEvaluationDiagram,
   "sql-admission-queryplan": SqlAdmissionQueryPlanDiagram,
   "deterministic-investigation-loop": DeterministicInvestigationLoopDiagram,
+  "agent-evidence-feedback-loop": AgentEvidenceFeedbackLoopDiagram,
+  "observability-optimization-architecture": ObservabilityOptimizationArchitectureDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

@@ -21,6 +21,8 @@ export const WRITING_DIAGRAM_IDS = [
   "execution-based-evaluation",
   "sql-admission-queryplan",
   "deterministic-investigation-loop",
+  "agent-evidence-feedback-loop",
+  "observability-optimization-architecture",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

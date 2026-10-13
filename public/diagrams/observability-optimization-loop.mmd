@@ -1,0 +1,16 @@
+flowchart TB
+    Agent["Coding agent: Codex or Claude Code"] -->|candidate patch| Worktree["Isolated worktree"]
+    Worktree --> Runtime["Reproducible application runtime"]
+    Runner["Controlled benchmark runner"] -->|registered workload| Runtime
+    Runtime --> Collector["OpenTelemetry Collector"]
+    Collector --> Stores["Tempo: traces / Prometheus: metrics / Loki: sanitized logs"]
+    Runtime --> Profiler["Bounded profiler"]
+    Profiler --> Pyroscope["Pyroscope or profile artifacts"]
+    Stores --> Evidence["Read-only Agent Evidence Interface"]
+    Pyroscope --> Evidence
+    Source["Build manifest and source index"] --> Evidence
+    Evidence -->|measurements, hypotheses, gaps| Agent
+    Worktree -->|candidate revision| Verifier["Independent verifier: protected contract"]
+    Runner --> Artifacts["Immutable benchmark artifacts"]
+    Artifacts --> Verifier
+    Verifier -->|accept, revise, or revert| Agent

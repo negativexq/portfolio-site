@@ -14,8 +14,8 @@ import { getWritingTopicGroup, getWritingTopicGroups } from "./topics.ts";
 test("published articles exclude drafts and remain date sorted", () => {
   const all = getAllArticles();
   const published = getPublishedArticles();
-  assert.equal(all.length, 22);
-  assert.equal(published.length, 21);
+  assert.equal(all.length, 24);
+  assert.equal(published.length, 23);
   assert.ok(published.every((article) => article.draft === false));
   assert.ok(published.every((article, index) => index === 0 || published[index - 1].datePublished >= article.datePublished));
   assert.equal(getPublishedArticleBySlug("redis-cache-stampede"), undefined);
@@ -46,6 +46,20 @@ test("related writing is deterministic and never returns the current article", (
   const related = getRelatedArticles(article);
   assert.equal(related[0].slug, "transactional-outbox-kafka");
   assert.ok(related.every((candidate) => candidate.slug !== article.slug && !candidate.draft));
+});
+
+test("agent-friendly codebase articles link reciprocally through normal content routes", () => {
+  const argument = getPublishedArticleBySlug("stop-asking-coding-agents-to-guess-whats-wrong");
+  const implementation = getPublishedArticleBySlug("building-an-observability-driven-optimization-loop-for-coding-agents");
+  assert.ok(argument);
+  assert.ok(implementation);
+  assert.equal(getRelatedArticles(argument)[0].slug, implementation.slug);
+  assert.equal(getRelatedArticles(implementation)[0].slug, argument.slug);
+  for (const article of [argument, implementation]) {
+    assert.ok(article.relatedProjects.includes("ml-platform-infrastructure"));
+    assert.equal(article.datePublished, "2026-10-13");
+    assert.ok(article.seoTitle);
+  }
 });
 
 test("frontmatter validation rejects malformed publication data", () => {
