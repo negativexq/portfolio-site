@@ -1,0 +1,117 @@
+{
+  "project": "agentic-customer-service-platform",
+  "scope": "Architecture section",
+  "checks": {
+    "originalNodesPreserved": 33,
+    "overviewBoundaries": 5,
+    "terminalOutcomesHaveNoExecutionDestination": true,
+    "sourceOutcomeStageHasNoMerge": true,
+    "existingTestsPassed": 69,
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "tasteV2NewFilesLint": "no findings"
+  },
+  "viewports": [
+    {
+      "theme": "dark",
+      "width": 1440,
+      "pageWidth": 1440,
+      "clientWidth": 1440,
+      "height": 1711,
+      "overviewHeight": 845,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1024,
+      "pageWidth": 1024,
+      "clientWidth": 1024,
+      "height": 1722,
+      "overviewHeight": 864,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "pageWidth": 768,
+      "clientWidth": 768,
+      "height": 1722,
+      "overviewHeight": 864,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "pageWidth": 390,
+      "clientWidth": 390,
+      "height": 2465,
+      "overviewHeight": 1540,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "pageWidth": 320,
+      "clientWidth": 320,
+      "height": 2552,
+      "overviewHeight": 1603,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "pageWidth": 1440,
+      "clientWidth": 1440,
+      "height": 1711,
+      "overviewHeight": 845,
+      "minFont": 13,
+      "consoleErrors": []
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "pageWidth": 390,
+      "clientWidth": 390,
+      "height": 2390,
+      "overviewHeight": 1532,
+      "minFont": 13,
+      "consoleErrors": []
+    }
+  ],
+  "keyboard": [
+    {
+      "afterSelection": {
+        "open": true,
+        "focus": "SUMMARY"
+      }
+    },
+    {
+      "afterEnter": {
+        "open": false,
+        "focus": "SUMMARY",
+        "keys": [
+          {
+            "key": "Enter",
+            "defaultPrevented": false,
+            "target": "SUMMARY"
+          }
+        ]
+      }
+    },
+    {
+      "afterSpace": {
+        "open": true,
+        "focus": "SUMMARY"
+      }
+    },
+    {
+      "noJSKeyboard": true
+    }
+  ]
+}

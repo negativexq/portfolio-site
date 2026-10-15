@@ -1,0 +1,2022 @@
+[
+  {
+    "slug": "agentic-customer-service-platform",
+    "width": 1440,
+    "title": "Agentic Customer Service Platform: Safe LLM Agent Execution",
+    "sectionHeight": 3668,
+    "diagramHeight": 3263.796875,
+    "pageOverflow": 0,
+    "nodeCount": 33,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Customer / Operator",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "chat or console request",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "calls",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "FastAPI",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "HTTP boundary, resolves principal",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "resolves",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Authentication · RBAC",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "typed principal",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "derives",
+        "font": "9.28px",
+        "width": 50.5
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "ExecutionContext",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "server-owned identity + scope",
+        "font": "10.56px",
+        "width": 155.03125
+      }
+    ]
+  },
+  {
+    "slug": "agentic-customer-service-platform",
+    "width": 390,
+    "title": "Agentic Customer Service Platform: Safe LLM Agent Execution",
+    "sectionHeight": 6267,
+    "diagramHeight": 5869.28125,
+    "pageOverflow": 0,
+    "nodeCount": 33,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Customer / Operator",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "chat or console request",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "calls",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "FastAPI",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "HTTP boundary, resolves principal",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "resolves",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Authentication · RBAC",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "typed principal",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "derives",
+        "font": "9.28px",
+        "width": 50.5
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "ExecutionContext",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "server-owned identity + scope",
+        "font": "10.56px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "knowledge-base-rag",
+    "width": 1440,
+    "title": "Knowledge Base RAG: Multilingual, Tenant-Scoped Retrieval",
+    "sectionHeight": 1939,
+    "diagramHeight": 1563.140625,
+    "pageOverflow": 0,
+    "nodeCount": 23,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Filesystem",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "PDF · Markdown",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Notion",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "API connector",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Connectors",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "shared async protocol",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "source documents",
+        "font": "9.28px",
+        "width": 0
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Parse · Chunk · Fingerprint",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "content + pipeline identity",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "compatible build",
+        "font": "9.28px",
+        "width": 102.28125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 174.578125
+      }
+    ]
+  },
+  {
+    "slug": "knowledge-base-rag",
+    "width": 390,
+    "title": "Knowledge Base RAG: Multilingual, Tenant-Scoped Retrieval",
+    "sectionHeight": 3623,
+    "diagramHeight": 3225.640625,
+    "pageOverflow": 0,
+    "nodeCount": 23,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Filesystem",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "PDF · Markdown",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Notion",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "API connector",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Connectors",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "shared async protocol",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "source documents",
+        "font": "9.28px",
+        "width": 102.28125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Parse · Chunk · Fingerprint",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "content + pipeline identity",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "compatible build",
+        "font": "9.28px",
+        "width": 102.28125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "modelops-control-plane",
+    "width": 1440,
+    "title": "ModelOps Control Plane: Canary Model Promotion and Rollback",
+    "sectionHeight": 2467,
+    "diagramHeight": 2063.125,
+    "pageOverflow": 0,
+    "nodeCount": 22,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Client Traffic",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "prediction request",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "requests",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Weighted Router",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "owns version → host mapping ({version, weight} only, never host/port)",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "routes",
+        "font": "9.28px",
+        "width": 44.75
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Stable Model",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "current version",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Canary Model",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "candidate version, no fallback",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "emits",
+        "font": "9.28px",
+        "width": 39
+      }
+    ]
+  },
+  {
+    "slug": "modelops-control-plane",
+    "width": 390,
+    "title": "ModelOps Control Plane: Canary Model Promotion and Rollback",
+    "sectionHeight": 4191,
+    "diagramHeight": 3793.3125,
+    "pageOverflow": 0,
+    "nodeCount": 22,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Client Traffic",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "prediction request",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "requests",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Weighted Router",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "owns version → host mapping ({version, weight} only, never host/port)",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "routes",
+        "font": "9.28px",
+        "width": 44.75
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Stable Model",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "current version",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Canary Model",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "candidate version, no fallback",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "emits",
+        "font": "9.28px",
+        "width": 39
+      }
+    ]
+  },
+  {
+    "slug": "real-time-commerce-platform",
+    "width": 1440,
+    "title": "Real-Time Commerce Platform: Kafka, Outbox and Idempotency",
+    "sectionHeight": 1879,
+    "diagramHeight": 1503.1875,
+    "pageOverflow": 0,
+    "nodeCount": 17,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 162.21875
+      },
+      {
+        "class": "",
+        "text": "Browser",
+        "font": "12.96px",
+        "width": 162.21875
+      },
+      {
+        "class": "",
+        "text": "bounded scenarios",
+        "font": "10.56px",
+        "width": 162.21875
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "controls",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 162.234375
+      },
+      {
+        "class": "",
+        "text": "Demo Control Web",
+        "font": "12.96px",
+        "width": 162.234375
+      },
+      {
+        "class": "",
+        "text": "Next.js",
+        "font": "10.56px",
+        "width": 162.234375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 162.234375
+      },
+      {
+        "class": "",
+        "text": "Demo Control API",
+        "font": "12.96px",
+        "width": 162.234375
+      },
+      {
+        "class": "",
+        "text": "FastAPI",
+        "font": "10.56px",
+        "width": 162.234375
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "starts scenario",
+        "font": "9.28px",
+        "width": 96.53125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 162.21875
+      },
+      {
+        "class": "",
+        "text": "Scenario Runner",
+        "font": "12.96px",
+        "width": 162.21875
+      },
+      {
+        "class": "",
+        "text": "shared event generator",
+        "font": "10.56px",
+        "width": 162.21875
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "publishes",
+        "font": "9.28px",
+        "width": 62.015625
+      }
+    ]
+  },
+  {
+    "slug": "real-time-commerce-platform",
+    "width": 390,
+    "title": "Real-Time Commerce Platform: Kafka, Outbox and Idempotency",
+    "sectionHeight": 3409,
+    "diagramHeight": 3011.859375,
+    "pageOverflow": 0,
+    "nodeCount": 17,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Browser",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "bounded scenarios",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "controls",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Demo Control Web",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Next.js",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Demo Control API",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "FastAPI",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "starts scenario",
+        "font": "9.28px",
+        "width": 96.53125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Scenario Runner",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "shared event generator",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "publishes",
+        "font": "9.28px",
+        "width": 62.015625
+      }
+    ]
+  },
+  {
+    "slug": "decision-sql",
+    "width": 1440,
+    "title": "DecisionSQL: Governed Text-to-SQL With Execution Guardrails",
+    "sectionHeight": 2123,
+    "diagramHeight": 1719.5,
+    "pageOverflow": 0,
+    "nodeCount": 23,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Analytics Request",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "natural language",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "with governed context",
+        "font": "9.28px",
+        "width": 0
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "Model-Visible Governed Context",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "public / governed schema, authorized metadata",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "one-shot generation",
+        "font": "9.28px",
+        "width": 0
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Analyzer",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "One-Shot LLM Decision",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "untrusted, typed, no retry",
+        "font": "10.56px",
+        "width": 174.578125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "emits",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "ANSWER + SQL",
+        "font": "12.96px",
+        "width": 174.578125
+      },
+      {
+        "class": "",
+        "text": "read-only SELECT",
+        "font": "10.56px",
+        "width": 174.578125
+      }
+    ]
+  },
+  {
+    "slug": "decision-sql",
+    "width": 390,
+    "title": "DecisionSQL: Governed Text-to-SQL With Execution Guardrails",
+    "sectionHeight": 3690,
+    "diagramHeight": 3293.203125,
+    "pageOverflow": 0,
+    "nodeCount": 23,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Analytics Request",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "natural language",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "with governed context",
+        "font": "9.28px",
+        "width": 131.046875
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Model-Visible Governed Context",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "public / governed schema, authorized metadata",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "one-shot generation",
+        "font": "9.28px",
+        "width": 119.546875
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Analyzer",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "One-Shot LLM Decision",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "untrusted, typed, no retry",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "emits",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "ANSWER + SQL",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "read-only SELECT",
+        "font": "10.56px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "dbt-feature-lineage",
+    "width": 1440,
+    "title": "dbt Feature Lineage: Column-Level Lineage and Change Impact",
+    "sectionHeight": 1097,
+    "diagramHeight": 705.984375,
+    "pageOverflow": 0,
+    "nodeCount": 8,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "dbt project / git clone",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "local checkout boundary",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "load",
+        "font": "9.28px",
+        "width": 33.234375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Manifest Mode",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "target/manifest.json · compiled SQL",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Static Mode",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "SQL + YAML scanners / parsers",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "normalize",
+        "font": "9.28px",
+        "width": 62.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Shared Domain Models",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "same representation",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 155.03125
+      }
+    ]
+  },
+  {
+    "slug": "dbt-feature-lineage",
+    "width": 390,
+    "title": "dbt Feature Lineage: Column-Level Lineage and Change Impact",
+    "sectionHeight": 1789,
+    "diagramHeight": 1432.765625,
+    "pageOverflow": 0,
+    "nodeCount": 8,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "dbt project / git clone",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "local checkout boundary",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "load",
+        "font": "9.28px",
+        "width": 33.234375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Manifest Mode",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "target/manifest.json · compiled SQL",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Static Mode",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "SQL + YAML scanners / parsers",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "normalize",
+        "font": "9.28px",
+        "width": 62.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Shared Domain Models",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "same representation",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "terraform-docker-infrastructure-lab",
+    "width": 1440,
+    "title": "Terraform Docker Infrastructure Lab: State-Safe Refactoring",
+    "sectionHeight": 1501,
+    "diagramHeight": 1097.078125,
+    "pageOverflow": 0,
+    "nodeCount": 13,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "Terraform root module",
+        "font": "12.96px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "providers · variables · outputs",
+        "font": "10.56px",
+        "width": 274.8125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "provisions",
+        "font": "9.28px",
+        "width": 67.765625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "modules/network",
+        "font": "12.96px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "Docker network + port checks",
+        "font": "10.56px",
+        "width": 274.8125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "modules/application",
+        "font": "12.96px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "FastAPI · PostgreSQL · Nginx",
+        "font": "10.56px",
+        "width": 274.8125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "modules/observability",
+        "font": "12.96px",
+        "width": 274.8125
+      },
+      {
+        "class": "",
+        "text": "Prometheus · Grafana · alerts",
+        "font": "10.56px",
+        "width": 274.8125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 130.171875
+      },
+      {
+        "class": "",
+        "text": "Browser / curl",
+        "font": "12.96px",
+        "width": 130.171875
+      }
+    ]
+  },
+  {
+    "slug": "terraform-docker-infrastructure-lab",
+    "width": 390,
+    "title": "Terraform Docker Infrastructure Lab: State-Safe Refactoring",
+    "sectionHeight": 2501,
+    "diagramHeight": 2103.625,
+    "pageOverflow": 0,
+    "nodeCount": 13,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Terraform root module",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "providers · variables · outputs",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "provisions",
+        "font": "9.28px",
+        "width": 67.765625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "modules/network",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Docker network + port checks",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "modules/application",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "FastAPI · PostgreSQL · Nginx",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "modules/observability",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Prometheus · Grafana · alerts",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Browser / curl",
+        "font": "12.48px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "repo-context-forge",
+    "width": 1440,
+    "title": "Repo Context Forge: Read-Only MCP Code Intelligence",
+    "sectionHeight": 1170,
+    "diagramHeight": 765.890625,
+    "pageOverflow": 0,
+    "nodeCount": 7,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "Typer CLI",
+        "font": "12.96px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "local commands",
+        "font": "10.56px",
+        "width": 168.359375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "MCP Clients",
+        "font": "12.96px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "FastMCP tool adapters",
+        "font": "10.56px",
+        "width": 168.359375
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "adapters",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "Application Factories",
+        "font": "12.96px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "explicit dependencies",
+        "font": "10.56px",
+        "width": 168.359375
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "construct",
+        "font": "9.28px",
+        "width": 62.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Analyzer",
+        "font": "8.32px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "Repository Intelligence Services",
+        "font": "12.96px",
+        "width": 168.359375
+      },
+      {
+        "class": "",
+        "text": "deterministic domain layer",
+        "font": "10.56px",
+        "width": 168.359375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 168.359375
+      }
+    ]
+  },
+  {
+    "slug": "repo-context-forge",
+    "width": 390,
+    "title": "Repo Context Forge: Read-Only MCP Code Intelligence",
+    "sectionHeight": 1804,
+    "diagramHeight": 1378.671875,
+    "pageOverflow": 0,
+    "nodeCount": 7,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Typer CLI",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "local commands",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "MCP Clients",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "FastMCP tool adapters",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "adapters",
+        "font": "9.28px",
+        "width": 56.25
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Application Factories",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "explicit dependencies",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "construct",
+        "font": "9.28px",
+        "width": 62.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Analyzer",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Repository Intelligence Services",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "deterministic domain layer",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Boundary",
+        "font": "8.32px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "agentic-sre",
+    "width": 1440,
+    "title": "Agentic SRE — Evidence-Driven Kubernetes Incident Investigation",
+    "sectionHeight": 2667,
+    "diagramHeight": 1696.734375,
+    "pageOverflow": 0,
+    "nodeCount": 19,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Kubernetes API",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "objects + Events · list + watch",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Alertmanager",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "alerts",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Prometheus · Loki · Tempo",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "bounded queries",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "reads",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Connector",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "dials out over gRPC · read-only RBAC",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "mTLS",
+        "font": "9.28px",
+        "width": 33.234375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 155.03125
+      }
+    ]
+  },
+  {
+    "slug": "agentic-sre",
+    "width": 390,
+    "title": "Agentic SRE — Evidence-Driven Kubernetes Incident Investigation",
+    "sectionHeight": 4453,
+    "diagramHeight": 3153.140625,
+    "pageOverflow": 0,
+    "nodeCount": 19,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Kubernetes API",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "objects + Events · list + watch",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Alertmanager",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "alerts",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Observability",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Prometheus · Loki · Tempo",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "bounded queries",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "reads",
+        "font": "9.28px",
+        "width": 39
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Connector",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "dials out over gRPC · read-only RBAC",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "mTLS",
+        "font": "9.28px",
+        "width": 33.234375
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Service",
+        "font": "8.32px",
+        "width": 288.03125
+      }
+    ]
+  },
+  {
+    "slug": "ml-platform-infrastructure",
+    "width": 1440,
+    "title": "ML Platform — Scheduled Scoring, Data Lineage and Model Monitoring",
+    "sectionHeight": 2440,
+    "diagramHeight": 2007.890625,
+    "pageOverflow": 0,
+    "nodeCount": 27,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Web workspace",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "React · same-origin session",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "OIDC + project roles",
+        "font": "9.28px",
+        "width": 112
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Control plane API",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "authorize · validate · audit",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "commit intent",
+        "font": "9.28px",
+        "width": 85.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "PostgreSQL",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "lifecycle truth · trace context",
+        "font": "10.56px",
+        "width": 155.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "read desired state",
+        "font": "9.28px",
+        "width": 112
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "Reconcilers",
+        "font": "12.96px",
+        "width": 155.03125
+      },
+      {
+        "class": "",
+        "text": "schedules · runs · publications · rollouts",
+        "font": "10.56px",
+        "width": 155.03125
+      }
+    ]
+  },
+  {
+    "slug": "ml-platform-infrastructure",
+    "width": 390,
+    "title": "ML Platform — Scheduled Scoring, Data Lineage and Model Monitoring",
+    "sectionHeight": 4580,
+    "diagramHeight": 4071.0625,
+    "pageOverflow": 0,
+    "nodeCount": 27,
+    "samples": [
+      {
+        "class": "architecture-node-type",
+        "text": "Client",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Web workspace",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "React · same-origin session",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "OIDC + project roles",
+        "font": "9.28px",
+        "width": 125.296875
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Control plane API",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "authorize · validate · audit",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "commit intent",
+        "font": "9.28px",
+        "width": 85.015625
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Persistence",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "PostgreSQL",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "lifecycle truth · trace context",
+        "font": "10.56px",
+        "width": 288.03125
+      },
+      {
+        "class": "architecture-connector-label",
+        "text": "read desired state",
+        "font": "9.28px",
+        "width": 113.796875
+      },
+      {
+        "class": "architecture-node-type",
+        "text": "Control",
+        "font": "8.32px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "Reconcilers",
+        "font": "12.48px",
+        "width": 288.03125
+      },
+      {
+        "class": "",
+        "text": "schedules · runs · publications · rollouts",
+        "font": "10.56px",
+        "width": 288.03125
+      }
+    ]
+  }
+]

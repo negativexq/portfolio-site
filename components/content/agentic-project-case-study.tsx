@@ -16,7 +16,7 @@ import {
   agenticWalkthroughSlides,
   agenticWorkflow,
 } from "@/data/agentic-customer-service-platform";
-import { ArchitectureDiagram } from "./architecture-diagram";
+import { AgenticArchitecture } from "./agentic-architecture";
 import { AgenticSectionIndex } from "./agentic-section-index";
 import { ProjectInShort, ProjectRelated } from "./project-related";
 
@@ -178,12 +178,11 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
             <section id="architecture" className="detail-section">
               <h2>Architecture</h2>
               <p>
-                Security checks precede semantic routing. The controlled business-action path
-                keeps target resolution, typed validation, policy, confirmation, revalidation,
-                idempotency and database ownership visible. Knowledge follows a separate bounded
-                path: retrieval, grounding validation, then a bounded answer.
+                Identity is resolved before the agent runs. A model proposal reaches a business
+                tool only after server-owned checks. Knowledge and memory provide context,
+                never execution authority.
               </p>
-              <ArchitectureDiagram architecture={architecture} />
+              <AgenticArchitecture architecture={architecture} />
             </section>
           ) : null}
 

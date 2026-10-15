@@ -1,0 +1,435 @@
+.explorer {
+  --diagram-gap: 1.75rem;
+  margin-top: var(--space-7);
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.explorer h3,
+.explorer h4,
+.explorer p,
+.explorer figure {
+  margin: 0;
+}
+
+.explorer h3 {
+  color: var(--foreground);
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.overview > figcaption > p,
+.detailsHeading > p {
+  margin-top: var(--space-2);
+}
+
+.journey {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--diagram-gap);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journey > li {
+  position: relative;
+  min-width: 0;
+}
+
+.boundary {
+  display: flex;
+  height: 100%;
+  min-height: 9rem;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  transition: background-color var(--motion-normal) var(--motion-ease);
+}
+
+.boundary strong {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.boundary > span:not(.inspect) {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.journey > li[data-boundary="authority"] .boundary,
+.journey > li[data-boundary="execution"] .boundary {
+  background: var(--accent-soft);
+}
+
+.boundary:hover,
+.journey > li .boundary:focus-visible {
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface-raised));
+}
+
+.inspect {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.journeyConnector {
+  position: absolute;
+  top: 4.5rem;
+  left: calc(-1 * var(--diagram-gap));
+  display: flex;
+  width: var(--diagram-gap);
+  justify-content: center;
+  color: var(--subtle-strong);
+}
+
+.context {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr) auto;
+  gap: var(--space-3) var(--space-5);
+  align-items: baseline;
+  margin-top: var(--space-5);
+  padding: var(--space-5) 0;
+}
+
+.context strong {
+  color: var(--foreground);
+  font-size: 0.9375rem;
+}
+
+.context a,
+.routes a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-underline-offset: 0.25em;
+}
+
+.context a:hover,
+.routes a:hover {
+  text-decoration: underline;
+}
+
+.policy {
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--surface);
+}
+
+.policy h4 {
+  color: var(--foreground);
+  font-size: 1.125rem;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.policy header p {
+  margin-top: var(--space-1);
+  font-size: 0.875rem;
+}
+
+.routes {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.routes > li {
+  display: grid;
+  grid-template-columns: 5.25rem 1.25rem minmax(0, 1fr) 9.5rem;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--background);
+}
+
+.routes > li > p {
+  grid-column: 3;
+}
+
+.routes > li[data-continues="false"] > p {
+  grid-column: 3 / -1;
+}
+
+.routeName {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.routeName strong {
+  color: var(--foreground);
+  font-size: 1rem;
+}
+
+.routeName > span {
+  font-size: 0.8125rem;
+}
+
+.routeArrow {
+  color: var(--subtle-strong);
+}
+
+.routes > li[data-continues="false"] .routeArrow {
+  visibility: hidden;
+}
+
+.details {
+  margin-top: var(--space-7);
+}
+
+.detailsHeading {
+  margin-bottom: var(--space-5);
+}
+
+.disclosure {
+  margin-top: var(--space-2);
+  background: var(--surface);
+  scroll-margin-top: 6rem;
+}
+
+.disclosure > summary {
+  display: flex;
+  min-height: 5.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color var(--motion-normal) var(--motion-ease);
+}
+
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure > summary > span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.disclosure > summary strong {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 620;
+}
+
+.disclosure > summary > span > span {
+  font-size: 0.875rem;
+}
+
+.disclosure > summary > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+  transition: transform var(--motion-normal) var(--motion-ease);
+}
+
+.disclosure[open] > summary > svg {
+  transform: rotate(180deg);
+}
+
+.disclosure > summary:hover {
+  background: var(--surface-raised);
+}
+
+.explorer a:focus-visible,
+.disclosure > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.disclosureBody {
+  padding: var(--space-2) var(--space-5) var(--space-6);
+}
+
+.boundaryDescription {
+  max-width: 68ch;
+  color: var(--foreground);
+  font-size: 1rem;
+}
+
+.technicalPath {
+  margin-top: var(--space-6);
+}
+
+.technicalPath h4 {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.technicalPath > p {
+  max-width: 68ch;
+  margin-top: var(--space-2);
+}
+
+.technicalSteps {
+  display: grid;
+  gap: var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding-left: var(--space-5);
+}
+
+.technicalSteps > li {
+  padding-left: var(--space-2);
+}
+
+.technicalSteps > li::marker {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.technicalSteps dl {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.technicalSteps dt {
+  color: var(--foreground);
+  font-weight: 620;
+}
+
+.technicalSteps dd {
+  margin: var(--space-1) 0 0;
+}
+
+.technicalSteps dd ul {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+}
+
+.parallelHint {
+  margin-bottom: var(--space-2) !important;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.notes {
+  display: grid;
+  max-width: 70ch;
+  gap: var(--space-4);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .journey {
+    --diagram-gap: 1.25rem;
+  }
+
+  .boundary {
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 760px) {
+  .journey {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .boundary {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .boundary > strong,
+  .boundary > span:not(.inspect) {
+    grid-column: 1;
+  }
+
+  .boundary .inspect {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .journeyConnector {
+    top: calc(-1 * var(--space-5));
+    left: calc(50% - 0.5625rem);
+    width: 1.125rem;
+    height: var(--space-5);
+    align-items: center;
+    transform: rotate(90deg);
+  }
+
+  .context {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .policy {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .routes > li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2) var(--space-3);
+    align-items: start;
+    padding: var(--space-4);
+  }
+
+  .routeArrow {
+    display: none;
+  }
+
+  .routes > li > p {
+    grid-column: 1;
+  }
+
+  .routes > li[data-continues="false"] > p {
+    grid-column: 1;
+  }
+
+  .routes a {
+    grid-column: 1;
+  }
+
+  .routeName {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  .disclosure > summary {
+    padding-inline: var(--space-4);
+  }
+
+  .disclosureBody {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boundary,
+  .disclosure > summary,
+  .disclosure > summary > svg {
+    transition: none;
+  }
+}

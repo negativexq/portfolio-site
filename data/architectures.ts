@@ -47,7 +47,7 @@ const architectures = {
         label: "Controlled business-action path",
         summary: "The model proposes semantic intent; the server owns every decision that can lead to a mutation.",
         variant: "control",
-        layout: { type: "rows", rows: [2, 2, 2, 2, 2, 2] },
+        layout: { type: "rows", rows: [2, 2, 2, 1] },
         stages: [
           {
             id: "graph",
@@ -87,11 +87,19 @@ const architectures = {
               { id: "human", label: "Human", subtitle: "risk 3", relationLabel: "escalates", variant: "output" },
               { id: "deny", label: "Deny", subtitle: "no execution", relationLabel: "blocks", variant: "boundary" },
             ],
-            edge: { label: "continues when permitted", variant: "control", relation: "merge" },
           },
+        ],
+      },
+      {
+        id: "permitted-execution",
+        label: "Permitted execution only",
+        summary: "Allow continues to typed execution; Confirm first requires explicit approval and live-state revalidation. Human follows a dedicated escalation path, and Deny stops the requested action.",
+        variant: "control",
+        layout: { type: "rows", rows: [2, 2, 1] },
+        stages: [
           {
             id: "confirmation",
-            nodes: [{ id: "confirmation", label: "Confirmation Boundary", subtitle: "exact pending action", variant: "control" }],
+            nodes: [{ id: "confirmation", label: "Confirmation Boundary", subtitle: "when required · exact pending action", variant: "control" }],
             edge: { label: "revalidates", variant: "control" },
           },
           {
