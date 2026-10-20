@@ -1,15 +1,17 @@
 export const knowledgeBaseRagProjectUrl = "https://omerfkoc.dev/projects/knowledge-base-rag";
 
+const repo = "https://github.com/negativexq/knowledge-base-rag";
+
 export const knowledgeBaseRagMeta = {
-  image: "/projects/knowledge-base-rag/rag-overview.jpg",
-  imageAlt:
-    "Knowledge Base RAG operations console showing source health, recent syncs, security state and the active Qdrant index.",
   keywords: [
+    "agentic RAG",
+    "agentic document research",
+    "PydanticAI",
+    "typed research graph",
     "knowledge base RAG",
     "multilingual retrieval",
     "hybrid search",
     "citation integrity",
-    "prompt injection resistance",
     "tenant scoped retrieval",
     "RAG evaluation",
   ],
@@ -17,204 +19,263 @@ export const knowledgeBaseRagMeta = {
 
 export const knowledgeBaseRagCapabilities = [
   {
-    title: "Knowledge operations",
+    title: "Agentic research",
     items: [
-      "Filesystem and Notion connectors",
-      "Incremental sync with content fingerprints",
-      "Versioned Qdrant collections and alias activation",
-      "Sync history, drift detection and rollback-aware cleanup",
+      "A short path when the retrieved text already answers the question",
+      "Focused research for a concrete gap: search, read a page, inspect a PDF, extract values",
+      "Original page images for quantitative reads of image-only PDF pages",
+      "Arithmetic, counts and list ordering run in application code",
     ],
   },
   {
-    title: "Retrieval and answers",
+    title: "Evidence and trust",
     items: [
-      "Qwen3 dense embeddings plus BM25 sparse search",
-      "Native reciprocal rank fusion",
-      "Multilingual BGE reranking from 20 candidates to 5",
-      "Canonical citations and strict output validation",
+      "Tenant and role filters apply before reranking and generation",
+      "Every tool call rechecks authorized sources and document versions",
+      "The model can cite only evidence it was shown; unknown, hidden or cross-tenant references are rejected",
+      "Source, value and question-scope checks run before an answer is released",
     ],
   },
   {
-    title: "Control and evidence",
+    title: "Research workspace",
     items: [
-      "Server-owned tenant ACL and role boundaries",
-      "Untrusted context serialization with answer_v3",
-      "Artifact-backed evaluation and security results",
-      "OpenTelemetry traces inspected through Jaeger",
+      "Numbered citations that open the passage, the page and the claim relationship",
+      "Inspect mode: retrieval candidates, reranker scores, security decisions, timing and traces",
+      "Research library: starred answers, pinned evidence, source-linked notes, projects and collections",
+      "Markdown export, with browser storage scoped per tenant and user",
+    ],
+  },
+  {
+    title: "Retrieval and ingestion",
+    items: [
+      "Dense and BM25 search, rank fusion and multilingual BGE reranking",
+      "Table-aware PDF ingestion, with Tesseract OCR in English and Turkish for scanned pages",
+      "Turkish and English questions against documents in either language",
+      "Ollama, OpenAI or Claude behind one provider setting",
     ],
   },
 ] as const;
 
-export const knowledgeBaseRagQueryFlow = [
+export const knowledgeBaseRagResearchFlow = [
   {
-    label: "Authenticated request",
-    detail: "FastAPI resolves the bearer token into a server-owned user, role and tenant context.",
+    label: "Scoped retrieval",
+    detail: "Tenant and role filters constrain dense and BM25 search. Rank fusion and BGE reranking select passages, and section-aware assembly keeps tables next to their headings and captions.",
   },
   {
-    label: "Mandatory ACL",
-    detail: "The tenant filter is applied before reranking or generation. Later stages cannot widen the authorized set.",
+    label: "Authorized evidence ledger",
+    detail: "Admitted evidence becomes one ledger that the rest of the run reads from, so no later step can introduce a source the user was not allowed to see.",
   },
   {
-    label: "Dense and sparse retrieval",
-    detail: "Qwen3 embeddings and Qdrant BM25 search produce separate candidate lists from the active index alias.",
+    label: "A typed decision",
+    detail: "A PydanticAI agent reads a question-specific projection of the research state and either proposes a cited answer or names the piece of evidence that is missing.",
   },
   {
-    label: "RRF fusion",
-    detail: "Reciprocal rank fusion combines semantic and lexical signals without turning either score into a trust decision.",
+    label: "The tool and budget gate",
+    detail: "A named evidence gap becomes one narrow operation. The application validates its arguments, the source access and the remaining request, token, tool and time budget before it runs.",
   },
   {
-    label: "Multilingual reranking",
-    detail: "BAAI/bge-reranker-v2-m3 reranks 20 authorized candidates and passes the best 5 onward.",
+    label: "Checked inputs",
+    detail: "Extraction returns typed labels, values, units, periods and source witnesses. For image-only pages the original page image is read, and an independent check covers the inputs and their coverage.",
   },
   {
-    label: "SectionAware evidence",
-    detail: "Surviving results are packed into request-scoped support units under a bounded context budget. Document text and metadata stay reference data and never receive a system or assistant role.",
+    label: "Calculation in code",
+    detail: "Prepared operands and formulas run in application code: arithmetic, item counts, total-versus-distinct comparisons, label selection and list ordering. No model invents the result.",
   },
   {
-    label: "Support-ID validation",
-    detail: "The model returns text plus support IDs. Unknown, cross-query, hidden and unauthorized IDs are rejected before anything else runs.",
+    label: "Independent finalization",
+    detail: "Research can stop while successful extraction and calculation results stay available, so a closed loop never throws away work that already succeeded.",
   },
   {
-    label: "Occurrence-aware validation",
-    detail: "Architecture V2 checks critical-value consistency against an immutable occurrence ledger, so a role decision stays attached to the occurrence it came from.",
+    label: "Release checks",
+    detail: "Source, value and question-scope checks run before release. The result is a cited answer or an explicit statement of the evidence limits.",
+  },
+] as const;
+
+export const knowledgeBaseRagTools = [
+  {
+    operation: "Search",
+    responsibility: "Find missing passages in the authorized document scope.",
+    boundary: "Cannot expand tenant access or write an answer.",
   },
   {
-    label: "Inspectable response",
-    detail: "The console keeps the answer, authorized sources, retrieval stages, security state and trace waterfall together.",
+    operation: "Read",
+    responsibility: "Open admitted chunks or one bounded physical PDF page.",
+    boundary: "Keeps source identity, version, headings and page context.",
   },
+  {
+    operation: "Inspect",
+    responsibility: "Locate PDF tables, image regions and structural elements.",
+    boundary: "Does not claim an exhaustive semantic figure inventory.",
+  },
+  {
+    operation: "Extract",
+    responsibility: "Return structured values or item inventories with source witnesses.",
+    boundary: "Cannot guess unreadable values, calculate the result or write the final answer.",
+  },
+  {
+    operation: "Calculate / count",
+    responsibility: "Execute a permitted formula or count checked source items.",
+    boundary: "Requires source-backed inputs; no arbitrary code execution.",
+  },
+] as const;
+
+export const knowledgeBaseRagAgentRoles = [
+  { role: "Research / Reader", job: "Reads the research state and chooses the next step: a cited answer, or one narrow tool call.", reasoning: "low" },
+  { role: "Evidence extraction", job: "Extracts typed values and item inventories, each with its source witnesses.", reasoning: "low" },
+  { role: "Extraction checker", job: "Checks extracted evidence against the source before anything depends on it.", reasoning: "low" },
+  { role: "Need planner", job: "Turns the question into the evidence it needs.", reasoning: "medium" },
+  { role: "Source selector", job: "Chooses the numeric and contextual sources a need depends on.", reasoning: "medium" },
+  { role: "Quantity collector", job: "Collects the labelled quantities a calculation needs.", reasoning: "medium" },
+  { role: "Quantity checker", job: "Judges input accuracy, coverage and the chosen operation separately.", reasoning: "medium" },
+  { role: "Answer repair", job: "Applies a bounded repair when a check names a specific problem.", reasoning: "medium" },
+  { role: "Scope validator / judge", job: "Judges whether the claims and their evidence answer the question as asked.", reasoning: "medium" },
+  { role: "Finalizer", job: "Writes the answer from saved results.", reasoning: "medium" },
 ] as const;
 
 export const knowledgeBaseRagBoundaryRows = [
   {
-    side: "Server-owned controls",
+    side: "Application-owned",
     items: [
-      "Bearer-token identity and role checks",
-      "Tenant and retrieval context",
-      "ACL filtering before reranking",
-      "Active index alias and pipeline fingerprint",
-      "Validation mode and release policy",
-      "Canonical citation membership checks",
+      "Identity, role and tenant resolution",
+      "Source and version access, rechecked on every tool call",
+      "Graph transitions, tool permissions and stopping rules",
+      "Request, token, tool and time budgets that user requests cannot widen",
+      "Calculations and counts",
+      "Source, value and question-scope verification before release",
     ],
   },
   {
-    side: "Untrusted or presentational inputs",
+    side: "Model or untrusted",
     items: [
-      "Document text, titles and headings",
-      "Source names and location metadata",
-      "Delimiter-looking instructions inside documents",
-      "Generated answer text before validation",
-      "Frontend identity selection and UI state",
-      "Client-observed timing data",
+      "Retrieved text, titles, headings and source names",
+      "Instruction-looking text inside documents",
+      "A model proposal until it is validated as state or work",
+      "Extracted values until the input check passes",
+      "Image readings and semantic judgments, which can still be wrong",
+      "Generated answer text before release",
     ],
   },
 ] as const;
 
 export const knowledgeBaseRagEngineeringDecisions = [
   {
-    title: "Authorization runs before relevance scoring",
+    title: "The model names the gap; the application decides what may run",
     description:
-      "Tenant ACL filtering happens before the reranker sees a candidate. A strong relevance score cannot recover a chunk that the authenticated tenant was not allowed to retrieve.",
+      "PydanticAI agents handle the semantic work: interpreting the question, naming missing evidence, choosing source regions and judging whether a result answers it. A typed proposal is validated before it becomes state or executable work, because valid JSON is not proof of source truth.",
   },
   {
-    title: "Production answers are validated before release",
+    title: "A calculation is never a model's guess",
     description:
-      "Strict mode buffers generation until canonical citation and output-policy checks pass. Fast streaming remains an explicit server-side development option with a documented risk: output can reach the client before the post-stream check finishes.",
+      "Once operands and a formula are prepared they run directly in application code. Arithmetic, item counts and total-versus-distinct comparisons do not ask another model to produce the result, and computed answers keep their reviewed output units and explicit interpretation.",
   },
   {
-    title: "The active index is a versioned artifact",
+    title: "Image-only pages are read from the original image",
     description:
-      "The kb_active alias points to a compatible collection whose fingerprint covers embedding, parser, index and chunk settings. New collections are built and checked before activation, so a model or dimension change cannot silently reuse an incompatible index.",
+      "Quantitative reads of image-only PDF pages are routed to the original page image. Category, series, period, unit and label-value relationships stay attached to each input, and an independent check reviews the inputs and their coverage. Image reading can still make mistakes, which is why that check exists.",
   },
   {
-    title: "Pipeline changes need comparative evidence",
+    title: "Stopping research does not erase successful work",
     description:
-      "The multilingual reranker was adopted after a paired 220-query benchmark. Token-aware chunking was implemented but the 500/50 baseline stayed in production because the current short corpus showed no measurable quality or efficiency gain.",
+      "Research stop, extraction, review, finalization and release are separate statuses. A stopped loop can still yield a verified answer from saved results, and a budget or API failure is not treated as proof that the source has no answer.",
+  },
+  {
+    title: "Authorization is rechecked at every step",
+    description:
+      "Server-side filters apply before reranking and generation, and each tool call revalidates the authorized sources and versions. Numeric sources and contextual sources are tracked apart, so a table value travels with the evidence naming the entity or definition it belongs to.",
+  },
+  {
+    title: "Results are counted once, and failures stay on the record",
+    description:
+      "The answered-question ledger lists each question once, with its run, answer, latency and model-call count. A rerun does not raise the total, failed runs stay in the local history, and an operational stop is never presented as evidence that an answer is absent.",
   },
 ] as const;
 
 export const knowledgeBaseRagScreenshots = [
   {
-    src: "/projects/knowledge-base-rag/rag-overview.jpg",
-    alt: "RAG operations overview with document, chunk and source counts, recent synchronization runs, system health and active index details.",
+    src: "/projects/knowledge-base-rag/research-workspace.jpg",
+    alt: "Research workspace answering a pricing question with numbered citations and an evidence inspector showing the cited handbook page.",
     caption:
-      "Overview: source health, recent syncs, security state and the active index are visible without entering the chat path.",
-    source: "docs/assets/rag-overview.jpg",
-    sourceUrl:
-      "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/assets/rag-overview.jpg",
+      "Research workspace: every answer carries numbered citations, and the evidence inspector opens the cited passage and its claim relationship.",
+    source: "docs/assets/research-workspace.jpg",
+    sourceUrl: `${repo}/blob/main/docs/assets/research-workspace.jpg`,
   },
   {
-    src: "/projects/knowledge-base-rag/rag-playground.jpg",
-    alt: "RAG playground showing a cited answer beside the exact retrieved source cards and stage timing.",
+    src: "/projects/knowledge-base-rag/inspect-why.jpg",
+    alt: "Inspect mode showing the reasoning steps, prompt budget, model finish state and stage timing behind an answer.",
     caption:
-      "Evidence inspector: the answer stays beside the ranked source set and the latency breakdown that produced it.",
-    source: "docs/assets/rag-playground.jpg",
-    sourceUrl:
-      "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/assets/rag-playground.jpg",
+      "Inspect mode: the question as searched, retrieval and reranking counts, prompt budget, model state and validation sit beside the answer.",
+    source: "docs/assets/inspect-why.jpg",
+    sourceUrl: `${repo}/blob/main/docs/assets/inspect-why.jpg`,
   },
   {
-    src: "/projects/knowledge-base-rag/rag-playground-security.jpg",
-    alt: "RAG playground security panel showing the applied tenant ACL, isolated untrusted context and validate-before-release policy.",
+    src: "/projects/knowledge-base-rag/inspect-retrieval.jpg",
+    alt: "Inspect mode retrieval tab listing retrieval candidates with their reranker scores.",
     caption:
-      "Security inspector: tenant authorization, context isolation and release policy are shown as separate controls.",
-    source: "docs/assets/rag-playground-security.jpg",
-    sourceUrl:
-      "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/assets/rag-playground-security.jpg",
+      "Retrieval inspector: candidates and reranker scores, so a lost or misranked passage can be located instead of guessed at.",
+    source: "docs/assets/inspect-retrieval.jpg",
+    sourceUrl: `${repo}/blob/main/docs/assets/inspect-retrieval.jpg`,
   },
   {
-    src: "/projects/knowledge-base-rag/rag-playground-trace.jpg",
-    alt: "RAG playground trace inspector showing retrieval, reranking, generation and validation spans as a waterfall.",
+    src: "/projects/knowledge-base-rag/research-notes.jpg",
+    alt: "A research note linked to a specific page of a handbook source.",
     caption:
-      "Trace waterfall: retrieval, reranking, generation and validation remain one inspectable request path.",
-    source: "docs/assets/rag-playground-trace.jpg",
-    sourceUrl:
-      "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/assets/rag-playground-trace.jpg",
+      "Source-linked notes: a note stays attached to the page it was written about, inside the research library.",
+    source: "docs/assets/research-notes.jpg",
+    sourceUrl: `${repo}/blob/main/docs/assets/research-notes.jpg`,
   },
   {
-    src: "/projects/knowledge-base-rag/rag-evaluations.jpg",
-    alt: "RAG operations evaluation page showing the production baseline and the measured multilingual reranker decision.",
+    src: "/projects/knowledge-base-rag/projects.jpg",
+    alt: "A project grouping research sessions, notes and sources.",
     caption:
-      "Evaluation surface: active settings are tied back to committed benchmark artifacts and explicit adopt or keep decisions.",
-    source: "docs/assets/rag-evaluations.jpg",
-    sourceUrl:
-      "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/assets/rag-evaluations.jpg",
+      "Projects: research sessions, notes and sources can be grouped, with browser storage scoped per tenant and user.",
+    source: "docs/assets/projects.jpg",
+    sourceUrl: `${repo}/blob/main/docs/assets/projects.jpg`,
   },
 ] as const;
 
-export const knowledgeBaseRagEvidence = [
+export const knowledgeBaseRagCoverage = [
   {
-    area: "End-to-end answers",
-    result: "70% useful · 2% incorrect",
-    detail: "Canonical TechQA BGE-ON record. Useful is Correct plus Partial, which is not an accuracy claim; strict full completeness scored separately at 30%.",
+    outcome: "Source-correct answers",
+    count: "79",
+    meaning: "The published answer matches the original PDF on independent review.",
   },
   {
-    area: "Unavailable or abstained",
-    result: "28% · 18% self · 10% forced",
-    detail: "Intentional fail-closed behaviour when support cannot be established: 9/50 model self-abstentions and 5/50 deterministic forced abstentions. An abstention is not automatically a safety success or a quality failure; whether one was appropriate is a separate case-level question.",
+    outcome: "Qualified calculations",
+    count: "2",
+    meaning: "An interpreted calculation, published together with the interpretation it depends on.",
   },
   {
-    area: "Support-ID and citation contracts",
-    result: "0 failures",
-    detail: "No unknown, cross-query, hidden or unauthorized support IDs accepted. Deterministic contract results on the evaluated corpus, not proven security.",
+    outcome: "Correct refusals",
+    count: "15",
+    meaning: "Questions the source cannot answer, where the system said so instead of guessing.",
   },
   {
-    area: "Candidate evidence recall",
-    result: "95.9% at Top-20",
-    detail: "Measured at the shared candidate stage before reranking narrows to five, so it is not a statement about evidence in the model's final context.",
+    outcome: "Unresolved",
+    count: "24",
+    meaning: "Questions or workflows without an accepted outcome yet, kept on the record.",
+  },
+] as const;
+
+export const knowledgeBaseRagCoverageExamples = [
+  {
+    question: "Costco FY2021 total liabilities",
+    answer: "USD 41,190 million",
+    effort: "20.41 s · 3 model calls",
   },
   {
-    area: "Multilingual reranker",
-    result: "220 queries · Recall@5 1.0000 · MRR 0.9558",
-    detail: "63 cross-lingual rescues and 0 drops for the selected BGE model. A retrieval and ranking metric, separate from final-answer accuracy.",
+    question: "Costco FY2021 debt to EBITDA, including current long-term debt and lease liabilities",
+    answer: "1.344× = (799 + 6692 + 3916) / (6708 + 1781)",
+    effort: "68.02 s · 9 model calls",
   },
   {
-    area: "Preregistered gate",
-    result: "BGE_REMOVAL_NOT_SUPPORTED",
-    detail: "Removing the reranker improved evidence completeness, but the semantic non-regression gate frozen beforehand failed, so the change was not adopted.",
+    question: "Other-company directorships held by three directors",
+    answer: "30, with total and distinct-company counts agreeing",
+    effort: "61.63 s · 7 model calls",
   },
   {
-    area: "Repository verification",
-    result: "844 backend · 18 frontend",
-    detail: "Last recorded full run; 2 external provider checks skipped, with Ruff, typecheck, lint and production build green.",
+    question: "Germanwings tweets minus Lufthansa tweets",
+    answer: "12 = 24 − 12; reading the original image corrected an indexed 42 to 12",
+    effort: "42.16 s · 6 model calls",
   },
 ] as const;
 
@@ -242,52 +303,69 @@ export const knowledgeBaseRagRerankerComparison = [
   },
 ] as const;
 
+export const knowledgeBaseRagEvidence = [
+  {
+    area: "Agentic question coverage",
+    result: "96/120 accepted outcomes",
+    detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals, with 24 unresolved. A historical ledger across development revisions, counting each of 120 distinct questions once; not a full current-version benchmark or a stability estimate.",
+  },
+  {
+    area: "Earlier fixed pipeline",
+    result: "79/120 (66%) on MMLongBench-Doc",
+    detail: "19 of 21 unanswerable questions refused. A lenient contains-match, not the official benchmark score, and a different measurement from the agentic ledger above.",
+  },
+  {
+    area: "Research budget",
+    result: "10 requests · 120k tokens · 240 s",
+    detail: "The profile recent document runs used, with at most six research tool attempts and a 60-second finalization reserve. These are configurable server-side limits that user requests cannot widen.",
+  },
+  {
+    area: "Multilingual reranker",
+    result: "220 queries · Recall@5 1.0000",
+    detail: "Cross-lingual Recall@5 rose from 0.9563 without a reranker, with 63 rescues and 0 drops. A retrieval and ranking metric, separate from answer accuracy.",
+  },
+  {
+    area: "Backend tests",
+    result: "2,125 passed",
+    detail: "Latest recorded run, with four skips and five deselected tests. The normal suite makes no paid provider calls; a separate target runs the checks that use a local model.",
+  },
+  {
+    area: "Trust boundary",
+    result: "Verified references only",
+    detail: "Unknown, hidden and cross-tenant source references are rejected before release, and tenant and role filters run before reranking and generation.",
+  },
+] as const;
+
 export const knowledgeBaseRagStackGroups = [
-  ["Operations console", "React · TypeScript · Vite"],
+  ["Agentic research", "PydanticAI · typed research graph · application-owned ResearchState"],
+  ["Workspace", "React · TypeScript · Vite · research library · inspect mode"],
   ["API", "FastAPI · HTTP · SSE · read-only UI aggregation"],
-  ["Identity", "Bearer tokens · tenant ACL · USER / OPERATOR / ADMIN roles"],
-  ["Retrieval", "Qdrant dense + BM25 sparse · RRF · BGE multilingual reranker"],
-  ["Models", "Qwen3-Embedding-4B @ 1024 · Ollama generation"],
-  ["Generation", "answer_v3 · untrusted context · strict output policy"],
-  ["Index lifecycle", "SQLite registry · versioned collections · kb_active alias"],
-  ["Observability", "OpenTelemetry · Jaeger · artifact-backed evaluations"],
-  ["Runtime", "Python 3.11+ · Docker Compose · native Ollama"],
+  ["Identity", "Bearer tokens · tenant and document permissions · USER / OPERATOR / ADMIN roles"],
+  ["Retrieval", "Qdrant dense + BM25 sparse · rank fusion · BGE multilingual reranker"],
+  ["Models", "Ollama, OpenAI or Claude · Qwen3 embeddings · image-capable model for visual reads"],
+  ["Ingestion", "Table-aware PDF parsing · Tesseract OCR (English, Turkish)"],
+  ["Observability", "OpenTelemetry · Jaeger · bounded-metadata traces"],
+  ["Runtime", "Python 3.11+ · Docker Compose"],
 ] as const;
 
 export const knowledgeBaseRagLimitations = [
-  "The BGE reranker is a synchronous local model call inside the async retrieval path; concurrent model serving is not implemented.",
-  "The current chunking corpus is too short to distinguish the tested 256 to 768 token boundaries, so the 500/50 baseline remains active.",
-  "Citation integrity checks source membership, not claim-level semantic support. Calibrated answerability and abstention are also still open.",
-  "Whether an individual abstention was appropriate is assessed through layer-wise failure attribution, not inferred from the aggregate. Candidate evidence recall sits at an earlier retrieval boundary and does not classify individual abstentions.",
-  "Local tokens and development identities are demo authentication. A production deployment needs an external identity provider or verifier.",
-  "Sync coordination is process-local, and each configured source type maps to a server-owned tenant in the current connector model.",
+  "The 120-question ledger is historical: it counts results across development revisions, so it is neither a full current-version benchmark nor a stability estimate. Broader document-held-out evaluation and repeated runs are needed to measure answer coverage, incorrect acceptance, unnecessary refusal and stability.",
+  "Runs are scoped to the question's source document. Open-corpus document discovery needs a separate evaluation.",
+  "Image reading and semantic judges can still make mistakes. Native-text inspection identifies image-heavy pages; it is not a universal OCR accuracy score.",
+  "ResearchState is typed and serializable, but automatic cross-request checkpoint recovery and long-term memory are separate persistence work.",
+  "The research library lives in browser storage today.",
+  "The local demo authentication is not a complete identity platform; production would need an external identity provider.",
 ] as const;
 
 export const knowledgeBaseRagDeepDiveLinks = [
-  {
-    label: "Architecture",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/architecture.md",
-  },
-  {
-    label: "Security model",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/security.md",
-  },
-  {
-    label: "Reranking decision",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/reranking.md",
-  },
-  {
-    label: "Chunking decision",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/chunking.md",
-  },
-  {
-    label: "Embedding migration",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/embedding-migration.md",
-  },
-  {
-    label: "Architecture decisions",
-    href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/adr/README.md",
-  },
+  { label: "Agentic workflow, graph, tools and budgets", href: `${repo}/blob/main/docs/adaptive-workflow.md` },
+  { label: "Answered questions and run summaries", href: `${repo}/blob/main/docs/adaptive-solved-questions.md` },
+  { label: "System architecture", href: `${repo}/blob/main/docs/architecture.md` },
+  { label: "Design rationale and roadmap", href: `${repo}/blob/main/docs/adaptive-rag-research-design.md` },
+  { label: "PydanticAI orchestration research", href: `${repo}/blob/main/docs/pydantic-workflow-research.md` },
+  { label: "Security model", href: `${repo}/blob/main/docs/security.md` },
+  { label: "Reranking decision", href: `${repo}/blob/main/docs/reranking.md` },
+  { label: "Architecture decisions", href: `${repo}/blob/main/docs/adr/README.md` },
 ] as const;
 
 export const knowledgeBaseRagRelatedWriting = [

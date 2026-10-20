@@ -4,17 +4,21 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/content/types";
 import { getProjectArchitecture } from "@/data/architectures";
 import {
+  knowledgeBaseRagAgentRoles,
   knowledgeBaseRagBoundaryRows,
   knowledgeBaseRagCapabilities,
+  knowledgeBaseRagCoverage,
+  knowledgeBaseRagCoverageExamples,
   knowledgeBaseRagDeepDiveLinks,
   knowledgeBaseRagEngineeringDecisions,
   knowledgeBaseRagEvidence,
   knowledgeBaseRagLimitations,
-  knowledgeBaseRagQueryFlow,
   knowledgeBaseRagRelatedWriting,
   knowledgeBaseRagRerankerComparison,
+  knowledgeBaseRagResearchFlow,
   knowledgeBaseRagScreenshots,
   knowledgeBaseRagStackGroups,
+  knowledgeBaseRagTools,
 } from "@/data/knowledge-base-rag";
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
@@ -28,11 +32,14 @@ type KnowledgeBaseRagCaseStudyProps = {
 const sections = [
   ["principle", "Principle"],
   ["capabilities", "What it does"],
-  ["query-path", "Query path"],
+  ["research-flow", "Research graph"],
+  ["tools", "Scoped tools"],
+  ["agents", "Agent roles"],
   ["boundaries", "Trust boundaries"],
   ["architecture", "Architecture"],
   ["decisions", "Reliability patterns"],
   ["showcase", "Product proof"],
+  ["coverage", "120 questions"],
   ["benchmark", "Reranker decision"],
   ["evidence", "Evidence"],
   ["evolution", "Evolution"],
@@ -54,23 +61,24 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
         </Link>
         <div className="rag-hero-meta">
           <p>{project.category}</p>
-          <span className="rag-release-badge">Working reference system</span>
+          <span className="rag-release-badge">Agentic research workspace</span>
         </div>
         <h1>{project.title}</h1>
         <p className="project-detail-summary">
-          A local-first multilingual RAG platform with tenant-scoped retrieval, measured
-          reranking, strict answer validation, versioned index operations and a console that
-          keeps the evidence path visible.
+          An agentic document research workspace. PydanticAI agents work through a typed research
+          graph over an application-owned ResearchState: they search authorized sources, read
+          original PDF pages, extract values and hand the arithmetic to code, then answer with
+          citations you can open.
         </p>
         <blockquote className="rag-hero-principle">
-          Retrieval evidence is useful only when access, provenance and release policy remain
-          explicit.
+          Agents decide what to look for. The application owns the state, the tools, the maths and
+          the release.
         </blockquote>
         <div className="rag-hero-actions">
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Local-first reference implementation with documented deployment limits</span>
+          <span>PydanticAI · typed research graph · ResearchState · local-first reference system</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />
@@ -82,23 +90,27 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
 
         <div className="detail-content">
           <section id="principle" className="detail-section rag-principle-section">
-            <h2>The answer is the end of a controlled evidence path</h2>
+            <h2>Research is a controlled loop, not a longer prompt</h2>
             <p>
-              A relevant chunk is not automatically authorized, trustworthy or safe to release.
-              The server resolves identity and tenant scope first, retrieval stays inside that
-              boundary, and generated text is checked before the production path returns it.
+              Questions over complex tables, charts and scanned PDFs need evidence that is found,
+              read from the right place and computed correctly. Agents handle the semantic work:
+              interpreting the question, naming what is missing, choosing source regions, extracting
+              data and judging whether a result answers what was asked.
             </p>
             <p>
-              The console exposes those decisions beside the answer. It is an operating and
-              debugging surface for RAG, not a chat transcript with hidden infrastructure.
+              Everything that has to be trustworthy stays in application code: the typed research
+              state, authorization, tool permissions, request, token and time budgets, arithmetic,
+              stopping rules and the checks that gate a release. The model is called where a semantic
+              decision is needed, not for what code can do.
             </p>
           </section>
 
           <section id="capabilities" className="detail-section">
-            <h2>What the platform does</h2>
+            <h2>What the workspace does</h2>
             <p>
-              Knowledge Base RAG covers the path from source synchronization to an authorized,
-              cited response, with the index and evaluation state available to operators.
+              Ask across documents, tables, charts and scanned pages. The workflow finds the sources,
+              collects missing evidence, reads original page images when it has to and computes in
+              application code, inside explicit budgets.
             </p>
             <div className="rag-capability-grid">
               {knowledgeBaseRagCapabilities.map((group) => (
@@ -112,15 +124,16 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
             </div>
           </section>
 
-          <section id="query-path" className="detail-section">
-            <h2>One query, eight inspectable stages</h2>
+          <section id="research-flow" className="detail-section">
+            <h2>One question through the typed research graph</h2>
             <p>
-              The production path keeps authorization, relevance and answer validation separate.
-              This matters most when an authorized document contains instructions that the model
-              should read as data, not follow as policy.
+              The graph is application-controlled: PydanticAI makes typed agent calls, and the
+              application owns every transition between them. Prepared calculations and known
+              transitions execute directly, so the model is only called where a semantic decision is
+              needed.
             </p>
             <ol className="rag-query-flow">
-              {knowledgeBaseRagQueryFlow.map((step, index) => (
+              {knowledgeBaseRagResearchFlow.map((step, index) => (
                 <li key={step.label}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <div>
@@ -130,14 +143,68 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
                 </li>
               ))}
             </ol>
+            <p className="detail-muted">
+              ResearchState is a typed Pydantic structure created and updated by application code, not
+              a model-written summary. It holds the task, evidence needs, source selections, checked
+              observations, calculations, coverage, unresolved issues and execution events, and each
+              agent receives only a projection of it.
+            </p>
+          </section>
+
+          <section id="tools" className="detail-section">
+            <h2>Narrow tools, clear responsibilities</h2>
+            <p>
+              Each operation exposes only its own fields. The application validates tool arguments and
+              source access before anything runs, and numeric sources and contextual sources are
+              tracked separately so a table value travels with the evidence explaining which entity
+              or definition it belongs to.
+            </p>
+            <div className="rag-evidence-table" role="region" aria-label="Research tools and their boundaries" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Operation</th><th scope="col">Responsibility</th><th scope="col">Boundary</th></tr>
+                </thead>
+                <tbody>
+                  {knowledgeBaseRagTools.map((tool) => (
+                    <tr key={tool.operation}><th scope="row">{tool.operation}</th><td>{tool.responsibility}</td><td>{tool.boundary}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="agents" className="detail-section">
+            <h2>Ten agent roles, each with its own reasoning effort</h2>
+            <p>
+              The semantic work is split across small, typed roles rather than one large agent.
+              Reasoning effort is set per stage: lighter for reading and extraction, medium for the
+              decisions that interpret the question, select sources, judge quantities and verify scope.
+            </p>
+            <div className="rag-evidence-table" role="region" aria-label="Agent roles and default reasoning effort" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Stage</th><th scope="col">What it does</th><th scope="col">Reasoning</th></tr>
+                </thead>
+                <tbody>
+                  {knowledgeBaseRagAgentRoles.map((agent) => (
+                    <tr key={agent.role}><th scope="row">{agent.role}</th><td>{agent.job}</td><td>{agent.reasoning}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="detail-muted">
+              Defaults for OpenAI reasoning effort, configurable server-side: the Reader inherits one
+              setting, extraction and its checker share a lighter one, and the final interpretation,
+              source selection, quantity and scope stages share another.
+            </p>
           </section>
 
           <section id="boundaries" className="detail-section">
-            <h2>Server controls stay outside retrieved content</h2>
+            <h2>The application owns what must be right</h2>
             <p>
-              Access control answers which chunks a user may retrieve. Prompt trust answers what
-              the model may do with an authorized chunk. The system treats them as different
-              boundaries and records both in the response projection.
+              Access control answers which sources a user may reach. Model trust answers what an
+              agent may do with them. The application treats these as different boundaries, and a
+              typed proposal only becomes state or work after it is validated.
             </p>
             <div className="rag-comparison" role="region" aria-label="Knowledge Base RAG trust boundaries" tabIndex={0}>
               <table>
@@ -158,9 +225,9 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
               </table>
             </div>
             <p className="rag-inline-note">
-              Strict mode uses buffer, validate, release. Fast mode streams first and checks later,
-              so it is a server-side opt-in for development and latency experiments, not a hidden
-              frontend switch.
+              Retrieved content is untrusted data and gold answers never reach runtime generation or
+              verification. Normal telemetry carries bounded metadata; raw questions, answers and
+              model outputs need explicit forensic capture settings.
             </p>
           </section>
 
@@ -168,17 +235,18 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
             <section id="architecture" className="detail-section">
               <h2>Architecture</h2>
               <p>
-                The query path starts with server-owned identity and tenant scope, then moves
-                through dense and sparse retrieval, RRF fusion, multilingual reranking, untrusted
-                context construction and strict validation. A separate sync path builds compatible
-                index versions before switching the active alias.
+                Scoped retrieval produces an authorized evidence ledger. A typed research graph reads
+                it through ResearchState, gates each tool call on authorization and budget, reads
+                values from text or the original page image, calculates in code and releases only
+                after source, value and scope checks. A separate path builds compatible index versions
+                before switching the active alias.
               </p>
               <ArchitectureDiagram architecture={architecture} />
             </section>
           ) : null}
 
           <section id="decisions" className="detail-section">
-            <h2>Four reliability decisions</h2>
+            <h2>Six reliability decisions</h2>
             <div className="rag-decision-list">
               {knowledgeBaseRagEngineeringDecisions.map((decision) => (
                 <article key={decision.title}>
@@ -190,10 +258,10 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
           </section>
 
           <section id="showcase" className="detail-section">
-            <h2>Product proof from the operations console</h2>
+            <h2>Product proof from the research workspace</h2>
             <p>
-              These captures come from the public repository. Each one links to its source file so
-              the interface and the evidence shown inside it can be inspected at full size.
+              These captures come from the public repository. Each one links to its source file so the
+              interface and the evidence shown inside it can be inspected at full size.
             </p>
             <div className="rag-screenshot-grid">
               {knowledgeBaseRagScreenshots.map((screenshot) => (
@@ -208,9 +276,9 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
                     <Image
                       src={screenshot.src}
                       alt={screenshot.alt}
-                      width={1249}
-                      height={690}
-                      sizes="(max-width: 820px) 100vw, 68vw"
+                      width={1800}
+                      height={1125}
+                      sizes="(max-width: 820px) 100vw, 50vw"
                     />
                   </a>
                   <figcaption>
@@ -225,12 +293,54 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
             </div>
           </section>
 
+          <section id="coverage" className="detail-section">
+            <h2>What 120 questions showed</h2>
+            <p>
+              The answered-question ledger tracks 120 distinct questions over long documents: 10-K
+              filings, annual reports, research papers, manuals and survey releases. Each result is
+              recorded once, with its run, answer, latency and model-call count. 96 of the 120 reached
+              an accepted outcome.
+            </p>
+            <div className="rag-evidence-table" role="region" aria-label="Outcomes across 120 questions" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Outcome</th><th scope="col">Questions</th><th scope="col">What it means</th></tr>
+                </thead>
+                <tbody>
+                  {knowledgeBaseRagCoverage.map((row) => (
+                    <tr key={row.outcome}><th scope="row">{row.outcome}</th><td>{row.count}</td><td>{row.meaning}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p>A few recorded answers show the range, from a single read to a checked calculation:</p>
+            <div className="rag-evidence-table" role="region" aria-label="Example answered questions" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Question</th><th scope="col">Source-supported answer</th><th scope="col">Run</th></tr>
+                </thead>
+                <tbody>
+                  {knowledgeBaseRagCoverageExamples.map((row) => (
+                    <tr key={row.question}><th scope="row">{row.question}</th><td>{row.answer}</td><td>{row.effort}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="detail-muted">
+              This is a historical success ledger across development revisions, not a claim that every
+              answer passes on the latest code or that a complete benchmark was run. Reruns do not add
+              to the count, failed runs stay on the record, and runs are scoped to the question&apos;s
+              source document, so open-corpus discovery needs its own evaluation.
+            </p>
+          </section>
+
           <section id="benchmark" className="detail-section">
             <h2>The reranker changed because the measurement changed</h2>
             <p>
-              A paired 220-query multilingual set compared the production choices on the same
-              retrieval task. The selected BGE model improved cross-lingual recall and MRR, but its
-              local CPU latency is much higher. The console shows both sides of that decision.
+              A paired 220-query multilingual set compared the retrieval choices on the same task, with
+              the adoption rule fixed before the full run. The selected BGE model improved
+              cross-lingual recall and MRR, but its local CPU latency is much higher, and both sides of
+              that decision are recorded.
             </p>
             <div className="rag-benchmark-table" role="region" aria-label="Reranker comparison" tabIndex={0}>
               <table>
@@ -257,18 +367,17 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
               </table>
             </div>
             <p className="detail-muted">
-              The selected configuration recorded 63 cross-lingual rescues and 0 drops in this
-              benchmark. It is evidence for this dataset and runtime, not a universal ranking of
-              rerankers.
+              The selected configuration recorded 63 cross-lingual rescues and 0 drops. It is evidence
+              for this dataset and runtime, not a universal ranking of rerankers, and it measures
+              retrieval rather than answer accuracy.
             </p>
           </section>
 
           <section id="evidence" className="detail-section">
-            <h2>Selected repository evidence</h2>
+            <h2>Selected evidence</h2>
             <p>
-              Test counts, retrieval quality, prompt security and generation sanity describe
-              different failure surfaces. They remain separate instead of being compressed into
-              one project score.
+              Question coverage, retrieval quality, budgets and test counts describe different
+              surfaces. They stay separate instead of being compressed into one project score.
             </p>
             <div className="rag-evidence-table" role="region" aria-label="Knowledge Base RAG evidence" tabIndex={0}>
               <table>
@@ -285,26 +394,26 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
           </section>
 
           <section id="evolution" className="detail-section">
-            <h2>From a retrieval pipeline to an operated knowledge system</h2>
+            <h2>From a retrieval pipeline to an agentic research workspace</h2>
             <p>
               <Link className="text-link rag-inline-project-link" href="/projects/production-rag-platform">
                 Production RAG Platform <ArrowRight aria-hidden="true" size={14} />
               </Link>{" "}
-              established the original PDF retrieval, hybrid search, reranking, citations,
-              evaluation and tracing path. This project kept that foundation and expanded the
-              system boundary.
+              established the original PDF retrieval, hybrid search, reranking, citations, evaluation
+              and tracing path. This project kept that foundation, added tenant-scoped knowledge
+              operations, and then put a typed research graph on top of it.
             </p>
             <div className="rag-evolution-grid">
               <div>
                 <span>Earlier boundary</span>
-                <strong>One corpus and a focused retrieval path</strong>
-                <p>Single-source ingestion, no tenant ACL and no operated index lifecycle.</p>
+                <strong>One corpus and a fixed answer path</strong>
+                <p>Retrieve, rerank, generate and cite, with no tenant ACL and no operated index lifecycle.</p>
               </div>
               <ArrowRight aria-hidden="true" size={18} />
               <div>
                 <span>Current boundary</span>
-                <strong>Tenant-scoped knowledge operations</strong>
-                <p>Multi-source sync, versioned activation, security controls, benchmark artifacts and an operator console.</p>
+                <strong>Agentic research over authorized evidence</strong>
+                <p>Scoped tools, page-image reading, calculation in code, independent checks and a workspace that opens every citation.</p>
               </div>
             </div>
           </section>
@@ -323,8 +432,9 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
               <div>
                 <h2>Working system with explicit limits</h2>
                 <p>
-                  The repository is a local-first engineering reference. Its measurements belong
-                  to the committed fixtures, models, hardware path and validation configuration.
+                  The repository is a local-first engineering reference. Its results belong to the
+                  documented questions, models and budgets, and the limits are listed rather than
+                  implied away.
                 </p>
               </div>
               <span className="rag-release-badge">Limits documented</span>
