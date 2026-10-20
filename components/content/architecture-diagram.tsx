@@ -43,6 +43,12 @@ export type ArchitecturePath = {
   summary: string;
   variant: ArchitectureEdgeVariant;
   stages: readonly ArchitectureStage[];
+  // A return edge the left-to-right stage flow cannot draw, such as a
+  // research loop feeding results back to an earlier stage.
+  loop?: {
+    label: string;
+    detail: string;
+  };
   layout?: {
     type: "rows";
     rows: readonly number[];
@@ -234,6 +240,13 @@ export function ArchitectureDiagram({ architecture }: ArchitectureDiagramProps) 
                     </div>
                   );
                 })}
+                {path.loop ? (
+                  <p className="architecture-path-loop">
+                    <span aria-hidden="true">↺</span>
+                    <strong>{path.loop.label}</strong>
+                    <span>{path.loop.detail}</span>
+                  </p>
+                ) : null}
               </div>
             </section>
           );

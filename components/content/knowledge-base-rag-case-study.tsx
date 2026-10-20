@@ -187,7 +187,7 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
                 </thead>
                 <tbody>
                   {knowledgeBaseRagAgentRoles.map((agent) => (
-                    <tr key={agent.role}><th scope="row">{agent.role}</th><td>{agent.job}</td><td>{agent.reasoning}</td></tr>
+                    <tr key={agent.role}><th scope="row">{agent.role}</th><td>{agent.job}</td><td><span data-reasoning={agent.reasoning}>{agent.reasoning}</span></td></tr>
                   ))}
                 </tbody>
               </table>

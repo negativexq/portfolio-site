@@ -513,6 +513,11 @@ const architectures = {
             nodes: [{ id: "release", label: "Source · value · scope checks", subtitle: "cited answer or explicit limits", variant: "output" }],
           },
         ],
+        loop: {
+          label: "Checked evidence returns to ResearchState",
+          detail:
+            "The agent decides again on the updated state. Research stops at six research requests or after two rounds without progress, where progress means a checked extraction, a corrected binding, a resolved ambiguity or a completed calculation, not just new text.",
+        },
       },
       {
         id: "visual-evidence",
@@ -585,8 +590,7 @@ const architectures = {
       "PydanticAI makes typed semantic calls, but the application owns the research graph's state transitions, authorization, tool dispatch, accounting and release policy; the current runner uses explicit async control flow rather than a custom graph engine.",
       "Tenant and role filters apply before reranking and generation, and every tool call rechecks the authorized sources and document versions, so no later stage can widen the authorized set.",
       "Prepared calculations and known transitions execute directly. The model is called only where a semantic decision is needed, and a closed research loop never discards a successful extraction or calculation.",
-      "Image reading and semantic judges can still make mistakes. Native-text inspection identifies image-heavy pages; it is not a universal OCR accuracy score.",
-      "ResearchState is typed and serializable, but automatic cross-request checkpoint recovery and long-term memory are separate persistence work.",
+      "Request, token, tool and time limits are shared across every stage of a run, with a finalization reserve held back so a stopped loop can still release a checked answer.",
     ],
   },
   "modelops-control-plane": {

@@ -375,7 +375,7 @@ const projectRecords = [
         value: "10 REQUESTS · 240 S",
         label: "Bounded research budget",
         context: "120k tokens · at most six tool attempts",
-        detail: "The profile recent document runs used, with a 60-second finalization reserve. They are server-side limits that a user request cannot widen.",
+        detail: "The profile used for recent document runs, with a stop after two rounds without progress and a 60-second finalization reserve. They are server-side limits that a user request cannot widen.",
       },
       {
         value: "RECALL@5 1.0000",
@@ -489,7 +489,7 @@ const projectRecords = [
         value: "10 requests · 240 s",
         scope: "120k tokens · six tool attempts · 60 s reserve",
         qualifier:
-          "The profile recent document runs used. The limits are configurable server-side settings that user requests cannot widen, and a stopped research loop can still produce a verified answer from its saved results.",
+          "The profile used for recent document runs. The limits are configurable server-side settings that user requests cannot widen, and a stopped research loop can still produce a verified answer from its saved results.",
       },
       {
         label: "Multilingual reranker selection",

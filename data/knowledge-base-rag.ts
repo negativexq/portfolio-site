@@ -71,7 +71,7 @@ export const knowledgeBaseRagResearchFlow = [
   },
   {
     label: "The tool and budget gate",
-    detail: "A named evidence gap becomes one narrow operation. The application validates its arguments, the source access and the remaining request, token, tool and time budget before it runs.",
+    detail: "A named evidence gap becomes one narrow operation. The application validates its arguments, the source access and the remaining request, token, tool and time budget before it runs. Checked results go back into ResearchState and the agent decides again, until the evidence is enough or the loop stops making progress.",
   },
   {
     label: "Checked inputs",
@@ -317,7 +317,7 @@ export const knowledgeBaseRagEvidence = [
   {
     area: "Research budget",
     result: "10 requests · 120k tokens · 240 s",
-    detail: "The profile recent document runs used, with at most six research tool attempts and a 60-second finalization reserve. These are configurable server-side limits that user requests cannot widen.",
+    detail: "The profile used for recent document runs: at most six research tool attempts, a stop after two rounds without progress and a 60-second finalization reserve. These are configurable server-side limits that user requests cannot widen.",
   },
   {
     area: "Multilingual reranker",

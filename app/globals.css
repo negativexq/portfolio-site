@@ -1578,6 +1578,32 @@ a {
   min-width: 0;
 }
 
+.architecture-path-loop {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.2rem 0.6rem;
+  margin: clamp(1rem, 2vw, 1.4rem) 0 0;
+  border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  padding: 0.7rem 0.85rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.architecture-path-loop > span:first-child {
+  grid-row: span 2;
+  color: var(--accent);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.architecture-path-loop strong {
+  color: var(--foreground);
+  font: 620 0.6rem/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .architecture-path-flow {
   display: grid;
   grid-template-columns: repeat(var(--architecture-flow-columns), minmax(0, 1fr));
@@ -5523,6 +5549,21 @@ a {
 .rag-benchmark-table td:last-child span[data-decision="reject"] {
   border-color: var(--status-learning);
   color: var(--status-learning);
+}
+
+.rag-evidence-table span[data-reasoning] {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  padding: 0.24rem 0.38rem;
+  color: var(--muted);
+  font: 700 0.56rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rag-evidence-table span[data-reasoning="medium"] {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .rag-evidence-table tbody th {
