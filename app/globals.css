@@ -9897,3 +9897,24 @@ a {
     transform: none;
   }
 }
+
+/* Linked stages read as part of the tree at rest and claim the accent only
+   under the pointer or keyboard focus. */
+.hero-pipeline-link {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.28em;
+  transition: color var(--motion-fast) ease;
+}
+
+.hero-pipeline-link:hover,
+.hero-pipeline-link:focus-visible {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+a.hero-pipeline-watch-label:hover,
+a.hero-pipeline-watch-label:focus-visible {
+  color: var(--foreground);
+}

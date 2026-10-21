@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { CSSProperties } from "react";
 
 /**
@@ -36,6 +37,10 @@ import type { CSSProperties } from "react";
  * Agentic SRE is the frame around everything rather than a row in it: it is
  * not a stage of the request, it watches the whole system from outside,
  * read-only. The frame pulses slowly to read as a live watch.
+ *
+ * The tree doubles as a map of the work: each stage that a project or article
+ * implements links to it, so a visitor can follow one request into the
+ * systems behind it.
  */
 type Guide = "space" | "line" | "tee" | "elbow";
 
@@ -44,15 +49,36 @@ type Row = {
   step: number;
   guides: readonly Guide[];
   outcome?: number;
+  href?: string;
 };
 
 const stages: readonly Row[] = [
   { label: "Request", step: 0, guides: [] },
-  { label: "AI Platform API", step: 1, guides: ["elbow"] },
-  { label: "Agent Runtime", step: 2, guides: ["space", "tee"] },
-  { label: "RAG Retrieval", step: 3, guides: ["space", "line", "tee"] },
-  { label: "Model Serving", step: 3, guides: ["space", "line", "elbow"] },
-  { label: "Guardrail", step: 4, guides: ["space", "tee"] },
+  { label: "AI Platform API", step: 1, guides: ["elbow"], href: "/platform" },
+  {
+    label: "Agent Runtime",
+    step: 2,
+    guides: ["space", "tee"],
+    href: "/projects/agentic-customer-service-platform",
+  },
+  {
+    label: "RAG Retrieval",
+    step: 3,
+    guides: ["space", "line", "tee"],
+    href: "/projects/knowledge-base-rag",
+  },
+  {
+    label: "Model Serving",
+    step: 3,
+    guides: ["space", "line", "elbow"],
+    href: "/projects/modelops-control-plane",
+  },
+  {
+    label: "Guardrail",
+    step: 4,
+    guides: ["space", "tee"],
+    href: "/writing/production-agent-guardrails",
+  },
 ];
 
 const outcomeRows: readonly Row[] = [
@@ -83,18 +109,24 @@ function Guides({ guides }: { guides: readonly Guide[] }) {
 export function HeroPipeline() {
   return (
     <div className="hero-pipeline">
-      <p className="hero-pipeline-caption">Request lifecycle</p>
+      <p className="hero-pipeline-caption">Request lifecycle · open a stage</p>
       <div className="hero-pipeline-watch">
-      <span className="hero-pipeline-watch-label">
+      <Link className="hero-pipeline-watch-label" href="/projects/agentic-sre">
         <span className="hero-pipeline-watch-dot" aria-hidden="true" />
         Agentic SRE · watching
-      </span>
+      </Link>
       <ol className="hero-pipeline-nodes">
         {stages.map((row) => (
           <li key={row.label} style={{ "--i": row.step } as CSSProperties}>
             <Guides guides={row.guides} />
             <span className="hero-pipeline-dot" aria-hidden="true" />
-            <span className="hero-pipeline-label">{row.label}</span>
+            {row.href ? (
+              <Link className="hero-pipeline-label hero-pipeline-link" href={row.href}>
+                {row.label}
+              </Link>
+            ) : (
+              <span className="hero-pipeline-label">{row.label}</span>
+            )}
           </li>
         ))}
 
