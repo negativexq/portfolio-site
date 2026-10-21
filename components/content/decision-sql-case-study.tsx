@@ -9,7 +9,6 @@ import {
   decisionSqlEngineeringDecisions,
   decisionSqlEvidence,
   decisionSqlGovernedModel,
-  decisionSqlLimitations,
   decisionSqlRuntimeFlow,
   decisionSqlStackGroups,
 } from "@/data/decision-sql";
@@ -35,7 +34,6 @@ const sections = [
   ["governed-model", "Governed task model"],
   ["evidence", "Evidence"],
   ["stack", "Stack"],
-  ["posture", "Limitations"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
@@ -285,8 +283,7 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
             </div>
             <p className="detail-muted">
               The three governance residuals are all in the ambiguity category; authority held at
-              15 / 15 with no unauthorized answers. These are frozen synthetic benchmark results,
-              not production accuracy.
+              15 / 15 with no unauthorized answers.
             </p>
           </section>
 
@@ -320,22 +317,6 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
             </div>
           </section>
 
-          <section id="posture" className="detail-section rag-posture-section">
-            <div className="rag-posture-heading">
-              <div>
-                <h2>Governed benchmark with explicit limits</h2>
-                <p>
-                  The repository is a governed one-shot benchmark and reference runtime. Its numbers
-                  belong to the frozen contracts, synthetic packs and one-shot conditions they were
-                  measured under.
-                </p>
-              </div>
-              <span className="rag-release-badge">Limits documented</span>
-            </div>
-            <ul>
-              {decisionSqlLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
-            </ul>
-          </section>
 
           <ProjectInShort project={project} />
 

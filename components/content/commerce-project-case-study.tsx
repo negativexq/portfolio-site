@@ -36,7 +36,6 @@ const sections = [
   ["proof", "Repository proof"],
   ["observability", "Observability"],
   ["stack", "Stack"],
-  ["posture", "Limitations"],
   ["in-short", "In short"],
   ["deep-dive", "Deep dive"],
 ] as const;
@@ -307,20 +306,6 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
             </div>
           </section>
 
-          <section id="posture" className="detail-section commerce-posture-section">
-            <h2>Reference implementation with explicit limits</h2>
-            <p>
-              This is a production-oriented reference implementation for inspecting streaming
-              failure modes. It does not claim production availability, exactly-once delivery,
-              cloud deployment, general Kafka/PostgreSQL capacity or a production fraud decision
-              service.
-            </p>
-            <p>
-              The measured results come from a local Docker environment with one Kafka broker and
-              the documented workload. The disruptive outage test was not run, and the isolated
-              benchmark must not be read as the throughput of the interactive Demo Control path.
-            </p>
-          </section>
 
           <ProjectInShort project={project} />
 

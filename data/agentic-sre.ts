@@ -183,15 +183,6 @@ export const agenticSreScreenshots = [
       "This seed has one revision. The UI does not invent a predecessor comparison.",
   },
 ] as const;
-export const agenticSreLimitations = [
-  "Read-only access limits the blast radius, but leaves recovery to the operator. There is no shell, autonomous remediation or cluster-write capability.",
-  "Conservative authority deliberately leaves many diagnoses unresolved. Correct actor identification is weaker than proving every symptom and eliminating material rivals. Six fault families on one demo workload remain a small held-out evaluation.",
-  "Observation windows and read budgets can miss decisive evidence. Loki capture is not a complete archive; bounded traffic is not yet read live, and some queries and signal mappings remain workload-specific.",
-  "Tempo stability affects causal evidence. In the nineteenth HOLDOUT, one memory kill caused 117 failed trace reads in a competing-causes run. Missing evidence remains a limitation; replay cannot recover it.",
-  "Replay lasts only as long as its exact persisted inputs. Retention does not protect rows merely because a manifest references them, and the local reference PostgreSQL Deployment has no durable volume.",
-  "The supported control plane is single-process / single-replica. Several Connectors can enroll, but diagnosis uses one configured Connector; high availability, multi-cluster diagnosis and multi-tenancy remain incomplete.",
-  "Connector preflight, one-time enrollment, certificate rotation, revocation and a Helm chart are implemented. No Connector image is published yet, stream mode is opt-in, and built-in read endpoints are unauthenticated by default. Deployment authentication, network controls and storage hardening remain necessary.",
-] as const;
 export const agenticSreDeepDiveLinks = [
   { label: "How the system works", href: agenticSreSources.how },
   {

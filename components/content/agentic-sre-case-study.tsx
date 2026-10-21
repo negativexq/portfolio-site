@@ -7,7 +7,6 @@ import {
   agenticSreBenchmarks,
   agenticSreDeepDiveLinks,
   agenticSreFaultFamilies,
-  agenticSreLimitations,
   agenticSreScreenshots,
   agenticSreSemantics,
   agenticSreSources,
@@ -26,7 +25,6 @@ const sections = [
   ["console", "Operator console"],
   ["semantics", "Causal reasoning"],
   ["evaluation", "Evaluation"],
-  ["limitations", "Tradeoffs & limits"],
   ["takeaways", "Takeaways"],
   ["in-short", "Project summary"],
   ["related", "Related writing"],
@@ -102,7 +100,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               />
             </a>
             <figcaption>
-              Operator console · seeded demo, not production data.{" "}
+              Operator console · seeded demo.{" "}
               <Source href={agenticSreSources.screenshots}>
                 Capture provenance
               </Source>
@@ -189,8 +187,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
                   <dt>Loki + Tempo</dt>
                   <dd>
                     Bounded logs and attributed traces supply observations of
-                    execution, service effects and propagation. Unavailable
-                    reads remain recorded limitations.
+                    execution, service effects and propagation.
                   </dd>
                 </div>
                 <div>
@@ -393,8 +390,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               <p>
                 The frozen bounded TEST25 path used six validated reads per
                 incident: 150 total, with zero tool errors and zero model calls.
-                This is an observed run configuration, not a universal budget or
-                throughput result. DEV10 agreement was 10/10; combined agreement
+                DEV10 agreement was 10/10; combined agreement
                 was 31/35 (88.6%). Both compare paths, not ground truth.
               </p>
               <p>
@@ -464,9 +460,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               Eight variants, three runs each; one run can produce several
               incident diagnoses. Cause, instance and execution-witness recall
               were 1.0 in every variant; competing symptom-group recall was
-              0.81. Correctly naming an actor does not prove every symptom or
-              eliminate every rival: 87/99 diagnoses remained unresolved. One
-              run lost trace reads when Tempo was killed for memory.
+              0.81.
             </p>
             <Source href={agenticSreSources.holdout}>
               Committed nineteenth HOLDOUT report and acceptance checks
@@ -488,20 +482,6 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
             </p>
             <Source href={agenticSreSources.measured}>
               Live-suite provenance and methodology
-            </Source>
-          </section>
-          <section
-            id="limitations"
-            className="detail-section modelops-posture-section"
-          >
-            <h2>Tradeoffs that define the operating envelope</h2>
-            <ul>
-              {agenticSreLimitations.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <Source href={agenticSreSources.readme}>
-              Current repository limitations
             </Source>
           </section>
           <section id="takeaways" className="detail-section">

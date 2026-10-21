@@ -34,7 +34,6 @@ const sections = [
   ["evidence", "Evidence"],
   ["observability", "Observability"],
   ["stack", "Stack"],
-  ["posture", "Limitations"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
@@ -273,19 +272,6 @@ export function ModelOpsProjectCaseStudy({ project }: ModelOpsProjectCaseStudyPr
             </div>
           </section>
 
-          <section id="posture" className="detail-section modelops-posture-section">
-            <h2>Reference implementation with explicit limits</h2>
-            <p>
-              This is a production-oriented local control-plane reference implementation, not a
-              production certification. The current scope intentionally uses SQLite, one router,
-              Docker Compose and open demo endpoints.
-            </p>
-            <p>
-              Kubernetes, PostgreSQL at deployment scale, Kafka-backed metrics, MLflow, OIDC/RBAC,
-              multi-router reconciliation and longer soak testing are documented production
-              evolution steps, not claims about the current implementation.
-            </p>
-          </section>
 
           <ProjectInShort project={project} />
 

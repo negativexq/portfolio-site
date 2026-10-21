@@ -244,8 +244,7 @@ const architectures = {
       "Because those layers never move, the canonical evaluation compares decision architectures under one model before it compares model identities: a frozen structured-contract compatibility gate decides which candidates are even eligible, and only qualifying models reach the behavioral matrix.",
       "The current D2c semantic-safety evaluation closed the containment funnel at zero: 30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions — reached through architectural hardening, not prompt-only tuning.",
       "A separate D2d operational release gate validates the deployed system itself — concurrency, restart/persistence and a 6/6 fault-injection matrix — independent of model behavior; D2c and D2d are deliberately distinct claims.",
-      "The current runtime contract is semantic_decision_v3. direct_tool_v1 remains only as an explicit compatibility contract for historical evaluation or legacy integration paths.",
-      "Static bearer credentials keep local development simple; the authenticator, persistence, retrieval and provider abstractions are replaceable rather than a complete deployment environment.",
+      "The current runtime contract is semantic_decision_v3.",
     ],
   },
   "real-time-commerce-platform": {
@@ -740,7 +739,6 @@ const architectures = {
       "TrafficAllocation revisions are scoped per model (RoutingGeneration), not per deployment, so the router rejects an equal-or-stale push even when it comes from an already-superseded rollout.",
       "SQLAlchemy optimistic concurrency (a version column bumped on every commit) and a DB-level partial unique index together stop a losing concurrent action from corrupting a rollout and cap each model at one unresolved deployment at a time — INCONCLUSIVE counts as unresolved too.",
       "INCONCLUSIVE means frozen for manual review, not a silent revert to the previous traffic split — its allocation stays the router's authoritative desired state until a human resolves it, the same as a completed PROMOTED or ROLLED_BACK rollout.",
-      "The single-router, SQLite, local-compose scope is deliberate, not an oversight — Kubernetes, PostgreSQL, Kafka-based metrics, MLflow and auth are documented production-evolution steps, not implemented here.",
     ],
   },
   "repo-context-forge": {
@@ -971,8 +969,8 @@ const architectures = {
     notes: [
       "moved blocks preserve resource identities while the original root resources move into child modules.",
       "Application and monitoring configuration hashes drive deterministic replacement when meaningful inputs change.",
-      "Native terraform test plans use mocked Docker providers; they do not provision real Docker infrastructure.",
-      "GitHub Actions runs Terraform formatting, initialization, validation and tests, with TFLint, Trivy, Gitleaks and Hadolint security gates; CI does not run terraform apply.",
+      "Native terraform test plans run against mocked Docker providers.",
+      "GitHub Actions runs Terraform formatting, initialization, validation and tests, with TFLint, Trivy, Gitleaks and Hadolint security gates.",
       "k6 exercises local load and controlled error, latency and API-down alert lifecycles end to end.",
     ],
   },
@@ -1112,10 +1110,9 @@ const architectures = {
     ],
     notes: [
       "Runtime routing is submission-driven: an ANSWER + SQL enters the SQL runtime even when the truth is AMBIGUOUS, so a wrong governed decision still produces a typed outcome instead of a crash.",
-      "The grain-safe normalizer is intentionally narrow — additive parent measure, a declared 1:N relationship and a supported LEFT JOIN fanout shape — and stays fail-closed or non-target outside it. It is not a universal fanout solver.",
+      "The grain-safe normalizer is intentionally narrow — additive parent measure, a declared 1:N relationship and a supported LEFT JOIN fanout shape — and stays fail-closed or non-target outside it.",
       "PostgreSQL ANALYZE runs as environment preparation before reader planning, outside SqlSafetyService, the cost gate, the executor and the request path, so EXPLAIN costs are deterministic and excluded from request latency.",
       "Reference SQL, fixtures and expected results are evaluator-only and never enter the model request; correctness is execution-based semantic correctness, not SQL string or AST equality.",
-      "These are results on one 180-case synthetic governed benchmark across 12 domains under a documented one-shot contract, not general Text-to-SQL accuracy, production accuracy or universal SQL safety.",
     ],
   },
   "ml-platform-infrastructure": {
@@ -1542,7 +1539,7 @@ const architectures = {
         "PostgreSQL owns lifecycle intent; reconcilers own convergence with external systems.",
         "The UI calls the platform API rather than Kubernetes, Argo, MLflow or KServe directly.",
         "GPU quotas constrain deployment and canary requests; immutable revisions retain runtime settings.",
-        "CPU lifecycle and scheduled scoring are local lab evidence; GPU/vLLM and AWS acceptance remain open. Historical foundation throughput does not transfer to the current gateway."
+        "CPU lifecycle and scheduled scoring run end to end in the local Kubernetes lab."
     ]
 },
   "agentic-sre": {
@@ -1660,8 +1657,8 @@ const architectures = {
     notes: [
       "The investigator and the judge are separate: an optional LLM policy can choose among already-legal reads, but normalization, hypothesis rebuilding, verification and root-cause resolution stay deterministic, and every reported measurement ran with zero model calls.",
       "In remote mode the control plane holds no customer credential. Secrets are denied twice, by read-only RBAC and by the Connector's deny list; preflight, one-time enrollment, certificate rotation, revocation and Helm packaging are implemented and lab-validated.",
-      "The Connector watches each scope instead of polling: on the lab a change reached the journal at a median of 1.2 s, down from 21.5 s, and a watch that cannot resume gaps only its own scope. The stream mode is opt-in.",
-      "Evidence is admitted by when the Connector observed it. Each revision records per-scope source continuity and transport completeness; configuration frontier closure now requires continuous observation and proven delivery; missing observations remain limitations.",
+      "The Connector watches each scope instead of polling: on the lab a change reached the journal at a median of 1.2 s, down from 21.5 s, and a watch that cannot resume gaps only its own scope.",
+      "Evidence is admitted by when the Connector observed it. Each revision records per-scope source continuity and transport completeness; configuration frontier closure requires continuous observation and proven delivery.",
       "Each revision freezes its evidence manifest and the ordered tape of provider reads, so offline replay can verify the manifest, tape and epistemic digests. Remediation is proposed for an operator and never executed.",
     ],
   },

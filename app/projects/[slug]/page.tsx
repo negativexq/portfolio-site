@@ -366,7 +366,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               <ul className="roadmap-list">
                 {project.roadmap.map((item) => <li key={item.title}>{item.title}</li>)}
               </ul>
-              <p className="detail-muted">These items are roadmap directions and are not part of the project&apos;s current stack.</p>
             </section>
           ) : null}
 

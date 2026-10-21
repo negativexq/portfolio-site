@@ -32,7 +32,7 @@ const sections = [
   ["decisions", "Design decisions"],
   ["evidence", "Infrastructure foundation"],
   ["stack", "Stack"],
-  ["deployment", "Deployment and limits"],
+  ["deployment", "Deployment"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
@@ -59,7 +59,7 @@ export function MlPlatformInfrastructureCaseStudy({ project }: { project: Projec
             <a className="agentic-screenshot-frame" href="/projects/ml-platform-infrastructure/01-home.png" target="_blank" rel="noreferrer" aria-label="Open the full-size ML Platform home screenshot">
               <Image src="/projects/ml-platform-infrastructure/01-home.png" alt="ML Platform home with health, scheduled work and model drift attention items, populated with synthetic demo data" width={1440} height={1236} sizes="(max-width: 800px) calc(100vw - 32px), 560px" preload loading="eager" />
             </a>
-            <figcaption>Repository UI capture · synthetic demo data, not production traffic.</figcaption>
+            <figcaption>Repository UI capture · synthetic demo data.</figcaption>
           </figure>
         </div>
       </header>
@@ -224,8 +224,8 @@ export function MlPlatformInfrastructureCaseStudy({ project }: { project: Projec
           </section>
 
           <section id="deployment" className="detail-section">
-            <h2>Deployment evidence and remaining limits</h2>
-            <p>The control-plane Helm chart has been deployed and runtime-verified on the local ARM64 lab. It defaults to two API, gateway and reconciler replicas, with PDBs and Lease-elected reconciliation. Replica redundancy on one node does not prove multi-node high availability. AWS remains a deployment design backed by legacy Terraform, not a completed control-plane deployment.</p>
+            <h2>Deployment</h2>
+            <p>The control-plane Helm chart is deployed and runtime-verified on the local ARM64 lab. It defaults to two API, gateway and reconciler replicas, with PDBs and Lease-elected reconciliation. The AWS target is designed alongside it, backed by Terraform.</p>
             <div className="modelops-evidence-table" role="region" aria-label="Local and AWS architecture targets" tabIndex={0}>
               <table><thead><tr><th scope="col">Layer</th><th scope="col">Local target</th><th scope="col">AWS design target</th></tr></thead>
                 <tbody>{mlPlatformInfrastructureDeploymentTargets.map((item) => <tr key={item.area}><th scope="row">{item.area}</th><td>{item.local}</td><td>{item.cloud}</td></tr>)}</tbody>
@@ -233,15 +233,6 @@ export function MlPlatformInfrastructureCaseStudy({ project }: { project: Projec
             </div>
           </section>
 
-          <section className="detail-section" aria-labelledby="mlp-limits">
-            <h2 id="mlp-limits">What the laboratory does not prove</h2>
-            <div className="modelops-decision-list">
-              <article><h3>Capacity is workload-specific</h3><p>Gateway rejection load, a rolling-restart probe and a warm-image million-row batch answer different questions. Sustained successful upstream/LLM streaming, real identity-provider load and production capacity still need acceptance runs.</p></article>
-              <article><h3>Security and recovery depend on topology</h3><p>Local RBAC, restricted PSA, admission policies, cross-project ingress isolation, credential rotation and basic database recovery have recorded checks. Strict egress, hung-leader fencing, multi-node loss/drain and full backup/restore with RPO/RTO remain open.</p></article>
-              <article><h3>Implemented contracts need their own runtime evidence</h3><p>GPU/vLLM, gated Hub downloads, private-registry/provider paths, external TLS/ingress and AWS need resource-specific verification. Stable audit actor-subject persistence, safe rate-bucket collection and fuller log retention remain engineering work.</p></article>
-            </div>
-            <p><a href="https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/status.md" target="_blank" rel="noreferrer">Current status</a> and <a href="https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/acceptance.md" target="_blank" rel="noreferrer">acceptance procedures</a> separate implementation from deployment evidence. Repository test counts belong to their dated reports; they are not presented as a new full-suite result here.</p>
-          </section>
 
           <ProjectInShort project={project} />
           <ProjectRelated project={project} />

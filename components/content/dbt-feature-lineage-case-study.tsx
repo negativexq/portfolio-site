@@ -35,7 +35,6 @@ const sections = [
   ["evidence", "Reproducible path"],
   ["showcase", "Product proof"],
   ["stack", "Stack"],
-  ["posture", "Limitations"],
   ["in-short", "In short"],
   ["deep-dive", "Deep dive"],
 ] as const;
@@ -268,21 +267,6 @@ export function DbtFeatureLineageCaseStudy({ project }: DbtFeatureLineageCaseStu
             </div>
           </section>
 
-          <section id="posture" className="detail-section dbt-limits-section" data-reveal>
-            <p className="detail-kicker">Limits</p>
-            <h2>Useful because the boundary is explicit.</h2>
-            <p>
-              This is a local exploration tool, not a replacement for dbt Cloud, observability or a transformation
-              engine. The repository is direct about where analysis can diverge from a fully compiled project.
-            </p>
-            <ul>
-              <li>No dbt Cloud, Airflow or warehouse integration.</li>
-              <li>Private git imports rely on the host&apos;s configured credential helper or SSH agent; the app does not store tokens.</li>
-              <li>Complex custom macros may not parse correctly.</li>
-              <li>Static analysis can differ from compiled dbt SQL when no manifest is available.</li>
-              <li>Projects that depend on generated or unavailable files may produce incomplete analysis.</li>
-            </ul>
-          </section>
 
           <ProjectInShort project={project} />
 

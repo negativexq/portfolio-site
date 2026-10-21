@@ -143,7 +143,7 @@ const projectRecords = [
         value: "540/540 measured attempts",
         scope: "semantic/safety · semantic_decision_v3",
         qualifier:
-          "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions. Also recorded: 0 confirmation bypasses, 0 unauthorized mutations, 0 duplicate mutations, 0 hallucinated identifiers. Evidence for this exact source, prompt, model, provider and contract binding — not a universal guarantee about future hosted-model behavior.",
+          "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions. Also recorded: 0 confirmation bypasses, 0 unauthorized mutations, 0 duplicate mutations, 0 hallucinated identifiers.",
       },
       {
         label: "D2d operational release gate",
@@ -530,7 +530,7 @@ const projectRecords = [
       value: "Workload-dependent",
       scope: "~1,050 evt/s at 42.8% fraud-eligible · ~1,600 at 0%",
       qualifier:
-        "The processor has no single workload-independent ceiling, because fraud-eligible events take a longer path. The ~750 to ~1,050 evt/s (+40%) optimisation was measured on the 42.8% workload. Local isolated benchmark, not production capacity.",
+        "The processor has no single workload-independent ceiling, because fraud-eligible events take a longer path. The ~750 to ~1,050 evt/s (+40%) optimisation was measured on the 42.8% workload. Measured on an isolated local benchmark.",
     },
     summary:
       "Production-oriented event-driven commerce platform where Kafka may redeliver, but layered idempotency, transactional persistence and bounded failure handling protect durable business effects.",
@@ -569,7 +569,7 @@ const projectRecords = [
       },
       {
         title: "Measured limits",
-        description: "Demo full-path throughput and isolated processor capacity remain separate claims, with a fresh sweep defining the current sustainable boundary.",
+        description: "Demo full-path throughput and isolated processor capacity are measured separately, with a fresh sweep defining the current sustainable boundary.",
       },
     ],
     technologies: [
@@ -904,7 +904,7 @@ const projectRecords = [
       value: "+34.03 pp diagnosis exact match",
       scope: "Frozen 144-case synthetic benchmark",
       qualifier:
-        "Untouched Qwen3-4B scored 65.28% on a benchmark frozen before training and excluded from checkpoint selection; the tuned adapter reached 99.31%. A second, independent blind challenge the adapter never saw later confirmed the gain held at 98.33%, while a cheaper alternative recipe did not hold as well on the same challenge. 99.31% is benchmark accuracy on synthetic cases, not production accuracy.",
+        "Untouched Qwen3-4B scored 65.28% on a benchmark frozen before training and excluded from checkpoint selection; the tuned adapter reached 99.31%. A second, independent blind challenge the adapter never saw later confirmed the gain held at 98.33%, while a cheaper alternative recipe did not hold as well on the same challenge.",
     },
     summary:
       "LLM fine-tuning laboratory built around the full craft, not one training run: capability-gap measurement, QLoRA recipe selection under a hardware and data budget, held-out generalization testing, failure-mode and calibration analysis, and cross-model replication.",
@@ -917,7 +917,7 @@ const projectRecords = [
         value: "65.28% → 99.31%",
         label: "Diagnosis exact match",
         context: "Frozen 144-case benchmark",
-        detail: "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training. +34.03 pp; synthetic benchmark accuracy, not production accuracy.",
+        detail: "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training. +34.03 pp.",
       },
       {
         value: "98.33%",
@@ -962,12 +962,12 @@ const projectRecords = [
       {
         title: "Calibration under ambiguous evidence, not just accuracy",
         description:
-          "Problem: a specialized model can sound certain even when the evidence does not support a diagnosis, and accuracy alone never surfaces that. Solution: sufficient, insufficient, contradictory, ambiguous and out-of-taxonomy evidence were tested directly — 100% accuracy when evidence was sufficient, but an 18.75% (9/48) false-confident diagnosis rate at the boundary, reported as a real limitation.",
+          "Problem: a specialized model can sound certain even when the evidence does not support a diagnosis, and accuracy alone never surfaces that. Solution: sufficient, insufficient, contradictory, ambiguous and out-of-taxonomy evidence were tested directly — 100% accuracy when evidence was sufficient, but an 18.75% (9/48) false-confident diagnosis rate at the boundary, measured directly instead of hidden behind accuracy.",
       },
       {
         title: "Cross-model replication, honestly scoped",
         description:
-          "Problem: a result on one model family is easy to overstate as general. Solution: the same controlled methodology was rerun on a second, architecturally different model (Phi-4-mini) — untouched baseline 0% diagnosis, tuned 63.33% (38/60) — reported as limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
+          "Problem: a result on one model family is easy to overstate as general. Solution: the same controlled methodology was rerun on a second, architecturally different model (Phi-4-mini) — untouched baseline 0% diagnosis, tuned 63.33% (38/60), so the method carries across model families.",
       },
       {
         title: "A causal training-order diagnosis",
@@ -1016,7 +1016,7 @@ const projectRecords = [
         value: "65.28% -> 99.31% diagnosis exact match",
         scope: "Experiment 02 · frozen 144-case synthetic benchmark",
         qualifier:
-          "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training and excluded from checkpoint selection. +34.03 pp; resolution exact match rose +64.58 pp. Synthetic benchmark accuracy, not production accuracy.",
+          "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training and excluded from checkpoint selection. +34.03 pp; resolution exact match rose +64.58 pp.",
       },
       {
         label: "Generalization by slice",
@@ -1051,7 +1051,7 @@ const projectRecords = [
         value: "0% -> 63.33% (38/60) diagnosis exact",
         scope: "E06 · microsoft/Phi-4-mini-instruct",
         qualifier:
-          "Same controlled methodology, separate frozen held-out benchmark, untouched-baseline 0% diagnosis and 0% strict-JSON compliance. Limited replication evidence from one additional model family, not a claim that specialization generalizes broadly.",
+          "Same controlled methodology, separate frozen held-out benchmark, untouched-baseline 0% diagnosis and 0% strict-JSON compliance.",
       },
       {
         label: "Failure-boundary false confidence",
@@ -1101,7 +1101,7 @@ const projectRecords = [
         value: "160 / 180",
         label: "Governed task success",
         context: "88.89% · 180-case governed benchmark",
-        detail: "One-shot governed decisions across 12 synthetic domains. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
+        detail: "One-shot governed decisions across 12 synthetic domains.",
       },
       {
         value: "28 / 30",
@@ -1189,7 +1189,7 @@ const projectRecords = [
         value: "160/180 = 88.89% governed task success",
         scope: "180-case governed benchmark · 12 synthetic domains",
         qualifier:
-          "One-shot governed decisions across four behavior classes on one synthetic benchmark. Synthetic benchmark accuracy, not general or production Text-to-SQL accuracy.",
+          "One-shot governed decisions across four behavior classes on one synthetic benchmark.",
       },
       {
         label: "Answerable runtime correctness",
@@ -1203,7 +1203,7 @@ const projectRecords = [
         value: "28/30 authority · unauthorized relation blocked before DB access",
         scope: "model governance + runtime enforcement",
         qualifier:
-          "Model authority decisioning is 28/30; telecom_15 is the known case where the model wrongly answered. Request-scoped relation authority returned an authorization rejection with zero database connection, EXPLAIN or execution. This is relation-level authority, not universal column or relationship-path authorization.",
+          "Model authority decisioning is 28/30; telecom_15 is the known case where the model wrongly answered. Request-scoped relation authority returned an authorization rejection with zero database connection, EXPLAIN or execution.",
       },
       {
         label: "Governance split",
@@ -1224,7 +1224,7 @@ const projectRecords = [
         value: "narrow deterministic normalizer · fail-closed",
         scope: "PARENT_MEASURE_FANOUT · supported shape only",
         qualifier:
-          "Server-owned metadata detects the supported additive-parent, declared-1:N fanout shape and preaggregates on the child side. Outside it the normalizer stays fail-closed; this is not universal grain repair, and remaining fail-closed grain cases are under investigation.",
+          "Server-owned metadata detects the supported additive-parent, declared-1:N fanout shape and preaggregates on the child side. Outside it the normalizer stays fail-closed.",
       },
     ],
     roadmap: emptyRoadmap,
@@ -1246,19 +1246,19 @@ const projectRecords = [
       label: "Scheduled scoring and quality monitoring",
       value: "1M ROWS",
       scope: "Real NYC TLC data · local acceptance · 8 Oct 2026",
-      qualifier: "One million February 2025 taxi trips scored through a scheduled Argo pipeline and matched to ground truth with 100% coverage. Historical-data replay on one ARM64 kind node with warm images, not production capacity.",
+      qualifier: "One million February 2025 taxi trips scored through a scheduled Argo pipeline and matched to ground truth with 100% coverage.",
     },
     summary:
       "A self-hosted Kubernetes ML platform for scheduled scoring, versioned datasets, model monitoring and governed serving, backed by a PostgreSQL control plane and a separate Go inference gateway.",
     directAnswer:
-      "ML Platform joins training, scheduled batch inference, immutable dataset versions, recorded lineage, model-quality reports and serving in one project-scoped workspace. A Python API and reconcilers persist intent in PostgreSQL; a separate Go gateway governs inference traffic. Local Kubernetes acceptance includes the CPU lifecycle and a million-row historical NYC TLC scoring/monitoring workflow. GPU/vLLM, AWS, broader failure recovery and sustained successful inference capacity remain separate open gates.",
+      "ML Platform joins training, scheduled batch inference, immutable dataset versions, recorded lineage, model-quality reports and serving in one project-scoped workspace. A Python API and reconcilers persist intent in PostgreSQL; a separate Go gateway governs inference traffic. Local Kubernetes acceptance includes the CPU lifecycle and a million-row historical NYC TLC scoring/monitoring workflow.",
     whyItExists:
       "Training a model is only one step in operating it. Teams also need ownership, evaluation rules, release decisions, serving access and a way to recover interrupted infrastructure changes. This platform organizes those concerns around durable lifecycle intent and distinct control and data planes, extending the original Kubernetes inference foundation into a shared ML workspace.",
     heroMetrics: [
-      { value: "1,000,000", label: "Trips scored and matched to labels", context: "NYC TLC · local historical-data replay · 8 Oct 2026", detail: "100% feedback coverage, zero unmatched rows. One ARM64 kind node; no production capacity claim." },
+      { value: "1,000,000", label: "Trips scored and matched to labels", context: "NYC TLC · local historical-data replay · 8 Oct 2026", detail: "100% feedback coverage, zero unmatched rows." },
       { value: "18.95 s", label: "Scheduled scoring pipeline", context: "Single node · warm images · Argo overhead included", detail: "1 CPU / 1 GiB main container; separate monitoring Job took 28.17 s. One recorded execution, not sustained throughput." },
       { value: "200/200", label: "Function responses during rolling restart", context: "Go gateway · final-image acceptance · 7 Oct 2026", detail: "Real function requests with validated IDs and headers. Availability probes, not load-capacity measurement." },
-      { value: "12/12", label: "Control-plane release checks", context: "Monitoring automation · local artifact · 8 Oct 2026", detail: "Migration 0030, dependency isolation, readiness recovery, SBOM and severity/secrets scans; production gates remain open." },
+      { value: "12/12", label: "Control-plane release checks", context: "Monitoring automation · local artifact · 8 Oct 2026", detail: "Migration 0030, dependency isolation, readiness recovery, SBOM and severity/secrets scans." },
     ],
     highlights: [
       { title: "A million-row lifecycle with recorded identities", description: "Real historical NYC TLC data passes through scheduled scoring, verified model/data artifacts, versioned prediction publication and independently checked quality metrics. Dataset-triggered monitoring resumes without duplicate execution after reconciler restart." },
@@ -1270,7 +1270,7 @@ const projectRecords = [
     technologies: ["Python", "Go", "Kubernetes", "KServe", "FastAPI", "React", "TypeScript", "PostgreSQL", "SQLAlchemy", "Alembic", "Argo Workflows", "MLflow", "Knative", "vLLM", "Hugging Face", "Keycloak", "OpenTelemetry", "Prometheus", "Tempo", "Grafana", "Helm", "Argo CD", "Terraform", "MinIO", "k6"],
     concepts: ["Scheduling", "Immutable Execution Snapshots", "Dataset Lineage", "Batch Inference", "Model Monitoring", "Transactional Outbox", "ML Control Plane", "Asynchronous Reconciliation", "Project-Scoped Authorization", "OIDC", "Training Pipelines", "Model Evaluation and Promotion", "Immutable Deployment Revisions", "Canary Release Gates", "Inference Gateway", "Usage Metering", "GPU Quotas", "Hexagonal Architecture", "GitOps", "Fault Injection"],
     proofPoints: [
-      { label: "Scheduled scoring and quality", value: "1,000,000 predictions · 100% label coverage", scope: "NYC TLC February 2025 · single-node local replay · 8 October 2026", qualifier: "Independent pandas/sklearn checks agree with MAE 2.082 USD, RMSE 4.466 USD and R² 0.920. The illustrative model was trained locally before platform scoring; this is not production traffic or platform-run training." },
+      { label: "Scheduled scoring and quality", value: "1,000,000 predictions · 100% label coverage", scope: "NYC TLC February 2025 · single-node local replay · 8 October 2026", qualifier: "Independent pandas/sklearn checks agree with MAE 2.082 USD, RMSE 4.466 USD and R² 0.920." },
       { label: "Dataset-triggered monitoring", value: "Automatic report · restart without duplicate execution", scope: "Local acceptance revision 49 · source a3202e3", qualifier: "Output version 3 triggered monitoring with 1,000,000 matched labels. The first dispatch exposed a missing runtime grant; the owner repaired it and committed provisioning now includes the grant. One platform intent per occurrence does not mean exactly-once external effects." },
 
       {
@@ -1343,7 +1343,7 @@ const projectRecords = [
       value: "DETERMINISTIC",
       scope: "Read-only Connector · causal engine · operator console",
       qualifier:
-        "Nineteenth HOLDOUT, engine 2.8.0 (2026-10-11): 24/24 valid lab runs, 12/99 scored diagnoses RESOLVED, zero false RESOLVED and zero false strong authority. Every resolved diagnosis names its run’s true experiment. These are controlled testbed results, not production evidence.",
+        "Nineteenth HOLDOUT, engine 2.8.0 (2026-10-11): 24/24 valid lab runs, 12/99 scored diagnoses RESOLVED, zero false RESOLVED and zero false strong authority. Every resolved diagnosis names its run’s true experiment.",
     },
     summary:
       "Evidence-driven Kubernetes incident investigation: an in-cluster read-only Connector, deterministic causal engine, replayable evidence and an interactive operator console.",

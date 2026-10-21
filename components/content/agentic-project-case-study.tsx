@@ -37,7 +37,6 @@ const sections = [
   ["evidence", "Evidence"],
   ["observability", "Observability"],
   ["stack", "Stack"],
-  ["release", "Release posture"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
@@ -310,23 +309,6 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
             </p>
           </section>
 
-          <section id="release" className="detail-section agentic-release-section">
-            <div className="agentic-release-heading">
-              <div>
-                <h2>Ready with warnings</h2>
-                <p>
-                  No Critical/High safety failures were found in the exercised release gates.
-                  Bounded coverage, observability and quality warnings remain.
-                </p>
-              </div>
-              <span className="agentic-release-badge">Ready with warnings</span>
-            </div>
-            <p>
-              This is production-oriented reference-deployment evidence, not unrestricted
-              production certification. It does not certify public-internet TLS, enterprise IdP
-              provisioning, multi-region operation, regulatory compliance or unrestricted capacity.
-            </p>
-          </section>
 
           <ProjectInShort project={project} />
 

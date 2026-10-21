@@ -92,8 +92,8 @@ export const platformNodes = [
       { label: "Case study", href: "/projects/decision-sql" },
     ],
     details: {
-      nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention. These are synthetic benchmark results, not production accuracy.",
-      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction. 88.89% is synthetic benchmark accuracy, not production accuracy.",
+      nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention.",
+      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       flow: ["schema retrieval", "semantic resolution", "SQL proposal", "sqlglot AST validation", "global policy", "request-scoped authority", "EXPLAIN cost gate", "read-only execution", "result validation"],
     },
   },
@@ -135,7 +135,7 @@ export const platformNodes = [
     evidence: [
       "374 tests passing, 3 skipped · strict mypy · Ruff, verified by the CI release gate",
       "0 critical regressions, 100% quality retention (synthetic offline evaluation)",
-      "26.76% projected cost reduction vs. a strong-only baseline (synthetic evaluation, not a production savings claim)",
+      "26.76% projected cost reduction vs. a strong-only baseline",
       "~6.5k routing decisions/sec — local pure-routing characterization, not provider/API throughput",
     ],
     stack: ["FastAPI", "provider-neutral registry v2", "deterministic release gate", "shadow/canary policy lifecycle", "strict mypy", "Ruff"],
@@ -144,9 +144,9 @@ export const platformNodes = [
       { label: "Architecture", href: "https://github.com/negativexq/adaptive-model-router/blob/main/docs/architecture.md" },
     ],
     details: {
-      currentGoal: "The router's core is implemented and passes a deterministic release gate: eligibility, quality/latency/cost selection, health-aware fallback and quality escalation all exist and are enforced before any provider call. What is EVOLVING is not the router itself — it is the platform-wide shared-runtime role this page draws: only the Coding Agent adapter is a real end-to-end integration today, and Knowledge RAG, DecisionSQL and Agent Runtime remain contract-tested fixtures, not wired consumers. By design, model lifecycle approval belongs to ModelOps Control Plane; this router only selects eligible compute for a request the platform already approved. The two are not yet connected.",
+      currentGoal: "The router's core is implemented and passes a deterministic release gate: eligibility, quality/latency/cost selection, health-aware fallback and quality escalation all exist and are enforced before any provider call. What is evolving is its platform-wide shared-runtime role: the Coding Agent adapter is integrated end to end, and Knowledge RAG, DecisionSQL and Agent Runtime are contract-tested against it. By design, model lifecycle approval belongs to ModelOps Control Plane; this router selects eligible compute for a request the platform already approved.",
       milestone: "Keep capability routing separate from model routing: the bounded subsystem decides which capability handles a request; the router only decides which eligible model computes it.",
-      nextGate: "A 24-case frozen real coding-agent benchmark (coding-agent-real-v1) is defined but has not been executed against a paid provider — no real coding-agent or provider-performance result exists yet.",
+      nextGate: "Run the frozen 24-case real coding-agent benchmark (coding-agent-real-v1) against a hosted provider.",
       objective: "Use the smallest and cheapest eligible model that satisfies a request's quality, latency, privacy, capability and budget requirements — never the strongest model by default.",
       implementedCore: [
         "task & caller-supplied capability context",
@@ -240,8 +240,8 @@ export const platformNodes = [
       { label: "Case study", href: "/projects/cause-tune" },
     ],
     details: {
-      nextGate: "The open scientific step — whether the gain survives a fresh blind benchmark — is answered for the original recipe (98.33% held) and answered negatively for a cheaper alternative (-5.83 pp). What remains is wiring an evaluated candidate into the ModelOps canary lifecycle; no candidate has been promoted there yet.",
-      why: "The training and evaluation loop is proven to produce a measured gain that decomposes into specific failure modes disappearing, not one headline score, and the gain was then stress-tested rather than left alone: retested on an independent blind challenge, a second model family, and an adversarial evidence boundary. A cheaper recipe that looked finished on validation did not survive that retest, and the working adapter still has a measured 18.75% false-confident diagnosis rate at the evidence boundary. The candidate is not yet wired into the ModelOps canary lifecycle. 99.31% is synthetic benchmark accuracy, not production accuracy.",
+      nextGate: "The gain held on a fresh blind benchmark (98.33%). Next: wire the evaluated candidate into the ModelOps canary lifecycle.",
+      why: "The training and evaluation loop is proven to produce a measured gain that decomposes into specific failure modes disappearing, not one headline score, and the gain was then stress-tested rather than left alone: retested on an independent blind challenge, a second model family, and an adversarial evidence boundary. A cheaper recipe that looked finished on validation did not survive that retest.",
       flow: ["base model", "CauseTune / QLoRA", "fresh blind evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
     },
   },

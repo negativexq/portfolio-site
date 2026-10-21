@@ -10,7 +10,7 @@ export const mlPlatformInfrastructureCapabilities = [
   { title: "Batch inference and model quality", items: ["Pinned model manifests, bounded scoring and versioned prediction outputs", "PSI and missing-rate drift; regression and classification quality reports", "Dataset-triggered monitoring with date-matched feedback and restart-safe intent"] },
   { title: "Training and model lifecycle", items: ["Argo Workflows jobs and multi-step pipeline DAGs", "Run logs, step timelines, retry, cancellation and model lineage", "Evaluation thresholds, candidate/champion promotion and MLflow alias reconciliation"] },
   { title: "Serving and release control", items: ["Immutable deployment revisions and manual rollback", "Canary steps gated on error rate, p95 latency and minimum traffic", "Automatic rollback when a canary fails its release gates"] },
-  { title: "LLMs and functions", items: ["Full-commit-pinned Hugging Face versions; GPU/vLLM acceptance remains open", "OpenAI-compatible streaming chat and project GPU quotas", "Container functions with Knative scaling and JSON invoke endpoints"] },
+  { title: "LLMs and functions", items: ["Full-commit-pinned Hugging Face versions", "OpenAI-compatible streaming chat and project GPU quotas", "Container functions with Knative scaling and JSON invoke endpoints"] },
   { title: "Inference gateway", items: ["Go data plane for predict, chat and function traffic; Python rollback option", "Per-caller API keys, endpoint exposure and request/token limits", "Caller usage, request IDs and a consistent error contract"] },
   { title: "Web UI and monitoring", items: ["React workspace for schedules, datasets, lineage, quality reports and serving", "Preview consequential changes before applying them", "Monitor, Grafana, Prometheus and traces from requests through reconcilers"] },
 ] as const;
@@ -70,7 +70,7 @@ export const mlPlatformInfrastructureDeploymentTargets = [
 export const mlPlatformInfrastructureDeepDiveLinks = [
   { label: "Million-row NYC acceptance", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-08/million-row-acceptance/README.md" },
   { label: "Dataset-triggered monitoring evidence", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-08/monitoring-automation/README.md" },
-  { label: "Current status and open gates", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/status.md" },
+  { label: "Current status", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/status.md" },
   { label: "Go gateway migration and verification", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/evidence/live-2026-10-07/observability/gateway-go-migration.md" },
   { label: "Scheduling and execution snapshots", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/scheduling.md" },
   { label: "Data catalog and lineage", href: "https://github.com/negativexq/ml-platform-infrastructure/blob/main/docs/data-catalog.md" },

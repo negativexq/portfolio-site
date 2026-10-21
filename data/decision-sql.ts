@@ -185,14 +185,6 @@ export const decisionSqlStackGroups = [
   ["Quality", "pytest + Ruff + mypy + OpenTelemetry"],
 ] as const;
 
-export const decisionSqlLimitations = [
-  "The evidence supports governed one-shot decision evaluation, deterministic SQL safety, the narrow grain-normalization mechanism, request-scoped relation authority and an accepted-QueryPlan execution boundary.",
-  "It does not establish universal Text-to-SQL correctness, universal fanout or grain repair, or production readiness for arbitrary enterprise schemas.",
-  "The authority contract is relation-level; column-level and relationship-path authorization are separate boundaries and are not claimed as universally enforced.",
-  "Ambiguity recognition is the weaker governance axis on this benchmark, and remaining fail-closed grain cases are still under investigation.",
-  "Numbers belong to one frozen 180-case synthetic benchmark, not to production traffic.",
-] as const;
-
 export const decisionSqlDeepDiveLinks = [
   {
     label: "Repository README and walkthrough",
