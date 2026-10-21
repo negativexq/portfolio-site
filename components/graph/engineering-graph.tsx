@@ -408,7 +408,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         {data.nodes.filter((node) => node.type === "technology" && node.metadata.overview).map((node) => <button type="button" key={node.id} aria-pressed={inspectedId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>)}
       </nav> : null}
       <p className="atlas-footnote">{activeProject ? `${visibleData.nodes.length - 1} selected foundations · evidence in the details panel` : "Built: my work · Uses: documented technology · Related: documented project relationship."} <span>Drag to pan · scroll to zoom · Esc for overview</span></p>
-      <p className="sr-only" aria-live="polite">{inspectedNode ? `${inspectedNode.label} selected.` : "Ömer Faruk Koç at the center, connected to seven core projects and eleven technologies."}</p>
+      <p className="sr-only" aria-live="polite">{inspectedNode ? `${inspectedNode.label} selected.` : "Ömer Faruk Koç at the center, connected to seven core projects and twelve technologies."}</p>
     </div>
   );
 }
