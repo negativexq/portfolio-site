@@ -45,6 +45,7 @@ const bridgePositions: Record<string, { x: number; y: number }> = {
   Prometheus: { x: -5.2, y: -1.8 },
   MLflow: { x: -4.4, y: 7.7 },
   Go: { x: -7.5, y: 7.3 },
+  Langfuse: { x: 8.6, y: -5.4 },
 };
 
 export function buildCuratedEngineeringGraph(): EngineeringGraphData {
