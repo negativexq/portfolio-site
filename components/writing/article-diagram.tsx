@@ -1671,6 +1671,190 @@ function ResearchLoopWorkingMemoryDiagram() {
   );
 }
 
+function IntentReconcileLoopDiagram() {
+  const marker = "intent-reconcile-arrow";
+  return (
+    <DiagramFrame
+      id="intent-reconcile-loop"
+      title="Desired state committed by the API, converged by reconcilers"
+      description="An operator request is authorized and validated, then one PostgreSQL transaction records an immutable revision, the desired state and an audit event, and the API returns 202 Accepted. Separately, a reconciler pass reads desired state, reads observed state from KServe, Argo and Kubernetes, applies a deterministically named resource and writes observed state back. A crash or retry simply runs the next pass, which finds the same resources."
+      caption="The API decides and returns; reconcilers converge. Any pass can fail and be repeated, because resources are named from platform identities and applying the same spec twice changes nothing."
+      height={400}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">API REQUEST · NEVER WAITS ON THE CLUSTER</Label>
+      <Node x={28} y={54} width={120} height={62} lines={["Operator", "request"]} />
+      <Node x={172} y={54} width={150} height={62} lines={["Authorize", "+ validate"]} />
+      <rect className="diagram-boundary" x={346} y={38} width={258} height={94} rx="10" />
+      <Label x={358} y={56} anchor="start">POSTGRESQL TRANSACTION</Label>
+      <Node x={358} y={68} width={234} height={52} lines={["immutable revision", "desired state + audit"]} tone="accent" />
+      <Node x={628} y={54} width={224} height={62} lines={["202 Accepted", "API is done"]} />
+      <Arrow d="M148 85 H165" marker={marker} />
+      <Arrow d="M322 85 H339" marker={marker} />
+      <Arrow d="M604 85 H621" marker={marker} />
+      <Arrow d="M475 132 V160 H103 V203" marker={marker} dashed />
+
+      <Label x={852} y={190} anchor="end">RECONCILER PASS · ANY REPLICA, ANY RETRY</Label>
+      <Node x={28} y={210} width={150} height={66} lines={["Read desired", "state"]} />
+      <Node x={202} y={210} width={180} height={66} lines={["Read observed", "KServe · Argo · K8s"]} tone="muted" />
+      <Node x={406} y={210} width={200} height={66} lines={["Apply deterministic", "named resource"]} tone="accent" />
+      <Node x={630} y={210} width={222} height={66} lines={["Write observed state", "READY · FAILED · DRIFTED"]} />
+      <Arrow d="M178 243 H195" marker={marker} />
+      <Arrow d="M382 243 H399" marker={marker} />
+      <Arrow d="M606 243 H623" marker={marker} />
+      <Arrow d="M741 276 V306 H103 V282" marker={marker} dashed />
+      <Label x={422} y={328}>crash or retry → the next pass finds the same resources</Label>
+      <rect className="diagram-result" x={146} y={352} width={588} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={371} textAnchor="middle">A lost pass delays convergence; it never duplicates a resource.</text>
+    </DiagramFrame>
+  );
+}
+
+function GatewayControlPlaneSplitDiagram() {
+  const marker = "gateway-split-arrow";
+  return (
+    <DiagramFrame
+      id="gateway-control-plane-split"
+      title="Management plane and inference data plane"
+      description="People and automation call the control plane API, which writes to PostgreSQL; reconcilers then drive the cluster. Callers and services use a separate Go inference gateway that authenticates, checks scope and admits each call against shared budgets in PostgreSQL before forwarding to KServe and the model, LLM or function."
+      caption="Both planes share one database, not one process. The gateway reads keys, endpoints and budgets; it never changes the platform."
+      height={330}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">MANAGEMENT PLANE · LOW VOLUME, RICH AUTHORIZATION</Label>
+      <Node x={28} y={50} width={140} height={58} lines={["People,", "automation"]} />
+      <Node x={196} y={50} width={170} height={58} lines={["Control plane", "API"]} />
+      <Node x={394} y={50} width={150} height={58} lines={["PostgreSQL"]} tone="accent" />
+      <Node x={572} y={50} width={130} height={58} lines={["Reconcilers"]} />
+      <Node x={730} y={50} width={122} height={58} lines={["Cluster"]} tone="muted" />
+      <Arrow d="M168 79 H189" marker={marker} />
+      <Arrow d="M366 79 H387" marker={marker} />
+      <Arrow d="M544 79 H565" marker={marker} />
+      <Arrow d="M702 79 H723" marker={marker} />
+
+      <Arrow d="M330 190 V150 H469 V115" marker={marker} dashed />
+      <Label x={484} y={146} anchor="start">shared budgets · keys · endpoints</Label>
+      <Label x={28} y={176} anchor="start">INFERENCE DATA PLANE</Label>
+      <Node x={28} y={190} width={140} height={58} lines={["Callers,", "services"]} />
+      <Node x={196} y={190} width={200} height={58} lines={["Go gateway · 6.75 MB", "auth · scope · admit"]} tone="accent" />
+      <Node x={424} y={190} width={160} height={58} lines={["KServe"]} tone="muted" />
+      <Node x={612} y={190} width={240} height={58} lines={["Model · LLM · function"]} />
+      <Arrow d="M168 219 H189" marker={marker} />
+      <Arrow d="M396 219 H417" marker={marker} />
+      <Arrow d="M584 219 H605" marker={marker} />
+      <rect className="diagram-result" x={106} y={280} width={668} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={299} textAnchor="middle">Management restarts never stop predictions; callers never reach management routes.</text>
+    </DiagramFrame>
+  );
+}
+
+function CanaryGateDecisionDiagram() {
+  const marker = "canary-gate-arrow";
+  const checks = [
+    { y: 40, check: "Enough traffic and a breach?", outcome: "FAIL", tone: "stop" as const },
+    { y: 110, check: "Observed less than step_seconds?", outcome: "WAIT", tone: "muted" as const },
+    { y: 180, check: "Window over, too few requests?", outcome: "FAIL", tone: "stop" as const },
+    { y: 250, check: "Traffic seen, metrics missing?", outcome: "FAIL", tone: "stop" as const },
+    { y: 320, check: "Error rate and p95 within limits", outcome: "PASS", tone: "accent" as const },
+  ];
+  return (
+    <DiagramFrame
+      id="canary-gate-decision"
+      title="Canary step gate decision order"
+      description="Each canary step reads the canary revision's requests, error rate and p95 latency. A breach with enough traffic fails immediately. A clean step waits until it has observed for step_seconds. If the window ends with too few requests, or traffic was seen but metrics are missing, the step fails. Only a step with enough traffic and metrics within limits passes."
+      caption="Rules three and four make the gate real: missing evidence fails closed, so a metrics outage or a quiet hour cannot promote a candidate."
+      height={440}
+    >
+      <ArrowMarker id={marker} />
+      <Node x={28} y={40} width={190} height={52} lines={["Canary revision", "requests · errors · p95"]} />
+      <Arrow d="M218 66 H253" marker={marker} />
+      {checks.map((row, index) => (
+        <g key={row.y}>
+          <Node x={260} y={row.y} width={300} height={52} lines={[row.check]} />
+          <Node x={600} y={row.y} width={140} height={52} lines={[row.outcome]} tone={row.tone} />
+          <Arrow d={`M560 ${row.y + 26} H593`} marker={marker} />
+          {index < checks.length - 1 ? <Arrow d={`M410 ${row.y + 52} V${row.y + 63}`} marker={marker} /> : null}
+        </g>
+      ))}
+      <Label x={790} y={70}>roll back</Label>
+      <Label x={790} y={140}>observe</Label>
+      <Label x={790} y={210}>roll back</Label>
+      <Label x={790} y={280}>roll back</Label>
+      <Label x={790} y={350}>next step</Label>
+      <rect className="diagram-result" x={146} y={396} width={588} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={415} textAnchor="middle">A canary nobody exercised has proven nothing, so it does not advance.</text>
+    </DiagramFrame>
+  );
+}
+
+function BatchLineageMonitoringDiagram() {
+  const marker = "batch-lineage-arrow";
+  return (
+    <DiagramFrame
+      id="batch-lineage-monitoring"
+      title="Scheduled batch scoring with frozen inputs and rule-created monitoring"
+      description="A schedule with processing date 2025-02-01 resolves and freezes taxi-features version 2. The pipeline run scores it with a model pinned by SHA-256 and publishes fare-predictions with lineage and a checksum. A monitoring rule creates the monitoring run, which joins predictions to separately held ground truth on trip_id with 100 percent coverage and reports STABLE. An independent rerun produces identical bytes as a new version."
+      caption="Every arrow leaves a record: the frozen input version, the pinned model, the produced version and the report that judged it."
+      height={420}
+    >
+      <ArrowMarker id={marker} />
+      <Node x={28} y={50} width={250} height={66} lines={["Schedule · processing date", "2025-02-01"]} />
+      <Node x={314} y={50} width={250} height={66} lines={["Resolve + freeze", "taxi-features v2"]} tone="accent" />
+      <Node x={600} y={50} width={252} height={66} lines={["Pipeline run", "model pinned by SHA-256"]} />
+      <Arrow d="M278 83 H307" marker={marker} />
+      <Arrow d="M564 83 H593" marker={marker} />
+      <Arrow d="M726 116 V163" marker={marker} />
+
+      <Node x={600} y={170} width={252} height={66} lines={["Publish fare-predictions", "lineage + checksum"]} tone="accent" />
+      <Node x={314} y={170} width={250} height={66} lines={["Monitoring rule", "creates the run"]} />
+      <Node x={28} y={170} width={250} height={66} lines={["Join on trip_id", "100% coverage · STABLE"]} tone="accent" />
+      <Arrow d="M600 203 H571" marker={marker} />
+      <Arrow d="M314 203 H285" marker={marker} />
+
+      <Node x={28} y={280} width={250} height={60} lines={["taxi-ground-truth v2", "separated before scoring"]} tone="muted" />
+      <Node x={600} y={280} width={252} height={60} lines={["Independent rerun", "identical bytes · new version"]} tone="muted" />
+      <Arrow d="M153 280 V243" marker={marker} dashed />
+      <Arrow d="M726 236 V273" marker={marker} dashed />
+      <rect className="diagram-result" x={96} y={370} width={688} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={389} textAnchor="middle">Every prediction traces back to its input version, model bytes and the report that judged it.</text>
+    </DiagramFrame>
+  );
+}
+
+function SharedLimiterAdmissionDiagram() {
+  const marker = "shared-limiter-arrow";
+  return (
+    <DiagramFrame
+      id="shared-limiter-admission"
+      title="Shared PostgreSQL admission across gateway replicas"
+      description="Four gateway replicas admit requests through one PostgreSQL transaction of three statements: transaction-local timeouts, an ordered insert of missing buckets, and one statement that locks, refills, admits and updates every bucket. The result is 200 when admitted, 429 when the budget is spent, and 503 with nothing forwarded when the store is unavailable."
+      caption="Budgets are rows, not process memory. Adding replicas adds throughput, never budget, and losing the store stops admission instead of skipping it."
+      height={310}
+    >
+      <ArrowMarker id={marker} />
+      {[40, 90, 140, 190].map((y, index) => (
+        <g key={y}>
+          <Node x={28} y={y} width={130} height={40} lines={[`gateway ${index + 1}`]} tone="muted" />
+          <Arrow d={`M158 ${y + 20} H243`} marker={marker} />
+        </g>
+      ))}
+      <rect className="diagram-boundary diagram-boundary--accent" x={250} y={36} width={330} height={198} rx="10" />
+      <Label x={266} y={58} anchor="start">POSTGRESQL · ONE TRANSACTION</Label>
+      <Node x={266} y={72} width={298} height={42} lines={["1 · lock and statement timeouts"]} />
+      <Node x={266} y={124} width={298} height={42} lines={["2 · insert missing buckets in order"]} />
+      <Node x={266} y={176} width={298} height={42} lines={["3 · lock, refill, admit, update"]} tone="accent" />
+      <Node x={620} y={60} width={232} height={50} lines={["200 · admitted"]} tone="accent" />
+      <Node x={620} y={125} width={232} height={50} lines={["429 · budget spent"]} tone="muted" />
+      <Node x={620} y={190} width={232} height={50} lines={["503 · store unavailable", "nothing forwarded"]} tone="stop" />
+      <Arrow d="M580 85 H613" marker={marker} />
+      <Arrow d="M580 150 H613" marker={marker} />
+      <Arrow d="M580 215 H613" marker={marker} dashed />
+      <rect className="diagram-result" x={146} y={262} width={588} height={28} rx="6" />
+      <text className="diagram-result-text" x={440} y={281} textAnchor="middle">More replicas never mean more budget; no store means no admission.</text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1697,6 +1881,11 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "agent-evidence-feedback-loop": AgentEvidenceFeedbackLoopDiagram,
   "observability-optimization-architecture": ObservabilityOptimizationArchitectureDiagram,
   "research-loop-working-memory": ResearchLoopWorkingMemoryDiagram,
+  "intent-reconcile-loop": IntentReconcileLoopDiagram,
+  "gateway-control-plane-split": GatewayControlPlaneSplitDiagram,
+  "canary-gate-decision": CanaryGateDecisionDiagram,
+  "batch-lineage-monitoring": BatchLineageMonitoringDiagram,
+  "shared-limiter-admission": SharedLimiterAdmissionDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

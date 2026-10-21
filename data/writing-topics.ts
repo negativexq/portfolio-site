@@ -24,7 +24,7 @@ export const writingTopics = [
     slug: "ai-platform",
     title: "AI Platform",
     description:
-      "Model lifecycle as a control-plane problem — progressive delivery, delayed quality feedback, policy-driven promotion and reconciliation.",
+      "Model lifecycle as a control-plane problem: desired state and reconciliation, progressive delivery, inference gateways, shared limits and monitored batch scoring.",
   },
   {
     slug: "text-to-sql",
