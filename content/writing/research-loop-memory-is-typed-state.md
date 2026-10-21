@@ -116,12 +116,12 @@ For quantitative reads of image-only pages, the extractor reads the original pag
 
 Working memory for one question is the layer the research loop needs, and it is the one implemented and round-trip tested. Around it sit layers with different jobs, each with its own rules:
 
-| Layer | What it holds | Rule |
-| --- | --- | --- |
-| Working state | Facts, gaps, attempts, calculations and review state for one question | Typed, written by the application, serializable |
-| Checkpoint | State and schema versions, sources, pending work, continuation point, consumed budget | Resume revalidates access and document versions and never resets spent budget |
-| Extraction cache | Structured data for one source version and region | Keyed by source hash, region, render settings, model and schema versions; a hit cannot bypass authorization |
-| Long-term memory | Preferences or reviewed knowledge across sessions | Separate purpose and lifecycle |
+| Layer | What it holds | Rule | Status |
+| --- | --- | --- | --- |
+| Working state | Facts, gaps, attempts, calculations and review state for one question | Typed, written by the application, serializable | Implemented |
+| Checkpoint | State and schema versions, sources, pending work, continuation point, consumed budget | Resume revalidates access and document versions and never resets spent budget | Designed |
+| Extraction cache | Structured data for one source version and region | Keyed by source hash, region, render settings, model and schema versions; a hit cannot bypass authorization | Designed |
+| Long-term memory | Preferences or reviewed knowledge across sessions | Separate purpose and lifecycle | Designed |
 
 One rule runs through all of them: previous model answers and gold answers are not verified document memory. A remembered answer is context, never a source. That is the same boundary as in [Memory Is Context, Not Authority](/writing/memory-is-context-not-authority), applied to research instead of conversation.
 
