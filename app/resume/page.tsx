@@ -30,7 +30,8 @@ export default function ResumePage() {
       <JsonLd data={buildWebPage(profile, { path: "/resume", name: `${profile.name} — Resume`, description: RESUME_DESCRIPTION })} />
       <header className="page-hero container resume-hero">
         <h1>{profile.name}</h1>
-        <p>{profile.title} — {profile.summary}</p>
+        <p className="resume-hero-role">{profile.title}</p>
+        <p className="resume-hero-summary">{profile.summary}</p>
         <div className="hero-actions">
           <a
             className="button button-primary"
@@ -76,19 +77,6 @@ export default function ResumePage() {
             </Link>
           </section>
 
-          <section className="resume-section">
-            <p className="detail-kicker">Core domains</p>
-            <h2 className="resume-section-title">Engineering areas</h2>
-            <div className="resume-area-list">
-              {engineeringAreas.map((area) => (
-                <article key={area.id}>
-                  <h3>{area.title}</h3>
-                  <p>{area.description}</p>
-                  <TagList items={area.technologies} limit={4} label={`${area.title} representative technologies`} />
-                </article>
-              ))}
-            </div>
-          </section>
         </div>
 
         <aside className="resume-sidebar">
@@ -114,6 +102,19 @@ export default function ResumePage() {
           </section>
         </aside>
       </div>
+
+      <section className="container resume-areas" aria-labelledby="resume-areas-heading">
+        <h2 className="resume-section-title" id="resume-areas-heading">Engineering areas</h2>
+        <div className="resume-area-list">
+          {engineeringAreas.map((area) => (
+            <article key={area.id}>
+              <h3>{area.title}</h3>
+              <p>{area.description}</p>
+              <TagList items={area.technologies} limit={4} label={`${area.title} representative technologies`} />
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

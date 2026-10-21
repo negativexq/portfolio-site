@@ -326,7 +326,7 @@ export function PlatformPage() {
 
       <section className="platform-hero container" aria-labelledby="platform-title">
         <div className="platform-hero-copy">
-          <h1 id="platform-title">Building toward a Governed Enterprise AI Platform</h1>
+          <h1 id="platform-title">Toward a Governed Enterprise AI Platform</h1>
           <p className="platform-claim-boundary">
             I built these systems independently and tested each one against its own evidence. This page shows the larger architecture I’m evolving them toward.
           </p>

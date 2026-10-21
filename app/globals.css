@@ -403,7 +403,7 @@ a {
    Only the highlight is animated — the tree itself is static — so reduced
    motion degrades to a legible static diagram rather than an empty column. */
 .hero-pipeline {
-  display: none;
+  display: block;
   animation: hero-reveal var(--motion-entry) var(--motion-ease) both;
   animation-delay: 270ms;
 }
@@ -1299,7 +1299,7 @@ a {
 
 .graph-cta h2,
 .contact-section h2 {
-  max-width: 17ch;
+  max-width: 20ch;
 }
 
 .graph-cta-inner > div > p:last-child {
@@ -3262,9 +3262,9 @@ a {
 }
 
 .platform-hero h1 {
-  max-width: 12ch;
+  max-width: 21ch;
   margin: 1.2rem 0 0;
-  font-size: clamp(3rem, 6vw, 5.2rem);
+  font-size: clamp(2.6rem, 5vw, 4.6rem);
   font-weight: 640;
   letter-spacing: -0.075em;
   line-height: 0.94;
@@ -4793,8 +4793,8 @@ a {
 
 @media (max-width: 640px) {
   .platform-hero h1 {
-    max-width: 10ch;
-    font-size: clamp(2.8rem, 14vw, 4rem);
+    max-width: none;
+    font-size: clamp(2.3rem, 10vw, 3rem);
   }
 
   .platform-hero-index {
@@ -6387,9 +6387,9 @@ a {
 }
 
 .article-header h1 {
-  max-width: 18ch;
+  max-width: 24ch;
   margin: 0;
-  font-size: clamp(2.7rem, 6vw, 5.4rem);
+  font-size: clamp(2.4rem, 4.6vw, 4.2rem);
   font-weight: 640;
   letter-spacing: -0.06em;
   line-height: 0.98;
@@ -8438,7 +8438,7 @@ a {
   }
 
   .article-header h1 {
-    font-size: clamp(2.5rem, 11vw, 3.7rem);
+    font-size: clamp(2rem, 8.4vw, 2.8rem);
   }
 
   .related-writing-list a {
@@ -9917,4 +9917,58 @@ a {
 a.hero-pipeline-watch-label:hover,
 a.hero-pipeline-watch-label:focus-visible {
   color: var(--foreground);
+}
+
+/* Below the two-column hero the lifecycle follows the copy as a map of the
+   work instead of disappearing; the frame stays inside the page gutter. */
+@media (max-width: 1159px) {
+  .hero-pipeline {
+    max-width: 26rem;
+    margin-top: clamp(2.5rem, 8vw, 3.5rem);
+  }
+
+  .hero-pipeline-watch {
+    margin-inline: 0;
+  }
+}
+
+/* Resume opening: the role reads at subheading size under the name, the
+   summary keeps a reading measure. */
+.resume-hero-role {
+  max-width: none;
+  margin: 1rem 0 0;
+  color: var(--foreground);
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.resume-hero-summary {
+  max-width: 44rem;
+  margin: 0.9rem 0 0;
+  color: var(--text);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.65;
+}
+
+/* Engineering areas span the full container under the two-column layout. */
+.resume-areas {
+  padding-bottom: var(--section);
+}
+
+.resume-areas .resume-area-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1020px) {
+  .resume-areas .resume-area-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .resume-areas .resume-area-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

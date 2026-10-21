@@ -184,7 +184,7 @@ export default function Home() {
       <section className="contact-section section-shell" aria-labelledby="contact-heading">
         <div className="container contact-inner">
           <div>
-            <h2 id="contact-heading">Have an interesting platform, data or AI infrastructure problem?</h2>
+            <h2 id="contact-heading">Have a platform, data or AI problem?</h2>
             <p className="contact-context">Open to remote opportunities · {profile.timezone}</p>
             <p className="contact-availability">{profile.availability}</p>
           </div>
