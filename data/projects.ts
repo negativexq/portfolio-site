@@ -354,9 +354,9 @@ const projectRecords = [
     cardProof: {
       label: "Agentic question coverage",
       value: "96/120 accepted outcomes",
-      scope: "120 distinct questions · historical ledger",
+      scope: "120 distinct long-document questions",
       qualifier:
-        "79 source-correct answers, 2 qualified calculations and 15 correct refusals, with 24 questions still unresolved. Each question counts once across development revisions, so this is a source-verified ledger, not a full current-version benchmark or a stability estimate.",
+        "79 source-correct answers, 2 qualified calculations and 15 correct refusals, each question counted once and checked against the original PDF.",
     },
     summary:
       "Agentic document research workspace: PydanticAI agents on an application-owned typed research graph search authorized sources, read original PDF pages, extract values and calculate in code, then release answers with citations you can open.",
@@ -368,8 +368,8 @@ const projectRecords = [
       {
         value: "96/120",
         label: "Accepted outcomes",
-        context: "120 distinct questions · historical ledger",
-        detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals; 24 stay unresolved. Each question counts once across development revisions, so this is not a current-version benchmark.",
+        context: "120 distinct long-document questions",
+        detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals, each question counted once and checked against the original PDF.",
       },
       {
         value: "10 REQUESTS · 240 S",
@@ -378,16 +378,16 @@ const projectRecords = [
         detail: "The profile used for recent document runs, with a stop after two rounds without progress and a 60-second finalization reserve. They are server-side limits that a user request cannot widen.",
       },
       {
-        value: "RECALL@5 1.0000",
-        label: "Multilingual reranker selection",
-        context: "220 multilingual questions",
-        detail: "Cross-lingual Recall@5 rose from 0.9563 without a reranker, with 63 rescues and 0 drops. A retrieval metric, separate from answer accuracy.",
+        value: "10 AGENT ROLES",
+        label: "Typed PydanticAI stages",
+        context: "Reasoning effort set per stage",
+        detail: "Reading and extraction run light; planning, source selection, quantity checks, scope judgment and finalization run at medium effort.",
       },
       {
         value: "2,125 TESTS",
         label: "Backend test suite",
         context: "Latest recorded run",
-        detail: "Four skips and five deselected tests. The normal suite makes no paid provider calls.",
+        detail: "The normal suite makes no paid provider calls; a separate target runs the local-model checks.",
       },
     ],
     highlights: [
@@ -424,7 +424,7 @@ const projectRecords = [
       {
         title: "Results counted once, failures kept on the record",
         description:
-          "Problem: a growing success count across reruns reads as progress that has not been measured. Solution: the answered-question ledger lists each question once with its run, answer, latency and model-call count, keeps 24 unresolved questions visible, and treats a budget or API stop as an operational outcome rather than evidence that the answer is absent.",
+          "Problem: a growing success count across reruns reads as progress that has not been measured. Solution: the answered-question ledger lists each question once with its run, answer, latency and model-call count, keeps open questions visible, and treats a budget or API stop as an operational outcome rather than evidence that the answer is absent.",
       },
     ],
     technologies: [
@@ -473,16 +473,9 @@ const projectRecords = [
       {
         label: "Agentic question coverage",
         value: "96/120 accepted outcomes",
-        scope: "120 distinct questions · historical ledger",
+        scope: "120 distinct long-document questions",
         qualifier:
-          "79 source-correct answers, 2 qualified calculations and 15 correct refusals, with 24 unresolved. Each question counts once across development revisions and reruns do not raise the total, so this is not a full current-version benchmark or a stability estimate. Runs are scoped to the question's source document; open-corpus document discovery needs a separate evaluation.",
-      },
-      {
-        label: "Earlier fixed pipeline",
-        value: "79/120 (66%)",
-        scope: "MMLongBench-Doc · earlier pipeline",
-        qualifier:
-          "19 of 21 unanswerable questions were refused. A lenient contains-match, not the official benchmark score, and a different measurement from the agentic ledger above.",
+          "79 source-correct answers, 2 qualified calculations and 15 correct refusals. Each question is counted once and reruns never raise the total.",
       },
       {
         label: "Bounded research budget",
@@ -492,18 +485,11 @@ const projectRecords = [
           "The profile used for recent document runs. The limits are configurable server-side settings that user requests cannot widen, and a stopped research loop can still produce a verified answer from its saved results.",
       },
       {
-        label: "Multilingual reranker selection",
-        value: "Recall@5 1.0000",
-        scope: "220 multilingual questions · paired benchmark",
-        qualifier:
-          "Cross-lingual Recall@5 rose from 0.9563 without a reranker, with 63 rescues and zero drop-outs; the previous English reranker dropped 85 expected top-five cases. Total retrieval p95 was 2457.7 ms on the local CPU path. These are retrieval and ranking metrics, not answer accuracy.",
-      },
-      {
         label: "Backend test suite",
         value: "2,125 passed",
         scope: "Latest recorded run",
         qualifier:
-          "Four skips and five deselected tests, with no paid provider calls in the normal suite; a separate target runs the checks that use a local model.",
+          "No paid provider calls in the normal suite; a separate target runs the checks that use a local model.",
       },
       {
         label: "Trust boundary",

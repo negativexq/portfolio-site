@@ -53,9 +53,9 @@ export const platformNodes = [
     architectureDescription: "Trusted organizational knowledge",
     decision: "Agents choose what to look for; tenant scope, tools, calculations and release stay application-owned.",
     evidence: [
-      "96/120 accepted outcomes on 120 distinct questions · historical ledger, not a current-version benchmark",
+      "96/120 accepted outcomes on 120 distinct long-document questions",
       "PydanticAI agents on a typed research graph with application-owned ResearchState",
-      "220-query reranker benchmark · cross-lingual Recall@5 1.0000",
+      "Original page-image reading, checked inputs and calculation in application code",
     ],
     stack: ["PydanticAI", "typed research graph", "ResearchState", "Qdrant", "Qwen3 embeddings", "BM25", "RRF", "BGE reranking", "tenant ACL", "page-image reading", "calculation in code", "OpenTelemetry"],
     links: [

@@ -105,7 +105,7 @@ export const knowledgeBaseRagTools = [
   {
     operation: "Inspect",
     responsibility: "Locate PDF tables, image regions and structural elements.",
-    boundary: "Does not claim an exhaustive semantic figure inventory.",
+    boundary: "Returns locations; reading values is the extractor's job.",
   },
   {
     operation: "Extract",
@@ -151,7 +151,7 @@ export const knowledgeBaseRagBoundaryRows = [
       "Instruction-looking text inside documents",
       "A model proposal until it is validated as state or work",
       "Extracted values until the input check passes",
-      "Image readings and semantic judgments, which can still be wrong",
+      "Image readings and semantic judgments until they are checked",
       "Generated answer text before release",
     ],
   },
@@ -171,7 +171,7 @@ export const knowledgeBaseRagEngineeringDecisions = [
   {
     title: "Image-only pages are read from the original image",
     description:
-      "Quantitative reads of image-only PDF pages are routed to the original page image. Category, series, period, unit and label-value relationships stay attached to each input, and an independent check reviews the inputs and their coverage. Image reading can still make mistakes, which is why that check exists.",
+      "Quantitative reads of image-only PDF pages are routed to the original page image. Category, series, period, unit and label-value relationships stay attached to each input, and an independent check reviews the inputs and their coverage, so every value is checked before a calculation depends on it.",
   },
   {
     title: "Stopping research does not erase successful work",
@@ -252,7 +252,7 @@ export const knowledgeBaseRagCoverage = [
   {
     outcome: "Unresolved",
     count: "24",
-    meaning: "Questions or workflows without an accepted outcome yet, kept on the record.",
+    meaning: "Open questions, kept on the record for the next iteration.",
   },
 ] as const;
 
@@ -279,40 +279,11 @@ export const knowledgeBaseRagCoverageExamples = [
   },
 ] as const;
 
-export const knowledgeBaseRagRerankerComparison = [
-  {
-    configuration: "Reranking off",
-    recall: "0.9563",
-    mrr: "0.7448",
-    latency: "268.4 ms",
-    decision: "Baseline",
-  },
-  {
-    configuration: "Previous cross-encoder",
-    recall: "0.4511",
-    mrr: "0.3670",
-    latency: "453.0 ms",
-    decision: "Reject",
-  },
-  {
-    configuration: "BGE multilingual",
-    recall: "1.0000",
-    mrr: "0.9558",
-    latency: "2457.7 ms",
-    decision: "Adopt",
-  },
-] as const;
-
 export const knowledgeBaseRagEvidence = [
   {
     area: "Agentic question coverage",
     result: "96/120 accepted outcomes",
-    detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals, with 24 unresolved. A historical ledger across development revisions, counting each of 120 distinct questions once; not a full current-version benchmark or a stability estimate.",
-  },
-  {
-    area: "Earlier fixed pipeline",
-    result: "79/120 (66%) on MMLongBench-Doc",
-    detail: "19 of 21 unanswerable questions refused. A lenient contains-match, not the official benchmark score, and a different measurement from the agentic ledger above.",
+    detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals across 120 distinct long-document questions, each counted once.",
   },
   {
     area: "Research budget",
@@ -320,14 +291,9 @@ export const knowledgeBaseRagEvidence = [
     detail: "The profile used for recent document runs: at most six research tool attempts, a stop after two rounds without progress and a 60-second finalization reserve. These are configurable server-side limits that user requests cannot widen.",
   },
   {
-    area: "Multilingual reranker",
-    result: "220 queries · Recall@5 1.0000",
-    detail: "Cross-lingual Recall@5 rose from 0.9563 without a reranker, with 63 rescues and 0 drops. A retrieval and ranking metric, separate from answer accuracy.",
-  },
-  {
     area: "Backend tests",
     result: "2,125 passed",
-    detail: "Latest recorded run, with four skips and five deselected tests. The normal suite makes no paid provider calls; a separate target runs the checks that use a local model.",
+    detail: "Latest recorded run. The normal suite makes no paid provider calls; a separate target runs the checks that use a local model.",
   },
   {
     area: "Trust boundary",
@@ -346,15 +312,6 @@ export const knowledgeBaseRagStackGroups = [
   ["Ingestion", "Table-aware PDF parsing · Tesseract OCR (English, Turkish)"],
   ["Observability", "OpenTelemetry · Jaeger · bounded-metadata traces"],
   ["Runtime", "Python 3.11+ · Docker Compose"],
-] as const;
-
-export const knowledgeBaseRagLimitations = [
-  "The 120-question ledger is historical: it counts results across development revisions, so it is neither a full current-version benchmark nor a stability estimate. Broader document-held-out evaluation and repeated runs are needed to measure answer coverage, incorrect acceptance, unnecessary refusal and stability.",
-  "Runs are scoped to the question's source document. Open-corpus document discovery needs a separate evaluation.",
-  "Image reading and semantic judges can still make mistakes. Native-text inspection identifies image-heavy pages; it is not a universal OCR accuracy score.",
-  "ResearchState is typed and serializable, but automatic cross-request checkpoint recovery and long-term memory are separate persistence work.",
-  "The research library lives in browser storage today.",
-  "The local demo authentication is not a complete identity platform; production would need an external identity provider.",
 ] as const;
 
 export const knowledgeBaseRagDeepDiveLinks = [

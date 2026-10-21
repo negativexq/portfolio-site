@@ -586,12 +586,7 @@ const architectures = {
         ],
       },
     ],
-    notes: [
-      "PydanticAI makes typed semantic calls, but the application owns the research graph's state transitions, authorization, tool dispatch, accounting and release policy; the current runner uses explicit async control flow rather than a custom graph engine.",
-      "Tenant and role filters apply before reranking and generation, and every tool call rechecks the authorized sources and document versions, so no later stage can widen the authorized set.",
-      "Prepared calculations and known transitions execute directly. The model is called only where a semantic decision is needed, and a closed research loop never discards a successful extraction or calculation.",
-      "Request, token, tool and time limits are shared across every stage of a run, with a finalization reserve held back so a stopped loop can still release a checked answer.",
-    ],
+    notes: [],
   },
   "modelops-control-plane": {
     projectId: "modelops-control-plane",

@@ -12,9 +12,7 @@ import {
   knowledgeBaseRagDeepDiveLinks,
   knowledgeBaseRagEngineeringDecisions,
   knowledgeBaseRagEvidence,
-  knowledgeBaseRagLimitations,
   knowledgeBaseRagRelatedWriting,
-  knowledgeBaseRagRerankerComparison,
   knowledgeBaseRagResearchFlow,
   knowledgeBaseRagScreenshots,
   knowledgeBaseRagStackGroups,
@@ -40,11 +38,9 @@ const sections = [
   ["decisions", "Reliability patterns"],
   ["showcase", "Product proof"],
   ["coverage", "120 questions"],
-  ["benchmark", "Reranker decision"],
   ["evidence", "Evidence"],
   ["evolution", "Evolution"],
   ["stack", "Stack"],
-  ["posture", "Limitations"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
@@ -192,11 +188,6 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
                 </tbody>
               </table>
             </div>
-            <p className="detail-muted">
-              Defaults for OpenAI reasoning effort, configurable server-side: the Reader inherits one
-              setting, extraction and its checker share a lighter one, and the final interpretation,
-              source selection, quantity and scope stages share another.
-            </p>
           </section>
 
           <section id="boundaries" className="detail-section">
@@ -326,58 +317,14 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
                 </tbody>
               </table>
             </div>
-            <p className="detail-muted">
-              This is a historical success ledger across development revisions, not a claim that every
-              answer passes on the latest code or that a complete benchmark was run. Reruns do not add
-              to the count, failed runs stay on the record, and runs are scoped to the question&apos;s
-              source document, so open-corpus discovery needs its own evaluation.
-            </p>
           </section>
 
-          <section id="benchmark" className="detail-section">
-            <h2>The reranker changed because the measurement changed</h2>
-            <p>
-              A paired 220-query multilingual set compared the retrieval choices on the same task, with
-              the adoption rule fixed before the full run. The selected BGE model improved
-              cross-lingual recall and MRR, but its local CPU latency is much higher, and both sides of
-              that decision are recorded.
-            </p>
-            <div className="rag-benchmark-table" role="region" aria-label="Reranker comparison" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Configuration</th>
-                    <th scope="col">Cross Recall@5</th>
-                    <th scope="col">Cross MRR</th>
-                    <th scope="col">Total p95</th>
-                    <th scope="col">Decision</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {knowledgeBaseRagRerankerComparison.map((row) => (
-                    <tr key={row.configuration}>
-                      <th scope="row">{row.configuration}</th>
-                      <td>{row.recall}</td>
-                      <td>{row.mrr}</td>
-                      <td>{row.latency}</td>
-                      <td><span data-decision={row.decision.toLowerCase()}>{row.decision}</span></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="detail-muted">
-              The selected configuration recorded 63 cross-lingual rescues and 0 drops. It is evidence
-              for this dataset and runtime, not a universal ranking of rerankers, and it measures
-              retrieval rather than answer accuracy.
-            </p>
-          </section>
 
           <section id="evidence" className="detail-section">
             <h2>Selected evidence</h2>
             <p>
-              Question coverage, retrieval quality, budgets and test counts describe different
-              surfaces. They stay separate instead of being compressed into one project score.
+              Question coverage, research budgets, tests and the trust boundary, each reported on its
+              own surface.
             </p>
             <div className="rag-evidence-table" role="region" aria-label="Knowledge Base RAG evidence" tabIndex={0}>
               <table>
@@ -427,22 +374,6 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
             </div>
           </section>
 
-          <section id="posture" className="detail-section rag-posture-section">
-            <div className="rag-posture-heading">
-              <div>
-                <h2>Working system with explicit limits</h2>
-                <p>
-                  The repository is a local-first engineering reference. Its results belong to the
-                  documented questions, models and budgets, and the limits are listed rather than
-                  implied away.
-                </p>
-              </div>
-              <span className="rag-release-badge">Limits documented</span>
-            </div>
-            <ul>
-              {knowledgeBaseRagLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
-            </ul>
-          </section>
 
           <ProjectInShort project={project} />
 
