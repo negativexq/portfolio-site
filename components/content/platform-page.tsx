@@ -13,7 +13,7 @@ import {
 } from "@/data/platform";
 
 const proofNodes = platformNodes.filter((node) =>
-  ["knowledge", "agent-runtime", "modelops"].includes(node.id),
+  ["knowledge", "agent-runtime", "modelops", "sre"].includes(node.id),
 );
 
 // Platform node ids are architecture names; case studies live at project slugs.
@@ -23,6 +23,7 @@ const caseStudySlugs: Record<string, string> = {
   "agent-runtime": "agentic-customer-service-platform",
   modelops: "modelops-control-plane",
   causetune: "cause-tune",
+  sre: "agentic-sre",
 };
 
 function statusClass(status: PlatformStatus) {
@@ -392,6 +393,11 @@ export function PlatformPage() {
                     <ArchitectureNode node={platformNodes.find((node) => node.id === "causetune")!} selected={selectedId === "causetune"} onSelect={selectNode} />
                   </div>
                 </div>
+                <div className="platform-graph-operations">
+                  <span className="platform-lane-label">OPERATE</span>
+                  <p>Why did it break?</p>
+                  <ArchitectureNode node={platformNodes.find((node) => node.id === "sre")!} selected={selectedId === "sre"} onSelect={selectNode} />
+                </div>
               </div>
 
               <div className="platform-graph-legend">
@@ -447,7 +453,7 @@ export function PlatformPage() {
             <div>
               <p className="eyebrow">Proof before vision</p>
               <h2 id="implemented-heading">Implemented systems.</h2>
-              <p>Three independent subsystems, each with a different failure surface and an explicit evidence trail.</p>
+              <p>Four independent subsystems, each with a different failure surface and an explicit evidence trail.</p>
             </div>
             <p className="platform-section-aside">Status is a claim boundary, not a project-management label.</p>
           </header>

@@ -242,6 +242,31 @@ export const platformNodes = [
       flow: ["base model", "CauseTune / QLoRA", "fresh blind evaluation", "candidate", "ModelOps", "promote / rollback", "model pool"],
     },
   },
+  {
+    id: "sre",
+    stage: "OPERATE",
+    title: "Agentic SRE",
+    status: "PROVEN",
+    role: "Incident investigation for the Kubernetes runtime",
+    purpose: "Root cause analysis for Kubernetes incidents from evidence, with a read-only Connector inside the cluster.",
+    architectureDescription: "Evidence-driven Kubernetes root cause analysis",
+    decision: "A bounded investigator gathers evidence; deterministic rules decide the root cause.",
+    evidence: [
+      "27/27 held-out testbed runs with the true cause named · HOLDOUT23",
+      "0 false RESOLVED · 0 false strong authority · decoy never named",
+      "18/31 exact on ITBench-Lite · 0 model calls in every measurement",
+    ],
+    stack: ["Python", "Kubernetes", "gRPC over mTLS", "read-only Connector", "PostgreSQL evidence journal", "deterministic RCA", "offline replay", "Prometheus · Loki · Tempo", "Chaos Mesh testbed", "React console"],
+    links: [
+      { label: "GitHub", href: "https://github.com/negativexq/agentic-sre" },
+      { label: "How it works", href: "https://github.com/negativexq/agentic-sre/blob/main/docs/how-it-works.md" },
+      { label: "Measured performance", href: "https://github.com/negativexq/agentic-sre/blob/main/docs/results/measured-performance.md" },
+    ],
+    details: {
+      why: "When the platform's workloads fail, an alert shows what broke but rarely why. Agentic SRE keeps credentials inside the cluster behind a read-only Connector, gathers evidence within explicit budgets, and lets deterministic rules decide the cause, so every diagnosis can be replayed from its frozen inputs.",
+      flow: ["alert", "Connector evidence stream", "typed Findings", "bounded read-only investigation", "deterministic verification", "diagnosis + proposed remediation"],
+    },
+  },
 ] as const satisfies readonly PlatformNode[];
 
 export const platformStatusDefinitions = [
@@ -330,6 +355,14 @@ export const platformArchitectureLayers = [
       { label: "knowledge.rag", items: ["retrieve", "rerank", "evidence.build", "model.route", "validate"] },
       { label: "decision.sql", items: ["schema.retrieve", "sql.generate", "sql.parse", "policy.evaluate", "query.execute"] },
       { label: "agent.runtime", items: ["proposal", "target.resolve", "policy.evaluate", "confirmation", "tool.execute"] },
+    ],
+  },
+  {
+    id: "operations",
+    band: "Operations",
+    note: "Incidents are investigated from evidence; remediation is proposed, never executed.",
+    columns: [
+      { label: "Agentic SRE", status: "PROVEN", items: ["read-only in-cluster Connector", "evidence journal with explicit gaps", "deterministic root-cause rules", "replayable diagnoses"] },
     ],
   },
 ] satisfies readonly PlatformLayer[];
