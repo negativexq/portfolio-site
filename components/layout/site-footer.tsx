@@ -11,7 +11,6 @@ export function SiteFooter() {
           <p className="footer-note">AI, data and distributed systems—built with evidence.</p>
         </div>
         <nav className="footer-links" aria-label="Footer links">
-          <Link href="/graph">Graph</Link>
           <Link href="/learning">Learning</Link>
           <a href={profile.links.email}>Email</a>
           <a

@@ -10,6 +10,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const navigation = [
   { href: "/projects", label: "Projects" },
+  { href: "/graph", label: "Graph" },
   { href: "/platform", label: "Platform" },
   { href: "/experience", label: "Experience" },
   { href: "/writing", label: "Writing" },
