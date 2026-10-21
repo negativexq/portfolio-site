@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 import type { Ref } from "react";
 import { profile } from "@/data/profile";
+import { ThemeToggle } from "./theme-toggle";
 
 const navigation = [
   { href: "/projects", label: "Projects" },
@@ -97,18 +98,21 @@ export function SiteHeader() {
           ÖFK
         </Link>
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          <NavigationLinks />
-        </nav>
-
-        <details className="mobile-nav" ref={detailsRef}>
-          <summary>
-            <Menu aria-hidden="true" size={18} /> <span>Menu</span>
-          </summary>
-          <nav aria-label="Mobile navigation">
-            <NavigationLinks onLinkClick={closeMenu} />
+        <div className="header-actions">
+          <nav className="desktop-nav" aria-label="Primary navigation">
+            <NavigationLinks />
           </nav>
-        </details>
+
+          <details className="mobile-nav" ref={detailsRef}>
+            <summary>
+              <Menu aria-hidden="true" size={18} /> <span>Menu</span>
+            </summary>
+            <nav aria-label="Mobile navigation">
+              <NavigationLinks onLinkClick={closeMenu} />
+            </nav>
+          </details>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
