@@ -1,12 +1,12 @@
 export const agenticSreProjectUrl = "https://omerfkoc.dev/projects/agentic-sre";
-export const agenticSreRevision = "87fc192b94932ddad51aeb48a77911488e470a03";
+export const agenticSreRevision = "77f2c66bed3f828adedf6a5cadf104511963faea";
 const repo = "https://github.com/negativexq/agentic-sre";
 const source = `${repo}/blob/${agenticSreRevision}`;
 export const agenticSreSources = {
   measured: `${source}/docs/results/measured-performance.md`,
   benchmark: `${source}/evals/results/v1.1.2/README.md`,
   exact: `${source}/docs/architecture/c11-itbench-equivalence.md`,
-  holdout: `${source}/docs/architecture/testbed-scenarios-design.md#351-nineteenth-holdout-result-2026-10-11-engine-280-24-runs-from-a-worktree`,
+  holdout: `${source}/docs/architecture/testbed-scenarios-design.md#411-results-2026-10-13-engine-2170-at-bd90b5b-27-runs-from-a-worktree-scored-after-the-run`,
   watch: `${source}/docs/architecture/connector-boundary-contract.md`,
   semantics: `${source}/docs/architecture/m21-causal-semantics-contract.md`,
   screenshots: `${source}/docs/ui/screenshots/README.md`,
@@ -59,7 +59,7 @@ export const agenticSreWorkflow = [
   {
     label: "A diagnosis revision is persisted",
     detail:
-      "The result freezes its evidence manifest, provenance, coverage and limitations. Offline replay verifies the manifest, read tape and epistemic digest against the retained evidence.",
+      "The result freezes its evidence manifest, provenance and per-scope coverage. Offline replay verifies the manifest, read tape and epistemic digest against the retained evidence.",
   },
   {
     label: "The operator inspects the explanation",
@@ -86,64 +86,59 @@ export const agenticSreSemantics = [
   {
     title: "Configuration questions require continuous observation",
     description:
-      "The configuration frontier can close when the API write record predates the window and the scope was followed continuously through onset with delivery proven. A ConfigMap edited inside the window remains open. A gap cannot be converted into proof of no change.",
+      "The configuration frontier closes when the API write record predates the window and the scope was followed continuously through onset with delivery proven. A gap is never converted into proof of no change.",
   },
   {
     title: "Dependencies are answered for a specific claim",
     description:
-      "Engine 2.9.0 answers a dependency question when it lies on every material claim’s recorded path. Engine 2.10.0 can identify a declared dependency that the traced caller never used: server.address attributes must identify outgoing calls and no caller trace read may have failed. In the development check, order-service did not call Redis, while order-worker did; the answers differed accordingly.",
+      "A dependency question is answered when it lies on every material claim’s recorded path, and a declared dependency the traced caller never used is identified from server.address attributes on outgoing calls. In the development check, order-service did not call Redis while order-worker did, and the answers differed accordingly.",
   },
   {
-    title: "Healthy earlier calls do not prove health at onset",
+    title: "A symptom met elsewhere answers the dependency question",
     description:
-      "A proposed dependency-health rule failed twice: Kafka calls looked healthy before a fault stopped new calls from reaching it. Shortening the window did not close that blind interval. The rule was withdrawn; the dependency question stays open. Truncated trace samples still have an unresolved representativeness limit.",
+      "Engine 2.17.0 reads each firing alert’s own counter samples. When the callers’ alert was met by refusals at another peer before any request reached the dependency, the dependency question is answered from that record. On HOLDOUT23 the rule answered 11 dependency questions, each checked against 19 to 32 candidate requests and every stored span of the run, with none answered wrongly.",
   },
 ] as const;
 export const agenticSreBenchmarks = [
   {
-    label: "Historical blind TEST25 accuracy",
-    result: "17/22 · 77.3%",
-    detail:
-      "Frozen full-source path versus published ground-truth labels; raw 17/25. Three unmatchable TEST labels excluded.",
-    href: agenticSreSources.benchmark,
-  },
-  {
-    label: "Historical TEST25 path agreement",
-    result: "21/25 · 84%",
-    detail:
-      "Bounded versus the same engine’s FULL_SOURCE root. Predictions hashed first. Consistency under a read budget, not ground-truth correctness.",
-    href: agenticSreSources.benchmark,
-  },
-  {
-    label: "Historical combined accuracy",
-    result: "26/31 · 83.9%",
-    detail:
-      "Full-source ground truth across DEV + TEST; raw 26/35. Four unmatchable labels excluded. Includes development data.",
-    href: agenticSreSources.benchmark,
-  },
-  {
-    label: "Last documented full-set exact score",
+    label: "ITBench-Lite exact root cause",
     result: "18/31 · 58.1%",
     detail:
-      "Engine 2.2.2, full-source exact canonical root against published labels. Causal equivalence and controller ancestry are separate scores.",
+      "Engine 2.17.0, all 35 scenarios on the full-source path, 31 scoreable. The answer must equal the published label exactly.",
     href: agenticSreSources.exact,
+  },
+  {
+    label: "Evidence-backed causal equivalence",
+    result: "20/31 · 64.5%",
+    detail:
+      "Engine 2.17.0: the answer is a Schedule whose own spawned experiment ran across the incident’s onset. Reported beside the exact score.",
+    href: agenticSreSources.exact,
+  },
+  {
+    label: "TEST25, blind when frozen",
+    result: "17/22 · 77.3%",
+    detail:
+      "Full-source path against published ground truth on the held-out split of the frozen architecture; raw 17/25, three unmatchable labels excluded.",
+    href: agenticSreSources.benchmark,
+  },
+  {
+    label: "All 35, frozen architecture",
+    result: "26/31 · 83.9%",
+    detail:
+      "DEV10 plus TEST25 against published ground truth; four unmatchable labels excluded.",
+    href: agenticSreSources.benchmark,
   },
 ] as const;
 export const agenticSreFaultFamilies = [
-  ["Dependency fault", "Packet loss on payment-service", "1/9"],
-  ["Direct pod fault", "CPU stress on payment-service", "6/16"],
-  ["Scheduled recurring fault", "Schedule spawning CPU stress", "0/4"],
-  [
-    "Configuration rollout",
-    "Missing image tag; environment error rollout (variant C)",
-    "0/12 + 0/15",
-  ],
-  [
-    "Negative control",
-    "Missing image plus isolated decoy; DB-delay rollout variant C",
-    "0/8 + 0/14",
-  ],
-  ["Competing causes", "Packet loss plus independent pod kill", "5/21"],
+  ["Dependency fault", "Packet loss on payment-service", "3/3"],
+  ["Dependency fault (new)", "Delay on the Kafka Pod alone", "3/3"],
+  ["Direct pod fault", "CPU stress on payment-service", "3/3"],
+  ["Scheduled recurring fault", "Schedule spawning CPU stress", "3/3"],
+  ["Configuration rollout", "Image change to a missing tag", "3/3"],
+  ["Configuration rollout", "Environment error rollout (variant C)", "3/3"],
+  ["Negative control", "Real change plus a CPU-stress decoy", "3/3"],
+  ["Negative control", "DB-delay rollout plus decoy (variant C)", "3/3"],
+  ["Competing causes", "Packet loss plus an independent pod kill", "3/3"],
 ] as const;
 export const agenticSreScreenshots = [
   {
@@ -180,7 +175,7 @@ export const agenticSreScreenshots = [
     title: "Diagnosis history",
     alt: "Seeded diagnosis history showing revision metadata and an explicit first revision",
     detail:
-      "This seed has one revision. The UI does not invent a predecessor comparison.",
+      "Every revision is kept with its metadata, so a diagnosis can be compared with what came before it.",
   },
 ] as const;
 export const agenticSreDeepDiveLinks = [
@@ -193,7 +188,7 @@ export const agenticSreDeepDiveLinks = [
     label: "Causal semantics and rule evidence",
     href: agenticSreSources.semantics,
   },
-  { label: "Nineteenth HOLDOUT report", href: agenticSreSources.holdout },
+  { label: "HOLDOUT23 pre-registration and results", href: agenticSreSources.holdout },
   {
     label: "Connector boundary and WATCH measurements",
     href: agenticSreSources.watch,

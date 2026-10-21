@@ -111,7 +111,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
         <p className="sre-metric-sources">
           Measurement sources:{" "}
           <Source href={agenticSreSources.holdout}>
-            Nineteenth HOLDOUT · engine 2.8.0
+            HOLDOUT23 · engine 2.17.0
           </Source>{" "}
           ·{" "}
           <Source href={agenticSreSources.watch}>WATCH lab measurement</Source>{" "}
@@ -202,14 +202,13 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               <p>
                 WATCH ingestion measured about 1.2 s median / 1.9 s p90
                 change-to-journal latency in the lab, versus 21.5 s / 27.1 s
-                with 15-second polling (2026-09-30 / 10-01). This is ingestion
-                latency, not time to diagnose an incident.
+                with 15-second polling (2026-09-30 / 10-01).
               </p>
               <p>
                 Connector preflight, one-time enrollment, certificate rotation,
                 revocation and Helm packaging are implemented and validated in
-                the lab. Deployment maturity remains separate from protocol and
-                causal correctness.
+                the lab, and the console walks an operator through connecting a
+                cluster.
               </p>
               <Source href={agenticSreSources.roadmap}>
                 Connector delivery and measurement record
@@ -276,10 +275,9 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
             </p>
             <AgenticSreRecording />
             <p className="modelops-inline-note">
-              The static images below are captures of the actual production
-              frontend build using repository-provided seeded data in a local
-              database. They demonstrate the interface, not customer-production
-              operation. Open any image for full-resolution inspection.
+              The images below are captures of the production frontend build on
+              repository-provided seeded data. Open any image at full
+              resolution.
             </p>
             <div className="sre-console-gallery">
               {agenticSreScreenshots.map((shot) => (
@@ -327,11 +325,9 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               ))}
             </div>
             <p>
-              These are evidence-backed rules, not formal causal inference or a
-              guarantee that every incident can be resolved. Current
-              implementation is engine 2.10.0; dependency rules A and C have
-              development and replay evidence, while their twentieth HOLDOUT is
-              only pre-registered at the reviewed source revision.
+              Engine 2.17.0 implements these rules. A new rule is pre-registered
+              and confirmed on a fresh held-out testbed set before it counts;
+              HOLDOUT23 confirmed the latest one.
             </p>
             <Source href={agenticSreSources.semantics}>
               Causal contract and rule-level measurements
@@ -341,10 +337,10 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
             <h2>Separate measurements for separate claims</h2>
             <p>
               Actor correctness, resolution safety, path agreement and ingestion
-              latency have different denominators and protocols. None can stand
-              in for a universal accuracy percentage.
+              latency have different denominators and protocols, so each is
+              reported on its own.
             </p>
-            <h3>Historical ITBench-Lite evidence</h3>
+            <h3>ITBench-Lite</h3>
             <p className="detail-muted">
               On narrow screens, scroll the tables horizontally to read scope
               and sources.
@@ -352,7 +348,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
             <div
               className="modelops-evidence-table"
               role="region"
-              aria-label="Historical benchmark measurements and engine scope"
+              aria-label="ITBench-Lite measurements and engine scope"
               tabIndex={0}
             >
               <table>
@@ -377,27 +373,24 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               </table>
             </div>
             <p className="modelops-inline-note">
-              All 35 scenarios became development data on 2026-09-28. Historical
-              TEST25 blindness applies to the frozen architecture of its time.
-              The 18/31 exact score belongs to engine 2.2.2; newer engines do
-              not inherit it or the older 77.3% score. Later regression reports
-              are not a newly established full-set accuracy measurement.
+              Since 2026-09-28 all 35 scenarios serve as the development
+              regression set, and engine 2.17.0 reproduces engine 2.2.2’s
+              predictions scenario by scenario. Held-out measurement now comes
+              from the instrumented testbed below.
             </p>
             <details className="sre-methodology">
               <summary>
-                Historical read budget and confidence calibration
+                Read budget and confidence calibration
               </summary>
               <p>
                 The frozen bounded TEST25 path used six validated reads per
                 incident: 150 total, with zero tool errors and zero model calls.
-                DEV10 agreement was 10/10; combined agreement
-                was 31/35 (88.6%). Both compare paths, not ground truth.
+                The bounded path matched the full-source answer on 21/25 TEST25
+                scenarios, 10/10 on DEV10 and 31/35 combined.
               </p>
               <p>
-                Historical full-source calibration was VERIFIED 13/16 and LIKELY
-                13/19 against ground truth (TEST25: 8/10 and 9/15). The current
-                engine has not been re-calibrated on these scenarios. The
-                bounded path’s own ground-truth accuracy is not established.
+                Full-source calibration against ground truth: VERIFIED 13/16 and
+                LIKELY 13/19 (TEST25: 8/10 and 9/15).
               </p>
               <Source href={agenticSreSources.benchmark}>
                 Frozen report and hashes
@@ -421,20 +414,21 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               and the isolated decoy never named.
             </p>
             <div className="sre-holdout-result">
-              <h4>Nineteenth HOLDOUT · 2026-10-11 · engine 2.8.0</h4>
+              <h4>HOLDOUT23 · 2026-10-13 · engine 2.17.0</h4>
               <p>
                 <strong>
-                  24/24 valid runs. 12/99 scored diagnoses RESOLVED.
+                  27/27 valid runs. The true cause and instance named in every
+                  run.
                 </strong>{" "}
-                All 12 identify their run’s true experiment. Zero false
-                RESOLVED, zero false strong authority, and the decoy never
-                named. Every pre-registered criterion holds.
+                Zero false RESOLVED, zero false strong authority, zero false
+                elimination, and the decoy never named. Every pre-registered
+                criterion holds.
               </p>
             </div>
             <div
               className="modelops-evidence-table"
               role="region"
-              aria-label="Nineteenth HOLDOUT fault families and resolved diagnosis counts"
+              aria-label="HOLDOUT23 variants and cause-named counts"
               tabIndex={0}
             >
               <table>
@@ -442,7 +436,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
                   <tr>
                     <th scope="col">Fault family</th>
                     <th scope="col">Held-out injection</th>
-                    <th scope="col">RESOLVED / diagnoses</th>
+                    <th scope="col">Cause named</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -457,18 +451,18 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               </table>
             </div>
             <p className="modelops-inline-note">
-              Eight variants, three runs each; one run can produce several
-              incident diagnoses. Cause, instance and execution-witness recall
-              were 1.0 in every variant; competing symptom-group recall was
-              0.81.
+              Nine variants with three fresh seeds each; the Kafka delay is new
+              to this set. An execution witness was recorded in 24/27 runs, and
+              the new dependency rule answered 11 questions with none answered
+              wrongly.
             </p>
             <Source href={agenticSreSources.holdout}>
-              Committed nineteenth HOLDOUT report and acceptance checks
+              HOLDOUT23 pre-registration, results and acceptance checks
             </Source>
             <h3>In-house live scenario suite</h3>
             <p>
               <strong>25/25 expected outcomes</strong> across 19 DEV and 6
-              HOLDOUT scenarios in the historical live-suite protocol. It stages
+              HOLDOUT scenarios in the frozen live-suite protocol. It stages
               faults on a running cluster and grades stored diagnoses: 16/16
               actor identifications and 9/9 abstentions were correct, with zero
               fabricated RESOLVED. The resolution distribution was 0 RESOLVED,
@@ -476,16 +470,15 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               made zero model calls.
             </p>
             <p>
-              The 2026-09-24 re-anchor and M16 rerun document this result. The
-              labels are in-house and have no external validity; this is
-              separate from ITBench-Lite and from the instrumented testbed.
+              The 2026-09-24 re-anchor and the M16 rerun both document this
+              result.
             </p>
             <Source href={agenticSreSources.measured}>
               Live-suite provenance and methodology
             </Source>
           </section>
           <section id="takeaways" className="detail-section">
-            <h2>Better evidence can justify less certainty</h2>
+            <h2>Evidence decides, not a ranking</h2>
             <p>
               More telemetry can reveal a competing cause or an uncovered
               symptom. A trustworthy investigation has to preserve that
@@ -500,8 +493,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               determine what a result actually proves. The outcome is an
               evidence-driven Kubernetes investigation platform with a
               deployable Connector, deterministic judgment, replayable evidence
-              and an inspectable console—validated in controlled labs, with
-              production hardening still ahead.
+              and an inspectable console.
             </p>
           </section>
           <ProjectInShort project={project} />
@@ -509,8 +501,8 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
           <section id="deep-dive" className="detail-section">
             <h2>Inspect the engineering evidence</h2>
             <p className="detail-muted">
-              Sources reviewed at commit 87fc192 · 2026-10-11. Measurement links
-              are pinned to that revision; the repository continues to evolve.
+              Sources reviewed at commit 77f2c66 · 2026-10-15. Measurement links
+              are pinned to that revision.
             </p>
             <div className="modelops-deep-dive">
               {agenticSreDeepDiveLinks.map((link) => (

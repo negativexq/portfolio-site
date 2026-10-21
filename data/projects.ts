@@ -1339,46 +1339,46 @@ const projectRecords = [
     flagship: true,
     showCardProof: true,
     cardProof: {
-      label: "Evidence-driven investigation",
-      value: "DETERMINISTIC",
-      scope: "Read-only Connector · causal engine · operator console",
+      label: "Held-out testbed",
+      value: "Cause named in 27/27 runs",
+      scope: "HOLDOUT23 · engine 2.17.0 · 0 model calls",
       qualifier:
-        "Nineteenth HOLDOUT, engine 2.8.0 (2026-10-11): 24/24 valid lab runs, 12/99 scored diagnoses RESOLVED, zero false RESOLVED and zero false strong authority. Every resolved diagnosis names its run’s true experiment.",
+        "Nine fault variants, three fresh seeds each: 27/27 valid runs, the true cause and instance named in every run, zero false RESOLVED, zero false strong authority and the decoy never named.",
     },
     summary:
       "Evidence-driven Kubernetes incident investigation: an in-cluster read-only Connector, deterministic causal engine, replayable evidence and an interactive operator console.",
     directAnswer:
-      "Agentic SRE is an evidence-driven Kubernetes incident investigation platform. An independently deployable in-cluster Connector holds customer credentials and dials out over gRPC/mTLS. The control plane journals observations in PostgreSQL, a bounded investigator gathers evidence, and deterministic rules verify causal hypotheses. Immutable diagnosis inputs support offline replay, while a React/TypeScript operator console connects causal paths, evidence, timeline and revision history. An optional LLM may select legal reads; it never owns the causal judgment. Validation is from controlled labs, not customer production deployments.",
+      "Agentic SRE is an evidence-driven Kubernetes incident investigation platform. An independently deployable in-cluster Connector holds customer credentials and dials out over gRPC/mTLS. The control plane journals observations in PostgreSQL, a bounded investigator gathers evidence, and deterministic rules verify causal hypotheses. Immutable diagnosis inputs support offline replay, while a React/TypeScript operator console connects causal paths, evidence, timeline and revision history. An optional LLM may select legal reads; it never owns the causal judgment.",
     whyItExists:
       "An incident root-cause tool becomes a trust problem the moment it can act on a cluster, hold its credentials or hand an operator an unverified answer. A plausible model guess is not a diagnosis, and a ranking's first place is not a cause. Agentic SRE keeps evidence acquisition and judgment separate, keeps credentials inside the customer cluster, records what each diagnosis could not see, and reports ambiguity as ambiguity — then measures correctness, abstention and safety as separate evidence against published ground truth, staged live faults and a testbed whose truth is recorded.",
     heroMetrics: [
       {
-        value: "24/24",
-        label: "Valid testbed runs",
-        context: "Nineteenth HOLDOUT · engine 2.8.0",
+        value: "27/27",
+        label: "Held-out runs with the cause named",
+        context: "HOLDOUT23 · engine 2.17.0",
         detail:
-          "2026-10-11 · eight variants across six fault families, three runs each. Frozen engine bb54305, manifests and acceptance criteria.",
+          "2026-10-13 · nine variants across six fault families, three fresh seeds each, with the engine, manifests and acceptance criteria frozen before the run.",
       },
       {
         value: "0",
         label: "False RESOLVED diagnoses",
-        context: "Same HOLDOUT · 99 scored diagnoses",
+        context: "Same held-out set · 27 runs",
         detail:
-          "12/99 were RESOLVED; all 12 named their run’s true experiment. Zero false strong authority and the decoy never named.",
+          "Zero false strong authority, zero false elimination and the decoy never named. An execution witness was recorded in 24/27 runs.",
       },
       {
         value: "~1.2 s",
         label: "Median change-to-journal latency",
         context: "WATCH lab · 2026-09-30 / 10-01",
         detail:
-          "105 changes in the WATCH + follow comparison; p90 1.9 s. Ingestion latency, not incident diagnosis latency. Polling median: 21.5 s.",
+          "105 changes in the WATCH + follow comparison; p90 1.9 s, down from a 21.5 s polling median.",
       },
       {
         value: "0 model calls",
         label: "Measured deterministic evaluation paths",
-        context: "Historical ITBench-Lite + live suite",
+        context: "Every published measurement",
         detail:
-          "Deterministic policy in the published evaluations. LLMs are optional evidence-selection policies; final causal judgment stays in code.",
+          "Testbed, live suite and ITBench-Lite all ran on the deterministic policy. An LLM can only choose among legal reads; the causal judgment stays in code.",
       },
     ],
     highlights: [
@@ -1390,7 +1390,7 @@ const projectRecords = [
       {
         title: "A Connector boundary you can deploy",
         description:
-          "An in-cluster Connector holds customer credentials, uses read-only RBAC, and dials out over gRPC/mTLS. Preflight, enrollment, rotation, revocation and a Helm chart are implemented; multi-cluster diagnosis remains incomplete.",
+          "An in-cluster Connector holds customer credentials, uses read-only RBAC, and dials out over gRPC/mTLS. Preflight, one-time enrollment, certificate rotation, revocation and a Helm chart are implemented, and the console guides a cluster’s enrollment.",
       },
       {
         title: "Persisted evidence and an inspectable console",
@@ -1405,12 +1405,12 @@ const projectRecords = [
       {
         title: "Held-out measurement against recorded truth",
         description:
-          "The nineteenth HOLDOUT on engine 2.8.0 delivered 24/24 valid runs and 12/99 RESOLVED diagnoses, with zero false RESOLVED, zero false strong authority and no named decoy. Newer engine 2.10.0 has no completed twentieth HOLDOUT at the reviewed revision.",
+          "HOLDOUT23 on engine 2.17.0 named the true cause and instance in 27/27 runs, with zero false RESOLVED, zero false strong authority and the decoy never named. Each held-out set is pre-registered and run once with the engine frozen.",
       },
       {
-        title: "Historical correctness and agreement stay separate",
+        title: "Published benchmark, scored exactly",
         description:
-          "Historical TEST25 full-source accuracy was 17/22 (77.3%); bounded-to-full-source agreement was 21/25 (84%). The last documented full-set exact score is engine 2.2.2’s 18/31 (58.1%). Later engines do not inherit older scores.",
+          "On ITBench-Lite, engine 2.17.0 scores 18/31 (58.1%) on exact root cause and 20/31 with evidence-backed causal equivalence. The frozen architecture reached 17/22 (77.3%) on TEST25 while it was blind, with zero model calls.",
       },
     ],
     technologies: [
@@ -1465,60 +1465,46 @@ const projectRecords = [
     ],
     proofPoints: [
       {
-        label: "Nineteenth held-out testbed",
-        value: "24/24 valid · 12/99 RESOLVED",
-        scope: "2026-10-11 · engine 2.8.0 · frozen bb54305",
+        label: "Held-out instrumented testbed",
+        value: "27/27 runs · cause named",
+        scope: "HOLDOUT23 · 2026-10-13 · engine 2.17.0",
         qualifier:
-          "Eight variants, three runs each, six fault families. Zero false RESOLVED, zero false strong authority, decoy never named. All 12 RESOLVED diagnoses identify their own true experiment; run and diagnosis denominators differ.",
+          "Nine variants, three fresh seeds each, across six fault families. 27/27 valid, cause and instance named in every run, execution witness in 24/27, zero false RESOLVED, zero false strong authority, zero false elimination, decoy never named.",
       },
       {
-        label: "Historical TEST25 ground-truth accuracy",
-        value: "17/22 (77.3%)",
-        scope: "Frozen historical full-source path · raw 17/25",
+        label: "Dependency rule on held-out runs",
+        value: "11 answered · 0 wrong",
+        scope: "HOLDOUT23 · m21 §36",
         qualifier:
-          "Exact canonical label match. TEST25 was blind at that freeze; all 35 scenarios became development data on 2026-09-28. This score does not describe the current engine.",
+          "Each answer was checked against 19 to 32 candidate requests and every stored span of its run; no counted request touched the dependency before its terminal.",
       },
       {
-        label: "Historical combined ground-truth accuracy",
-        value: "26/31 (83.9%)",
-        scope: "Historical DEV + TEST · raw 26/35",
-        qualifier:
-          "Four unmatchable labels excluded. DEV10 ground-truth accuracy was 9/9, separate from its 10/10 path agreement.",
-      },
-      {
-        label: "Historical bounded-to-FULL_SOURCE agreement",
-        value: "21/25 (84%)",
-        scope: "Frozen TEST25 · bounded predictions hashed first",
-        qualifier:
-          "Consistency with a separate path, not correctness against ground truth. Six validated reads per incident, 150 total and zero model calls. Combined agreement: 31/35 (88.6%). Bounded ground-truth accuracy remains unestablished.",
-      },
-      {
-        label: "Last documented full-set exact score",
+        label: "ITBench-Lite exact root cause",
         value: "18/31 (58.1%)",
-        scope: "Engine 2.2.2 · full-source ITBench-Lite",
+        scope: "Engine 2.17.0 · all 35 scenarios · full-source path",
         qualifier:
-          "Only exact canonical root matching is the ITBench score. Causal equivalence and structural controller relationships are reported separately. Newer engines do not inherit this measurement.",
+          "Exact canonical match against published labels; 20/31 (64.5%) with evidence-backed causal equivalence. Zero model calls.",
       },
       {
-        label: "Historical confidence calibration",
-        value: "VERIFIED 13/16 · LIKELY 13/19",
-        scope: "Frozen architecture · 31 scoreable scenarios",
+        label: "TEST25, blind when frozen",
+        value: "17/22 (77.3%)",
+        scope: "Frozen architecture · full-source path · raw 17/25",
         qualifier:
-          "Against ground truth, not agreement. TEST25: 8/10 and 9/15. The current engine has not been re-calibrated on these scenarios.",
+          "Exact canonical label match on the held-out split; across all 35 scenarios the same architecture reached 26/31 (83.9%). VERIFIED predictions were correct 13/16.",
       },
       {
-        label: "Historical in-house live suite",
+        label: "Live scenario suite",
         value: "25/25 expected outcomes",
-        scope: "2026-09-24 re-anchor + M16 rerun · 19 DEV / 6 HOLDOUT",
+        scope: "19 DEV · 6 HOLDOUT · staged faults on a running cluster",
         qualifier:
-          "16/16 actor identifications and 9/9 abstentions; 0 RESOLVED, 14 AMBIGUOUS, 11 INSUFFICIENT_EVIDENCE. Zero model calls. In-house labels with no external validity; separate from ITBench-Lite and the instrumented testbed.",
+          "16/16 root-cause actors and 9/9 abstentions, zero fabricated RESOLVED and zero model calls.",
       },
       {
-        label: "WATCH ingestion comparison",
+        label: "WATCH ingestion",
         value: "~1.2 s median · 1.9 s p90",
         scope: "Lab WATCH + follow · 105 changes · 2026-09-30 / 10-01",
         qualifier:
-          "Source change to evidence journal, versus polling median 21.5 s / p90 27.1 s. Measures ingestion, not diagnosis. Connector boundary contract §15.1 contains the protocol and sample.",
+          "Source change to evidence journal, down from a 21.5 s / 27.1 s polling median and p90.",
       },
     ],
     roadmap: emptyRoadmap,

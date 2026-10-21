@@ -1,10 +1,10 @@
 ---
 title: "Agentic Without the LLM: Building Deterministic Kubernetes RCA"
 seoTitle: "Agentic SRE Without an LLM: Deterministic Kubernetes Root Cause Analysis"
-description: "How I built a bounded autonomous Kubernetes incident investigator where evidence selection and root-cause diagnosis run deterministically — 21/25 exact-root agreement on a frozen blind holdout with zero model calls."
+description: "How I built a bounded autonomous Kubernetes incident investigator where evidence selection and root-cause diagnosis run deterministically — 17/22 exact root cause on a blind holdout, with zero model calls."
 slug: agentic-without-the-llm-deterministic-kubernetes-rca
 datePublished: 2026-09-21
-dateModified: 2026-09-21
+dateModified: 2026-10-22
 category: Agent Reliability
 tags:
   - SRE
@@ -22,7 +22,7 @@ relatedWriting:
   - decision-authority-execution-observability
 ---
 
-> Historical engineering note: the measurements below belong to the frozen architecture of this publication. See the [current Agentic SRE case study](/projects/agentic-sre) for the Connector, console, causal semantics and later held-out evaluations.
+> The measurements below belong to the frozen architecture of this publication. The [Agentic SRE case study](/projects/agentic-sre) covers the Connector, the console, the causal semantics and the latest held-out testbed, where engine 2.17.0 named the true cause in 27/27 runs.
 
 Most "agentic SRE" systems are associated with an LLM deciding what telemetry to inspect and reasoning its way toward a diagnosis. [Agentic SRE](/projects/agentic-sre) can support an LLM policy, but that is not how I measured it.
 
@@ -30,7 +30,7 @@ In the frozen benchmark configuration, no model was used anywhere in the investi
 
 The system was still autonomous. It could inspect its current diagnosis, identify what information was missing, choose one legal read, acquire new evidence, rebuild its hypotheses, and repeat until its investigation budget was exhausted — on its own, with no human and no model in the loop.
 
-On the first frozen blind evaluation, that deterministic investigator produced **21/25 exact FULL_SOURCE root agreement on the frozen blind synthetic TEST25 holdout, with 0 model calls**.
+On the first frozen blind evaluation, the deterministic engine named the exact published root cause in **17/22 scoreable TEST25 incidents (77.3%), with 0 model calls**, and the bounded investigator reached the same root as the full-source path in 21/25.
 
 That result changed the question I was asking. It stopped being "which LLM should run the investigation?" and became a more interesting one: how much of an agent actually needs to be an LLM?
 
@@ -129,35 +129,34 @@ That is the more interesting engineering lesson than any accuracy number. The us
 
 > **How little authority does the model actually need?**
 
-## 21/25 on the frozen blind holdout
+## 17/22 on the frozen blind holdout
 
 The headline result is a single frozen, blind measurement:
 
 | Measurement | Result |
 | --- | ---: |
-| Blind TEST25 holdout | 21/25 |
-| Exact-root agreement | 84% |
+| Exact root cause vs published ground truth (TEST25) | 17/22 (77.3%) |
+| Bounded investigator vs full-source root (TEST25) | 21/25 (84%) |
 | Model calls | 0 |
 | Reads per incident | 6 |
 | Tool errors | 0 |
 
-Exact-root agreement is deliberately harsh. A prediction counted as correct only when its canonical root entity exactly equaled the separate FULL_SOURCE canonical root for the same scenario. A nearby pod or a same-workload entity did not earn partial credit.
+These are two different measurements. The first compares the full-source diagnosis with the scenario's published ground-truth entity; three published labels match nothing in their own snapshot, so 22 of the 25 are scoreable. The second compares the bounded investigator's root with the same engine's full-source root, so it measures how much the read budget costs, not correctness. Both are deliberately harsh: only an exact canonical match counts, and a nearby pod or a same-workload entity earns no partial credit.
 
-The development split (10/10) and the combined figure (31/35, 88.6%) are useful context, but they are context. The primary generalization measurement is the 21/25 on TEST25, because that is the only split that was frozen and hashed before it was graded. The methodology behind that — the architecture freeze, the prediction hashing, and why exact-root grading is the honest choice — is its own topic, and I'll cover it separately rather than compress it here.
+The development split (9/9 against ground truth) and the combined figure (26/31, 83.9%) are useful context, but they are context. The primary generalization measurement is TEST25, because it was frozen and its predictions hashed before it was graded. The methodology behind that — the architecture freeze, the prediction hashing, and why exact-root grading is the honest choice — is its own topic, and I'll cover it separately rather than compress it here.
 
-Confidence calibration mattered as much to me as accuracy:
+Confidence calibration mattered as much to me as accuracy. Against ground truth:
 
-| Confidence | Correct | Total |
+| Confidence | TEST25 | All 35 |
 | --- | ---: | ---: |
-| VERIFIED | 9 | 9 |
-| LIKELY | 11 | 12 |
-| UNVERIFIED | 1 | 4 |
+| VERIFIED | 8/10 | 13/16 |
+| LIKELY | 9/15 | 13/19 |
 
-Every diagnosis the system labeled VERIFIED in the holdout was correct. For an incident tool, a diagnosis that knows when it is uncertain is often more operationally useful than one extra point of raw accuracy.
+VERIFIED is the most reliable tier on both sets, which is what the label promises. For an incident tool, a diagnosis that knows when it is uncertain is often more operationally useful than one extra point of raw accuracy.
 
-## What the four failures taught me
+## What the four disagreements taught me
 
-The four misses were not random noise. Three were bounded query-window or projection misses — the decisive evidence existed but fell outside what the investigator read under its budget. One was a semantic intent miss, where the investigation pursued the wrong category of evidence for the incident.
+The four cases where the bounded investigator ended on a different root than the full-source path were not random noise. Three were bounded query-window or projection misses — the decisive evidence existed but fell outside what the investigator read under its budget. One was a semantic intent miss, where the investigation pursued the wrong category of evidence for the incident.
 
 That split points at two different kinds of future work rather than one. The projection misses are an evidence-acquisition problem: the loop stopped reading before it reached the deciding signal. The intent miss is a selection problem: the deterministic ranking pointed the investigation at the wrong question. Neither is fixed by adding a model with more authority; both are fixed by improving the deterministic policy that already owns those decisions.
 
@@ -165,6 +164,6 @@ That split points at two different kinds of future work rather than one. The pro
 
 I started from the assumption that autonomous incident investigation would need an LLM to run it. Building the system and then taking authority away from the model, piece by piece, until I could measure what was left, produced a more useful conclusion than the assumption did.
 
-On a frozen blind Kubernetes holdout, evidence selection and root-cause diagnosis ran with zero model calls and still matched the reference root in 21 of 25 incidents. The model was optional. The autonomy was not.
+On a frozen blind Kubernetes holdout, evidence selection and root-cause diagnosis ran with zero model calls and named the published root cause in 17 of 22 scoreable incidents. The model was optional. The autonomy was not.
 
 An agent is a control loop. An LLM is one possible policy inside it — and, at least for this problem, a smaller one than I expected.
