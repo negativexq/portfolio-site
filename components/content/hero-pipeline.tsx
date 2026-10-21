@@ -33,9 +33,9 @@ import type { CSSProperties } from "react";
  * data/architectures.ts. Do not add a row here that no project or experience
  * entry can back.
  *
- * Agentic SRE sits below the trace line in its own dashed frame because it
- * is not a stage of the request: it reads the platform's telemetry from
- * outside, read-only, and is only drawn in when something breaks.
+ * Agentic SRE is the frame around everything rather than a row in it: it is
+ * not a stage of the request, it watches the whole system from outside,
+ * read-only. The frame pulses slowly to read as a live watch.
  */
 type Guide = "space" | "line" | "tee" | "elbow";
 
@@ -84,6 +84,11 @@ export function HeroPipeline() {
   return (
     <div className="hero-pipeline">
       <p className="hero-pipeline-caption">Request lifecycle</p>
+      <div className="hero-pipeline-watch">
+      <span className="hero-pipeline-watch-label">
+        <span className="hero-pipeline-watch-dot" aria-hidden="true" />
+        Agentic SRE · watching
+      </span>
       <ol className="hero-pipeline-nodes">
         {stages.map((row) => (
           <li key={row.label} style={{ "--i": row.step } as CSSProperties}>
@@ -118,10 +123,7 @@ export function HeroPipeline() {
         <span className="hero-pipeline-trace-dot" aria-hidden="true" />
         Trace + Metrics
       </p>
-      <p className="hero-pipeline-observer">
-        <span className="hero-pipeline-observer-label">Agentic SRE</span>
-        <span className="hero-pipeline-observer-note">watches from outside · read-only RCA</span>
-      </p>
+      </div>
     </div>
   );
 }
