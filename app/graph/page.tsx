@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
+import { profile } from "@/data/profile";
+import { buildWebPage } from "@/lib/seo/collection";
 import { EngineeringGraphLoader } from "@/components/graph/engineering-graph-loader";
 import { buildCuratedEngineeringGraph } from "@/lib/graph/curated-graph";
 
+const GRAPH_DESCRIPTION =
+  "An interactive map of seven core engineering projects, their shared foundations and scoped evidence.";
+
 export const metadata: Metadata = {
   title: "Engineering Graph",
-  description:
-    "An interactive map of seven core engineering projects, their shared foundations and scoped evidence.",
+  description: GRAPH_DESCRIPTION,
   alternates: { canonical: "/graph" },
 };
 
@@ -14,6 +19,7 @@ export default function GraphPage() {
 
   return (
     <main>
+      <JsonLd data={buildWebPage(profile, { path: "/graph", name: "Engineering Graph", description: GRAPH_DESCRIPTION })} />
       <header className="page-hero container graph-page-hero">
 
         <h1>Seven systems. Shared foundations.</h1>

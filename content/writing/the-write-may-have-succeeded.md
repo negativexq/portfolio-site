@@ -1,6 +1,7 @@
 ---
 title: "The Write May Have Succeeded: Handling Unknown Outcomes in AI Agents"
 description: "A timeout after a customer-impacting action does not mean the action failed. How action identity, idempotency, database constraints, and reconciliation reduce duplicate writes, and where local guarantees stop."
+metaDescription: "A timeout after an agent's write does not mean it failed. Action identity, idempotency, database constraints and reconciliation prevent duplicate effects."
 slug: the-write-may-have-succeeded
 datePublished: 2026-08-24
 dateModified: 2026-10-12

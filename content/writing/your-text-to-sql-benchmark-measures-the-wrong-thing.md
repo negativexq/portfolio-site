@@ -1,6 +1,7 @@
 ---
 title: "Your Text-to-SQL Benchmark Is Measuring the Wrong Thing"
 description: "Exact-match and single-state checks pass wrong SQL that happens to return the right rows. Correctness has to be execution across counterfactual database states, and mutation testing is how you prove the test can tell right from wrong."
+metaDescription: "Exact-match checks pass wrong SQL that returns the right rows. Evaluate Text-to-SQL by execution across counterfactual states, proven with mutation testing."
 slug: your-text-to-sql-benchmark-measures-the-wrong-thing
 datePublished: 2026-09-09
 dateModified: 2026-09-09
@@ -18,7 +19,7 @@ relatedLearning:
 relatedWriting:
   - a-sum-that-counts-the-parent-three-times
 draft: false
-seoTitle: "Execution-Based Evaluation for Text-to-SQL: Counterfactual Fixtures and Mutants"
+seoTitle: "Execution-Based Text-to-SQL Evaluation With Mutation Testing"
 ---
 Most Text-to-SQL benchmarks score a generated query by comparing it to a gold SQL string, or by running it once and checking the rows. Both are easy to compute, and both let wrong queries pass. A query can match the intended result on one database state for the wrong reason, and a string comparison punishes a correct query that simply phrased the join differently. The number you report is not the number you think you are reporting.
 

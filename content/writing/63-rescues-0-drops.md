@@ -1,6 +1,7 @@
 ---
 title: "63 Rescues, 0 Drops, and 2.4 Seconds"
 description: "A cross-lingual reranker moved Recall@5 from 0.9563 to 1.0000. The aggregate is the least interesting number in that sentence, and the latency figure means less than it looks like."
+metaDescription: "A cross-lingual reranker lifted Recall@5 from 0.9563 to 1.0000 with 63 rescues and 0 drops. Why rescues and drops, not the aggregate, decide a reranker."
 slug: 63-rescues-0-drops
 datePublished: 2026-08-19
 dateModified: 2026-08-19
@@ -19,7 +20,7 @@ relatedWriting:
   - rag-citation-integrity
   - rag-can-provide-evidence
 draft: false
-seoTitle: "Measuring a Cross-Lingual Reranker: Rescues, Drops and Latency Cost"
+seoTitle: "Cross-Lingual Reranker Evaluation: Rescues, Drops, Latency"
 ---
 Adding a cross-encoder reranker to a multilingual knowledge base moved cross-lingual Recall@5 from `0.9563` to `1.0000` on a 220-query paired benchmark. Written that way it reads like a rounding correction on a metric that was already fine.
 

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
+import { profile } from "@/data/profile";
+import { buildCollectionPage } from "@/lib/seo/collection";
 import Link from "next/link";
 import { ArrowRight, Rss } from "lucide-react";
 import { TagList } from "@/components/content/tag-list";
@@ -30,6 +33,14 @@ export default function WritingPage() {
 
   return (
     <main>
+      <JsonLd
+        data={buildCollectionPage(profile, {
+          path: "/writing",
+          name: "Writing",
+          description: WRITING_DESCRIPTION,
+          items: groups.flatMap((group) => group.articles).map((article) => ({ name: article.title, url: `/writing/${article.slug}` })),
+        })}
+      />
       <header className="page-hero writing-hero container">
         <p className="eyebrow">Engineering notes</p>
         <h1>Writing</h1>

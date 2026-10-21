@@ -1,7 +1,8 @@
 ---
 title: "A Research Loop Remembers in Types, Not in Prose"
-seoTitle: "Agentic RAG Research Loops: Typed Working Memory With PydanticAI"
+seoTitle: "Agentic RAG Research Loops With Typed PydanticAI Memory"
 description: "How an agentic document research workspace keeps its memory as typed application state: PydanticAI agents propose, the application writes memory, runs the tools and decides when the loop ends. 96 of 120 long-document questions reached an accepted outcome."
+metaDescription: "How an agentic RAG research loop keeps typed working memory: PydanticAI agents propose, the application writes state and ends the loop. 96/120 accepted."
 slug: research-loop-memory-is-typed-state
 datePublished: 2026-10-22
 dateModified: 2026-10-22

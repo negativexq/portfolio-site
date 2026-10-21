@@ -1,6 +1,7 @@
 ---
 title: "Designing a Policy-Driven Model Promotion Control Plane"
 description: "Model deployment is not complete when a container starts. How progressive traffic, delayed ground truth, explicit policy outcomes, rollback, and desired-versus-observed reconciliation make model promotion a control-plane problem."
+metaDescription: "Model deployment is not done when a container starts. Progressive traffic, delayed ground truth, policy outcomes and rollback as a control-plane problem."
 slug: designing-a-policy-driven-model-promotion-control-plane
 datePublished: 2026-08-25
 dateModified: 2026-08-25

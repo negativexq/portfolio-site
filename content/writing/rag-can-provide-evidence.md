@@ -1,6 +1,7 @@
 ---
 title: "RAG Can Provide Evidence. It Cannot Grant Authority."
 description: "Retrieved evidence can support an agent answer without becoming an authorization source. How hybrid retrieval, provenance, grounding checks, and bounded abstention keep the knowledge path separate from execution."
+metaDescription: "Retrieved evidence can support an agent's answer without authorizing actions. Hybrid retrieval, provenance, grounding and abstention keep the two apart."
 slug: rag-can-provide-evidence
 datePublished: 2026-08-22
 dateModified: 2026-08-25

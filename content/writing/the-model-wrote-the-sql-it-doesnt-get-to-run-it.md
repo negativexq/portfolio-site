@@ -1,6 +1,7 @@
 ---
 title: "The Model Wrote the SQL. It Doesn't Get to Run It."
 description: "Between a model writing a query and a database running it sits an admission chain that ends in a capability object. The executor runs an accepted QueryPlan, not raw SQL, so passing every gate is the only path to execution."
+metaDescription: "Between the model writing SQL and the database running it sits an admission chain. The executor runs an accepted QueryPlan capability, never raw SQL."
 slug: the-model-wrote-the-sql-it-doesnt-get-to-run-it
 datePublished: 2026-09-09
 dateModified: 2026-09-09
@@ -19,7 +20,7 @@ relatedWriting:
   - a-sum-that-counts-the-parent-three-times
   - your-text-to-sql-benchmark-measures-the-wrong-thing
 draft: false
-seoTitle: "Execution Authority for Text-to-SQL: The Accepted QueryPlan Capability"
+seoTitle: "Text-to-SQL Execution Authority: The Accepted QueryPlan"
 ---
 A model that writes SQL has done something useful and nothing dangerous. The danger starts one step later, when a string it produced is handed to a database and run. Most of the risk in a Text-to-SQL system lives in that handoff, and the safe design is to make sure the handoff never happens directly.
 

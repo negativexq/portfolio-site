@@ -1,6 +1,7 @@
 ---
 title: "Hard Gates + Frozen Hashes for AI Coding Agents"
 description: "Making agentic development verifiable rather than merely autonomous: external gates decide whether work is acceptable, and hashed baselines stop the agent from redefining what acceptable means."
+metaDescription: "Making agentic development verifiable: external gates decide whether work is acceptable, and hashed baselines stop the agent redefining what acceptable means."
 slug: hard-gates-frozen-hashes
 datePublished: 2026-08-27
 dateModified: 2026-08-27

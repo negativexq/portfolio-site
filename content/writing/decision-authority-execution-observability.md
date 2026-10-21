@@ -1,6 +1,7 @@
 ---
 title: "Decision, Authority, Execution: Observability for AI Agents"
 description: "For consequential agents, intent, authority, and execution must be observable separately. A practical operator view for workflow state, policy, evidence, replay, and traces."
+metaDescription: "Consequential agents need intent, authority and execution observable separately. An operator view for workflow state, policy, evidence, replay and traces."
 slug: decision-authority-execution-observability
 datePublished: 2026-08-22
 dateModified: 2026-08-25

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
+import { profile } from "@/data/profile";
+import { buildCollectionPage } from "@/lib/seo/collection";
 import { LearningCard } from "@/components/content/learning-card";
 import { MachineReadableLink } from "@/components/content/machine-readable-link";
 import { MotionController } from "@/components/motion/motion-controller";
@@ -7,9 +10,12 @@ import { learningItems } from "@/data/learning";
 import { getProjectById } from "@/data/projects";
 import { getPublishedArticles } from "@/lib/writing/articles";
 
+const LEARNING_DESCRIPTION =
+  "An evidence-oriented engineering growth roadmap across agent systems, retrieval, evaluation and AI platform infrastructure.";
+
 export const metadata: Metadata = {
   title: "Learning",
-  description: "An evidence-oriented engineering growth roadmap across agent systems, retrieval, evaluation and AI platform infrastructure.",
+  description: LEARNING_DESCRIPTION,
   alternates: { canonical: "/learning" },
 };
 
@@ -17,6 +23,14 @@ export default function LearningPage() {
   const writing = getPublishedArticles();
   return (
     <main>
+      <JsonLd
+        data={buildCollectionPage(profile, {
+          path: "/learning",
+          name: "Learning",
+          description: LEARNING_DESCRIPTION,
+          items: learningItems.map((item) => ({ name: item.title })),
+        })}
+      />
       <MotionController />
       <header className="page-hero container">
         <p className="eyebrow">Learning / building next</p>

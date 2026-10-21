@@ -78,6 +78,10 @@ export function parseArticleSource(source: string, fileName = "article.md"): Wri
   const frontmatter = values as unknown as ArticleFrontmatter;
   if (!SLUG.test(frontmatter.slug)) throw new Error(`${fileName}: invalid slug`);
   if (!ISO_DATE.test(frontmatter.datePublished)) throw new Error(`${fileName}: invalid datePublished`);
+  const searchDescription = frontmatter.metaDescription ?? frontmatter.description;
+  if (searchDescription.length > 160) {
+    throw new Error(`${fileName}: search description exceeds 160 characters; add a shorter metaDescription`);
+  }
   if (frontmatter.dateModified && !ISO_DATE.test(frontmatter.dateModified)) {
     throw new Error(`${fileName}: invalid dateModified`);
   }

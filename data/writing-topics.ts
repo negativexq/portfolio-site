@@ -30,7 +30,7 @@ export const writingTopics = [
     slug: "text-to-sql",
     title: "Governed Text-to-SQL",
     description:
-      "Turning a natural-language request into a query that is allowed to run: deterministic SQL admission, server-owned grain safety and execution-based evaluation over changing states.",
+      "Turning a natural-language request into a query that is allowed to run: deterministic SQL admission, server-owned grain safety and execution-based evaluation.",
   },
   {
     slug: "retrieval",

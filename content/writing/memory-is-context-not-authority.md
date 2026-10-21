@@ -1,6 +1,7 @@
 ---
 title: "Memory Is Context, Not Authority"
 description: "Persistent agent memory is useful only if remembered text cannot become permission. A practical boundary for scoped memory, consent, DLP, TTL, and authority isolation."
+metaDescription: "Agent memory is useful only if remembered text cannot become permission. A practical boundary: scoped memory, consent, DLP, TTL and authority isolation."
 slug: memory-is-context-not-authority
 datePublished: 2026-08-23
 dateModified: 2026-08-25

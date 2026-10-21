@@ -1,7 +1,8 @@
 ---
 title: "Agentic Without the LLM: Building Deterministic Kubernetes RCA"
-seoTitle: "Agentic SRE Without an LLM: Deterministic Kubernetes Root Cause Analysis"
+seoTitle: "Agentic SRE Without an LLM: Deterministic Kubernetes RCA"
 description: "How I built a bounded autonomous Kubernetes incident investigator where evidence selection and root-cause diagnosis run deterministically — 17/22 exact root cause on a blind holdout, with zero model calls."
+metaDescription: "A bounded Kubernetes incident investigator with deterministic evidence selection and diagnosis: 17/22 exact root cause on a blind holdout, zero model calls."
 slug: agentic-without-the-llm-deterministic-kubernetes-rca
 datePublished: 2026-09-21
 dateModified: 2026-10-22

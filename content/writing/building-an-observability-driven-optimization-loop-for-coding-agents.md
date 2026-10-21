@@ -1,6 +1,7 @@
 ---
 title: "Building an Observability-Driven Optimization Loop for Coding Agents"
 description: "From distributed traces to verified performance improvements: an evidence interface, isolated runtime, independent verifier, and three-way experimental protocol."
+metaDescription: "From traces to verified performance gains: an evidence interface, isolated runtime, independent verifier and three-way protocol for coding agents."
 slug: building-an-observability-driven-optimization-loop-for-coding-agents
 datePublished: 2026-10-13
 category: Agent Reliability

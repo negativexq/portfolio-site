@@ -1,6 +1,7 @@
 ---
 title: "One Definition Per Feature"
 description: "When every pipeline rebuilds the same customer feature, the definitions drift apart silently. Making the feature a shared owned artifact fixes that and creates a change-impact problem that column lineage has to answer."
+metaDescription: "When every pipeline rebuilds the same feature, definitions drift. A shared, owned dbt feature fixes that and makes column lineage answer change impact."
 slug: one-definition-per-feature
 datePublished: 2026-08-08
 dateModified: 2026-08-08
@@ -16,7 +17,7 @@ relatedProjects:
 relatedLearning:
 relatedWriting:
 draft: false
-seoTitle: "One Definition Per Feature: Shared dbt Features and Column Lineage"
+seoTitle: "Shared dbt Features and Column-Level Lineage"
 ---
 A feature is a definition before it is a column. When two workloads both need "active customer," the cheapest available move is to write the logic again inside whichever pipeline needs it. That works until the definitions stop agreeing, and the disagreement is invisible: both pipelines run, both produce a number, and nothing anywhere reports a conflict.
 

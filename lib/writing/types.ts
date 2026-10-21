@@ -12,6 +12,8 @@ export type ArticleFrontmatter = {
   relatedWriting: readonly string[];
   draft: boolean;
   seoTitle?: string;
+  /** Search-result description; falls back to description, which also feeds cards and RSS. */
+  metaDescription?: string;
 };
 
 export type WritingArticle = ArticleFrontmatter & {

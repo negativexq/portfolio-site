@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
+import { profile } from "@/data/profile";
+import { buildCollectionPage } from "@/lib/seo/collection";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -36,6 +39,14 @@ export default async function WritingTopicPage({ params }: TopicPageProps) {
 
   return (
     <main>
+      <JsonLd
+        data={buildCollectionPage(profile, {
+          path: `/writing/topic/${group.topic.slug}`,
+          name: `${group.topic.title} — Writing`,
+          description: group.topic.description,
+          items: group.articles.map((article) => ({ name: article.title, url: `/writing/${article.slug}` })),
+        })}
+      />
       <header className="page-hero writing-hero container">
         <Link className="back-link" href="/writing">
           <ArrowLeft aria-hidden="true" size={14} /> All writing

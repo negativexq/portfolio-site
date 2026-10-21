@@ -1,6 +1,7 @@
 ---
 title: "A DAG Is a Failure Contract, Not a Schedule"
 description: "Orchestration tutorials sell the schedule. The parts that decide whether a pipeline survives are retry semantics, write shape, backfill parameterisation and what a half-finished run leaves behind."
+metaDescription: "Airflow pipelines survive on retry semantics, idempotent writes, parameterised backfills and clean partial runs, not on the schedule. A practical guide."
 slug: a-dag-is-a-failure-contract
 datePublished: 2026-08-26
 dateModified: 2026-08-26

@@ -1,6 +1,7 @@
 ---
 title: "A SUM That Counts the Parent Three Times"
 description: "A join to a one-to-many child table can silently triple a parent measure, and the query still looks correct. This is why grain safety belongs to the server, not to the model that wrote the SQL."
+metaDescription: "A join to a one-to-many table can silently triple a parent measure while the query looks right. Why grain safety belongs to the server, not the model."
 slug: a-sum-that-counts-the-parent-three-times
 datePublished: 2026-09-09
 dateModified: 2026-09-09
@@ -17,7 +18,7 @@ relatedProjects:
 relatedLearning:
 relatedWriting:
 draft: false
-seoTitle: "Grain Safety for Text-to-SQL: When a SUM Counts the Parent Three Times"
+seoTitle: "Text-to-SQL Grain Safety: Join Fanout Inflates a SUM"
 ---
 Ask for total order revenue and the natural query joins orders to order lines and sums the amount. If an order has three lines, that join produces three rows for the one order, and `SUM(order.amount)` adds the order's amount three times. The number comes back, the query runs, and nothing reports an error. It is simply wrong.
 

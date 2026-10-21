@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/content/json-ld";
+import { buildWebPage } from "@/lib/seo/collection";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
 import { MachineReadableLink } from "@/components/content/machine-readable-link";
@@ -9,9 +11,12 @@ import { experiences } from "@/data/experience";
 import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
 
+const RESUME_DESCRIPTION =
+  "Resume of Ömer Faruk Koç, MLOps & AI Platform Engineer: ML platforms, agent systems, agentic RAG and Kubernetes incident analysis, with measured results.";
+
 export const metadata: Metadata = {
   title: "Resume",
-  description: "Resume overview for Ömer Faruk Koç, MLOps & AI Platform Engineer.",
+  description: RESUME_DESCRIPTION,
   alternates: { canonical: "/resume" },
 };
 
@@ -22,6 +27,7 @@ export default function ResumePage() {
 
   return (
     <main>
+      <JsonLd data={buildWebPage(profile, { path: "/resume", name: `${profile.name} — Resume`, description: RESUME_DESCRIPTION })} />
       <header className="page-hero container resume-hero">
         <p className="eyebrow">Resume overview</p>
         <h1>{profile.name}</h1>
