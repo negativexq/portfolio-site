@@ -9813,7 +9813,6 @@ a {
 
 /* Readable floor for running text. Sentences that explain a number, a role or
    a step read at 14px; only labels and diagram nodes stay smaller. */
-.proof-scope,
 .proof-qualifier,
 .metric-detail,
 .metric-context,
@@ -9970,5 +9969,275 @@ a.hero-pipeline-watch-label:focus-visible {
 @media (max-width: 640px) {
   .resume-areas .resume-area-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Writing index: search, topic filter and result status. On wide screens the
+   toolbar stays under the site header so filters remain reachable while
+   scanning a long list; on phones it scrolls away with the page. */
+.writing-toolbar {
+  z-index: 15;
+  border-block: 1px solid var(--border);
+  background: var(--background);
+}
+
+.writing-toolbar-inner {
+  display: grid;
+  grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+  gap: var(--space-4) var(--space-6);
+  align-items: center;
+  padding-block: var(--space-4);
+}
+
+@media (min-width: 821px) {
+  .writing-toolbar {
+    position: sticky;
+    top: 4.35rem;
+  }
+
+  .writing-index {
+    scroll-margin-top: 10rem;
+  }
+}
+
+.writing-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.writing-search > svg {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--subtle);
+  pointer-events: none;
+}
+
+.writing-search input {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  padding: 0 2.6rem 0 2.5rem;
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color var(--motion-fast) ease;
+}
+
+.writing-search input::placeholder {
+  color: var(--subtle);
+}
+
+.writing-search input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.writing-search input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.writing-search kbd {
+  position: absolute;
+  right: 0.75rem;
+  border: 1px solid var(--border-strong);
+  padding: 0.1rem 0.42rem;
+  color: var(--subtle);
+  font: 600 0.75rem/1.2 var(--mono);
+}
+
+.writing-search-clear {
+  position: absolute;
+  right: 0.35rem;
+  display: inline-grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.writing-search-clear:hover,
+.writing-search-clear:focus-visible {
+  color: var(--foreground);
+}
+
+.writing-topic-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.writing-topic-filter button,
+.writing-empty-suggestions button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 0.85rem;
+  background: transparent;
+  color: var(--tag-text);
+  font: 500 0.875rem/1 var(--sans);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) ease, color var(--motion-fast) ease, background-color var(--motion-fast) ease;
+}
+
+.writing-topic-filter button span {
+  color: var(--subtle);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.writing-topic-filter button:hover,
+.writing-empty-suggestions button:hover {
+  border-color: var(--border-strong);
+  color: var(--foreground);
+}
+
+.writing-topic-filter button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+.writing-topic-filter button[aria-pressed="true"] span {
+  color: var(--accent);
+}
+
+.writing-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-5) 0;
+}
+
+.writing-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.writing-reset {
+  border: 0;
+  padding: 0.3rem 0;
+  background: transparent;
+  color: var(--foreground);
+  font: 650 0.875rem/1.2 var(--sans);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
+.writing-reset:hover,
+.writing-reset:focus-visible {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.writing-results {
+  padding-top: var(--space-4);
+}
+
+.writing-card-topic {
+  color: var(--accent);
+}
+
+.writing-tag-list li {
+  padding: 0;
+}
+
+.writing-tag-list button {
+  border: 0;
+  padding: 0.34rem 0.46rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--motion-fast) ease, background-color var(--motion-fast) ease;
+}
+
+.writing-tag-list button:hover,
+.writing-tag-list button:focus-visible {
+  background: var(--surface-raised);
+  color: var(--foreground);
+}
+
+.writing-tag-list button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.writing-empty {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.writing-empty p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.writing-empty p:first-child {
+  color: var(--foreground);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  font-weight: 640;
+  letter-spacing: -0.03em;
+}
+
+.writing-empty p + p {
+  margin-top: var(--space-3);
+}
+
+.writing-empty-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+@media (max-width: 820px) {
+  .writing-toolbar-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .writing-search kbd {
+    display: none;
+  }
+}
+
+.writing-status-row + .writing-index:not(.writing-results) {
+  padding-top: var(--space-7);
+}
+
+/* Phones: topics become one swipeable row that runs to the screen edge, so
+   the list starts on the first screen instead of under four rows of chips. */
+@media (max-width: 820px) {
+  .writing-topic-filter {
+    flex-wrap: nowrap;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: var(--gutter);
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .writing-topic-filter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .writing-topic-filter button {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 }

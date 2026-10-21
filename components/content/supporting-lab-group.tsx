@@ -9,12 +9,11 @@ type SupportingLabGroupCardProps = {
 export function SupportingLabGroupCard({ group }: SupportingLabGroupCardProps) {
   return (
     <article className="project-card project-card-compact lab-group-card" data-reveal data-hover-lift>
-      <div className="project-card-meta">
-        <span>Supporting work</span>
-        <StatusBadge status="current" label="Completed series" />
-      </div>
       <div className="project-card-body">
-        <p className="project-category">{group.theme}</p>
+        <p className="project-category">
+          {group.theme}
+          <StatusBadge status="current" label="Completed series" />
+        </p>
         <h3>{group.title}</h3>
         <p className="project-summary">{group.summary}</p>
         <ol className="lab-progression" aria-label={`${group.title} progression`}>
