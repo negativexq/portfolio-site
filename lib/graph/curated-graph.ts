@@ -27,7 +27,7 @@ const featuredTechnologies: Record<string, readonly string[]> = {
   "ml-platform-infrastructure": ["Kubernetes", "Go", "Argo Workflows", "MLflow"],
   "agentic-sre": ["Kubernetes", "LangGraph", "gRPC", "OpenTelemetry"],
   "agentic-customer-service-platform": ["LangGraph", "PostgreSQL", "Qdrant", "OpenTelemetry"],
-  "knowledge-base-rag": ["PydanticAI", "Qdrant", "FastAPI", "OpenTelemetry"],
+  "knowledge-base-rag": ["PydanticAI", "Qdrant", "OpenTelemetry", "Langfuse"],
   "modelops-control-plane": ["PostgreSQL", "FastAPI", "scikit-learn", "Docker Compose"],
   "decision-sql": ["DuckDB", "SQLGlot", "FastAPI", "Pydantic"],
   "real-time-commerce-platform": ["Kafka", "PostgreSQL", "Redis", "Prometheus"],

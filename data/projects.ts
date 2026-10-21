@@ -459,6 +459,7 @@ const projectRecords = [
       "Tesseract OCR",
       "OpenTelemetry",
       "Jaeger",
+      "Langfuse",
       "Docker Compose",
     ],
     concepts: [
