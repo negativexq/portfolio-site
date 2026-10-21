@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/content/types";
@@ -13,7 +14,7 @@ type ProjectCardProps = {
 export function ProjectCard({ project, compact = false }: ProjectCardProps) {
   return (
     <article
-      className={`project-card${compact ? " project-card-compact" : ""}`}
+      className={`project-card${compact ? " project-card-compact" : ""}${project.cardImage && !compact ? " project-card-media" : ""}`}
       data-reveal
       data-hover-lift
     >
@@ -35,6 +36,22 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
           <ProjectProof proof={project.cardProof ?? project.proofPoints[0]} compact />
         ) : null}
       </div>
+      {project.cardImage && !compact ? (
+        <Link
+          className="project-card-shot"
+          href={`/projects/${project.slug}`}
+          tabIndex={-1}
+          aria-hidden="true"
+        >
+          <Image
+            src={project.cardImage.src}
+            alt={project.cardImage.alt}
+            width={project.cardImage.width}
+            height={project.cardImage.height}
+            sizes="(max-width: 1020px) 100vw, 40vw"
+          />
+        </Link>
+      ) : null}
       <div className="project-card-actions">
         <Link href={`/projects/${project.slug}`}>
           View case study <ArrowRight aria-hidden="true" size={15} />

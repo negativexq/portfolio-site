@@ -9835,3 +9835,65 @@ a {
 .modelops-evidence-table td {
   font-size: 0.875rem;
 }
+
+/* Project cards that have a real interface show a crop of it beside the
+   text; the screen is the strongest proof a software project has. */
+.project-card-media {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  grid-template-areas:
+    "body shot"
+    "actions shot";
+  align-items: start;
+}
+
+.project-card-media .project-card-body {
+  grid-area: body;
+}
+
+.project-card-media .project-card-actions {
+  grid-area: actions;
+}
+
+.project-card-shot {
+  grid-area: shot;
+  display: block;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.project-card-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+  transition: transform var(--motion-normal) var(--motion-ease);
+}
+
+.project-card:hover .project-card-shot img,
+.project-card:focus-within .project-card-shot img {
+  transform: scale(1.025);
+}
+
+@media (max-width: 1020px) {
+  .project-card-media {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "body"
+      "shot"
+      "actions";
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card-shot img {
+    transition: none;
+  }
+
+  .project-card:hover .project-card-shot img,
+  .project-card:focus-within .project-card-shot img {
+    transform: none;
+  }
+}

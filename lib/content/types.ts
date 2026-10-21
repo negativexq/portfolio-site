@@ -110,6 +110,8 @@ export type Project = {
   heroMetrics?: readonly Metric[];
   /** Optional short, scannable engineering claims for the top of the case study. */
   highlights?: readonly ProjectHighlight[];
+  /** Optional crop of the project's own interface shown beside the card. */
+  cardImage?: { src: string; alt: string; width: number; height: number };
   /** Whether the compact card should show its first proof point. */
   showCardProof?: boolean;
   /** Optional hand-authored FAQ. When absent, a project page derives a baseline

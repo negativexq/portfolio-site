@@ -6,6 +6,12 @@ const projectRecords = [
   {
     id: "agentic-customer-service-platform",
     slug: "agentic-customer-service-platform",
+    cardImage: {
+      src: "/projects/agentic-customer-service-platform/refund-happy-path-current.png",
+      alt: "Refund conversation beside the agent timeline and runtime details, with execution blocked until the customer confirms",
+      width: 2880,
+      height: 1800,
+    },
     order: 2,
     title: "Agentic Customer Service Platform",
     seoTitle: "Agentic Customer Service Platform: Safe LLM Agent Execution",
@@ -188,6 +194,12 @@ const projectRecords = [
   {
     id: "modelops-control-plane",
     slug: "modelops-control-plane",
+    cardImage: {
+      src: "/projects/modelops-control-plane/timeline-quality-rollback.png",
+      alt: "ModelOps deployment timeline: canary gates pass, recall fails and traffic rolls back to stable automatically",
+      width: 1200,
+      height: 960,
+    },
     order: 5,
     title: "ModelOps Control Plane",
     seoTitle: "ModelOps Control Plane: Canary Model Promotion and Rollback",
@@ -343,6 +355,12 @@ const projectRecords = [
   {
     id: "knowledge-base-rag",
     slug: "knowledge-base-rag",
+    cardImage: {
+      src: "/projects/knowledge-base-rag/research-workspace.jpg",
+      alt: "Knowledge Base research workspace: cited answers beside the evidence inspector",
+      width: 1800,
+      height: 1125,
+    },
     order: 4,
     title: "Knowledge Base RAG",
     seoTitle: "Knowledge Base RAG: Agentic Document Research With Citations",
@@ -1234,6 +1252,12 @@ const projectRecords = [
   {
     id: "ml-platform-infrastructure",
     slug: "ml-platform-infrastructure",
+    cardImage: {
+      src: "/projects/ml-platform-infrastructure/07-model-monitoring.png",
+      alt: "ML Platform model monitoring report: feature drift per input and predictive quality for a credit-risk scorer",
+      width: 1440,
+      height: 1237,
+    },
     order: 1,
     title: "ML Platform",
     seoTitle: "ML Platform: Scheduled Scoring, Lineage and Model Monitoring",
@@ -1329,6 +1353,12 @@ const projectRecords = [
   {
     id: "agentic-sre",
     slug: "agentic-sre",
+    cardImage: {
+      src: "/projects/agentic-sre/incident-workspace-dark.png",
+      alt: "Agentic SRE operator console: an incident workspace with the deterministic diagnosis and its evidence",
+      width: 1440,
+      height: 1357,
+    },
     order: 3,
     title: "Agentic SRE",
     seoTitle: "Agentic SRE — Evidence-Driven Kubernetes Incident Investigation",
