@@ -27,7 +27,7 @@ const featuredTechnologies: Record<string, readonly string[]> = {
   "ml-platform-infrastructure": ["Kubernetes", "Go", "Argo Workflows", "MLflow"],
   "agentic-sre": ["Kubernetes", "LangGraph", "gRPC", "OpenTelemetry"],
   "agentic-customer-service-platform": ["LangGraph", "PostgreSQL", "Qdrant", "OpenTelemetry"],
-  "knowledge-base-rag": ["PydanticAI", "Qdrant", "OpenTelemetry", "Langfuse"],
+  "knowledge-base-rag": ["PydanticAI", "Qdrant", "FastAPI", "OpenTelemetry", "Langfuse"],
   "modelops-control-plane": ["PostgreSQL", "FastAPI", "scikit-learn", "Docker Compose"],
   "decision-sql": ["DuckDB", "SQLGlot", "FastAPI", "Pydantic"],
   "real-time-commerce-platform": ["Kafka", "PostgreSQL", "Redis", "Prometheus"],
@@ -65,7 +65,8 @@ export function buildCuratedEngineeringGraph(): EngineeringGraphData {
         ...node.metadata,
         overview: true,
         areas: source.edges.filter((edge) => edge.source === node.id && edge.type === "supports" && edge.target.startsWith("domain:")).map((edge) => edge.target.slice("domain:".length) as GraphAreaId),
-        keyTechnologies: [...featured, ...fallback].slice(0, 4),
+        // Four by default; a project that lists more featured technologies keeps them all.
+        keyTechnologies: [...featured, ...fallback].slice(0, Math.max(4, featured.length)),
         keyConcepts: node.metadata.keyConcepts?.slice(0, 2),
         proofPoints: node.metadata.proofPoints?.slice(0, 2),
         roadmap: [],
