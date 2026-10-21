@@ -28,9 +28,14 @@ import type { CSSProperties } from "react";
  *
  * Every row maps to real work represented elsewhere in the site data (FastAPI
  * boundaries, LangGraph agent runtime, Qdrant retrieval, ModelOps serving,
- * OpenTelemetry). The four outcomes are the real policy branches in
+ * OpenTelemetry, and Agentic SRE as the outside observer). The four outcomes
+ * are the real policy branches in
  * data/architectures.ts. Do not add a row here that no project or experience
  * entry can back.
+ *
+ * Agentic SRE sits below the trace line in its own dashed frame because it
+ * is not a stage of the request: it reads the platform's telemetry from
+ * outside, read-only, and is only drawn in when something breaks.
  */
 type Guide = "space" | "line" | "tee" | "elbow";
 
@@ -112,6 +117,10 @@ export function HeroPipeline() {
       <p className="hero-pipeline-trace">
         <span className="hero-pipeline-trace-dot" aria-hidden="true" />
         Trace + Metrics
+      </p>
+      <p className="hero-pipeline-observer">
+        <span className="hero-pipeline-observer-label">Agentic SRE</span>
+        <span className="hero-pipeline-observer-note">watches from outside · read-only RCA</span>
       </p>
     </div>
   );

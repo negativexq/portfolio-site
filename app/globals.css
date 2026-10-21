@@ -530,6 +530,45 @@ a {
   animation: hero-pipeline-trace-window 9s linear infinite;
 }
 
+/* The outside observer: not a request stage, so it gets its own dashed
+   frame below the trace line instead of a place in the tree. It lights at
+   the end of each run, once the trace it reads is complete. */
+.hero-pipeline-observer {
+  display: grid;
+  gap: 0.2rem;
+  margin: var(--space-4) 0 0;
+  border: 1px dashed var(--border-strong);
+  padding: 0.55rem 0.7rem;
+  color: var(--subtle);
+  animation: hero-pipeline-observer 9s linear infinite;
+}
+
+.hero-pipeline-observer-label {
+  font: 500 0.8rem/1.3 var(--mono);
+  letter-spacing: 0.01em;
+}
+
+.hero-pipeline-observer-note {
+  color: var(--subtle);
+  font: 500 0.66rem/1.35 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+@keyframes hero-pipeline-observer {
+  0%, 84% {
+    border-color: var(--border-strong);
+    color: var(--subtle);
+  }
+  85%, 97% {
+    border-color: var(--accent);
+    color: var(--foreground);
+  }
+  98%, 100% {
+    border-color: var(--border-strong);
+    color: var(--subtle);
+  }
+}
+
 .hero-pipeline-trace-dot {
   flex: none;
   width: 0.4rem;
@@ -624,7 +663,8 @@ a {
   }
 
   .hero-pipeline-nodes li,
-  .hero-pipeline-trace {
+  .hero-pipeline-trace,
+  .hero-pipeline-observer {
     color: var(--muted);
   }
 
