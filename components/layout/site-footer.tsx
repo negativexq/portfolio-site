@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { profile } from "@/data/profile";
 
@@ -9,7 +10,9 @@ export function SiteFooter() {
           <p>© 2026 Ömer Faruk Koç</p>
           <p className="footer-note">AI, data and distributed systems—built with evidence.</p>
         </div>
-        <nav className="footer-links" aria-label="Social links">
+        <nav className="footer-links" aria-label="Footer links">
+          <Link href="/graph">Graph</Link>
+          <Link href="/learning">Learning</Link>
           <a href={profile.links.email}>Email</a>
           <a
             href={profile.links.linkedin}

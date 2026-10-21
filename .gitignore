@@ -34,3 +34,4 @@ yarn-error.log*
 .impeccable/review/
 .impeccable/hook.cache.json
 .impeccable/config.local.json
+.taste-skill/

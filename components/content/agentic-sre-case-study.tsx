@@ -441,7 +441,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
                 </thead>
                 <tbody>
                   {agenticSreFaultFamilies.map(([family, fault, result]) => (
-                    <tr key={family}>
+                    <tr key={fault}>
                       <th scope="row">{family}</th>
                       <td>{fault}</td>
                       <td>{result}</td>
