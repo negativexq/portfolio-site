@@ -327,6 +327,12 @@ export const knowledgeBaseRagDeepDiveLinks = [
 
 export const knowledgeBaseRagRelatedWriting = [
   {
+    href: "/writing/research-loop-memory-is-typed-state",
+    title: "A Research Loop Remembers in Types, Not in Prose",
+    description:
+      "Why the research loop's working memory is typed application state, how progress is measured, and what survives when the loop stops.",
+  },
+  {
     href: "/writing/rag-citation-integrity",
     title: "Building Citation Integrity into a Production RAG Pipeline",
     description:

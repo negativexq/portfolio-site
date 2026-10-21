@@ -65,7 +65,6 @@ export const platformNodes = [
       { label: "Research workflow", href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/adaptive-workflow.md" },
       { label: "Answered questions", href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/adaptive-solved-questions.md" },
       { label: "Reranking evaluation", href: "https://github.com/negativexq/knowledge-base-rag/blob/main/docs/reranking.md" },
-      { label: "Case study", href: "/projects/knowledge-base-rag" },
     ],
     details: {
       why: "Retrieval quality alone does not make an answer trustworthy. Agents handle the semantic decisions inside a typed research graph, while tenant scope, tool permissions, budgets, arithmetic and the release checks stay application-owned.",
@@ -89,7 +88,6 @@ export const platformNodes = [
     stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "counterfactual evaluation"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/decision-sql" },
-      { label: "Case study", href: "/projects/decision-sql" },
     ],
     details: {
       nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention.",
@@ -237,7 +235,6 @@ export const platformNodes = [
     stack: ["QLoRA", "PEFT", "Qwen3-4B", "frozen benchmark", "fresh blind evaluation", "failure-boundary testing", "cross-model replication"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/cause-tune" },
-      { label: "Case study", href: "/projects/cause-tune" },
     ],
     details: {
       nextGate: "The gain held on a fresh blind benchmark (98.33%). Next: wire the evaluated candidate into the ModelOps canary lifecycle.",

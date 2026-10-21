@@ -1626,6 +1626,51 @@ function ObservabilityOptimizationArchitectureDiagram() {
   );
 }
 
+function ResearchLoopWorkingMemoryDiagram() {
+  const marker = "research-loop-memory-arrow";
+  return (
+    <DiagramFrame
+      id="research-loop-working-memory"
+      title="A research loop around typed working memory"
+      description="Scoped retrieval admits evidence into a ledger, which seeds ResearchState, the typed working memory the application owns. Each PydanticAI agent receives a task projection of that state and either proposes a cited answer or names a missing piece of evidence. A named gap passes a tool and budget gate and runs as one narrow search, read, inspect or extract operation. The checked, source-bound result and any calculation are written back into ResearchState, and the loop decides again. When research closes, finalization works from the saved state and source, value and scope checks gate the cited answer."
+      caption="The model reads a projection of memory and proposes. The application writes memory, runs the tools and decides when the loop ends."
+      height={470}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={440} y={36} anchor="middle">stops at six research requests or two rounds without progress</Label>
+
+      <Node x={28} y={66} width={160} height={80} lines={["Evidence ledger", "authorized sources"]} />
+      <Node x={228} y={66} width={200} height={80} lines={["ResearchState", "typed working memory"]} tone="accent" />
+      <Node x={468} y={66} width={170} height={80} lines={["Task projection", "only what a role needs"]} />
+      <Node x={678} y={66} width={174} height={80} lines={["PydanticAI agent", "answer or named gap"]} tone="muted" />
+      <Arrow d="M188 106 H222" marker={marker} />
+      <Arrow d="M428 106 H462" marker={marker} />
+      <Arrow d="M638 106 H672" marker={marker} />
+
+      <Arrow d="M765 146 V220" marker={marker} />
+      <Label x={775} y={188} anchor="start">gap</Label>
+
+      <Node x={678} y={226} width={174} height={80} lines={["Tool + budget gate", "access · arguments · budget"]} tone="accent" />
+      <Node x={468} y={226} width={170} height={80} lines={["One narrow tool", "search · read · extract"]} />
+      <Node x={228} y={226} width={200} height={80} lines={["Checked result", "source-bound · calculated"]} tone="accent" />
+      <Arrow d="M678 266 H644" marker={marker} />
+      <Arrow d="M468 266 H434" marker={marker} />
+
+      <Arrow d="M328 226 V152" marker={marker} dashed />
+      <Label x={338} y={194} anchor="start">writes back</Label>
+
+      <Arrow d="M328 306 V370" marker={marker} />
+      <Label x={338} y={344} anchor="start">research closes</Label>
+
+      <Node x={228} y={376} width={200} height={72} lines={["Finalize", "from saved state"]} tone="accent" />
+      <Node x={468} y={376} width={170} height={72} lines={["Source · value", "· scope checks"]} />
+      <Node x={678} y={376} width={174} height={72} lines={["Cited answer", "opens its evidence"]} />
+      <Arrow d="M428 412 H462" marker={marker} />
+      <Arrow d="M638 412 H672" marker={marker} />
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1651,6 +1696,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "deterministic-investigation-loop": DeterministicInvestigationLoopDiagram,
   "agent-evidence-feedback-loop": AgentEvidenceFeedbackLoopDiagram,
   "observability-optimization-architecture": ObservabilityOptimizationArchitectureDiagram,
+  "research-loop-working-memory": ResearchLoopWorkingMemoryDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

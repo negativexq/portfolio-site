@@ -23,6 +23,7 @@ export const WRITING_DIAGRAM_IDS = [
   "deterministic-investigation-loop",
   "agent-evidence-feedback-loop",
   "observability-optimization-architecture",
+  "research-loop-working-memory",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];

@@ -16,6 +16,15 @@ const proofNodes = platformNodes.filter((node) =>
   ["knowledge", "agent-runtime", "modelops"].includes(node.id),
 );
 
+// Platform node ids are architecture names; case studies live at project slugs.
+const caseStudySlugs: Record<string, string> = {
+  knowledge: "knowledge-base-rag",
+  "decision-sql": "decision-sql",
+  "agent-runtime": "agentic-customer-service-platform",
+  modelops: "modelops-control-plane",
+  causetune: "cause-tune",
+};
+
 function statusClass(status: PlatformStatus) {
   return `platform-status platform-status-${status.toLowerCase()}`;
 }
@@ -69,9 +78,11 @@ function ProofCard({ node }: { node: PlatformNode }) {
 
       <nav className="platform-proof-links" aria-label={`${node.title} links`}>
         {node.links.map((link) => <ExternalLink key={link.href} {...link} />)}
-        <Link href={`/projects/${node.id === "agent-runtime" ? "agentic-customer-service-platform" : node.id}`}>
-          Case study <ArrowRight aria-hidden="true" size={13} />
-        </Link>
+        {caseStudySlugs[node.id] ? (
+          <Link href={`/projects/${caseStudySlugs[node.id]}`}>
+            Case study <ArrowRight aria-hidden="true" size={13} />
+          </Link>
+        ) : null}
       </nav>
     </article>
   );
@@ -274,9 +285,14 @@ function PlatformDetailPanel({
         </ul>
       </div>
 
-      {node.links.length > 0 ? (
+      {node.links.length > 0 || caseStudySlugs[node.id] ? (
         <nav className="platform-detail-links" aria-label={`${node.title} detail links`}>
           {node.links.map((link) => <ExternalLink key={link.href} {...link} />)}
+          {caseStudySlugs[node.id] ? (
+            <Link href={`/projects/${caseStudySlugs[node.id]}`}>
+              Case study <ArrowRight aria-hidden="true" size={13} />
+            </Link>
+          ) : null}
         </nav>
       ) : null}
       </div>
