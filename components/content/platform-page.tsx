@@ -326,7 +326,6 @@ export function PlatformPage() {
 
       <section className="platform-hero container" aria-labelledby="platform-title">
         <div className="platform-hero-copy">
-          <p className="platform-kicker">AI platform architecture / current boundary</p>
           <h1 id="platform-title">Building toward a Governed Enterprise AI Platform</h1>
           <p className="platform-claim-boundary">
             I built these systems independently and tested each one against its own evidence. This page shows the larger architecture I’m evolving them toward.
@@ -338,9 +337,9 @@ export function PlatformPage() {
           </div>
         </div>
         <div className="platform-hero-index" aria-label="Page sequence">
-          <div><span>01</span><strong>Evidence</strong><small>implemented systems first</small></div>
-          <div><span>02</span><strong>Architecture</strong><small>relationships earned by evidence</small></div>
-          <div><span>03</span><strong>Integration</strong><small>future work stays labeled</small></div>
+          <div><strong>Evidence</strong><small>implemented systems first</small></div>
+          <div><strong>Architecture</strong><small>relationships earned by evidence</small></div>
+          <div><strong>Integration</strong><small>future work stays labeled</small></div>
         </div>
       </section>
 
@@ -348,7 +347,6 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">WHERE THE SYSTEMS ARE GOING</p>
               <h2 id="architecture-heading">How the systems are evolving together.</h2>
               <p>The proven nodes are existing, independently tested systems. Building and evolving nodes show active work or the direction of integration.</p>
             </div>
@@ -451,7 +449,6 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">Proof before vision</p>
               <h2 id="implemented-heading">Implemented systems.</h2>
               <p>Four independent subsystems, each with a different failure surface and an explicit evidence trail.</p>
             </div>
@@ -474,7 +471,6 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">Model lifecycle / model optimization</p>
               <h2 id="lifecycle-heading">Specialization has to earn its place.</h2>
               <p>CauseTune is intentionally shown as NEXT here. The question is not whether a model can be fine-tuned; it is whether specialization actually beats the base model.</p>
             </div>
@@ -491,7 +487,6 @@ export function PlatformPage() {
               "Adaptive Model Router",
             ].map((step, index, steps) => (
               <div className="platform-lifecycle-step" key={step}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
                 <strong>{step}</strong>
                 {index < steps.length - 1 ? <ArrowRight aria-hidden="true" size={15} /> : null}
               </div>
@@ -508,7 +503,6 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">Shared engineering principles</p>
               <h2 id="principles-heading">Engineering principles.</h2>
               <p>The platform direction is coherent because the boundaries repeat, even when the subsystems do different work.</p>
             </div>
@@ -545,7 +539,6 @@ export function PlatformPage() {
         <div className="container">
           <header className="platform-section-heading" data-reveal>
             <div>
-              <p className="eyebrow">Integration roadmap</p>
               <h2 id="roadmap-heading">Integration second. Platform last.</h2>
               <p>These are target integrations, not current deployment claims. The sequence starts with a second real data consumer and grows the contracts only when the next boundary is earned.</p>
             </div>

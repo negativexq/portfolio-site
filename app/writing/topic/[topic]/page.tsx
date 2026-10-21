@@ -51,7 +51,6 @@ export default async function WritingTopicPage({ params }: TopicPageProps) {
         <Link className="back-link" href="/writing">
           <ArrowLeft aria-hidden="true" size={14} /> All writing
         </Link>
-        <p className="eyebrow">Writing topic</p>
         <h1>{group.topic.title}</h1>
         <p>{group.topic.description}</p>
       </header>

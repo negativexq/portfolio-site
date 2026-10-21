@@ -7,23 +7,21 @@ import { TagList } from "./tag-list";
 
 type ProjectCardProps = {
   project: Project;
-  index?: number;
   compact?: boolean;
 };
 
-export function ProjectCard({ project, index, compact = false }: ProjectCardProps) {
+export function ProjectCard({ project, compact = false }: ProjectCardProps) {
   return (
     <article
       className={`project-card${compact ? " project-card-compact" : ""}`}
       data-reveal
       data-hover-lift
     >
-      <div className="project-card-meta">
-        <span>{typeof index === "number" ? `Project / ${String(index).padStart(2, "0")}` : "Supporting work"}</span>
-        <StatusBadge status={project.status} />
-      </div>
       <div className="project-card-body">
-        <p className="project-category">{project.category}</p>
+        <p className="project-category">
+          {project.category}
+          {project.status !== "current" ? <StatusBadge status={project.status} /> : null}
+        </p>
         <h3>
           <Link href={`/projects/${project.slug}`}>{project.title}</Link>
         </h3>

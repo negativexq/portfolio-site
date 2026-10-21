@@ -33,7 +33,6 @@ export default function LearningPage() {
       />
       <MotionController />
       <header className="page-hero container">
-        <p className="eyebrow">Learning / building next</p>
         <h1>Extending the engineering boundary.</h1>
         <p>Active exploration and planned work expand existing AI Platform and MLOps foundations without being presented as demonstrated capability before the evidence exists.</p>
         <MachineReadableLink href="/learning.md" />

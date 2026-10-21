@@ -67,7 +67,7 @@ export default function Home() {
 
       <section className="section-shell metric-section" aria-labelledby="proof-heading">
         <div className="container">
-          <SectionHeading id="proof-heading" eyebrow="Career highlights" title="At a glance." />
+          <SectionHeading id="proof-heading" title="At a glance." />
           <MetricGrid metrics={metrics} />
         </div>
       </section>
@@ -76,7 +76,6 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             id="selected-work-heading"
-            eyebrow="Selected work"
             title="Systems, not demos."
             description="Public engineering projects built around control boundaries, reliability, evaluation, observability and explicit trade-offs."
             action={
@@ -86,8 +85,8 @@ export default function Home() {
             }
           />
           <div className="project-grid">
-            {flagshipProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index + 1} />
+            {flagshipProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         </div>
@@ -97,13 +96,12 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             id="areas-heading"
-            eyebrow="Engineering areas"
             title="Platform work across five connected domains."
             description="Capabilities are grouped by engineering evidence—not percentages or keyword counts."
           />
           <div className="area-list">
-            {engineeringAreas.map((area, index) => (
-              <EngineeringAreaCard key={area.id} area={area} index={index + 1} />
+            {engineeringAreas.map((area) => (
+              <EngineeringAreaCard key={area.id} area={area} />
             ))}
           </div>
           <Link className="section-link" href="/learning">
@@ -114,7 +112,7 @@ export default function Home() {
 
       <section className="section-shell" aria-labelledby="experience-heading">
         <div className="container experience-preview">
-          <SectionHeading id="experience-heading" eyebrow="Professional experience" title="Production systems at scale." />
+          <SectionHeading id="experience-heading" title="Production systems at scale." />
           <div className="experience-preview-body">
             <div>
               <p className="role-company">{experience.company} · {experience.team}</p>
@@ -144,7 +142,6 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             id="writing-heading"
-            eyebrow="Engineering writing"
             title="Notes from building the systems."
             description="Short technical pieces on reliability, evaluation, retrieval, distributed systems and production AI."
           />
@@ -175,7 +172,6 @@ export default function Home() {
       <section className="graph-cta section-shell" aria-labelledby="graph-cta-heading">
         <div className="container graph-cta-inner" data-reveal>
           <div>
-            <p className="eyebrow">Engineering graph</p>
             <h2 id="graph-cta-heading">See how the work connects.</h2>
             <p>{graphData.nodes.length} source-grounded nodes and {graphData.edges.length} validated relationships across experience, projects, technologies, concepts, evidence and current learning directions.</p>
           </div>
@@ -188,7 +184,6 @@ export default function Home() {
       <section className="contact-section section-shell" aria-labelledby="contact-heading">
         <div className="container contact-inner">
           <div>
-            <p className="eyebrow">Contact</p>
             <h2 id="contact-heading">Have an interesting platform, data or AI infrastructure problem?</h2>
             <p className="contact-context">Open to remote opportunities · {profile.timezone}</p>
             <p className="contact-availability">{profile.availability}</p>

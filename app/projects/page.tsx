@@ -35,7 +35,6 @@ export default function ProjectsPage() {
       <MotionController />
       <JsonLd data={itemListJsonLd} />
       <header className="page-hero container">
-        <p className="eyebrow">Public engineering work</p>
         <h1>Projects</h1>
         <p>Evidence-led systems work across AI platforms, agent systems, retrieval, data infrastructure and distributed systems—with reliability, evaluation, observability and trade-offs made explicit.</p>
         <MachineReadableLink href="/projects.md" />
@@ -45,13 +44,12 @@ export default function ProjectsPage() {
         <div className="container">
           <SectionHeading
             id="featured-projects"
-            eyebrow="Featured work"
             title="Flagship systems"
             description="Seven current projects selected for depth, engineering evidence and relevance to AI platform work."
           />
           <div className="project-grid">
-            {flagshipProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index + 1} />
+            {flagshipProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         </div>
@@ -61,7 +59,6 @@ export default function ProjectsPage() {
         <div className="container">
           <SectionHeading
             id="supporting-projects"
-            eyebrow="Supporting / evolution"
             title="Supporting work"
             description="Focused tools and earlier foundations that show architectural iteration and how narrower systems evolved into broader platforms."
           />

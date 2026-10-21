@@ -39,7 +39,6 @@ export default function ExperiencePage() {
     <main>
       <JsonLd data={occupationJsonLd} />
       <header className="page-hero container experience-hero">
-        <p className="eyebrow">Professional experience</p>
         <div className="experience-title-row">
           <div>
             <h1>{experience.role}</h1>
@@ -67,7 +66,6 @@ export default function ExperiencePage() {
       <section className="section-shell" aria-labelledby="impact-stories">
         <div className="container">
           <header className="editorial-heading">
-            <p className="eyebrow">Selected impact</p>
             <h2 id="impact-stories">Platform work through outcomes.</h2>
             <p>Stories are organized around engineering changes and measurable effects rather than a conventional responsibility list.</p>
           </header>
@@ -81,7 +79,6 @@ export default function ExperiencePage() {
 
       <section className="section-shell section-tinted">
         <div className="container separation-block">
-          <p className="eyebrow">Clear separation</p>
           <h2>Professional work shaped the engineering problems explored in public projects.</h2>
           <p>The portfolio projects are independent public engineering work. They are not Fibabanka source code or representations of internal systems.</p>
         </div>

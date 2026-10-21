@@ -42,7 +42,6 @@ export default function WritingPage() {
         })}
       />
       <header className="page-hero writing-hero container">
-        <p className="eyebrow">Engineering notes</p>
         <h1>Writing</h1>
         <p>{WRITING_DESCRIPTION}</p>
         <a className="writing-rss-link" href="/rss.xml">

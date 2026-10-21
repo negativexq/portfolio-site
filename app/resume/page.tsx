@@ -29,7 +29,6 @@ export default function ResumePage() {
     <main>
       <JsonLd data={buildWebPage(profile, { path: "/resume", name: `${profile.name} — Resume`, description: RESUME_DESCRIPTION })} />
       <header className="page-hero container resume-hero">
-        <p className="eyebrow">Resume overview</p>
         <h1>{profile.name}</h1>
         <p>{profile.title} — {profile.summary}</p>
         <div className="hero-actions">

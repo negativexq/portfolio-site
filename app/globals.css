@@ -881,7 +881,7 @@ a {
 
 .project-card {
   display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr) minmax(13rem, 18rem);
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 18rem);
   gap: clamp(1.5rem, 4vw, 4rem);
   min-width: 0;
   border-bottom: 1px solid var(--border);
@@ -937,6 +937,10 @@ a {
 }
 
 .project-category {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 0.85rem;
   color: var(--accent);
 }
@@ -1061,7 +1065,7 @@ a {
 }
 
 .project-card-compact {
-  grid-template-columns: 6rem minmax(0, 1fr) minmax(13rem, 18rem);
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 18rem);
 }
 
 .supporting-grid {
@@ -1141,7 +1145,7 @@ a {
 
 .area-card {
   display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(1rem, 4vw, 3rem);
   border-bottom: 1px solid var(--border);
   padding-block: clamp(1.6rem, 3vw, 2.5rem);
@@ -3299,7 +3303,7 @@ a {
 
 .platform-hero-index div {
   display: grid;
-  grid-template-columns: 2.3rem 1fr;
+  grid-template-columns: 1fr;
   gap: 0.15rem 0.8rem;
   border-bottom: 1px solid var(--border);
   padding: 1rem 0;
@@ -8080,11 +8084,11 @@ a {
 @media (max-width: 1020px) {
   .project-card,
   .project-card-compact {
-    grid-template-columns: 5rem minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .project-card-actions {
-    grid-column: 2;
+    grid-column: 1;
   }
 
   .area-card > div {
@@ -8456,7 +8460,7 @@ a {
   }
 
   .area-card {
-    grid-template-columns: 2rem minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .area-card > div {
