@@ -289,7 +289,7 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
             <p>
               The answered-question ledger tracks 120 distinct questions over long documents: 10-K
               filings, annual reports, research papers, manuals and survey releases. Each result is
-              recorded once, with its run, answer, latency and model-call count. 96 of the 120 reached
+              recorded once, with its run, answer, latency and model-call count. 101 of the 120 reached
               an accepted outcome.
             </p>
             <div className="rag-evidence-table" role="region" aria-label="Outcomes across 120 questions" tabIndex={0}>

@@ -236,7 +236,7 @@ export const knowledgeBaseRagScreenshots = [
 export const knowledgeBaseRagCoverage = [
   {
     outcome: "Source-correct answers",
-    count: "79",
+    count: "81",
     meaning: "The published answer matches the original PDF on independent review.",
   },
   {
@@ -246,12 +246,12 @@ export const knowledgeBaseRagCoverage = [
   },
   {
     outcome: "Correct refusals",
-    count: "15",
+    count: "18",
     meaning: "Questions the source cannot answer, where the system said so instead of guessing.",
   },
   {
     outcome: "Unresolved",
-    count: "24",
+    count: "19",
     meaning: "Open questions, kept on the record for the next iteration.",
   },
 ] as const;
@@ -282,8 +282,8 @@ export const knowledgeBaseRagCoverageExamples = [
 export const knowledgeBaseRagEvidence = [
   {
     area: "Agentic question coverage",
-    result: "96/120 accepted outcomes",
-    detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals across 120 distinct long-document questions, each counted once.",
+    result: "101/120 accepted outcomes",
+    detail: "81 source-correct answers, 2 qualified calculations and 18 correct refusals across 120 distinct long-document questions, each counted once.",
   },
   {
     area: "Research budget",

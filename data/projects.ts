@@ -371,10 +371,10 @@ const projectRecords = [
     showCardProof: true,
     cardProof: {
       label: "Agentic question coverage",
-      value: "96/120 accepted outcomes",
+      value: "101/120 accepted outcomes",
       scope: "120 distinct long-document questions",
       qualifier:
-        "79 source-correct answers, 2 qualified calculations and 15 correct refusals, each question counted once and checked against the original PDF.",
+        "81 source-correct answers, 2 qualified calculations and 18 correct refusals, each question counted once and checked against the original PDF.",
     },
     summary:
       "Agentic document research workspace: PydanticAI agents on an application-owned typed research graph search authorized sources, read original PDF pages, extract values and calculate in code, then release answers with citations you can open.",
@@ -384,10 +384,10 @@ const projectRecords = [
       "A relevant chunk is not an answer, and a fluent model is not a calculator. Questions over complex tables, charts and scanned PDFs need evidence that is found, read from the right place and computed correctly, while access control and release policy stay outside the model. This project keeps the semantic work with agents and everything that must be trustworthy in application code: state, authorization, tool permissions, budgets, arithmetic and the final checks. It also keeps its results honest by counting each question once, keeping failed runs on the record and never reading an operational stop as proof that an answer is absent.",
     heroMetrics: [
       {
-        value: "96/120",
+        value: "101/120",
         label: "Accepted outcomes",
         context: "120 distinct long-document questions",
-        detail: "79 source-correct answers, 2 qualified calculations and 15 correct refusals, each question counted once and checked against the original PDF.",
+        detail: "81 source-correct answers, 2 qualified calculations and 18 correct refusals, each question counted once and checked against the original PDF.",
       },
       {
         value: "10 REQUESTS · 240 S",
@@ -491,10 +491,10 @@ const projectRecords = [
     proofPoints: [
       {
         label: "Agentic question coverage",
-        value: "96/120 accepted outcomes",
+        value: "101/120 accepted outcomes",
         scope: "120 distinct long-document questions",
         qualifier:
-          "79 source-correct answers, 2 qualified calculations and 15 correct refusals. Each question is counted once and reruns never raise the total.",
+          "81 source-correct answers, 2 qualified calculations and 18 correct refusals. Each question is counted once and reruns never raise the total.",
       },
       {
         label: "Bounded research budget",
