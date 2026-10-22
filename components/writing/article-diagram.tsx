@@ -1855,6 +1855,43 @@ function SharedLimiterAdmissionDiagram() {
   );
 }
 
+function QuantityCalculationPathDiagram() {
+  const marker = "quantity-calculation-arrow";
+  return (
+    <DiagramFrame
+      id="quantity-calculation-path"
+      title="Model transcribes sourced inputs; application code calculates and re-proves"
+      description="The original page, as text or as a page image, is read by the model, which transcribes each input with its displayed value, unit, scale, period and support ID and proposes a formula over named inputs. An independent checker reviews the inputs. Application code applies scale factors with Decimal precision and executes a bounded expression, producing a conversion receipt. At release the operation is executed again and the receipt compared; source binding, period and scope are checked separately before the answer is published."
+      caption="No model call performs arithmetic. The receipt lets the release path prove the calculation again instead of trusting the draft that contains it."
+      height={420}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={30} anchor="start">MODEL · READS AND PROPOSES</Label>
+      <Node x={28} y={50} width={180} height={66} lines={["Original page", "text or page image"]} tone="muted" />
+      <Node x={236} y={50} width={300} height={66} lines={["Transcribe inputs", "value · unit · scale · period · support ID"]} />
+      <Node x={564} y={50} width={288} height={66} lines={["Propose formula", "over named inputs"]} />
+      <Arrow d="M208 83 H229" marker={marker} />
+      <Arrow d="M536 83 H557" marker={marker} />
+      <Arrow d="M386 116 V153" marker={marker} />
+
+      <Node x={236} y={160} width={300} height={56} lines={["Independent input check"]} />
+      <Arrow d="M708 116 V226 H520 V262" marker={marker} />
+      <Arrow d="M386 216 V230 H169 V262" marker={marker} />
+
+      <rect className="diagram-boundary diagram-boundary--accent" x={28} y={236} width={824} height={96} rx="10" />
+      <Label x={44} y={258} anchor="start">APPLICATION CODE · CALCULATES</Label>
+      <Node x={44} y={268} width={250} height={52} lines={["Scale factors", "Decimal precision"]} tone="accent" />
+      <Node x={316} y={268} width={250} height={52} lines={["Bounded expression", "+ − × ÷ abs min max mean"]} tone="accent" />
+      <Node x={588} y={268} width={248} height={52} lines={["Conversion receipt"]} tone="accent" />
+      <Arrow d="M294 294 H309" marker={marker} />
+      <Arrow d="M566 294 H581" marker={marker} />
+
+      <Node x={236} y={354} width={400} height={50} lines={["Release: re-execute, compare receipt, check scope"]} />
+      <Arrow d="M712 320 V340 H436 V348" marker={marker} />
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
@@ -1886,6 +1923,7 @@ const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
   "canary-gate-decision": CanaryGateDecisionDiagram,
   "batch-lineage-monitoring": BatchLineageMonitoringDiagram,
   "shared-limiter-admission": SharedLimiterAdmissionDiagram,
+  "quantity-calculation-path": QuantityCalculationPathDiagram,
 };
 
 export function ArticleDiagram({ id }: { id: WritingDiagramId }) {

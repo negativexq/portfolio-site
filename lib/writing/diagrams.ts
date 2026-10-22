@@ -29,6 +29,7 @@ export const WRITING_DIAGRAM_IDS = [
   "canary-gate-decision",
   "batch-lineage-monitoring",
   "shared-limiter-admission",
+  "quantity-calculation-path",
 ] as const;
 
 export type WritingDiagramId = (typeof WRITING_DIAGRAM_IDS)[number];
