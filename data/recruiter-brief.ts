@@ -5,7 +5,7 @@
  * one goes stale.
  */
 export const recruiterBrief = {
-  roles: ["MLOps / ML Platform Engineer", "AI Platform Engineer", "LLM / AI Engineer", "Data Engineer"],
+  roles: ["MLOps / ML Platform Engineer", "AI Platform Engineer", "LLM / AI Engineer", "Forward Deployed Engineer"],
   competencies: [
     {
       title: "ML Platform & MLOps",
