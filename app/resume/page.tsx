@@ -12,7 +12,7 @@ import { profile } from "@/data/profile";
 import { flagshipProjects } from "@/data/projects";
 
 const RESUME_DESCRIPTION =
-  "Resume of Ömer Faruk Koç, MLOps & AI Platform Engineer: ML platforms, agent systems, agentic RAG and Kubernetes incident analysis, with measured results.";
+  "Resume of Ömer Faruk Koç, AI Platform & MLOps Engineer: ML platforms, agent systems, agentic RAG and Kubernetes incident analysis, with measured results.";
 
 export const metadata: Metadata = {
   title: "Resume",

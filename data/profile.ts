@@ -2,7 +2,7 @@ import type { Profile } from "@/lib/content/types";
 
 export const profile = {
   name: "Ömer Faruk Koç",
-  title: "MLOps & AI Platform Engineer",
+  title: "AI Platform & MLOps Engineer",
   positioning:
     "Building production AI/ML platforms, agentic systems, retrieval infrastructure and reliable data systems.",
   summary:
