@@ -53,7 +53,7 @@ export const platformNodes = [
     architectureDescription: "Trusted organizational knowledge",
     decision: "Agents choose what to look for; tenant scope, tools, calculations and release stay application-owned.",
     evidence: [
-      "101/120 accepted outcomes on 120 distinct long-document questions",
+      "103/120 accepted outcomes on 120 distinct long-document questions",
       "PydanticAI agents on a typed research graph with application-owned ResearchState",
       "Original page-image reading, checked inputs and calculation in application code",
     ],

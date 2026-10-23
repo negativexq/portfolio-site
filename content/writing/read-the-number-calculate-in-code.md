@@ -4,7 +4,7 @@ description: "A language model can find the right two numbers in a 10-K and stil
 metaDescription: "Let the model transcribe sourced numbers and let code apply units, run the arithmetic and re-check it at release. Lessons from a document research agent."
 slug: read-the-number-calculate-in-code
 datePublished: 2026-10-22
-dateModified: 2026-10-22
+dateModified: 2026-10-23
 category: Retrieval & RAG
 tags:
   - RAG
@@ -105,7 +105,7 @@ Two answers are arithmetically correct:
 - a relative shortfall of **35.821%**, from `abs((6.7 − 4.3) / 6.7) × 100`;
 - an absolute gap of **2.4 percentage points**.
 
-The workspace publishes the relative shortfall with its formula written out, so a reader who wanted the absolute gap can see the difference at once. The ledger counts it as a **qualified interpreted calculation**, separately from source-verified answers. Best Buy's return on capital employed is the other one: the 10-K never defines ROCE, so the answer names the formula it used.
+The workspace publishes the relative shortfall with its formula written out, so a reader who wanted the absolute gap can see the difference at once. The ledger counts it as a **qualified interpreted calculation**, separately from source-verified answers. Three more sit in the same column. Best Buy's 10-K never defines return on capital employed, so that answer names the formula it used. Two survey questions ask for a headcount the release never reports, so the answers, about 541 and about 738 people, are published as sample-equivalent estimates calculated from the reported rates, not as exact counts.
 
 Counting these as plain correct answers would make the score look better and the system less honest. Keeping them in their own column records exactly what the source can and cannot establish.
 
@@ -139,9 +139,9 @@ The ledger tracks 120 distinct long-document questions across 10-K filings, annu
 | Outcome | Questions |
 | --- | ---: |
 | Source-correct answers | 81 |
-| Qualified interpreted calculations | 2 |
+| Qualified interpreted calculations | 4 |
 | Correct refusals | 18 |
-| **Accepted outcomes** | **101/120** |
+| **Accepted outcomes** | **103/120** |
 
 The split of responsibilities is what makes those numbers checkable. The model does what it is good at: finding the passage, reading the value, choosing the formula. The application does what it is good at: units, scale, exact arithmetic and re-proving the result before anyone sees it.
 

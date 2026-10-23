@@ -241,7 +241,7 @@ export const knowledgeBaseRagCoverage = [
   },
   {
     outcome: "Qualified calculations",
-    count: "2",
+    count: "4",
     meaning: "An interpreted calculation, published together with the interpretation it depends on.",
   },
   {
@@ -251,7 +251,7 @@ export const knowledgeBaseRagCoverage = [
   },
   {
     outcome: "Unresolved",
-    count: "19",
+    count: "17",
     meaning: "Open questions, kept on the record for the next iteration.",
   },
 ] as const;
@@ -282,8 +282,8 @@ export const knowledgeBaseRagCoverageExamples = [
 export const knowledgeBaseRagEvidence = [
   {
     area: "Agentic question coverage",
-    result: "101/120 accepted outcomes",
-    detail: "81 source-correct answers, 2 qualified calculations and 18 correct refusals across 120 distinct long-document questions, each counted once.",
+    result: "103/120 accepted outcomes",
+    detail: "81 source-correct answers, 4 qualified calculations and 18 correct refusals across 120 distinct long-document questions, each counted once.",
   },
   {
     area: "Research budget",

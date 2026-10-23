@@ -2,10 +2,10 @@
 title: "A Research Loop Remembers in Types, Not in Prose"
 seoTitle: "Agentic RAG Research Loops With Typed PydanticAI Memory"
 description: "How an agentic document research workspace keeps its memory as typed application state: PydanticAI agents propose, the application writes memory, runs the tools and decides when the loop ends. 101 of 120 long-document questions reached an accepted outcome."
-metaDescription: "How an agentic RAG research loop keeps typed working memory: PydanticAI agents propose, the application writes state and ends the loop. 101/120 accepted."
+metaDescription: "How an agentic RAG research loop keeps typed working memory: PydanticAI agents propose, the application writes state and ends the loop. 103/120 accepted."
 slug: research-loop-memory-is-typed-state
 datePublished: 2026-10-22
-dateModified: 2026-10-22
+dateModified: 2026-10-23
 category: Retrieval & RAG
 tags:
   - RAG
@@ -133,9 +133,9 @@ The answered-question ledger tracks 120 distinct questions over long documents: 
 | Outcome | Questions |
 | --- | ---: |
 | Source-correct answers | 81 |
-| Qualified calculations | 2 |
+| Qualified calculations | 4 |
 | Correct refusals | 18 |
-| **Accepted outcomes** | **101/120** |
+| **Accepted outcomes** | **103/120** |
 
 The correct refusals matter as much as the answers. Eighteen questions asked for something the source does not contain, and the loop said so instead of filling the gap with a plausible number.
 
