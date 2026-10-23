@@ -10653,6 +10653,7 @@ a.hero-pipeline-watch-label:focus-visible {
   gap: var(--space-3);
   margin: 0;
   padding-left: 1.2rem;
+  list-style: disc;
   color: var(--text);
   line-height: 1.6;
 }

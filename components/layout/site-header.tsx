@@ -95,7 +95,19 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <Link className="brand" href="/" aria-label="Ömer Faruk Koç — Home">
+        <Link
+          className="brand"
+          href="/"
+          aria-label="Ömer Faruk Koç — Home"
+          onClick={(event) => {
+            // Already on the home page: a link to the same URL does not
+            // navigate, so scroll back to the top instead.
+            if (pathname !== "/") return;
+            event.preventDefault();
+            const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+          }}
+        >
           ÖFK
         </Link>
 
