@@ -7981,6 +7981,57 @@ a {
   color: var(--muted);
 }
 
+.resume-project-list {
+  display: grid;
+  gap: 2rem;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.resume-project-list li {
+  border-left: 2px solid var(--accent);
+  padding-left: 1.25rem;
+}
+
+.resume-project-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+}
+
+.resume-project-heading h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.resume-project-heading h2 a:hover {
+  color: var(--accent);
+}
+
+.resume-project-heading span {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.resume-project-list p {
+  max-width: var(--reading);
+  margin: 0.6rem 0 0;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.resume-project-list .resume-project-proof {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.resume-project-proof strong {
+  color: var(--accent);
+}
+
 .resume-area-list {
   display: grid;
   grid-template-columns: 1fr 1fr;

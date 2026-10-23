@@ -4,15 +4,22 @@ import { buildWebPage } from "@/lib/seo/collection";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
 import { MachineReadableLink } from "@/components/content/machine-readable-link";
-import { ProjectProof } from "@/components/content/project-proof";
 import { TagList } from "@/components/content/tag-list";
 import { engineeringAreas } from "@/data/engineering-areas";
 import { experiences } from "@/data/experience";
 import { profile } from "@/data/profile";
-import { flagshipProjects } from "@/data/projects";
+import { projects } from "@/data/projects";
 
 const RESUME_DESCRIPTION =
   "Resume of Ömer Faruk Koç, AI Platform & MLOps Engineer: ML platforms, agent systems, agentic RAG and Kubernetes incident analysis, with measured results.";
+
+// Same projects, same order as "Selected Engineering Projects" in the PDF.
+const SELECTED_PROJECT_IDS = [
+  "ml-platform-infrastructure",
+  "agentic-sre",
+  "agentic-customer-service-platform",
+  "knowledge-base-rag",
+] as const;
 
 export const metadata: Metadata = {
   title: "Resume",
@@ -23,7 +30,11 @@ export const metadata: Metadata = {
 export default function ResumePage() {
   const experience = experiences[0];
   const featuredImpacts = experience.impacts.filter((impact) => impact.proof).slice(0, 4);
-  const featuredProject = flagshipProjects[0];
+  const selectedProjects = SELECTED_PROJECT_IDS.map((id) => {
+    const project = projects.find((candidate) => candidate.id === id);
+    if (!project) throw new Error(`resume: missing project ${id}`);
+    return project;
+  });
 
   return (
     <main>
@@ -66,15 +77,24 @@ export default function ResumePage() {
           </section>
 
           <section className="resume-section">
-            <p className="detail-kicker">Featured project</p>
-            <div className="resume-role-heading">
-              <div><h2>{featuredProject.title}</h2><p>{featuredProject.category}</p></div>
-            </div>
-            <p>{featuredProject.summary}</p>
-            <ProjectProof proof={featuredProject.proofPoints[0]} compact />
-            <Link className="section-link" href={`/projects/${featuredProject.slug}`}>
-              Project detail <ArrowRight aria-hidden="true" size={14} />
-            </Link>
+            <p className="detail-kicker">Selected projects</p>
+            <ol className="resume-project-list">
+              {selectedProjects.map((project) => (
+                <li key={project.id}>
+                  <div className="resume-project-heading">
+                    <h2><Link href={`/projects/${project.slug}`}>{project.title}</Link></h2>
+                    <span>{project.category}</span>
+                  </div>
+                  <p>{project.summary}</p>
+                  {project.cardProof ? (
+                    <p className="resume-project-proof">
+                      <strong>{project.cardProof.value}</strong> {project.cardProof.label}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+            <Link className="section-link" href="/projects">All projects <ArrowRight aria-hidden="true" size={14} /></Link>
           </section>
 
         </div>
