@@ -10702,7 +10702,9 @@ a.hero-pipeline-watch-label:focus-visible {
 }
 
 .brief-email {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
   margin-top: var(--space-4);
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 0.06em no-repeat;
   font-size: clamp(1.5rem, 5.5vw, 4rem);
@@ -10710,6 +10712,16 @@ a.hero-pipeline-watch-label:focus-visible {
   letter-spacing: -0.03em;
   line-height: 1.1;
   overflow-wrap: anywhere;
+}
+
+.brief-email svg {
+  width: 0.7em;
+  height: 0.7em;
+  transition: transform 220ms var(--brief-ease);
+}
+
+.brief-email:hover svg {
+  transform: translateX(0.12em);
 }
 
 .brief-cta-links {

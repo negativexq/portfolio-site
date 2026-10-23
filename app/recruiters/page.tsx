@@ -39,7 +39,6 @@ function resolveProjects() {
 export default function RecruitersPage() {
   const experience = experiences[0];
   const projectList = resolveProjects();
-  const email = profile.links.email.replace(/^mailto:/, "");
   const nameWords = profile.name.split(" ");
   const nameLines = [nameWords.slice(0, -1).join(" "), nameWords.at(-1) ?? ""];
 
@@ -131,7 +130,9 @@ export default function RecruitersPage() {
       <section className="brief-cta container" aria-labelledby="brief-cta">
         <div>
           <h2 id="brief-cta">Hiring for one of these roles?</h2>
-          <a className="brief-email" href={profile.links.email}>{email}</a>
+          <a className="brief-email" href={profile.links.email}>
+            Send me an email <ArrowRight aria-hidden="true" size={36} />
+          </a>
           <div className="brief-cta-links">
             <a href={profile.links.linkedin} rel="noreferrer" target="_blank">LinkedIn <ArrowUpRight aria-hidden="true" size={14} /></a>
             <a href={profile.links.github} rel="noreferrer" target="_blank">GitHub <ArrowUpRight aria-hidden="true" size={14} /></a>
