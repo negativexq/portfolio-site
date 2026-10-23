@@ -57,7 +57,7 @@ export const experiences = [
           "Generative AI prototypes validated in Azure required data-residency-aware serving and private infrastructure constraints.",
         summary:
           "Moved validated Azure prototypes to on-premises GPU infrastructure for private open-source model serving.",
-        topics: ["Azure", "On-prem GPU", "llama.cpp", "Ollama", "LangChain"],
+        topics: ["Azure", "On-prem GPU", "llama.cpp", "vLLM", "LangChain"],
       },
       {
         id: "data-platform",

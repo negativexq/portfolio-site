@@ -23,6 +23,7 @@ export const experienceTopicKinds: Readonly<Record<string, ExperienceTopicKind>>
   "On-prem GPU": "technology",
   "llama.cpp": "technology",
   Ollama: "technology",
+  vLLM: "technology",
   LangChain: "technology",
   WhisperX: "technology",
   "Timestamp alignment": "concept",

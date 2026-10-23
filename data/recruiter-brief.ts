@@ -58,13 +58,14 @@ export const recruiterBrief = {
       purpose: "An event-driven order system on Kafka that keeps orders and payments correct even when messages arrive twice or a service fails.",
     },
   ],
-  // Written for a recruiter's first read; the figures come from the résumé.
+  // Figures and tools come from the résumé and the experience data.
   highlights: [
-    "Owned 10 production ML models end to end on Kubernetes: validation, versioning, release, serving, retraining and monitoring.",
-    "Cut feature processing from 2–3 hours to 25–30 minutes by rebuilding sequential Oracle workflows as parallel dbt and Airflow pipelines.",
-    "Took generative AI from Azure prototypes to on-premises GPUs, serving open-source LLMs under strict data-residency and security rules, and contributed to 5 production LLM workflows.",
-    "Built a pipeline that turns call recordings into operational KPIs: transcription, speaker separation, LLM analysis and monitoring.",
-    "Replaced feature logic duplicated across models with one shared, validated feature platform for training, inference and analytics.",
+    "Owned deployment and lifecycle for 10 production ML models on Iguazio/MLRun, Docker and Kubernetes: validation, versioning, promotion, retraining, monitoring and containerized FastAPI serving.",
+    "Re-architected sequential Oracle feature-engineering workflows into parallel dbt models orchestrated by Airflow, cutting end-to-end processing from 2–3 hours to 25–30 minutes.",
+    "Built a centralized feature store and dimensional models across Oracle, Trino and SQL Server, with shared definitions, validation controls and data contracts reused by training, inference and analytics.",
+    "Migrated validated Azure GenAI prototypes to on-premises GPU infrastructure, serving quantized open-source LLMs with llama.cpp and vLLM under data-residency constraints; contributed to 5 production LLM workflows.",
+    "Built a GPU-distributed call-center pipeline: WhisperX transcription, timestamp alignment, speaker diarization and LLM summarization into structured KPI fields.",
+    "Added Great Expectations and Deepchecks gates to Airflow pipelines and GitHub Actions delivery, so data and model regressions fail in the pipeline instead of surfacing in reports.",
   ],
   skills: [
     { area: "ML platform", items: ["Kubernetes", "KServe", "Argo Workflows", "MLflow", "Helm", "Terraform", "Docker"] },
