@@ -37,25 +37,25 @@ const projectRecords = [
       {
         value: "0 UNSAFE EXECUTIONS",
         label: "Deterministic containment",
-        context: "D2c · current release candidate",
+        context: "D2c, current release candidate",
         detail: "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions.",
       },
       {
         value: "18/18 SCENARIOS",
         label: "Operational release gate",
-        context: "D2d · 8/8 phases · 6/6 fault classes",
+        context: "D2d, 8/8 phases, 6/6 fault classes",
         detail: "The reference deployment passed its exercised operational scenarios, mandatory phases and fault classes as a separate gate.",
       },
       {
         value: "540 MEASURED ATTEMPTS",
         label: "Semantic/safety evaluation",
-        context: "D2c · semantic_decision_v3",
+        context: "D2c, semantic_decision_v3",
         detail: "The current source-bound semantic-safety slice closed with 0 unsafe executable survivors and 0 unsafe executions.",
       },
       {
         value: "100 REAL-LLM SAMPLES",
         label: "Adversarial quality audit",
-        context: "82 passed · 18 bounded warning-partials",
+        context: "82 passed, 18 bounded warning-partials",
         detail: "A quality-outcome breakdown from the real-LLM QA slice, not a safety rate.",
       },
     ],
@@ -147,14 +147,14 @@ const projectRecords = [
       {
         label: "D2c semantic safety validation",
         value: "540/540 measured attempts",
-        scope: "semantic/safety · semantic_decision_v3",
+        scope: "semantic/safety, semantic_decision_v3",
         qualifier:
           "30 unsafe semantic proposals, 30 deterministic guard interventions, 0 executable survivors, 0 executions. Also recorded: 0 confirmation bypasses, 0 unauthorized mutations, 0 duplicate mutations, 0 hallucinated identifiers.",
       },
       {
         label: "D2d operational release gate",
-        value: "18/18 · 8/8 · 6/6",
-        scope: "operational scenarios · phases · fault classes",
+        value: "18/18, 8/8, 6/6",
+        scope: "operational scenarios, phases, fault classes",
         qualifier:
           "The reference deployment passed 18/18 operational scenarios, 8/8 mandatory phases and recovered all 6/6 fault classes. This is operational evidence, not model-quality evidence.",
       },
@@ -182,7 +182,7 @@ const projectRecords = [
       {
         label: "Structured-contract compatibility gate",
         value: "1 of 4 candidates qualified",
-        scope: "semantic_decision_v3 · frozen contract",
+        scope: "semantic_decision_v3, frozen contract",
         qualifier:
           "gpt-5.6-luna produced 24/24 typed V3 decisions in the hosted control. The tested local candidates — qwen3.5:4b, qwen3.5:9b and qwen2.5:7b-instruct — did not meet the same frozen structured-output contract under their evaluated configurations, so they were not promoted to behavioral comparison. This treats model eligibility as a gate to clear before benchmarking, not an assumption that any model can be swapped in.",
       },
@@ -336,14 +336,14 @@ const projectRecords = [
       {
         label: "Restart-safe routing",
         value: "Router restart recovery",
-        scope: "Desired/observed reconciliation · CI scenarios 5–6",
+        scope: "Desired/observed reconciliation, CI scenarios 5–6",
         qualifier:
           "Model-scoped routing generations reject a stale or delayed push regardless of which deployment it came from. CI scenario 5 restarts the router mid-rollout and confirms the worker's own reconcile tick restores the desired split; scenario 6 restarts it again after a promotion completes, confirming the router's startup sync alone restores a terminal deployment's allocation.",
       },
       {
         label: "Backend regression suite",
         value: "279 tests",
-        scope: "Backend suite · ~91% statement coverage",
+        scope: "Backend suite, ~91% statement coverage",
         qualifier:
           "Runs alongside Ruff and mypy --strict on every push; a separate integration CI job boots the real nine-container stack and exercises all six scenarios above. CI/benchmark ground truth still originates from the synthetic dataset's known labels, delayed and partially covered through the real ingestion API — not live production feedback.",
       },
@@ -390,9 +390,9 @@ const projectRecords = [
         detail: "81 source-correct answers, 4 qualified calculations and 18 correct refusals, each question counted once and checked against the original PDF.",
       },
       {
-        value: "10 REQUESTS · 240 S",
+        value: "10 REQUESTS, 240 S",
         label: "Bounded research budget",
-        context: "120k tokens · at most six tool attempts",
+        context: "120k tokens, at most six tool attempts",
         detail: "The profile used for recent document runs, with a stop after two rounds without progress and a 60-second finalization reserve. They are server-side limits that a user request cannot widen.",
       },
       {
@@ -498,8 +498,8 @@ const projectRecords = [
       },
       {
         label: "Bounded research budget",
-        value: "10 requests · 240 s",
-        scope: "120k tokens · six tool attempts · 60 s reserve",
+        value: "10 requests, 240 s",
+        scope: "120k tokens, six tool attempts, 60 s reserve",
         qualifier:
           "The profile used for recent document runs. The limits are configurable server-side settings that user requests cannot widen, and a stopped research loop can still produce a verified answer from its saved results.",
       },
@@ -547,7 +547,7 @@ const projectRecords = [
     cardProof: {
       label: "Sustainable isolated capacity",
       value: "Workload-dependent",
-      scope: "~1,050 evt/s at 42.8% fraud-eligible · ~1,600 at 0%",
+      scope: "~1,050 evt/s at 42.8% fraud-eligible, ~1,600 at 0%",
       qualifier:
         "The processor has no single workload-independent ceiling, because fraud-eligible events take a longer path. The ~750 to ~1,050 evt/s (+40%) optimisation was measured on the 42.8% workload. Measured on an isolated local benchmark.",
     },
@@ -561,7 +561,7 @@ const projectRecords = [
       {
         value: "~1,050 evt/s",
         label: "Sustainable isolated capacity",
-        context: "3 workers · 3 partitions",
+        context: "3 workers, 3 partitions",
         detail: "Highest clearly sustainable rate in the local Kafka → processor → persistence benchmark; ~1,075 evt/s degraded repeatably.",
       },
       {
@@ -622,7 +622,7 @@ const projectRecords = [
       {
         label: "Sustainable capacity improvement",
         value: "750 → 1,050 evt/s (+40%)",
-        scope: "Isolated local benchmark · Kafka → processor → persistence",
+        scope: "Isolated local benchmark, Kafka → processor → persistence",
         qualifier:
           "Three processor workers matched to three Kafka partitions (750–775 evt/s was the original non-sustainable transition). Bounded per-partition offset-commit batching moved the sustainable boundary to ~900 evt/s; query-plan-driven PostgreSQL indexing plus a fresh capacity sweep moved it to ~1,050 evt/s. That figure belongs to a workload of about 42.8% fraud-eligible events, where ~1,075 evt/s was the highest near-line-rate observation and ~1,100 evt/s the transition candidate. Not production capacity or Demo Control throughput.",
       },
@@ -689,7 +689,7 @@ const projectRecords = [
       },
       {
         label: "Prerelease validation",
-        value: "206 tests · 87% coverage",
+        value: "206 tests, 87% coverage",
         scope: "v0.2 alpha validation",
         qualifier:
           "Validation covers deterministic analyzers, tool arguments, context generation and filesystem, path, Git and process security boundaries.",
@@ -884,7 +884,7 @@ const projectRecords = [
     proofPoints: [
       {
         label: "State-safe module refactor",
-        value: "0 add · 0 change · 0 destroy",
+        value: "0 add, 0 change, 0 destroy",
         scope: "Verified Terraform migration",
         qualifier:
           "The original root resources were reorganized into network, application and observability modules through explicit Terraform moved blocks while preserving managed resource identities and avoiding infrastructure recreation.",
@@ -941,7 +941,7 @@ const projectRecords = [
       {
         value: "98.33%",
         label: "Held on a fresh blind challenge",
-        context: "Independent 120-case set · base 66.67%",
+        context: "Independent 120-case set, base 66.67%",
         detail: "The adapter was retested on a challenge it never saw during training or checkpoint selection. The gain survived, only 0.98 pp below its frozen-benchmark score.",
       },
       {
@@ -1033,56 +1033,56 @@ const projectRecords = [
       {
         label: "Specialization gain",
         value: "65.28% -> 99.31% diagnosis exact match",
-        scope: "Experiment 02 · frozen 144-case synthetic benchmark",
+        scope: "Experiment 02, frozen 144-case synthetic benchmark",
         qualifier:
           "Untouched Qwen3-4B versus the tuned adapter on a benchmark frozen before training and excluded from checkpoint selection. +34.03 pp; resolution exact match rose +64.58 pp.",
       },
       {
         label: "Generalization by slice",
-        value: "STANDARD 100% · HARD 97.92% · TRANSFER 100%",
-        scope: "Experiment 02 tuned · held-out slices",
+        value: "STANDARD 100%, HARD 97.92%, TRANSFER 100%",
+        scope: "Experiment 02 tuned, held-out slices",
         qualifier:
           "The single remaining diagnosis error was one HARD downstream-timeout case predicted as DNS resolution failure. TRANSFER is transfer-style evaluation, not true OOD.",
       },
       {
         label: "Training efficiency",
-        value: "Stopped at step 100 of 600 · 5.312 GiB peak VRAM",
-        scope: "8 GB RTX 5070 Laptop · 0.814% trainable",
+        value: "Stopped at step 100 of 600, 5.312 GiB peak VRAM",
+        scope: "8 GB RTX 5070 Laptop, 0.814% trainable",
         qualifier:
           "Early stopping on validation_no_improvement avoided 500 of 600 optimizer updates. 33,030,144 trainable parameters over a 4,055,498,240-parameter logical model.",
       },
       {
         label: "Causal training-order fix",
         value: "26.8% -> 99.2% validation accuracy",
-        scope: "Experiment 01 · M5 unshuffled vs M6 seeded shuffle",
+        scope: "Experiment 01, M5 unshuffled vs M6 seeded shuffle",
         qualifier:
           "Changing only the training order from class-contiguous to a deterministic seed-42 shuffle recovered held-out performance; all 250 optimizer windows became mixed-class instead of terminal single-class.",
       },
       {
         label: "Fresh blind confirmation vs a regression",
-        value: "E02 98.33% held · E04 92.50% regressed -5.83 pp",
-        scope: "E05 · independent 120-case blind challenge",
+        value: "E02 98.33% held, E04 92.50% regressed -5.83 pp",
+        scope: "E05, independent 120-case blind challenge",
         qualifier:
           "Neither adapter had seen this challenge. The original E02 adapter's gain held close to its frozen-benchmark score; E04's cost-optimized recipe, which had saturated validation at 100%, regressed against E02 once tested on unseen data.",
       },
       {
         label: "Cross-model replication",
         value: "0% -> 63.33% (38/60) diagnosis exact",
-        scope: "E06 · microsoft/Phi-4-mini-instruct",
+        scope: "E06, microsoft/Phi-4-mini-instruct",
         qualifier:
           "Same controlled methodology, separate frozen held-out benchmark, untouched-baseline 0% diagnosis and 0% strict-JSON compliance.",
       },
       {
         label: "Failure-boundary false confidence",
         value: "9/48 = 18.75% false-confident diagnosis",
-        scope: "E07 · ambiguous / insufficient / contradictory evidence",
+        scope: "E07, ambiguous / insufficient / contradictory evidence",
         qualifier:
           "The E04 adapter reached 100% accuracy on sufficient-evidence cases but stated a confident diagnosis 18.75% of the time when the evidence at the boundary did not support one.",
       },
       {
         label: "Cost / quality trade-off",
         value: "Classified: lower-cost, not quality-preserving",
-        scope: "E08 · efficiency-frontier study",
+        scope: "E08, efficiency-frontier study",
         qualifier:
           "E04 reduced training corpus size and wall-clock cost versus E02, but the classification accounts for the E05 blind-challenge regression: cheaper was not quality-preserving once fresh generalization was included.",
       },
@@ -1105,7 +1105,7 @@ const projectRecords = [
     cardProof: {
       label: "Execution authority",
       value: "SERVER-OWNED",
-      scope: "Model proposes SQL · deterministic admission decides",
+      scope: "Model proposes SQL, deterministic admission decides",
       qualifier:
         "An ANSWER + SQL submission crosses parse, global policy, request-scoped relation authority, grain safety, EXPLAIN and a cost gate, and only an accepted immutable QueryPlan reaches the restricted read-only executor. There is no raw unsafe fallback, and the executor never runs SQL the safety service did not admit.",
     },
@@ -1119,25 +1119,25 @@ const projectRecords = [
       {
         value: "160 / 180",
         label: "Governed task success",
-        context: "88.89% · 180-case governed benchmark",
+        context: "88.89%, 180-case governed benchmark",
         detail: "One-shot governed decisions across 12 synthetic domains.",
       },
       {
         value: "28 / 30",
         label: "Authority",
-        context: "93.33% · model governance",
+        context: "93.33%, model governance",
         detail: "Two cases where the model wrongly chose ANSWER on an authority-blocked request; request-scoped relation authority blocked the unauthorized relation before any database interaction.",
       },
       {
         value: "108 / 122",
         label: "Answerable runtime TSA",
-        context: "88.52% · BASE + counterfactual",
+        context: "88.52%, BASE + counterfactual",
         detail: "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state.",
       },
       {
         value: "12 / 12",
         label: "Policy blocks",
-        context: "100% · ambiguity 12/16 = 75.00%",
+        context: "100%, ambiguity 12/16 = 75.00%",
         detail: "Policy-blocked cases were refused exactly; ambiguity recognition is the weaker governance axis. Refusing SQL is a measured outcome, not a failure.",
       },
     ],
@@ -1206,7 +1206,7 @@ const projectRecords = [
       {
         label: "Governed task success",
         value: "160/180 = 88.89% governed task success",
-        scope: "180-case governed benchmark · 12 synthetic domains",
+        scope: "180-case governed benchmark, 12 synthetic domains",
         qualifier:
           "One-shot governed decisions across four behavior classes on one synthetic benchmark.",
       },
@@ -1219,29 +1219,29 @@ const projectRecords = [
       },
       {
         label: "Authority containment",
-        value: "28/30 authority · unauthorized relation blocked before DB access",
+        value: "28/30 authority, unauthorized relation blocked before DB access",
         scope: "model governance + runtime enforcement",
         qualifier:
           "Model authority decisioning is 28/30; telecom_15 is the known case where the model wrongly answered. Request-scoped relation authority returned an authorization rejection with zero database connection, EXPLAIN or execution.",
       },
       {
         label: "Governance split",
-        value: "policy 12/12 = 100% · ambiguity 12/16 = 75.00%",
+        value: "policy 12/12 = 100%, ambiguity 12/16 = 75.00%",
         scope: "governance blocks scored separately from execution",
         qualifier:
           "Policy blocking is exact; ambiguity recognition is the weaker axis. Refusing to write SQL is a measured, expected outcome on the governance cases, not a failure.",
       },
       {
         label: "Execution boundary",
-        value: "QueryPlan-gated execution · no raw unsafe fallback",
+        value: "QueryPlan-gated execution, no raw unsafe fallback",
         scope: "request-scoped authority + accepted QueryPlan",
         qualifier:
           "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
       },
       {
         label: "Server-owned grain safety",
-        value: "narrow deterministic normalizer · fail-closed",
-        scope: "PARENT_MEASURE_FANOUT · supported shape only",
+        value: "narrow deterministic normalizer, fail-closed",
+        scope: "PARENT_MEASURE_FANOUT, supported shape only",
         qualifier:
           "Server-owned metadata detects the supported additive-parent, declared-1:N fanout shape and preaggregates on the child side. Outside it the normalizer stays fail-closed.",
       },
@@ -1270,7 +1270,7 @@ const projectRecords = [
     cardProof: {
       label: "Scheduled scoring and quality monitoring",
       value: "1M ROWS",
-      scope: "Real NYC TLC data · local acceptance · 8 Oct 2026",
+      scope: "Real NYC TLC data, local acceptance, 8 Oct 2026",
       qualifier: "One million February 2025 taxi trips scored through a scheduled Argo pipeline and matched to ground truth with 100% coverage.",
     },
     summary:
@@ -1280,10 +1280,10 @@ const projectRecords = [
     whyItExists:
       "Training a model is only one step in operating it. Teams also need ownership, evaluation rules, release decisions, serving access and a way to recover interrupted infrastructure changes. This platform organizes those concerns around durable lifecycle intent and distinct control and data planes, extending the original Kubernetes inference foundation into a shared ML workspace.",
     heroMetrics: [
-      { value: "1,000,000", label: "Trips scored and matched to labels", context: "NYC TLC · local historical-data replay · 8 Oct 2026", detail: "100% feedback coverage, zero unmatched rows." },
-      { value: "18.95 s", label: "Scheduled scoring pipeline", context: "Single node · warm images · Argo overhead included", detail: "1 CPU / 1 GiB main container; separate monitoring Job took 28.17 s. One recorded execution, not sustained throughput." },
-      { value: "200/200", label: "Function responses during rolling restart", context: "Go gateway · final-image acceptance · 7 Oct 2026", detail: "Real function requests with validated IDs and headers. Availability probes, not load-capacity measurement." },
-      { value: "12/12", label: "Control-plane release checks", context: "Monitoring automation · local artifact · 8 Oct 2026", detail: "Migration 0030, dependency isolation, readiness recovery, SBOM and severity/secrets scans." },
+      { value: "1,000,000", label: "Trips scored and matched to labels", context: "NYC TLC, local historical-data replay, 8 Oct 2026", detail: "100% feedback coverage, zero unmatched rows." },
+      { value: "18.95 s", label: "Scheduled scoring pipeline", context: "Single node, warm images, Argo overhead included", detail: "1 CPU / 1 GiB main container; separate monitoring Job took 28.17 s. One recorded execution, not sustained throughput." },
+      { value: "200/200", label: "Function responses during rolling restart", context: "Go gateway, final-image acceptance, 7 Oct 2026", detail: "Real function requests with validated IDs and headers. Availability probes, not load-capacity measurement." },
+      { value: "12/12", label: "Control-plane release checks", context: "Monitoring automation, local artifact, 8 Oct 2026", detail: "Migration 0030, dependency isolation, readiness recovery, SBOM and severity/secrets scans." },
     ],
     highlights: [
       { title: "A million-row lifecycle with recorded identities", description: "Real historical NYC TLC data passes through scheduled scoring, verified model/data artifacts, versioned prediction publication and independently checked quality metrics. Dataset-triggered monitoring resumes without duplicate execution after reconciler restart." },
@@ -1295,48 +1295,48 @@ const projectRecords = [
     technologies: ["Python", "Go", "Kubernetes", "KServe", "FastAPI", "React", "TypeScript", "PostgreSQL", "SQLAlchemy", "Alembic", "Argo Workflows", "MLflow", "Knative", "vLLM", "Hugging Face", "Keycloak", "OpenTelemetry", "Prometheus", "Tempo", "Grafana", "Helm", "Argo CD", "Terraform", "MinIO", "k6"],
     concepts: ["Scheduling", "Immutable Execution Snapshots", "Dataset Lineage", "Batch Inference", "Model Monitoring", "Transactional Outbox", "ML Control Plane", "Asynchronous Reconciliation", "Project-Scoped Authorization", "OIDC", "Training Pipelines", "Model Evaluation and Promotion", "Immutable Deployment Revisions", "Canary Release Gates", "Inference Gateway", "Usage Metering", "GPU Quotas", "Hexagonal Architecture", "GitOps", "Fault Injection"],
     proofPoints: [
-      { label: "Scheduled scoring and quality", value: "1,000,000 predictions · 100% label coverage", scope: "NYC TLC February 2025 · single-node local replay · 8 October 2026", qualifier: "Independent pandas/sklearn checks agree with MAE 2.082 USD, RMSE 4.466 USD and R² 0.920." },
-      { label: "Dataset-triggered monitoring", value: "Automatic report · restart without duplicate execution", scope: "Local acceptance revision 49 · source a3202e3", qualifier: "Output version 3 triggered monitoring with 1,000,000 matched labels. The first dispatch exposed a missing runtime grant; the owner repaired it and committed provisioning now includes the grant. One platform intent per occurrence does not mean exactly-once external effects." },
+      { label: "Scheduled scoring and quality", value: "1,000,000 predictions, 100% label coverage", scope: "NYC TLC February 2025, single-node local replay, 8 October 2026", qualifier: "Independent pandas/sklearn checks agree with MAE 2.082 USD, RMSE 4.466 USD and R² 0.920." },
+      { label: "Dataset-triggered monitoring", value: "Automatic report, restart without duplicate execution", scope: "Local acceptance revision 49, source a3202e3", qualifier: "Output version 3 triggered monitoring with 1,000,000 matched labels. The first dispatch exposed a missing runtime grant; the owner repaired it and committed provisioning now includes the grant. One platform intent per occurrence does not mean exactly-once external effects." },
 
       {
         label: "Foundation load test",
-        value: "645,809 requests · 0% errors",
-        scope: "Original inference foundation · local kind cluster",
+        value: "645,809 requests, 0% errors",
+        scope: "Original inference foundation, local kind cluster",
         qualifier:
           "Saturated throughput 2,935 req/s at a saturated /predict p95 of 32.9 ms. Measured against this local cluster, not an estimate or a claim about production traffic.",
       },
       {
         label: "Autoscaling",
         value: "2 → 6 replicas in 71s",
-        scope: "Original infrastructure · HPA on CPU · M10",
+        scope: "Original infrastructure, HPA on CPU, M10",
         qualifier:
           "Scale-down back to 2 replicas after load takes roughly 230s and is stepped rather than immediate, matching Kubernetes' conservative default scale-down behavior.",
       },
       {
         label: "Recovery timing",
-        value: "12–15s pod · ~1.4s drift",
-        scope: "M2 pod recovery · M4 GitOps reconciliation",
+        value: "12–15s pod, ~1.4s drift",
+        scope: "M2 pod recovery, M4 GitOps reconciliation",
         qualifier:
           "A deleted pod has a replacement serving in 12–15s. Argo CD detects and self-heals configuration drift in about 1.4 seconds, independent of its own ~3 min Git poll cadence.",
       },
       {
         label: "Reproducibility",
         value: "11/11 acceptance in 901s",
-        scope: "M11 · destroyed cluster, images, build cache",
+        scope: "M11, destroyed cluster, images, build cache",
         qualifier:
           "make local-up then make local-test passed every check after a full teardown of the cluster, container images and build cache, proving the repository alone is sufficient with no manual step.",
       },
       {
         label: "Failure engineering",
         value: "8 faults injected against the live cluster",
-        scope: "Not simulated · detection and recovery timed",
+        scope: "Not simulated, detection and recovery timed",
         qualifier:
           "Representative scenarios: pod crash (replacement in 12–15s), artifact-store outage (100% requests still 200 while unready, 0 restarts), config drift (self-heal ~1.4s), bad rollout (maxUnavailable: 0 keeps old replicas serving), node drain of a stateful pod (PostgreSQL/MinIO reschedule automatically).",
       },
       {
         label: "Security boundary",
         value: "NetworkPolicy deny verified by test",
-        scope: "inference → PostgreSQL directly · M9",
+        scope: "inference → PostgreSQL directly, M9",
         qualifier:
           "The default-deny NetworkPolicy's block on inference reaching PostgreSQL directly was confirmed against the running cluster rather than assumed from the policy file; Pod Security Standards: restricted is enforced cluster-wide.",
       },
@@ -1372,7 +1372,7 @@ const projectRecords = [
     cardProof: {
       label: "Held-out testbed",
       value: "Cause named in 27/27 runs",
-      scope: "HOLDOUT23 · engine 2.17.0 · 0 model calls",
+      scope: "HOLDOUT23, engine 2.17.0, 0 model calls",
       qualifier:
         "Nine fault variants, three fresh seeds each: 27/27 valid runs, the true cause and instance named in every run, zero false RESOLVED, zero false strong authority and the decoy never named.",
     },
@@ -1386,21 +1386,21 @@ const projectRecords = [
       {
         value: "27/27",
         label: "Held-out runs with the cause named",
-        context: "HOLDOUT23 · engine 2.17.0",
+        context: "HOLDOUT23, engine 2.17.0",
         detail:
-          "2026-10-13 · nine variants across six fault families, three fresh seeds each, with the engine, manifests and acceptance criteria frozen before the run.",
+          "2026-10-13, nine variants across six fault families, three fresh seeds each, with the engine, manifests and acceptance criteria frozen before the run.",
       },
       {
         value: "0",
         label: "False RESOLVED diagnoses",
-        context: "Same held-out set · 27 runs",
+        context: "Same held-out set, 27 runs",
         detail:
           "Zero false strong authority, zero false elimination and the decoy never named. An execution witness was recorded in 24/27 runs.",
       },
       {
         value: "~1.2 s",
         label: "Median change-to-journal latency",
-        context: "WATCH lab · 2026-09-30 / 10-01",
+        context: "WATCH lab, 2026-09-30 / 10-01",
         detail:
           "105 changes in the WATCH + follow comparison; p90 1.9 s, down from a 21.5 s polling median.",
       },
@@ -1497,43 +1497,43 @@ const projectRecords = [
     proofPoints: [
       {
         label: "Held-out instrumented testbed",
-        value: "27/27 runs · cause named",
-        scope: "HOLDOUT23 · 2026-10-13 · engine 2.17.0",
+        value: "27/27 runs, cause named",
+        scope: "HOLDOUT23, 2026-10-13, engine 2.17.0",
         qualifier:
           "Nine variants, three fresh seeds each, across six fault families. 27/27 valid, cause and instance named in every run, execution witness in 24/27, zero false RESOLVED, zero false strong authority, zero false elimination, decoy never named.",
       },
       {
         label: "Dependency rule on held-out runs",
-        value: "11 answered · 0 wrong",
-        scope: "HOLDOUT23 · m21 §36",
+        value: "11 answered, 0 wrong",
+        scope: "HOLDOUT23, m21 §36",
         qualifier:
           "Each answer was checked against 19 to 32 candidate requests and every stored span of its run; no counted request touched the dependency before its terminal.",
       },
       {
         label: "ITBench-Lite exact root cause",
         value: "18/31 (58.1%)",
-        scope: "Engine 2.17.0 · all 35 scenarios · full-source path",
+        scope: "Engine 2.17.0, all 35 scenarios, full-source path",
         qualifier:
           "Exact canonical match against published labels; 20/31 (64.5%) with evidence-backed causal equivalence. Zero model calls.",
       },
       {
         label: "TEST25, blind when frozen",
         value: "17/22 (77.3%)",
-        scope: "Frozen architecture · full-source path · raw 17/25",
+        scope: "Frozen architecture, full-source path, raw 17/25",
         qualifier:
           "Exact canonical label match on the held-out split; across all 35 scenarios the same architecture reached 26/31 (83.9%). VERIFIED predictions were correct 13/16.",
       },
       {
         label: "Live scenario suite",
         value: "25/25 expected outcomes",
-        scope: "19 DEV · 6 HOLDOUT · staged faults on a running cluster",
+        scope: "19 DEV, 6 HOLDOUT, staged faults on a running cluster",
         qualifier:
           "16/16 root-cause actors and 9/9 abstentions, zero fabricated RESOLVED and zero model calls.",
       },
       {
         label: "WATCH ingestion",
-        value: "~1.2 s median · 1.9 s p90",
-        scope: "Lab WATCH + follow · 105 changes · 2026-09-30 / 10-01",
+        value: "~1.2 s median, 1.9 s p90",
+        scope: "Lab WATCH + follow, 105 changes, 2026-09-30 / 10-01",
         qualifier:
           "Source change to evidence journal, down from a 21.5 s / 27.1 s polling median and p90.",
       },

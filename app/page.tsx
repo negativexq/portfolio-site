@@ -54,7 +54,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="hero-meta">
-            {profile.location} · Open to remote opportunities · MLOps · AI Platform · GenAI
+            {profile.location}. Open to remote roles in MLOps, AI platform and GenAI.
           </p>
         </div>
         <HeroPipeline />
@@ -110,7 +110,7 @@ export default function Home() {
           <SectionHeading id="experience-heading" title="Production systems at scale." />
           <div className="experience-preview-body">
             <div>
-              <p className="role-company">{experience.company} · {experience.team}</p>
+              <p className="role-company">{experience.company}, {experience.team}</p>
               <h3>{experience.role}</h3>
               <p>{experience.summary}</p>
             </div>
@@ -180,7 +180,7 @@ export default function Home() {
         <div className="container contact-inner">
           <div>
             <h2 id="contact-heading">Have a platform, data or AI problem?</h2>
-            <p className="contact-context">Open to remote opportunities · {profile.timezone}</p>
+            <p className="contact-context">Open to remote opportunities, {profile.timezone}</p>
             <p className="contact-availability">{profile.availability}</p>
           </div>
           <div className="contact-links">

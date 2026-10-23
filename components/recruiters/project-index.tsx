@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { useRef, useState } from "react";
 
 export type ProjectIndexItem = {
@@ -49,10 +48,7 @@ export function ProjectIndex({ items }: { items: ProjectIndexItem[] }) {
               onPointerEnter={(event) => show(index, event.currentTarget)}
               onFocus={(event) => show(index, event.currentTarget)}
             >
-              <span className="brief-index-title">
-                {item.title}
-                <ArrowUpRight aria-hidden="true" size={22} />
-              </span>
+              <span className="brief-index-title">{item.title}</span>
               <span className="brief-index-category">{item.category}</span>
               <span className="brief-index-purpose">{item.purpose}</span>
             </Link>

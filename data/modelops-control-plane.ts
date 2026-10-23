@@ -172,7 +172,7 @@ export const modelOpsEvidence = [
   },
   {
     area: "Backend verification",
-    result: "279 tests · ~91% coverage",
+    result: "279 tests, ~91% coverage",
     detail:
       "Ruff, mypy --strict and pytest run alongside a separate integration job that boots the real nine-container stack and exercises six scenarios.",
   },

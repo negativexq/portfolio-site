@@ -150,7 +150,7 @@ export const mlPlatformInfrastructureFailureScenarios = [
 export const mlPlatformInfrastructureEvidence = [
   {
     area: "Load test",
-    result: "645,809 requests · 0% errors",
+    result: "645,809 requests, 0% errors",
     detail: "k6 against the live cluster; saturated throughput 2,935 req/s at a saturated /predict p95 of 32.9 ms.",
   },
   {
@@ -160,12 +160,12 @@ export const mlPlatformInfrastructureEvidence = [
   },
   {
     area: "Recovery timing",
-    result: "12–15s pod · ~1.4s drift",
+    result: "12–15s pod, ~1.4s drift",
     detail: "Pod deleted to replacement serving is 12–15s. Argo CD detects and reconciles config drift in ~1.4s, independent of its ~3 min Git poll.",
   },
   {
     area: "Reproducibility",
-    result: "11/11 acceptance · 901s",
+    result: "11/11 acceptance, 901s",
     detail: "Cluster, images and build cache destroyed first, then make local-up → make local-test from the repo alone, proven in M11.",
   },
   {

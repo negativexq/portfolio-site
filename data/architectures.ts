@@ -25,7 +25,7 @@ const architectures = {
           },
           {
             id: "auth",
-            nodes: [{ id: "auth", label: "Authentication · RBAC", subtitle: "typed principal", variant: "control" }],
+            nodes: [{ id: "auth", label: "Authentication, RBAC", subtitle: "typed principal", variant: "control" }],
             edge: { label: "derives" },
           },
           {
@@ -36,7 +36,7 @@ const architectures = {
                 label: "ExecutionContext",
                 subtitle: "server-owned identity + scope",
                 variant: "control",
-                items: ["actor · customer scope", "request + conversation ID"],
+                items: ["actor, customer scope", "request + conversation ID"],
               },
             ],
           },
@@ -76,7 +76,7 @@ const architectures = {
           },
           {
             id: "policy",
-            nodes: [{ id: "policy", label: "Policy", subtitle: "deterministic · fail-closed", variant: "control" }],
+            nodes: [{ id: "policy", label: "Policy", subtitle: "deterministic, fail-closed", variant: "control" }],
             edge: { label: "branches", variant: "control", relation: "branch" },
           },
           {
@@ -99,7 +99,7 @@ const architectures = {
         stages: [
           {
             id: "confirmation",
-            nodes: [{ id: "confirmation", label: "Confirmation Boundary", subtitle: "when required · exact pending action", variant: "control" }],
+            nodes: [{ id: "confirmation", label: "Confirmation Boundary", subtitle: "when required, exact pending action", variant: "control" }],
             edge: { label: "revalidates", variant: "control" },
           },
           {
@@ -166,7 +166,7 @@ const architectures = {
         stages: [
           {
             id: "memory",
-            nodes: [{ id: "memory", label: "Memory = context", subtitle: "consent · TTL · customer scope", variant: "boundary" }],
+            nodes: [{ id: "memory", label: "Memory = context", subtitle: "consent, TTL, customer scope", variant: "boundary" }],
             edge: { label: "does not authorize", variant: "failure" },
           },
           {
@@ -183,7 +183,7 @@ const architectures = {
         stages: [
           {
             id: "state-source",
-            nodes: [{ id: "runtime-state", label: "Agent Runtime", subtitle: "context · memory · retrieval", variant: "service" }],
+            nodes: [{ id: "runtime-state", label: "Agent Runtime", subtitle: "context, memory, retrieval", variant: "service" }],
             edge: { variant: "async", relation: "branch" },
           },
           {
@@ -306,7 +306,7 @@ const architectures = {
               {
                 id: "redis",
                 label: "Redis",
-                subtitle: "leases · completion markers",
+                subtitle: "leases, completion markers",
                 relationLabel: "coordinates",
                 variant: "storage",
               },
@@ -407,19 +407,19 @@ const architectures = {
           {
             id: "sources",
             nodes: [
-              { id: "filesystem", label: "Filesystem", subtitle: "PDF · Markdown", variant: "boundary" },
+              { id: "filesystem", label: "Filesystem", subtitle: "PDF, Markdown", variant: "boundary" },
               { id: "notion", label: "Notion", subtitle: "API connector", variant: "boundary" },
             ],
             edge: { label: "source documents", relation: "merge" },
           },
           {
             id: "parse",
-            nodes: [{ id: "parse", label: "Parse · OCR · Chunk · Fingerprint", subtitle: "table-aware PDFs · content + pipeline identity", variant: "control" }],
+            nodes: [{ id: "parse", label: "Parse, OCR, Chunk, Fingerprint", subtitle: "table-aware PDFs, content + pipeline identity", variant: "control" }],
             edge: { label: "writes inactive version" },
           },
           {
             id: "versioned-collection",
-            nodes: [{ id: "versioned-collection", label: "Versioned Qdrant collection", subtitle: "dense + BM25 · not yet active", variant: "storage" }],
+            nodes: [{ id: "versioned-collection", label: "Versioned Qdrant collection", subtitle: "dense + BM25, not yet active", variant: "storage" }],
             edge: { label: "validates, then activates" },
           },
           {
@@ -437,17 +437,17 @@ const architectures = {
         stages: [
           {
             id: "workspace",
-            nodes: [{ id: "workspace", label: "Research workspace", subtitle: "React · HTTP + SSE", variant: "client" }],
+            nodes: [{ id: "workspace", label: "Research workspace", subtitle: "React, HTTP + SSE", variant: "client" }],
             edge: { label: "question" },
           },
           {
             id: "access",
-            nodes: [{ id: "access", label: "FastAPI access layer", subtitle: "identity · role · tenant · documents", variant: "control" }],
+            nodes: [{ id: "access", label: "FastAPI access layer", subtitle: "identity, role, tenant, documents", variant: "control" }],
             edge: { label: "scopes retrieval" },
           },
           {
             id: "retrieval",
-            nodes: [{ id: "retrieval", label: "Dense + BM25 · rank fusion", subtitle: "inside the authorized scope", variant: "storage" }],
+            nodes: [{ id: "retrieval", label: "Dense + BM25, rank fusion", subtitle: "inside the authorized scope", variant: "storage" }],
             edge: { label: "reranks" },
           },
           {
@@ -470,7 +470,7 @@ const architectures = {
         stages: [
           {
             id: "state",
-            nodes: [{ id: "state", label: "ResearchState", subtitle: "typed · application-owned · task projections", variant: "storage" }],
+            nodes: [{ id: "state", label: "ResearchState", subtitle: "typed, application-owned, task projections", variant: "storage" }],
             edge: { label: "projects" },
           },
           {
@@ -480,7 +480,7 @@ const architectures = {
           },
           {
             id: "gate",
-            nodes: [{ id: "gate", label: "Tool and budget gate", subtitle: "authorization · arguments · budget", variant: "control" }],
+            nodes: [{ id: "gate", label: "Tool and budget gate", subtitle: "authorization, arguments, budget", variant: "control" }],
             edge: { label: "runs one operation" },
           },
           {
@@ -488,13 +488,13 @@ const architectures = {
             nodes: [
               { id: "search", label: "Search", subtitle: "authorized scope", variant: "service" },
               { id: "read", label: "Read", subtitle: "chunks or one page", variant: "service" },
-              { id: "extract", label: "Inspect · Extract", subtitle: "tables, images, inventories", variant: "service" },
+              { id: "extract", label: "Inspect, Extract", subtitle: "tables, images, inventories", variant: "service" },
             ],
             edge: { label: "returns evidence", relation: "merge" },
           },
           {
             id: "checked",
-            nodes: [{ id: "checked", label: "Checked inputs", subtitle: "labels · values · units · witnesses", variant: "control" }],
+            nodes: [{ id: "checked", label: "Checked inputs", subtitle: "labels, values, units, witnesses", variant: "control" }],
             edge: { label: "operands ready" },
           },
           {
@@ -509,7 +509,7 @@ const architectures = {
           },
           {
             id: "release",
-            nodes: [{ id: "release", label: "Source · value · scope checks", subtitle: "cited answer or explicit limits", variant: "output" }],
+            nodes: [{ id: "release", label: "Source, value, scope checks", subtitle: "cited answer or explicit limits", variant: "output" }],
           },
         ],
         loop: {
@@ -568,14 +568,14 @@ const architectures = {
           {
             id: "signals",
             nodes: [
-              { id: "spans", label: "OpenTelemetry spans", subtitle: "retrieval · tools · validation", variant: "service" },
+              { id: "spans", label: "OpenTelemetry spans", subtitle: "retrieval, tools, validation", variant: "service" },
               { id: "answer-ledger", label: "Answered-question ledger", subtitle: "each question counted once", variant: "storage" },
             ],
             edge: { label: "projects", variant: "observability", relation: "merge" },
           },
           {
             id: "inspect",
-            nodes: [{ id: "inspect", label: "Inspect mode and Jaeger", subtitle: "candidates · scores · timing", variant: "observability" }],
+            nodes: [{ id: "inspect", label: "Inspect mode and Jaeger", subtitle: "candidates, scores, timing", variant: "observability" }],
             edge: { label: "renders", variant: "observability" },
           },
           {
@@ -665,18 +665,18 @@ const architectures = {
           },
           {
             id: "windows",
-            nodes: [{ id: "windows", label: "Two Evaluation Windows", subtitle: "fresh reliability · matured quality", variant: "analyzer" }],
+            nodes: [{ id: "windows", label: "Two Evaluation Windows", subtitle: "fresh reliability, matured quality", variant: "analyzer" }],
             edge: { label: "feeds" },
           },
           {
             id: "policy-engine",
-            nodes: [{ id: "policy-engine", label: "Policy Engine", subtitle: "7 checks · FAIL beats INCONCLUSIVE beats PASS", variant: "analyzer" }],
+            nodes: [{ id: "policy-engine", label: "Policy Engine", subtitle: "7 checks, FAIL beats INCONCLUSIVE beats PASS", variant: "analyzer" }],
             edge: { label: "verdict", relation: "branch" },
           },
           {
             id: "verdicts",
             nodes: [
-              { id: "pass", label: "PASS", subtitle: "advance · 10% → 25% → 50% → 100%", variant: "control" },
+              { id: "pass", label: "PASS", subtitle: "advance, 10% → 25% → 50% → 100%", variant: "control" },
               { id: "fail", label: "FAIL", subtitle: "automatic rollback", variant: "control" },
               { id: "inconclusive", label: "INCONCLUSIVE", subtitle: "freeze for manual review", variant: "control" },
             ],
@@ -792,12 +792,12 @@ const architectures = {
         stages: [
           {
             id: "read-only-input",
-            nodes: [{ id: "read-only-input", label: "Local Repositories", subtitle: "individually mounted · read only", variant: "boundary" }],
+            nodes: [{ id: "read-only-input", label: "Local Repositories", subtitle: "individually mounted, read only", variant: "boundary" }],
             edge: { label: "bounded reads", variant: "control" },
           },
           {
             id: "bounded-analysis",
-            nodes: [{ id: "bounded-analysis", label: "Restricted Analyzers", subtitle: "no import · no execution", variant: "analyzer" }],
+            nodes: [{ id: "bounded-analysis", label: "Restricted Analyzers", subtitle: "no import, no execution", variant: "analyzer" }],
             edge: { label: "atomic artifacts", variant: "control" },
           },
           {
@@ -833,7 +833,7 @@ const architectures = {
           {
             id: "loaders",
             nodes: [
-              { id: "manifest-mode", label: "Manifest Mode", subtitle: "target/manifest.json · compiled SQL", variant: "service" },
+              { id: "manifest-mode", label: "Manifest Mode", subtitle: "target/manifest.json, compiled SQL", variant: "service" },
               { id: "static-mode", label: "Static Mode", subtitle: "SQL + YAML scanners / parsers", variant: "service" },
             ],
             edge: { label: "normalize", relation: "merge" },
@@ -895,15 +895,15 @@ const architectures = {
         stages: [
           {
             id: "terraform-root",
-            nodes: [{ id: "terraform-root", label: "Terraform root module", subtitle: "providers · variables · outputs", variant: "control" }],
+            nodes: [{ id: "terraform-root", label: "Terraform root module", subtitle: "providers, variables, outputs", variant: "control" }],
             edge: { label: "provisions", variant: "control", relation: "branch" },
           },
           {
             id: "terraform-modules",
             nodes: [
               { id: "network-module", label: "modules/network", subtitle: "Docker network + port checks", variant: "service", relationLabel: "owns" },
-              { id: "application-module", label: "modules/application", subtitle: "FastAPI · PostgreSQL · Nginx", variant: "service", relationLabel: "owns" },
-              { id: "observability-module", label: "modules/observability", subtitle: "Prometheus · Grafana · alerts", variant: "observability", relationLabel: "owns" },
+              { id: "application-module", label: "modules/application", subtitle: "FastAPI, PostgreSQL, Nginx", variant: "service", relationLabel: "owns" },
+              { id: "observability-module", label: "modules/observability", subtitle: "Prometheus, Grafana, alerts", variant: "observability", relationLabel: "owns" },
             ],
           },
         ],
@@ -1036,7 +1036,7 @@ const architectures = {
           },
           {
             id: "authority",
-            nodes: [{ id: "authority", label: "Request-Scoped Relation Authority", subtitle: "may this request use it · rejects before DB connection", variant: "control" }],
+            nodes: [{ id: "authority", label: "Request-Scoped Relation Authority", subtitle: "may this request use it, rejects before DB connection", variant: "control" }],
             edge: { label: "checks grain" },
           },
           {
@@ -1138,7 +1138,7 @@ const architectures = {
                         {
                             "id": "ui",
                             "label": "Web workspace",
-                            "subtitle": "React · same-origin session",
+                            "subtitle": "React, same-origin session",
                             "variant": "client"
                         }
                     ],
@@ -1152,7 +1152,7 @@ const architectures = {
                         {
                             "id": "api",
                             "label": "Control plane API",
-                            "subtitle": "authorize · validate · audit",
+                            "subtitle": "authorize, validate, audit",
                             "variant": "control"
                         }
                     ],
@@ -1166,7 +1166,7 @@ const architectures = {
                         {
                             "id": "db",
                             "label": "PostgreSQL",
-                            "subtitle": "lifecycle truth · trace context",
+                            "subtitle": "lifecycle truth, trace context",
                             "variant": "storage"
                         }
                     ],
@@ -1181,7 +1181,7 @@ const architectures = {
                         {
                             "id": "reconcilers",
                             "label": "Reconcilers",
-                            "subtitle": "schedules · runs · publications · rollouts",
+                            "subtitle": "schedules, runs, publications, rollouts",
                             "variant": "control"
                         }
                     ],
@@ -1196,13 +1196,13 @@ const architectures = {
                         {
                             "id": "kubernetes",
                             "label": "Kubernetes + Argo",
-                            "subtitle": "namespaces · quotas · workflow DAGs",
+                            "subtitle": "namespaces, quotas, workflow DAGs",
                             "variant": "service"
                         },
                         {
                             "id": "registry-serving",
                             "label": "MLflow + KServe",
-                            "subtitle": "aliases · immutable serving revisions",
+                            "subtitle": "aliases, immutable serving revisions",
                             "variant": "service"
                         }
                     ]
@@ -1233,7 +1233,7 @@ const architectures = {
                         }
                     ],
                     "edge": {
-                        "label": "predict · chat · invoke"
+                        "label": "predict, chat, invoke"
                     }
                 },
                 {
@@ -1242,7 +1242,7 @@ const architectures = {
                         {
                             "id": "gateway",
                             "label": "Inference gateway",
-                            "subtitle": "Go · endpoint scope · shared budgets",
+                            "subtitle": "Go, endpoint scope, shared budgets",
                             "variant": "boundary"
                         }
                     ],
@@ -1256,7 +1256,7 @@ const architectures = {
                         {
                             "id": "serving",
                             "label": "KServe + Knative",
-                            "subtitle": "revision routing · canary split",
+                            "subtitle": "revision routing, canary split",
                             "variant": "service"
                         }
                     ],
@@ -1283,7 +1283,7 @@ const architectures = {
                         {
                             "id": "functions",
                             "label": "Container function",
-                            "subtitle": "JSON invoke · scale to zero",
+                            "subtitle": "JSON invoke, scale to zero",
                             "variant": "service"
                         }
                     ]
@@ -1395,7 +1395,7 @@ const architectures = {
                         {
                             "id": "training",
                             "label": "Job / pipeline",
-                            "subtitle": "Argo Workflows · run lineage",
+                            "subtitle": "Argo Workflows, run lineage",
                             "variant": "service"
                         }
                     ],
@@ -1451,7 +1451,7 @@ const architectures = {
                         {
                             "id": "revision",
                             "label": "Deployment revision",
-                            "subtitle": "canary gates · rollback",
+                            "subtitle": "canary gates, rollback",
                             "variant": "output"
                         }
                     ]
@@ -1476,8 +1476,8 @@ const architectures = {
                     "nodes": [
                         {
                             "id": "telemetry-sources",
-                            "label": "API · reconcilers · gateway",
-                            "subtitle": "traces · metrics · structured logs",
+                            "label": "API, reconcilers, gateway",
+                            "subtitle": "traces, metrics, structured logs",
                             "variant": "service"
                         }
                     ],
@@ -1527,7 +1527,7 @@ const architectures = {
                         {
                             "id": "monitor",
                             "label": "Monitor + Grafana",
-                            "subtitle": "health · trends · alerts",
+                            "subtitle": "health, trends, alerts",
                             "variant": "output"
                         }
                     ]
@@ -1556,20 +1556,20 @@ const architectures = {
           {
             id: "cluster-sources",
             nodes: [
-              { id: "kube-api", label: "Kubernetes API", subtitle: "objects + Events · list + watch", variant: "observability" },
+              { id: "kube-api", label: "Kubernetes API", subtitle: "objects + Events, list + watch", variant: "observability" },
               { id: "alertmanager", label: "Alertmanager", subtitle: "alerts", variant: "observability" },
-              { id: "telemetry", label: "Prometheus · Loki · Tempo", subtitle: "bounded queries", variant: "observability" },
+              { id: "telemetry", label: "Prometheus, Loki, Tempo", subtitle: "bounded queries", variant: "observability" },
             ],
             edge: { label: "reads", variant: "observability", relation: "merge" },
           },
           {
             id: "connector",
-            nodes: [{ id: "connector", label: "Connector", subtitle: "dials out over gRPC · read-only RBAC", variant: "control" }],
+            nodes: [{ id: "connector", label: "Connector", subtitle: "dials out over gRPC, read-only RBAC", variant: "control" }],
             edge: { label: "mTLS", variant: "control" },
           },
           {
             id: "gateway",
-            nodes: [{ id: "gateway", label: "Gateway", subtitle: "control plane · no customer credential", variant: "service" }],
+            nodes: [{ id: "gateway", label: "Gateway", subtitle: "control plane, no customer credential", variant: "service" }],
           },
         ],
       },
@@ -1583,8 +1583,8 @@ const architectures = {
           {
             id: "intake",
             nodes: [
-              { id: "incident-intake", label: "Incident intake", subtitle: "alert occurrences · episodes", variant: "service" },
-              { id: "evidence-journal", label: "Evidence journal", subtitle: "PostgreSQL · versions · times · gaps", variant: "storage" },
+              { id: "incident-intake", label: "Incident intake", subtitle: "alert occurrences, episodes", variant: "service" },
+              { id: "evidence-journal", label: "Evidence journal", subtitle: "PostgreSQL, versions, times, gaps", variant: "storage" },
             ],
             edge: { label: "freeze", relation: "merge" },
           },
@@ -1600,14 +1600,14 @@ const architectures = {
           },
           {
             id: "revision",
-            nodes: [{ id: "revision", label: "Diagnosis revision", subtitle: "coverage record · digests", variant: "output" }],
+            nodes: [{ id: "revision", label: "Diagnosis revision", subtitle: "coverage record, digests", variant: "output" }],
             edge: { label: "surfaces", relation: "branch" },
           },
           {
             id: "surfaces",
             nodes: [
-              { id: "console", label: "Console · API · reports", subtitle: "single · competing · not established", variant: "output" },
-              { id: "remediation", label: "Proposed remediation", subtitle: "operator reviews · never executed", variant: "boundary" },
+              { id: "console", label: "Console, API, reports", subtitle: "single, competing, not established", variant: "output" },
+              { id: "remediation", label: "Proposed remediation", subtitle: "operator reviews, never executed", variant: "boundary" },
             ],
           },
         ],
@@ -1626,17 +1626,17 @@ const architectures = {
           },
           {
             id: "rca",
-            nodes: [{ id: "rca", label: "Deterministic RCA", subtitle: "hypotheses · information gaps", variant: "control" }],
+            nodes: [{ id: "rca", label: "Deterministic RCA", subtitle: "hypotheses, information gaps", variant: "control" }],
             edge: { label: "requests one read" },
           },
           {
             id: "investigator",
-            nodes: [{ id: "investigator", label: "Bounded investigator", subtitle: "select · validate scope + budget", variant: "analyzer" }],
+            nodes: [{ id: "investigator", label: "Bounded investigator", subtitle: "select, validate scope + budget", variant: "analyzer" }],
             edge: { label: "executes", variant: "control" },
           },
           {
             id: "read",
-            nodes: [{ id: "read", label: "One legal observation", subtitle: "through the Connector · within budget", variant: "service" }],
+            nodes: [{ id: "read", label: "One legal observation", subtitle: "through the Connector, within budget", variant: "service" }],
             edge: { label: "stores" },
           },
           {
@@ -1647,7 +1647,7 @@ const architectures = {
           {
             id: "resolution",
             nodes: [
-              { id: "diagnosis", label: "Leader by claim tier", subtitle: "causal path · confidence · resolution", variant: "output" },
+              { id: "diagnosis", label: "Leader by claim tier", subtitle: "causal path, confidence, resolution", variant: "output" },
               { id: "gap", label: "Remaining gap", subtitle: "loops back for one more read", variant: "boundary" },
             ],
           },

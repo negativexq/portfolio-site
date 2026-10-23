@@ -74,7 +74,7 @@ export function KnowledgeBaseRagCaseStudy({ project }: KnowledgeBaseRagCaseStudy
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>PydanticAI · typed research graph · ResearchState · local-first reference system</span>
+          <span>PydanticAI, typed research graph, ResearchState, local-first reference system</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />

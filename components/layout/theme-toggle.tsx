@@ -53,7 +53,7 @@ export function ThemeToggle() {
         setTheme(next);
       }}
       aria-label={`${labels[theme]}. Switch to ${labels[next].toLowerCase()}`}
-      title={`${labels[theme]} · switch to ${next}`}
+      title={`${labels[theme]}, switch to ${next}`}
       data-mounted={mounted || undefined}
     >
       <Icon aria-hidden="true" size={16} />

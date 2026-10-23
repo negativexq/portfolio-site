@@ -64,7 +64,7 @@ export default function ResumePage() {
           <section className="resume-section">
             <p className="detail-kicker">Experience</p>
             <div className="resume-role-heading">
-              <div><h2>{experience.role}</h2><p>{experience.company} · {experience.team}</p></div>
+              <div><h2>{experience.role}</h2><p>{experience.company}, {experience.team}</p></div>
               <span>{experience.period}</span>
             </div>
             <p>{experience.summary}</p>

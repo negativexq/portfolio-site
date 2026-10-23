@@ -253,7 +253,7 @@ export function DbtFeatureLineageCaseStudy({ project }: DbtFeatureLineageCaseStu
             </div>
             <div className="dbt-evidence-row">
               <div><span>Release history</span><strong>v0.1 → v0.8 complete</strong><p>Core input, lineage, impact, visualization and explorer milestones are marked complete in the repository roadmap.</p></div>
-              <div><span>Quality loop</span><strong>Build · test · lint</strong><p>Docker, pytest and Ruff are first-class Makefile commands in the documented development path.</p></div>
+              <div><span>Quality loop</span><strong>Build, test, lint</strong><p>Docker, pytest and Ruff are first-class Makefile commands in the documented development path.</p></div>
             </div>
           </section>
 

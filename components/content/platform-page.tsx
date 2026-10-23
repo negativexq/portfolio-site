@@ -48,7 +48,7 @@ function ProofCard({ node }: { node: PlatformNode }) {
     <article className="platform-proof-card" data-reveal data-hover-lift>
       <header className="platform-proof-card-header">
         <div>
-          <p className="platform-card-stage">{node.stage} · {node.role}</p>
+          <p className="platform-card-stage">{node.stage}, {node.role}</p>
           <h3>{node.title}</h3>
         </div>
         <PlatformStatusLabel status={node.status} />
@@ -568,7 +568,7 @@ export function PlatformPage() {
               <p>The first success criterion is simple: the same Order entity is actually consumed by RAG, SQL, and Agent subsystems.</p>
             </div>
             <div className="platform-order-example" aria-label="Order entity integration contract">
-              <div className="platform-order-code"><span>Order</span><code>data: commerce.orders</code><code>knowledge: order-policy · refund-policy</code><code>metrics: order_value · refund_rate</code><code>actions: cancel_order · refund_order</code></div>
+              <div className="platform-order-code"><span>Order</span><code>data: commerce.orders</code><code>knowledge: order-policy, refund-policy</code><code>metrics: order_value, refund_rate</code><code>actions: cancel_order, refund_order</code></div>
               <div className="platform-entity-map">
                 <span>Knowledge Base RAG</span><i />
                 <span>DecisionSQL</span><i />
@@ -579,7 +579,7 @@ export function PlatformPage() {
           </div>
 
           <div className="platform-future-planes">
-            <div><PlatformStatusLabel status="NEXT" /><h3>Unified Registry</h3><p>Models · Agents · Knowledge Bases · Data Sources · Tools · Connectors · Policies · Evaluation Suites · Deployments</p></div>
+            <div><PlatformStatusLabel status="NEXT" /><h3>Unified Registry</h3><p>Models, Agents, Knowledge Bases, Data Sources, Tools, Connectors, Policies, Evaluation Suites, Deployments</p></div>
             <div><PlatformStatusLabel status="NEXT" /><h3>Unified Control Plane</h3><p>Common identity, configuration, policy, and lifecycle across independent bounded services.</p></div>
           </div>
 

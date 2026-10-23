@@ -44,7 +44,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
             {description}
           </div>
           <div style={{ display: "flex", marginTop: 26, fontSize: 23, color: "#a3d65a" }}>
-            {project.technologies.slice(0, 3).join(" · ")}
+            {project.technologies.slice(0, 3).join(", ")}
           </div>
         </div>
 

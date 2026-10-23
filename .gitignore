@@ -35,3 +35,6 @@ yarn-error.log*
 .impeccable/hook.cache.json
 .impeccable/config.local.json
 .taste-skill/
+
+# Hallmark audit records
+.hallmark/

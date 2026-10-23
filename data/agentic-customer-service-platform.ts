@@ -180,7 +180,7 @@ export const agenticEvidence = [
   },
   {
     area: "D2d operational release gate",
-    result: "18/18 scenarios · 8/8 phases · 6/6 fault classes",
+    result: "18/18 scenarios, 8/8 phases, 6/6 fault classes",
     detail: "Operational correctness under the exercised reference deployment.",
   },
   {
@@ -190,7 +190,7 @@ export const agenticEvidence = [
   },
   {
     area: "Real-LLM QA",
-    result: "100 samples · 82 passed · 18 bounded warning-partials",
+    result: "100 samples, 82 passed, 18 bounded warning-partials",
     detail: "Quality-outcome breakdown, not a safety rate; no safety invariant failed.",
   },
 ] as const;

@@ -148,7 +148,7 @@ function TransactionalOutboxDiagram() {
     >
       <ArrowMarker id={marker} />
       <rect className="diagram-boundary diagram-boundary--accent" x={28} y={42} width={312} height={166} rx="10" />
-      <Label x={44} y={64} anchor="start">SAFE ATOMIC BOUNDARY · POSTGRESQL</Label>
+      <Label x={44} y={64} anchor="start">SAFE ATOMIC BOUNDARY: POSTGRESQL</Label>
       <Node x={48} y={82} width={126} height={72} lines={["Fraud state", "evaluation + alert"]} tone="accent" />
       <Node x={194} y={82} width={126} height={72} lines={["Outbox row", "PENDING + bytes"]} tone="accent" />
       <line className="diagram-link" x1="174" y1="118" x2="194" y2="118" />
@@ -209,7 +209,7 @@ function AgentTrustBoundaryDiagram() {
       <Arrow d="M222 278 H247" marker={marker} />
       <Arrow d="M404 278 H429" marker={marker} />
       <Arrow d="M586 278 H611" marker={marker} />
-      <Label x={510} y={340}>deny stops here · require_human takes the dedicated path</Label>
+      <Label x={510} y={340}>deny stops here; require_human takes the dedicated path</Label>
 
       <line className="diagram-external-boundary" x1="28" y1="414" x2="852" y2="414" />
       <Label x={44} y={438} anchor="start">PRIVILEGED EXECUTION BOUNDARY</Label>
@@ -314,7 +314,7 @@ function AgentPolicyDiagram() {
       <Arrow d="M824 240 H870 V446 H859" marker={marker} />
 
       <rect className="diagram-audit-rail" x={28} y={298} width={300} height={180} rx="10" />
-      <Label x={46} y={334} anchor="start">AUDIT TRAIL · EVIDENCE, NOT AUTHORITY</Label>
+      <Label x={46} y={334} anchor="start">AUDIT TRAIL: EVIDENCE, NOT AUTHORITY</Label>
       <text className="diagram-list" x={52} y={370}>
         <tspan x="52">policy decision</tspan>
         <tspan x="52" dy="27">confirmation result</tspan>
@@ -406,7 +406,7 @@ function CommerceProcessingLifecycleDiagram() {
       <Arrow d="M622 81 H669" marker={marker} />
 
       <rect className="diagram-boundary diagram-boundary--accent" x={28} y={160} width={824} height={268} rx="10" />
-      <Label x={44} y={184} anchor="start">ONE POSTGRESQL TRANSACTION · COMMIT ALL OR ROLLBACK ALL</Label>
+      <Label x={44} y={184} anchor="start">ONE POSTGRESQL TRANSACTION: COMMIT ALL OR ROLLBACK ALL</Label>
       <Node x={52} y={214} width={168} height={66} lines={["processed_events", "identity + digest", "durable replay guard"]} tone="accent" />
       <Node x={254} y={214} width={168} height={66} lines={["Business write", "dependency checks", "+ row locks"]} tone="accent" />
       <Node x={456} y={202} width={168} height={90} lines={["Fraud context", "bounded reads", "evaluation", "when eligible"]} />
@@ -464,20 +464,20 @@ function ModelPromotionControlLoopDiagram() {
       <Arrow d="M674 118 V153" marker={marker} />
 
       <rect className="diagram-boundary diagram-boundary--accent" x={28} y={160} width={824} height={250} rx="10" />
-      <Label x={44} y={184} anchor="start">POLICY EVALUATION · TWO WINDOWS, ONE VERDICT</Label>
+      <Label x={44} y={184} anchor="start">POLICY EVALUATION: TWO WINDOWS, ONE VERDICT</Label>
       <Node
         x={52}
         y={200}
         width={300}
         height={70}
-        lines={["Reliability · freshest traffic", "min requests · p95 · error rate"]}
+        lines={["Reliability, freshest traffic", "min requests, p95, error rate"]}
       />
       <Node
         x={52}
         y={286}
         width={300}
         height={70}
-        lines={["Quality · matured traffic", "labels · coverage · positives · recall"]}
+        lines={["Quality, matured traffic", "labels, coverage, positives, recall"]}
       />
       <Node
         x={470}
@@ -495,7 +495,7 @@ function ModelPromotionControlLoopDiagram() {
         INCONCLUSIVE cannot be outvoted by PASS.
       </text>
 
-      <Label x={28} y={446} anchor="start">CONTROL ACTIONS · WORKER OR OPERATOR, SAME API</Label>
+      <Label x={28} y={446} anchor="start">CONTROL ACTIONS: WORKER OR OPERATOR, SAME API</Label>
       <Arrow d="M595 320 V434" marker={marker} />
       <Node x={28} y={462} width={200} height={64} lines={["advance", "10 → 25 → 50 → 100%"]} />
       <Node x={248} y={462} width={136} height={64} lines={["promote"]} tone="accent" />
@@ -541,7 +541,7 @@ function ConfirmationLifecycleDiagram() {
       <ArrowMarker id={marker} />
 
       <Label x={28} y={30} anchor="start">PENDING ACTION LIFECYCLE</Label>
-      <Node x={28} y={52} width={200} height={62} lines={["proposed", "model intent · no effect"]} />
+      <Node x={28} y={52} width={200} height={62} lines={["proposed", "model intent, no effect"]} />
       <Arrow d="M128 114 V144" marker={marker} />
       <Node
         x={28}
@@ -599,7 +599,7 @@ function ConfirmationLifecycleDiagram() {
         y={430}
         width={340}
         height={86}
-        lines={["revalidation", "actor · scope · conversation · args", "policy · live state · TTL"]}
+        lines={["revalidation", "actor, scope, conversation, args", "policy, live state, TTL"]}
         tone="accent"
       />
 
@@ -691,7 +691,7 @@ function UnknownWriteOutcomeDiagram() {
         y={312}
         width={472}
         height={76}
-        lines={["explicit reconciliation procedure", "same identity · receipt + database constraints"]}
+        lines={["explicit reconciliation procedure", "same identity, receipt + database constraints"]}
         tone="accent"
       />
       <path className="diagram-failure-mark" d="M173 396 l10 10 m0 -10 l-10 10" />
@@ -703,7 +703,7 @@ function UnknownWriteOutcomeDiagram() {
         y={434}
         width={380}
         height={80}
-        lines={["revalidation", "actor · scope · target · policy", "confirmation binding · live state"]}
+        lines={["revalidation", "actor, scope, target, policy", "confirmation binding, live state"]}
         tone="accent"
       />
 
@@ -755,21 +755,21 @@ function DecisionAuthorityExecutionDiagram() {
         y={52}
         width={616}
         height={62}
-        lines={["DECISION · what the control plane decided", "proposal, target and validation, policy outcome"]}
+        lines={["DECISION: what the control plane decided", "proposal, target and validation, policy outcome"]}
       />
       <Node
         x={236}
         y={128}
         width={616}
         height={62}
-        lines={["AUTHORITY · whether permission existed", "confirmation bound to this exact pending action"]}
+        lines={["AUTHORITY: whether permission existed", "confirmation bound to this exact pending action"]}
       />
       <Node
         x={236}
         y={204}
         width={616}
         height={62}
-        lines={["EXECUTION · what reached business state", "attempt, explicit non-attempt, replay result"]}
+        lines={["EXECUTION: what reached business state", "attempt, explicit non-attempt, replay result"]}
       />
 
       <line className="diagram-divider" x1="28" y1="300" x2="852" y2="300" />
@@ -801,7 +801,7 @@ function DecisionAuthorityExecutionDiagram() {
         y={624}
         width={400}
         height={72}
-        lines={["projection shows", "proposal · policy · authority · execution", "citations · trace ids"]}
+        lines={["projection shows", "proposal, policy, authority, execution", "citations, trace ids"]}
         tone="accent"
       />
       <Node
@@ -809,7 +809,7 @@ function DecisionAuthorityExecutionDiagram() {
         y={624}
         width={400}
         height={72}
-        lines={["never exposed", "raw prompts · chain-of-thought", "secrets · raw tool arguments"]}
+        lines={["never exposed", "raw prompts, chain-of-thought", "secrets, raw tool arguments"]}
         tone="stop"
       />
     </DiagramFrame>
@@ -836,7 +836,7 @@ function AgentEvaluationTracksDiagram() {
         y={52}
         width={380}
         height={62}
-        lines={["variable interpretation", "paraphrase · ambiguity · multilingual"]}
+        lines={["variable interpretation", "paraphrase, ambiguity, multilingual"]}
         tone="muted"
       />
       <Arrow d="M218 114 V146" marker={marker} />
@@ -847,7 +847,7 @@ function AgentEvaluationTracksDiagram() {
         y={152}
         width={824}
         height={68}
-        lines={["SAME TYPED DECISION AND EXECUTION BOUNDARY", "scope · policy · confirmation · revalidation · idempotency"]}
+        lines={["SAME TYPED DECISION AND EXECUTION BOUNDARY", "scope, policy, confirmation, revalidation, idempotency"]}
         tone="accent"
       />
       <Arrow d="M218 220 V252" marker={marker} />
@@ -858,7 +858,7 @@ function AgentEvaluationTracksDiagram() {
         y={258}
         width={380}
         height={68}
-        lines={["invariant validation", "exact assertions · reproducible regressions"]}
+        lines={["invariant validation", "exact assertions, reproducible regressions"]}
         tone="accent"
       />
       <Node
@@ -902,7 +902,7 @@ function AgentEvaluationTracksDiagram() {
         y={588}
         width={264}
         height={76}
-        lines={["100 real-LLM samples", "82 passed · 18 bounded warnings", "0 safety invariant failures"]}
+        lines={["100 real-LLM samples", "82 passed, 18 bounded warnings", "0 safety invariant failures"]}
       />
       <Node
         x={308}
@@ -917,7 +917,7 @@ function AgentEvaluationTracksDiagram() {
         y={588}
         width={264}
         height={76}
-        lines={["18/18 scenarios · 8/8 phases", "6/6 faults · 28/28 resilience"]}
+        lines={["18/18 scenarios, 8/8 phases", "6/6 faults, 28/28 resilience"]}
         tone="accent"
       />
 
@@ -968,7 +968,7 @@ function FeatureDefinitionLineageDiagram() {
         y={292}
         width={280}
         height={92}
-        lines={["active_customer", "one dbt model", "owner · description · tests"]}
+        lines={["active_customer", "one dbt model", "owner, description, tests"]}
         tone="accent"
       />
       <Arrow d="M228 338 H273" marker={marker} />
@@ -1019,7 +1019,7 @@ function FeaturePipelineGatesDiagram() {
     >
       <ArrowMarker id={marker} />
 
-      <Label x={28} y={30} anchor="start">ONE AIRFLOW DAG · BUILD, THEN GATE</Label>
+      <Label x={28} y={30} anchor="start">ONE AIRFLOW DAG: BUILD, THEN GATE</Label>
       <Node x={28} y={52} width={142} height={68} lines={["sources"]} />
       <Node x={194} y={52} width={166} height={68} lines={["staging models", "dbt"]} />
       <Node
@@ -1193,9 +1193,9 @@ function RerankerTradeoffDiagram() {
     >
       <ArrowMarker id={marker} />
 
-      <Label x={28} y={30} anchor="start">RETRIEVAL PATH · THE RERANKER SEES 20, PASSES 5</Label>
-      <Node x={28} y={44} width={210} height={56} lines={["dense · Qwen3 @ 1024"]} />
-      <Node x={28} y={108} width={210} height={56} lines={["sparse · Qdrant BM25"]} />
+      <Label x={28} y={30} anchor="start">RETRIEVAL PATH: THE RERANKER SEES 20, PASSES 5</Label>
+      <Node x={28} y={44} width={210} height={56} lines={["dense: Qwen3 @ 1024"]} />
+      <Node x={28} y={108} width={210} height={56} lines={["sparse: Qdrant BM25"]} />
       <Node x={278} y={68} width={150} height={72} lines={["RRF fusion"]} />
       <Arrow d="M238 72 H258 V104 H273" marker={marker} />
       <Arrow d="M238 136 H258 V104 H273" marker={marker} />
@@ -1213,7 +1213,7 @@ function RerankerTradeoffDiagram() {
 
       <line className="diagram-divider" x1="28" y1="200" x2="852" y2="200" />
 
-      <Label x={28} y={230} anchor="start">220-QUERY PAIRED BENCHMARK · THE SHAPE, NOT THE AGGREGATE</Label>
+      <Label x={28} y={230} anchor="start">220-QUERY PAIRED BENCHMARK: THE SHAPE, NOT THE AGGREGATE</Label>
       <Node
         x={28}
         y={252}
@@ -1235,7 +1235,7 @@ function RerankerTradeoffDiagram() {
         y={252}
         width={268}
         height={76}
-        lines={["63 rescues · 0 drops", "nothing that already worked", "stopped working"]}
+        lines={["63 rescues, 0 drops", "nothing that already worked", "stopped working"]}
         tone="accent"
       />
       <Arrow d="M546 290 H579" marker={marker} />
@@ -1280,26 +1280,26 @@ function AgentAuthorityBoundaryDiagram() {
     >
       <ArrowMarker id={marker} />
 
-      <Label x={28} y={30} anchor="start">AGENT WORKSPACE · MUTABLE</Label>
+      <Label x={28} y={30} anchor="start">AGENT WORKSPACE: MUTABLE</Label>
       <Node x={28} y={52} width={200} height={76} lines={["agent", "plan → code → test"]} />
       <Node
         x={268}
         y={52}
         width={300}
         height={76}
-        lines={["src/ · libs/ · implementation tests", "the agent may write here"]}
+        lines={["src/, libs/, implementation tests", "the agent may write here"]}
       />
       <Arrow d="M228 90 H263" marker={marker} />
       <Arrow d="M418 128 V162" marker={marker} />
 
       <rect className="diagram-boundary diagram-boundary--accent" x={28} y={170} width={824} height={200} rx="10" />
-      <Label x={44} y={194} anchor="start">CONTROL PLANE · OUTSIDE THE AGENT&apos;S REACH</Label>
+      <Label x={44} y={194} anchor="start">CONTROL PLANE: OUTSIDE THE AGENT&apos;S REACH</Label>
       <Node
         x={52}
         y={212}
         width={340}
         height={86}
-        lines={["1 · integrity check", "sha256 -c frozen-manifest", "acceptance tests · goldens · policies"]}
+        lines={["1. integrity check", "sha256 -c frozen-manifest", "acceptance tests, goldens, policies"]}
         tone="accent"
       />
       <Node
@@ -1307,7 +1307,7 @@ function AgentAuthorityBoundaryDiagram() {
         y={212}
         width={380}
         height={86}
-        lines={["2 · hard gates", "tests · typecheck · lint · security", "eval thresholds"]}
+        lines={["2. hard gates", "tests, typecheck, lint, security", "eval thresholds"]}
         tone="accent"
       />
       <Arrow d="M392 255 H435" marker={marker} />
@@ -1316,7 +1316,7 @@ function AgentAuthorityBoundaryDiagram() {
       <Arrow d="M153 370 V394" marker={marker} />
       <Arrow d="M435 370 V394" marker={marker} />
       <Arrow d="M722 370 V394" marker={marker} />
-      <Node x={28} y={400} width={250} height={76} lines={["hash mismatch", "BLOCKED · human review"]} tone="stop" />
+      <Node x={28} y={400} width={250} height={76} lines={["hash mismatch", "BLOCKED: human review"]} tone="stop" />
       <Node x={310} y={400} width={250} height={76} lines={["gate failed", "retry, bounded"]} tone="muted" />
       <Node x={592} y={400} width={260} height={76} lines={["passed both", "accepted"]} tone="accent" />
       <Arrow d="M310 438 H14 V90 H23" marker={marker} />
@@ -1519,7 +1519,7 @@ function DeterministicInvestigationLoopDiagram() {
       <Label x={498} y={40} anchor="middle">optional LLM: tie-break among equal reads only</Label>
 
       <Node x={40} y={80} width={120} height={64} lines={["Incident", "alert + cutoff"]} />
-      <Node x={200} y={80} width={172} height={64} lines={["Deterministic RCA", "hypotheses · gaps"]} tone="accent" />
+      <Node x={200} y={80} width={172} height={64} lines={["Deterministic RCA", "hypotheses, gaps"]} tone="accent" />
       <Node x={412} y={80} width={172} height={64} lines={["Investigator", "select one legal read"]} tone="muted" />
       <Node x={624} y={80} width={150} height={64} lines={["One read-only", "observation"]} />
       <Arrow d="M160 112 H196" marker={marker} />
@@ -1552,15 +1552,15 @@ function AgentEvidenceFeedbackLoopDiagram() {
     >
       <style>{".article-content:has(#agent-evidence-feedback-loop-title) { min-width: 0; }"}</style>
       <ArrowMarker id={marker} />
-      <Label x={28} y={30} anchor="start">PROPOSED PROCESS · NO SELF-GRADED SUCCESS</Label>
-      <Node x={28} y={62} width={240} height={80} lines={["Observe + identify", "workload · revision · gaps"]} tone="accent" />
+      <Label x={28} y={30} anchor="start">PROPOSED PROCESS: NO SELF-GRADED SUCCESS</Label>
+      <Node x={28} y={62} width={240} height={80} lines={["Observe + identify", "workload, revision, gaps"]} tone="accent" />
       <Node x={320} y={62} width={240} height={80} lines={["Hypothesize", "prediction + falsifying evidence"]} />
       <Node x={612} y={62} width={240} height={80} lines={["Modify", "isolated candidate patch"]} />
       <Arrow d="M268 102 H314" marker={marker} />
       <Arrow d="M560 102 H606" marker={marker} />
       <Arrow d="M732 142 V224" marker={marker} />
       <Node x={612} y={230} width={240} height={80} lines={["Measure", "same workload + resources"]} tone="accent" />
-      <Node x={320} y={230} width={240} height={80} lines={["Verify independently", "correctness · latency · CPU · memory"]} tone="accent" />
+      <Node x={320} y={230} width={240} height={80} lines={["Verify independently", "correctness, latency, CPU, memory"]} tone="accent" />
       <Node x={28} y={230} width={240} height={80} lines={["Accept or revert", "retain verdict + run artifacts"]} />
       <Arrow d="M612 270 H566" marker={marker} />
       <Arrow d="M320 270 H274" marker={marker} />
@@ -1594,7 +1594,7 @@ function ObservabilityOptimizationArchitectureDiagram() {
       <Arrow d="M746 62 V44 H128 V56" marker={marker} dashed />
 
       <Node x={28} y={250} width={200} height={86} lines={["Agent Evidence Interface", "read-only evidence queries", "measurements ≠ hypotheses"]} tone="accent" />
-      <Node x={304} y={250} width={240} height={86} lines={["Application runtime", "gateway · DB · controlled upstream", "isolated resources + credentials"]} />
+      <Node x={304} y={250} width={240} height={86} lines={["Application runtime", "gateway, DB, controlled upstream", "isolated resources + credentials"]} />
       <Node x={640} y={250} width={212} height={86} lines={["Benchmark runner", "registered arrivals + inputs", "client measurements"]} />
       <Arrow d="M424 138 V244" marker={marker} />
       <Label x={436} y={194} anchor="start">build + run</Label>
@@ -1602,7 +1602,7 @@ function ObservabilityOptimizationArchitectureDiagram() {
       <Arrow d="M128 250 V144" marker={marker} />
       <Label x={140} y={194} anchor="start">evidence + gaps</Label>
 
-      <Node x={28} y={440} width={200} height={86} lines={["Telemetry stores", "Tempo · Prometheus · Loki", "traces · metrics · logs"]} tone="accent" />
+      <Node x={28} y={440} width={200} height={86} lines={["Telemetry stores", "Tempo, Prometheus, Loki", "traces, metrics, logs"]} tone="accent" />
       <Node x={304} y={440} width={240} height={86} lines={["OpenTelemetry Collector", "bounded collection + export"]} />
       <Node x={640} y={440} width={212} height={86} lines={["Bounded profiler", "CPU / allocation / waiting", "diagnostic collection settings"]} />
       <Arrow d="M424 336 V434" marker={marker} />
@@ -1610,7 +1610,7 @@ function ObservabilityOptimizationArchitectureDiagram() {
       <Arrow d="M128 440 V342" marker={marker} />
       <Arrow d="M544 293 H590 V483 H634" marker={marker} />
 
-      <Node x={28} y={634} width={200} height={76} lines={["Build + source index", "SHA · digest · symbols"]} />
+      <Node x={28} y={634} width={200} height={76} lines={["Build + source index", "SHA: digest, symbols"]} />
       <Node x={304} y={634} width={240} height={76} lines={["Immutable run artifacts", "workload identity + outcomes"]} tone="accent" />
       <Node x={640} y={634} width={212} height={76} lines={["Pyroscope / profiles", "source attribution + gaps"]} />
       <Arrow d="M746 526 V628" marker={marker} />
@@ -1619,7 +1619,7 @@ function ObservabilityOptimizationArchitectureDiagram() {
       <Arrow d="M852 293 H868 V606 H424 V628" marker={marker} />
       <Arrow d="M544 672 H610 V174 H746 V144" marker={marker} />
 
-      <Label x={440} y={776}>VERDICT: ACCEPT · REVISE · REVERT · UNRESOLVED</Label>
+      <Label x={440} y={776}>VERDICT: ACCEPT, REVISE, REVERT, UNRESOLVED</Label>
       <rect className="diagram-result" x={196} y={812} width={488} height={28} rx="6" />
       <text className="diagram-result-text" x={440} y={831} textAnchor="middle">Acceptance produces a reviewed artifact, not a deployment.</text>
     </DiagramFrame>
@@ -1650,9 +1650,9 @@ function ResearchLoopWorkingMemoryDiagram() {
       <Arrow d="M765 146 V220" marker={marker} />
       <Label x={775} y={188} anchor="start">gap</Label>
 
-      <Node x={678} y={226} width={174} height={80} lines={["Tool + budget gate", "access · arguments · budget"]} tone="accent" />
-      <Node x={468} y={226} width={170} height={80} lines={["One narrow tool", "search · read · extract"]} />
-      <Node x={228} y={226} width={200} height={80} lines={["Checked result", "source-bound · calculated"]} tone="accent" />
+      <Node x={678} y={226} width={174} height={80} lines={["Tool + budget gate", "access, arguments, budget"]} tone="accent" />
+      <Node x={468} y={226} width={170} height={80} lines={["One narrow tool", "search, read, extract"]} />
+      <Node x={228} y={226} width={200} height={80} lines={["Checked result", "source-bound, calculated"]} tone="accent" />
       <Arrow d="M678 266 H644" marker={marker} />
       <Arrow d="M468 266 H434" marker={marker} />
 
@@ -1663,7 +1663,7 @@ function ResearchLoopWorkingMemoryDiagram() {
       <Label x={338} y={344} anchor="start">research closes</Label>
 
       <Node x={228} y={376} width={200} height={72} lines={["Finalize", "from saved state"]} tone="accent" />
-      <Node x={468} y={376} width={170} height={72} lines={["Source · value", "· scope checks"]} />
+      <Node x={468} y={376} width={170} height={72} lines={["Source, value", "and scope checks"]} />
       <Node x={678} y={376} width={174} height={72} lines={["Cited answer", "opens its evidence"]} />
       <Arrow d="M428 412 H462" marker={marker} />
       <Arrow d="M638 412 H672" marker={marker} />
@@ -1682,7 +1682,7 @@ function IntentReconcileLoopDiagram() {
       height={400}
     >
       <ArrowMarker id={marker} />
-      <Label x={28} y={30} anchor="start">API REQUEST · NEVER WAITS ON THE CLUSTER</Label>
+      <Label x={28} y={30} anchor="start">API REQUEST: NEVER WAITS ON THE CLUSTER</Label>
       <Node x={28} y={54} width={120} height={62} lines={["Operator", "request"]} />
       <Node x={172} y={54} width={150} height={62} lines={["Authorize", "+ validate"]} />
       <rect className="diagram-boundary" x={346} y={38} width={258} height={94} rx="10" />
@@ -1694,11 +1694,11 @@ function IntentReconcileLoopDiagram() {
       <Arrow d="M604 85 H621" marker={marker} />
       <Arrow d="M475 132 V160 H103 V203" marker={marker} dashed />
 
-      <Label x={852} y={190} anchor="end">RECONCILER PASS · ANY REPLICA, ANY RETRY</Label>
+      <Label x={852} y={190} anchor="end">RECONCILER PASS: ANY REPLICA, ANY RETRY</Label>
       <Node x={28} y={210} width={150} height={66} lines={["Read desired", "state"]} />
-      <Node x={202} y={210} width={180} height={66} lines={["Read observed", "KServe · Argo · K8s"]} tone="muted" />
+      <Node x={202} y={210} width={180} height={66} lines={["Read observed", "KServe, Argo, K8s"]} tone="muted" />
       <Node x={406} y={210} width={200} height={66} lines={["Apply deterministic", "named resource"]} tone="accent" />
-      <Node x={630} y={210} width={222} height={66} lines={["Write observed state", "READY · FAILED · DRIFTED"]} />
+      <Node x={630} y={210} width={222} height={66} lines={["Write observed state", "READY: FAILED, DRIFTED"]} />
       <Arrow d="M178 243 H195" marker={marker} />
       <Arrow d="M382 243 H399" marker={marker} />
       <Arrow d="M606 243 H623" marker={marker} />
@@ -1721,7 +1721,7 @@ function GatewayControlPlaneSplitDiagram() {
       height={330}
     >
       <ArrowMarker id={marker} />
-      <Label x={28} y={30} anchor="start">MANAGEMENT PLANE · LOW VOLUME, RICH AUTHORIZATION</Label>
+      <Label x={28} y={30} anchor="start">MANAGEMENT PLANE: LOW VOLUME, RICH AUTHORIZATION</Label>
       <Node x={28} y={50} width={140} height={58} lines={["People,", "automation"]} />
       <Node x={196} y={50} width={170} height={58} lines={["Control plane", "API"]} />
       <Node x={394} y={50} width={150} height={58} lines={["PostgreSQL"]} tone="accent" />
@@ -1733,12 +1733,12 @@ function GatewayControlPlaneSplitDiagram() {
       <Arrow d="M702 79 H723" marker={marker} />
 
       <Arrow d="M330 190 V150 H469 V115" marker={marker} dashed />
-      <Label x={484} y={146} anchor="start">shared budgets · keys · endpoints</Label>
+      <Label x={484} y={146} anchor="start">shared budgets, keys, endpoints</Label>
       <Label x={28} y={176} anchor="start">INFERENCE DATA PLANE</Label>
       <Node x={28} y={190} width={140} height={58} lines={["Callers,", "services"]} />
-      <Node x={196} y={190} width={200} height={58} lines={["Go gateway · 6.75 MB", "auth · scope · admit"]} tone="accent" />
+      <Node x={196} y={190} width={200} height={58} lines={["Go gateway, 6.75 MB", "auth, scope, admit"]} tone="accent" />
       <Node x={424} y={190} width={160} height={58} lines={["KServe"]} tone="muted" />
-      <Node x={612} y={190} width={240} height={58} lines={["Model · LLM · function"]} />
+      <Node x={612} y={190} width={240} height={58} lines={["Model, LLM, function"]} />
       <Arrow d="M168 219 H189" marker={marker} />
       <Arrow d="M396 219 H417" marker={marker} />
       <Arrow d="M584 219 H605" marker={marker} />
@@ -1766,7 +1766,7 @@ function CanaryGateDecisionDiagram() {
       height={440}
     >
       <ArrowMarker id={marker} />
-      <Node x={28} y={40} width={190} height={52} lines={["Canary revision", "requests · errors · p95"]} />
+      <Node x={28} y={40} width={190} height={52} lines={["Canary revision", "requests, errors, p95"]} />
       <Arrow d="M218 66 H253" marker={marker} />
       {checks.map((row, index) => (
         <g key={row.y}>
@@ -1798,7 +1798,7 @@ function BatchLineageMonitoringDiagram() {
       height={420}
     >
       <ArrowMarker id={marker} />
-      <Node x={28} y={50} width={250} height={66} lines={["Schedule · processing date", "2025-02-01"]} />
+      <Node x={28} y={50} width={250} height={66} lines={["Schedule, processing date", "2025-02-01"]} />
       <Node x={314} y={50} width={250} height={66} lines={["Resolve + freeze", "taxi-features v2"]} tone="accent" />
       <Node x={600} y={50} width={252} height={66} lines={["Pipeline run", "model pinned by SHA-256"]} />
       <Arrow d="M278 83 H307" marker={marker} />
@@ -1807,12 +1807,12 @@ function BatchLineageMonitoringDiagram() {
 
       <Node x={600} y={170} width={252} height={66} lines={["Publish fare-predictions", "lineage + checksum"]} tone="accent" />
       <Node x={314} y={170} width={250} height={66} lines={["Monitoring rule", "creates the run"]} />
-      <Node x={28} y={170} width={250} height={66} lines={["Join on trip_id", "100% coverage · STABLE"]} tone="accent" />
+      <Node x={28} y={170} width={250} height={66} lines={["Join on trip_id", "100% coverage, STABLE"]} tone="accent" />
       <Arrow d="M600 203 H571" marker={marker} />
       <Arrow d="M314 203 H285" marker={marker} />
 
       <Node x={28} y={280} width={250} height={60} lines={["taxi-ground-truth v2", "separated before scoring"]} tone="muted" />
-      <Node x={600} y={280} width={252} height={60} lines={["Independent rerun", "identical bytes · new version"]} tone="muted" />
+      <Node x={600} y={280} width={252} height={60} lines={["Independent rerun", "identical bytes, new version"]} tone="muted" />
       <Arrow d="M153 280 V243" marker={marker} dashed />
       <Arrow d="M726 236 V273" marker={marker} dashed />
       <rect className="diagram-result" x={96} y={370} width={688} height={28} rx="6" />
@@ -1839,13 +1839,13 @@ function SharedLimiterAdmissionDiagram() {
         </g>
       ))}
       <rect className="diagram-boundary diagram-boundary--accent" x={250} y={36} width={330} height={198} rx="10" />
-      <Label x={266} y={58} anchor="start">POSTGRESQL · ONE TRANSACTION</Label>
-      <Node x={266} y={72} width={298} height={42} lines={["1 · lock and statement timeouts"]} />
-      <Node x={266} y={124} width={298} height={42} lines={["2 · insert missing buckets in order"]} />
-      <Node x={266} y={176} width={298} height={42} lines={["3 · lock, refill, admit, update"]} tone="accent" />
-      <Node x={620} y={60} width={232} height={50} lines={["200 · admitted"]} tone="accent" />
-      <Node x={620} y={125} width={232} height={50} lines={["429 · budget spent"]} tone="muted" />
-      <Node x={620} y={190} width={232} height={50} lines={["503 · store unavailable", "nothing forwarded"]} tone="stop" />
+      <Label x={266} y={58} anchor="start">POSTGRESQL: ONE TRANSACTION</Label>
+      <Node x={266} y={72} width={298} height={42} lines={["1. lock and statement timeouts"]} />
+      <Node x={266} y={124} width={298} height={42} lines={["2. insert missing buckets in order"]} />
+      <Node x={266} y={176} width={298} height={42} lines={["3. lock, refill, admit, update"]} tone="accent" />
+      <Node x={620} y={60} width={232} height={50} lines={["200: admitted"]} tone="accent" />
+      <Node x={620} y={125} width={232} height={50} lines={["429: budget spent"]} tone="muted" />
+      <Node x={620} y={190} width={232} height={50} lines={["503: store unavailable", "nothing forwarded"]} tone="stop" />
       <Arrow d="M580 85 H613" marker={marker} />
       <Arrow d="M580 150 H613" marker={marker} />
       <Arrow d="M580 215 H613" marker={marker} dashed />
@@ -1866,9 +1866,9 @@ function QuantityCalculationPathDiagram() {
       height={420}
     >
       <ArrowMarker id={marker} />
-      <Label x={28} y={30} anchor="start">MODEL · READS AND PROPOSES</Label>
+      <Label x={28} y={30} anchor="start">MODEL: READS AND PROPOSES</Label>
       <Node x={28} y={50} width={180} height={66} lines={["Original page", "text or page image"]} tone="muted" />
-      <Node x={236} y={50} width={300} height={66} lines={["Transcribe inputs", "value · unit · scale · period · support ID"]} />
+      <Node x={236} y={50} width={300} height={66} lines={["Transcribe inputs", "value, unit, scale, period, support ID"]} />
       <Node x={564} y={50} width={288} height={66} lines={["Propose formula", "over named inputs"]} />
       <Arrow d="M208 83 H229" marker={marker} />
       <Arrow d="M536 83 H557" marker={marker} />
@@ -1879,7 +1879,7 @@ function QuantityCalculationPathDiagram() {
       <Arrow d="M386 216 V230 H169 V262" marker={marker} />
 
       <rect className="diagram-boundary diagram-boundary--accent" x={28} y={236} width={824} height={96} rx="10" />
-      <Label x={44} y={258} anchor="start">APPLICATION CODE · CALCULATES</Label>
+      <Label x={44} y={258} anchor="start">APPLICATION CODE: CALCULATES</Label>
       <Node x={44} y={268} width={250} height={52} lines={["Scale factors", "Decimal precision"]} tone="accent" />
       <Node x={316} y={268} width={250} height={52} lines={["Bounded expression", "+ − × ÷ abs min max mean"]} tone="accent" />
       <Node x={588} y={268} width={248} height={52} lines={["Conversion receipt"]} tone="accent" />

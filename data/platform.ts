@@ -82,8 +82,8 @@ export const platformNodes = [
     decision: "The model proposes SQL. Deterministic software decides what may execute.",
     evidence: [
       "160/180 = 88.89% governed task success",
-      "28/30 authority · unauthorized relation blocked before DB access",
-      "180-case benchmark · 12 synthetic domains",
+      "28/30 authority, unauthorized relation blocked before DB access",
+      "180-case benchmark, 12 synthetic domains",
     ],
     stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "counterfactual evaluation"],
     links: [
@@ -131,7 +131,7 @@ export const platformNodes = [
     architectureDescription: "Shared model-compute selection",
     decision: "Routing chooses computation; it never grants authority. Model choice never changes permissions.",
     evidence: [
-      "374 tests passing, 3 skipped · strict mypy · Ruff, verified by the CI release gate",
+      "374 tests passing, 3 skipped, strict mypy, Ruff, verified by the CI release gate",
       "0 critical regressions, 100% quality retention (synthetic offline evaluation)",
       "26.76% projected cost reduction vs. a strong-only baseline",
       "~6.5k routing decisions/sec — local pure-routing characterization, not provider/API throughput",
@@ -186,7 +186,7 @@ export const platformNodes = [
     evidence: [
       "10% → 25% → 50% → 100% automated canary progression",
       "PASS / FAIL / INCONCLUSIVE verdicts with automatic rollback paths",
-      "279 backend tests · ~91% statement coverage",
+      "279 backend tests, ~91% statement coverage",
     ],
     stack: ["FastAPI", "SQLAlchemy", "canary rollout", "quality + reliability gates", "delayed ground truth", "automatic rollback", "reconciliation", "Docker Compose"],
     links: [
@@ -210,7 +210,7 @@ export const platformNodes = [
     purpose: "The set of models available to runtime selection; not a standalone project.",
     decision: "The router selects from available models; lifecycle evidence changes which candidates are available.",
     evidence: [],
-    stack: ["General LLMs · CURRENT", "Specialist SLMs · NEXT", "VLM / Other · FUTURE"],
+    stack: ["General LLMs (current)", "Specialist SLMs (next)", "VLM / Other (future)"],
     links: [],
     details: {
       currentGoal: "General models are the current available pool.",
@@ -252,11 +252,11 @@ export const platformNodes = [
     architectureDescription: "Evidence-driven Kubernetes root cause analysis",
     decision: "A bounded investigator gathers evidence; deterministic rules decide the root cause.",
     evidence: [
-      "27/27 held-out testbed runs with the true cause named · HOLDOUT23",
-      "0 false RESOLVED · 0 false strong authority · decoy never named",
-      "18/31 exact on ITBench-Lite · 0 model calls in every measurement",
+      "27/27 held-out testbed runs with the true cause named, HOLDOUT23",
+      "0 false RESOLVED, 0 false strong authority, decoy never named",
+      "18/31 exact on ITBench-Lite, 0 model calls in every measurement",
     ],
-    stack: ["Python", "Kubernetes", "gRPC over mTLS", "read-only Connector", "PostgreSQL evidence journal", "deterministic RCA", "offline replay", "Prometheus · Loki · Tempo", "Chaos Mesh testbed", "React console"],
+    stack: ["Python", "Kubernetes", "gRPC over mTLS", "read-only Connector", "PostgreSQL evidence journal", "deterministic RCA", "offline replay", "Prometheus, Loki, Tempo", "Chaos Mesh testbed", "React console"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/agentic-sre" },
       { label: "How it works", href: "https://github.com/negativexq/agentic-sre/blob/main/docs/how-it-works.md" },
@@ -302,7 +302,7 @@ export const platformArchitectureLayers = [
     id: "entry",
     band: "Request entry",
     columns: [
-      { label: "Platform Gateway", items: ["identity · tenant", "request context", "authn / authz context"] },
+      { label: "Platform Gateway", items: ["identity, tenant", "request context", "authn / authz context"] },
       { label: "Capability Router", status: "NEXT", items: ["which capability handles this request"] },
     ],
   },
@@ -321,7 +321,7 @@ export const platformArchitectureLayers = [
     band: "Shared model runtime",
     note: "Model choice never changes permissions.",
     columns: [
-      { label: "Adaptive Model Router", status: "EVOLVING", items: ["core routing engine: PROVEN", "task · capability · complexity aware", "quality · latency · cost · budget aware", "health · fallback · escalation", "1 real integration · 3 contract-tested"] },
+      { label: "Adaptive Model Router", status: "EVOLVING", items: ["core routing engine: PROVEN", "task, capability, complexity aware", "quality, latency, cost, budget aware", "health, fallback, escalation", "1 real integration, 3 contract-tested"] },
       { label: "Model tiers", status: "NEXT", items: ["specialist SLM", "general reasoning LLM", "vision and multimodal"] },
       { label: "Inference providers", items: ["local open models", "OpenAI-compatible APIs"] },
     ],
@@ -332,8 +332,8 @@ export const platformArchitectureLayers = [
     note: "A candidate reaches the router only through an evaluation it passed.",
     columns: [
       { label: "CauseTune", status: "PROVEN", items: ["QLoRA / PEFT", "frozen benchmark", "resource profiling"] },
-      { label: "Offline evaluation", status: "PROVEN", items: ["base vs fine-tuned", "quality · VRAM · efficiency", "generalization slices"] },
-      { label: "ModelOps Control Plane", status: "PROVEN", items: ["canary 10 → 25 → 50 → 100", "quality and reliability gates", "delayed ground truth", "promotion · rollback · reconciliation"] },
+      { label: "Offline evaluation", status: "PROVEN", items: ["base vs fine-tuned", "quality, VRAM, efficiency", "generalization slices"] },
+      { label: "ModelOps Control Plane", status: "PROVEN", items: ["canary 10 → 25 → 50 → 100", "quality and reliability gates", "delayed ground truth", "promotion, rollback, reconciliation"] },
       { label: "Model registry", status: "NEXT", items: ["versions and lineage", "feeds the router"] },
     ],
   },
@@ -342,10 +342,10 @@ export const platformArchitectureLayers = [
     band: "Cross-cutting governance",
     note: "Shared contracts and central governance over independent services, not one monolith.",
     columns: [
-      { label: "Enterprise Context", status: "NEXT", items: ["one entity across planes", "data · knowledge · metrics · actions", "role / tenant / scope"] },
-      { label: "Capability Gateway", status: "NEXT", items: ["typed capabilities", "REST / OpenAPI · MCP", "databases · knowledge · business systems"] },
-      { label: "Unified Registry", status: "NEXT", items: ["models · agents · knowledge bases", "entities · tools · policies", "eval suites · deployments"] },
-      { label: "Control Plane", status: "NEXT", items: ["identity · policy · lifecycle", "evaluation · deployment state", "observability · audit · cost"] },
+      { label: "Enterprise Context", status: "NEXT", items: ["one entity across planes", "data, knowledge, metrics, actions", "role / tenant / scope"] },
+      { label: "Capability Gateway", status: "NEXT", items: ["typed capabilities", "REST / OpenAPI, MCP", "databases, knowledge, business systems"] },
+      { label: "Unified Registry", status: "NEXT", items: ["models, agents, knowledge bases", "entities, tools, policies", "eval suites, deployments"] },
+      { label: "Control Plane", status: "NEXT", items: ["identity, policy, lifecycle", "evaluation, deployment state", "observability, audit, cost"] },
     ],
   },
   {

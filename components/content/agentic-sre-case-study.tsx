@@ -55,7 +55,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
         </Link>
         <div className="sre-hero-composition">
           <div className="sre-hero-copy">
-            <p className="sre-hero-category">Kubernetes · Incident investigation</p>
+            <p className="sre-hero-category">Kubernetes incident investigation</p>
             <h1>{project.title}</h1>
             <p className="sre-positioning">Evidence-driven root cause analysis.</p>
             <p className="project-detail-summary">
@@ -100,7 +100,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               />
             </a>
             <figcaption>
-              Operator console · seeded demo.{" "}
+              Operator console, seeded demo.{" "}
               <Source href={agenticSreSources.screenshots}>
                 Capture provenance
               </Source>
@@ -111,11 +111,11 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
         <p className="sre-metric-sources">
           Measurement sources:{" "}
           <Source href={agenticSreSources.holdout}>
-            HOLDOUT23 · engine 2.17.0
-          </Source>{" "}
-          ·{" "}
-          <Source href={agenticSreSources.watch}>WATCH lab measurement</Source>{" "}
-          ·{" "}
+            HOLDOUT23, engine 2.17.0
+          </Source>
+          ,{" "}
+          <Source href={agenticSreSources.watch}>WATCH lab measurement</Source>
+          {" "}and{" "}
           <Source href={agenticSreSources.measured}>
             Deterministic evaluation paths
           </Source>
@@ -414,7 +414,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
               and the isolated decoy never named.
             </p>
             <div className="sre-holdout-result">
-              <h4>HOLDOUT23 · 2026-10-13 · engine 2.17.0</h4>
+              <h4>HOLDOUT23, 2026-10-13, engine 2.17.0</h4>
               <p>
                 <strong>
                   27/27 valid runs. The true cause and instance named in every
@@ -501,7 +501,7 @@ export function AgenticSreCaseStudy({ project }: { project: Project }) {
           <section id="deep-dive" className="detail-section">
             <h2>Inspect the engineering evidence</h2>
             <p className="detail-muted">
-              Sources reviewed at commit 77f2c66 · 2026-10-15. Measurement links
+              Sources reviewed at commit 77f2c66, 2026-10-15. Measurement links
               are pinned to that revision.
             </p>
             <div className="modelops-deep-dive">

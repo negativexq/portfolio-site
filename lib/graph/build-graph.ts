@@ -92,10 +92,10 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "evidence:project:knowledge-base-rag:bge-removal-not-supported": "BGE Removal Blocked",
   "evidence:project:knowledge-base-rag:844-backend-18-frontend": "844 Backend Tests",
   "project:agentic-customer-service-platform": "Agentic Customer Service",
-  "evidence:project:agentic-customer-service-platform:540-540-0-unsafe-executions": "540/540 · 0 Unsafe",
+  "evidence:project:agentic-customer-service-platform:540-540-0-unsafe-executions": "540/540, 0 Unsafe",
   "evidence:project:agentic-customer-service-platform:d2d-release-gate-pass": "D2D Gate PASS",
   "evidence:project:agentic-customer-service-platform:15-3-0-0-0": "15 → 0",
-  "evidence:project:agentic-customer-service-platform:110-110-40-40-28-28": "110 · 40 · 28",
+  "evidence:project:agentic-customer-service-platform:110-110-40-40-28-28": "110, 40, 28",
   "evidence:project:agentic-customer-service-platform:94-05-vs-82-14": "V3 vs Direct",
   "evidence:project:agentic-customer-service-platform:1-of-4-candidates-qualified": "1 of 4 Qualified",
   "evidence:experience:data-platform:75-runtime-reduction": "75% Runtime Reduction",
@@ -477,11 +477,11 @@ export function buildEngineeringGraph(): EngineeringGraphData {
       metadata: {
         rationale: item.rationale,
         foundation: connectedProjects.length
-          ? connectedProjects.map((project) => project.title).join(" · ")
+          ? connectedProjects.map((project) => project.title).join(", ")
           : "Current lineage, retrieval and graph-oriented engineering concepts",
         direction: item.rationale,
         evidenceTarget: item.evidenceTarget,
-        connectedProject: connectedProjects.map((project) => project.title).join(" · ") || undefined,
+        connectedProject: connectedProjects.map((project) => project.title).join(", ") || undefined,
       },
     });
 

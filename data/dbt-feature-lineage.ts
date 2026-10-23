@@ -115,11 +115,11 @@ export const dbtFeatureLineageDecisions = [
 ] as const;
 
 export const dbtFeatureLineageStack = [
-  ["Backend", "Python 3.12 · FastAPI · Typer · Uvicorn"],
-  ["Analysis", "dbt Core · sqlglot · NetworkX · Jinja2 · PyYAML · Pydantic"],
-  ["Frontend", "Next.js · TypeScript · Tailwind CSS · React Flow"],
-  ["Delivery", "Docker · Docker Compose · Make"],
-  ["Quality", "pytest · Ruff"],
+  ["Backend", "Python 3.12, FastAPI, Typer, Uvicorn"],
+  ["Analysis", "dbt Core, sqlglot, NetworkX, Jinja2, PyYAML, Pydantic"],
+  ["Frontend", "Next.js, TypeScript, Tailwind CSS, React Flow"],
+  ["Delivery", "Docker, Docker Compose, Make"],
+  ["Quality", "pytest, Ruff"],
 ] as const;
 
 export const dbtFeatureLineageCommands = [

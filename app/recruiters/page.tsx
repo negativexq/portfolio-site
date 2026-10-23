@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { ProjectIndex } from "@/components/recruiters/project-index";
 import { JsonLd } from "@/components/content/json-ld";
 import { experiences } from "@/data/experience";
@@ -48,7 +48,6 @@ export default function RecruitersPage() {
 
       <header className="brief-hero container">
         <div className="brief-intro">
-          <p className="brief-kicker">For recruiters · 30-second read</p>
           <h1 className="brief-name" aria-label={profile.name}>
             {nameLines.map((line, index) => (
               <span className="brief-name-line" aria-hidden="true" key={line}>
@@ -62,8 +61,11 @@ export default function RecruitersPage() {
         <aside className="brief-card" aria-label="Contact and quick facts">
           <p className="brief-status"><span aria-hidden="true" />{profile.availability}</p>
           <dl>
-            <div><dt>Looking for</dt><dd>{recruiterBrief.roles.join(" · ")}</dd></div>
-            <div><dt>Based in</dt><dd>{profile.location} · {profile.timezone}</dd></div>
+            <div>
+              <dt>Looking for</dt>
+              <dd><ul className="brief-roles">{recruiterBrief.roles.map((role) => <li key={role}>{role}</li>)}</ul></dd>
+            </div>
+            <div><dt>Based in</dt><dd>{profile.location}, {profile.timezone}</dd></div>
             <div><dt>Last role</dt><dd>{experience.role}, {experience.company}</dd></div>
             <div><dt>Education</dt><dd>{profile.education.degree}, {profile.education.institution}</dd></div>
             <div><dt>Languages</dt><dd>{profile.languages.map((item) => `${item.language} (${item.proficiency.toLowerCase()})`).join(", ")}</dd></div>
@@ -90,7 +92,8 @@ export default function RecruitersPage() {
         <div>
           <p className="brief-job">
             <strong>{experience.role}</strong>
-            <span>{experience.company} · {experience.team} · {experience.period}</span>
+            <span>{experience.company}, {experience.team}</span>
+            <span>{experience.period}</span>
           </p>
           <ul className="brief-highlights">
             {recruiterBrief.highlights.map((item) => <li key={item}>{item}</li>)}
@@ -131,12 +134,12 @@ export default function RecruitersPage() {
         <div>
           <h2 id="brief-cta">Hiring for one of these roles?</h2>
           <a className="brief-email" href={profile.links.email}>
-            Send me an email <ArrowRight aria-hidden="true" size={36} />
+            Send me an email
           </a>
           <div className="brief-cta-links">
-            <a href={profile.links.linkedin} rel="noreferrer" target="_blank">LinkedIn <ArrowUpRight aria-hidden="true" size={14} /></a>
-            <a href={profile.links.github} rel="noreferrer" target="_blank">GitHub <ArrowUpRight aria-hidden="true" size={14} /></a>
-            <Link href="/projects">All projects <ArrowRight aria-hidden="true" size={14} /></Link>
+            <a href={profile.links.linkedin} rel="noreferrer" target="_blank">LinkedIn</a>
+            <a href={profile.links.github} rel="noreferrer" target="_blank">GitHub</a>
+            <Link href="/projects">All projects</Link>
           </div>
         </div>
       </section>

@@ -61,7 +61,7 @@ export function CommerceProjectCaseStudy({ project }: CommerceProjectCaseStudyPr
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Production-oriented reference implementation · local evidence, not a production SLA</span>
+          <span>Production-oriented reference implementation, local evidence, not a production SLA</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />

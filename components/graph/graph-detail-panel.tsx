@@ -118,7 +118,7 @@ export function GraphDetailPanel({ node, data, onClose, onSelectNode }: GraphDet
       {node.type === "project" && node.metadata.roadmap?.length ? (
         <div className="graph-detail-group graph-detail-roadmap">
           <h3>Planned roadmap</h3>
-          <ul>{node.metadata.roadmap.map((item) => <li key={item}>PLANNED · {item}</li>)}</ul>
+          <ul>{node.metadata.roadmap.map((item) => <li key={item}>Planned: {item}</li>)}</ul>
         </div>
       ) : null}
 

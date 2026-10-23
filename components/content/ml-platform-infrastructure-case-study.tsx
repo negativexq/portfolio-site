@@ -59,7 +59,7 @@ export function MlPlatformInfrastructureCaseStudy({ project }: { project: Projec
             <a className="agentic-screenshot-frame" href="/projects/ml-platform-infrastructure/01-home.png" target="_blank" rel="noreferrer" aria-label="Open the full-size ML Platform home screenshot">
               <Image src="/projects/ml-platform-infrastructure/01-home.png" alt="ML Platform home with health, scheduled work and model drift attention items, populated with synthetic demo data" width={1440} height={1236} sizes="(max-width: 800px) calc(100vw - 32px), 560px" preload loading="eager" />
             </a>
-            <figcaption>Repository UI capture · synthetic demo data.</figcaption>
+            <figcaption>Repository UI capture, synthetic demo data.</figcaption>
           </figure>
         </div>
       </header>
@@ -137,7 +137,7 @@ export function MlPlatformInfrastructureCaseStudy({ project }: { project: Projec
                   <a className="agentic-screenshot-frame" href={image.src} target="_blank" rel="noreferrer" aria-label={`${image.caption}. Open full-size image`}>
                     <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes="(max-width: 820px) 100vw, 800px" />
                   </a>
-                  <figcaption><strong>{image.caption}</strong><span>Synthetic demo · open the image for the full-size view</span></figcaption>
+                  <figcaption><strong>{image.caption}</strong><span>Synthetic demo. Open the image for the full-size view</span></figcaption>
                 </figure>
               ))}
             </div>

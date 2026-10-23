@@ -10,7 +10,7 @@ export function renderExperienceEntry(experience: Experience, headingLevel = 2):
 
   return joinBlocks([
     heading(headingLevel, `${escapeMarkdown(experience.company)} — ${escapeMarkdown(experience.role)}`),
-    `${escapeMarkdown(experience.period)} · ${escapeMarkdown(experience.location)}`,
+    `${escapeMarkdown(experience.period)}, ${escapeMarkdown(experience.location)}`,
     escapeMarkdown(experience.summary),
     highlights.length > 0
       ? joinBlocks([heading(headingLevel + 1, "Highlights"), renderBulletList(highlights)])

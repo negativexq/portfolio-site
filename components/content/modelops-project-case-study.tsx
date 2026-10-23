@@ -59,7 +59,7 @@ export function ModelOpsProjectCaseStudy({ project }: ModelOpsProjectCaseStudyPr
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Production-oriented control-plane reference implementation · local Compose scope</span>
+          <span>Production-oriented control-plane reference implementation, local Compose scope</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />

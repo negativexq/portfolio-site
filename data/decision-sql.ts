@@ -127,7 +127,7 @@ export const decisionSqlGovernedModel = [
     behavior: "AUTHORITY_BLOCKED",
     cases: "30",
     expected: "BLOCKED_AUTHORITY",
-    result: "28 / 30 · runtime blocks the unauthorized relation",
+    result: "28 / 30, runtime blocks the unauthorized relation",
   },
   {
     behavior: "AMBIGUOUS",
@@ -164,13 +164,13 @@ export const decisionSqlEvidence = [
   },
   {
     area: "Governance blocks",
-    result: "policy 12 / 12 · ambiguity 12 / 16",
+    result: "policy 12 / 12, ambiguity 12 / 16",
     detail:
       "Policy blocking is exact at 100%; ambiguity recognition is the weaker axis at 75.00%. Refusing SQL is a measured, expected outcome on these cases.",
   },
   {
     area: "Execution boundary",
-    result: "QueryPlan-gated · no raw unsafe fallback",
+    result: "QueryPlan-gated, no raw unsafe fallback",
     detail:
       "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
   },

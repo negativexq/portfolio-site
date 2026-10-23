@@ -59,7 +59,7 @@ export default function OpenGraphImage() {
             letterSpacing: 1.5,
           }}
         >
-          <div>AI PLATFORMS · AGENT SYSTEMS · RETRIEVAL · DATA</div>
+          <div>AI PLATFORMS, AGENT SYSTEMS, RETRIEVAL, DATA</div>
           <div style={{ color: FOREGROUND, fontWeight: 700 }}>omerfkoc.dev</div>
         </div>
       </div>

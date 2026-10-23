@@ -109,11 +109,11 @@ function Guides({ guides }: { guides: readonly Guide[] }) {
 export function HeroPipeline() {
   return (
     <div className="hero-pipeline">
-      <p className="hero-pipeline-caption">Request lifecycle · open a stage</p>
+      <p className="hero-pipeline-caption">Request lifecycle: open a stage</p>
       <div className="hero-pipeline-watch">
       <Link className="hero-pipeline-watch-label" href="/projects/agentic-sre">
         <span className="hero-pipeline-watch-dot" aria-hidden="true" />
-        Agentic SRE · watching
+        Agentic SRE is watching
       </Link>
       <ol className="hero-pipeline-nodes">
         {stages.map((row) => (

@@ -102,28 +102,28 @@ export const agenticSreSemantics = [
 export const agenticSreBenchmarks = [
   {
     label: "ITBench-Lite exact root cause",
-    result: "18/31 · 58.1%",
+    result: "18/31, 58.1%",
     detail:
       "Engine 2.17.0, all 35 scenarios on the full-source path, 31 scoreable. The answer must equal the published label exactly.",
     href: agenticSreSources.exact,
   },
   {
     label: "Evidence-backed causal equivalence",
-    result: "20/31 · 64.5%",
+    result: "20/31, 64.5%",
     detail:
       "Engine 2.17.0: the answer is a Schedule whose own spawned experiment ran across the incident’s onset. Reported beside the exact score.",
     href: agenticSreSources.exact,
   },
   {
     label: "TEST25, blind when frozen",
-    result: "17/22 · 77.3%",
+    result: "17/22, 77.3%",
     detail:
       "Full-source path against published ground truth on the held-out split of the frozen architecture; raw 17/25, three unmatchable labels excluded.",
     href: agenticSreSources.benchmark,
   },
   {
     label: "All 35, frozen architecture",
-    result: "26/31 · 83.9%",
+    result: "26/31, 83.9%",
     detail:
       "DEV10 plus TEST25 against published ground truth; four unmatchable labels excluded.",
     href: agenticSreSources.benchmark,

@@ -68,7 +68,7 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Reference implementation · not unrestricted production certification</span>
+          <span>Reference implementation, not unrestricted production certification</span>
         </div>
       </header>
 

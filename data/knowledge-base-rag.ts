@@ -260,22 +260,22 @@ export const knowledgeBaseRagCoverageExamples = [
   {
     question: "Costco FY2021 total liabilities",
     answer: "USD 41,190 million",
-    effort: "20.41 s · 3 model calls",
+    effort: "20.41 s, 3 model calls",
   },
   {
     question: "Costco FY2021 debt to EBITDA, including current long-term debt and lease liabilities",
     answer: "1.344× = (799 + 6692 + 3916) / (6708 + 1781)",
-    effort: "68.02 s · 9 model calls",
+    effort: "68.02 s, 9 model calls",
   },
   {
     question: "Other-company directorships held by three directors",
     answer: "30, with total and distinct-company counts agreeing",
-    effort: "61.63 s · 7 model calls",
+    effort: "61.63 s, 7 model calls",
   },
   {
     question: "Germanwings tweets minus Lufthansa tweets",
     answer: "12 = 24 − 12; reading the original image corrected an indexed 42 to 12",
-    effort: "42.16 s · 6 model calls",
+    effort: "42.16 s, 6 model calls",
   },
 ] as const;
 
@@ -287,7 +287,7 @@ export const knowledgeBaseRagEvidence = [
   },
   {
     area: "Research budget",
-    result: "10 requests · 120k tokens · 240 s",
+    result: "10 requests, 120k tokens, 240 s",
     detail: "The profile used for recent document runs: at most six research tool attempts, a stop after two rounds without progress and a 60-second finalization reserve. These are configurable server-side limits that user requests cannot widen.",
   },
   {
@@ -303,15 +303,15 @@ export const knowledgeBaseRagEvidence = [
 ] as const;
 
 export const knowledgeBaseRagStackGroups = [
-  ["Agentic research", "PydanticAI · typed research graph · application-owned ResearchState"],
-  ["Workspace", "React · TypeScript · Vite · research library · inspect mode"],
-  ["API", "FastAPI · HTTP · SSE · read-only UI aggregation"],
-  ["Identity", "Bearer tokens · tenant and document permissions · USER / OPERATOR / ADMIN roles"],
-  ["Retrieval", "Qdrant dense + BM25 sparse · rank fusion · BGE multilingual reranker"],
-  ["Models", "Ollama, OpenAI or Claude · Qwen3 embeddings · image-capable model for visual reads"],
-  ["Ingestion", "Table-aware PDF parsing · Tesseract OCR (English, Turkish)"],
-  ["Observability", "OpenTelemetry · Jaeger · bounded-metadata traces"],
-  ["Runtime", "Python 3.11+ · Docker Compose"],
+  ["Agentic research", "PydanticAI, typed research graph, application-owned ResearchState"],
+  ["Workspace", "React, TypeScript, Vite, research library, inspect mode"],
+  ["API", "FastAPI, HTTP, SSE, read-only UI aggregation"],
+  ["Identity", "Bearer tokens, tenant and document permissions, USER / OPERATOR / ADMIN roles"],
+  ["Retrieval", "Qdrant dense + BM25 sparse, rank fusion, BGE multilingual reranker"],
+  ["Models", "Ollama, OpenAI or Claude, Qwen3 embeddings, image-capable model for visual reads"],
+  ["Ingestion", "Table-aware PDF parsing, Tesseract OCR (English, Turkish)"],
+  ["Observability", "OpenTelemetry, Jaeger, bounded-metadata traces"],
+  ["Runtime", "Python 3.11+, Docker Compose"],
 ] as const;
 
 export const knowledgeBaseRagDeepDiveLinks = [

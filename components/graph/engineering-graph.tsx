@@ -355,7 +355,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       <div className="atlas-topbar">
         <div>
           {activeProject ? <button type="button" className="atlas-back" onClick={() => overview()}><ArrowLeft size={15} aria-hidden="true" /> All projects</button> : <strong>Engineering graph</strong>}
-          <span>{activeProject ? activeProject.canvasLabel : `${projects.length} projects · ${visibleData.nodes.filter((node) => node.metadata.overview && node.type === "technology").length} technologies`}</span>
+          <span>{activeProject ? activeProject.canvasLabel : `${projects.length} projects, ${visibleData.nodes.filter((node) => node.metadata.overview && node.type === "technology").length} technologies`}</span>
         </div>
         <div className="atlas-key" aria-label="Node types">
           <span><i className="atlas-key-person" /> Me</span>
@@ -398,7 +398,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       <div className="atlas-project-selector">
         <label className="atlas-search"><span className="sr-only">Find a core project</span><input ref={searchRef} type="search" placeholder="Find a project…" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
         <nav aria-label="Engineering network">
-          {!query ? <button type="button" aria-pressed={inspectedNode?.type === "person"} onClick={() => selectNode("person:omer-faruk-koc")}><i style={{ background: "#d2e7ae" }} />Ömer Faruk Koç</button> : null}
+          {!query ? <button type="button" aria-pressed={inspectedNode?.type === "person"} onClick={() => selectNode("person:omer-faruk-koc")}><i style={{ background: "var(--graph-person)" }} />Ömer Faruk Koç</button> : null}
           {filteredProjects.map((node) => <button type="button" key={node.id} ref={(button) => { if (button) projectButtonsRef.current.set(node.id, button); else projectButtonsRef.current.delete(node.id); }} aria-pressed={activeProjectId === node.id} onClick={() => selectNode(node.id)}><i style={{ background: projectColors[node.id] }} />{node.canvasLabel}</button>)}
           {filteredProjects.length === 0 ? <p>No matching projects.</p> : null}
         </nav>
@@ -407,7 +407,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         <span>Key technologies</span>
         {data.nodes.filter((node) => node.type === "technology" && node.metadata.overview).map((node) => <button type="button" key={node.id} aria-pressed={inspectedId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>)}
       </nav> : null}
-      <p className="atlas-footnote">{activeProject ? `${visibleData.nodes.length - 1} selected foundations · evidence in the details panel` : "Built: my work · Uses: documented technology · Related: documented project relationship."} <span>Drag to pan · scroll to zoom · Esc for overview</span></p>
+      <p className="atlas-footnote">{activeProject ? `${visibleData.nodes.length - 1} selected foundations, evidence in the details panel` : "Built: my work. Uses: documented technology. Related: documented project relationship."} <span>Drag to pan, scroll to zoom, Esc for overview</span></p>
       <p className="sr-only" aria-live="polite">{inspectedNode ? `${inspectedNode.label} selected.` : "Ömer Faruk Koç at the center, connected to seven core projects and twelve technologies."}</p>
     </div>
   );
