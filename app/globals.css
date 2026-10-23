@@ -829,6 +829,14 @@ a {
   color: var(--muted);
 }
 
+.text-link.recruiter-link {
+  color: var(--accent);
+}
+
+.text-link.recruiter-link:hover {
+  color: var(--accent-hover);
+}
+
 .text-link:hover,
 .section-link:hover,
 .project-card-actions a:hover,
@@ -10330,5 +10338,467 @@ a.hero-pipeline-watch-label:focus-visible {
   .writing-topic-filter button {
     flex: 0 0 auto;
     scroll-snap-align: start;
+  }
+}
+
+/* ── For recruiters ─────────────────────────────────────────────────────────
+   A readable one-page summary: a masked name, a contact card, one ink-fill
+   statement, competencies, skills, a project index
+   with an anchored preview, experience and a contact field. The page reads
+   fully with no motion; every move sits behind prefers-reduced-motion. */
+.brief {
+  --brief-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow-x: clip;
+  padding-bottom: var(--section);
+}
+
+.brief-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  padding-block: var(--section-compact);
+}
+
+.brief-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: -6rem calc(var(--gutter) * -1) 0;
+  background: radial-gradient(40rem 26rem at 16% 38%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%);
+  content: "";
+  pointer-events: none;
+}
+
+.brief-kicker {
+  margin: 0 0 var(--space-5);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.brief-name {
+  margin: 0;
+  color: var(--foreground);
+  font-size: clamp(3rem, 8.5vw, 7rem);
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.brief-name-line {
+  display: block;
+  overflow: hidden;
+  margin-bottom: -0.08em;
+  padding-bottom: 0.08em;
+}
+
+.brief-name-line > span {
+  display: block;
+}
+
+.brief-title {
+  margin: var(--space-5) 0 0;
+  color: var(--accent);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 700;
+}
+
+.brief-lede {
+  max-width: 38rem;
+  margin: var(--space-4) 0 0;
+  color: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.brief-card {
+  background: var(--surface-raised);
+  padding: var(--space-6);
+}
+
+.brief-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.brief-status span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.brief-card dl {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.brief-card dt {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.brief-card dd {
+  margin: 0.15rem 0 0;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.brief-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* One statement that fills from part-ink to full ink as it rises. */
+.brief-statement p {
+  max-width: 62rem;
+  margin: 0;
+  padding-block: var(--section);
+  color: var(--foreground);
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.brief-section {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr);
+  gap: var(--space-6) clamp(2rem, 5vw, 4.5rem);
+  margin-top: var(--section-compact);
+}
+
+.brief-section > h2 {
+  margin: 0;
+  border-top: 3px solid var(--accent);
+  padding-top: var(--space-4);
+  color: var(--foreground);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+.brief-competencies {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brief-competencies li {
+  background: var(--surface);
+  padding: var(--space-6);
+}
+
+.brief-competencies h3 {
+  margin: 0 0 var(--space-3);
+  color: var(--foreground);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  letter-spacing: -0.015em;
+}
+
+.brief-competencies p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.brief-skills {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.brief-skills div {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.brief-skills dt {
+  color: var(--foreground);
+  font-weight: 650;
+}
+
+.brief-skills dd {
+  margin: 0;
+}
+
+.brief-skills .tag-list {
+  margin: 0;
+}
+
+/* Project index with a preview frame anchored to the hovered row. */
+.brief-index {
+  position: relative;
+}
+
+.brief-index ul {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brief-index a {
+  display: grid;
+  gap: var(--space-2);
+  transition: opacity var(--motion-normal) ease;
+}
+
+.brief-index-title {
+  color: var(--foreground);
+  font-size: clamp(1.625rem, 3.2vw, 2.5rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.brief-index-title svg {
+  display: inline-block;
+  margin-left: 0.25rem;
+  color: var(--accent);
+  vertical-align: -0.08em;
+  transition: transform var(--motion-normal) var(--brief-ease);
+}
+
+.brief-index a:hover .brief-index-title svg,
+.brief-index a:focus-visible .brief-index-title svg {
+  transform: translate(0.15rem, -0.15rem);
+}
+
+.brief-index-category {
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.brief-index-purpose {
+  max-width: 40rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.brief-index-frame {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
+  .brief-index ul {
+    max-width: 58%;
+  }
+
+  .brief-index ul:has(a:hover, a:focus-visible) a:not(:hover, :focus-visible) {
+    opacity: 0.4;
+  }
+
+  .brief-index-frame {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    overflow: hidden;
+    width: 38%;
+    aspect-ratio: 16 / 10;
+    background: var(--surface);
+    clip-path: inset(100% 0 0 0);
+    pointer-events: none;
+    transition: clip-path 360ms var(--brief-ease), transform 420ms var(--brief-ease);
+  }
+
+  .brief-index-frame.is-open {
+    clip-path: inset(0);
+  }
+
+  .brief-index-frame img {
+    object-fit: cover;
+    object-position: top left;
+    opacity: 0;
+    transition: opacity var(--motion-normal) ease;
+  }
+
+  .brief-index-frame img.is-current {
+    opacity: 1;
+  }
+}
+
+.brief-job {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-5);
+}
+
+.brief-job strong {
+  color: var(--foreground);
+  font-size: 1.25rem;
+}
+
+.brief-job span {
+  color: var(--muted);
+}
+
+.brief-highlights {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.brief-highlights li::marker {
+  color: var(--accent);
+}
+
+.brief-cta {
+  margin-top: var(--section-compact);
+}
+
+.brief-cta > div {
+  position: relative;
+  overflow: hidden;
+  background: var(--accent);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  color: var(--accent-ink);
+}
+
+.brief-cta > div::after {
+  position: absolute;
+  right: -0.04em;
+  bottom: -0.2em;
+  color: transparent;
+  content: "Hello";
+  font-size: clamp(6rem, 18vw, 15rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  opacity: 0.3;
+  pointer-events: none;
+  -webkit-text-stroke: 1.5px var(--accent-ink);
+}
+
+.brief-cta h2,
+.brief-email,
+.brief-cta-links {
+  position: relative;
+  z-index: 1;
+}
+
+.brief-cta h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.brief-email {
+  display: inline-block;
+  margin-top: var(--space-4);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 0.06em no-repeat;
+  font-size: clamp(1.5rem, 5.5vw, 4rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.brief-cta-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.brief-cta-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--accent-ink);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.brief-cta-links a:hover {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .brief-name-line > span {
+    animation: brief-line-up 900ms var(--brief-ease) both;
+  }
+
+  .brief-title,
+  .brief-lede,
+  .brief-card {
+    animation: brief-fade 700ms var(--brief-ease) both;
+  }
+
+  .brief-title { animation-delay: 420ms; }
+  .brief-lede { animation-delay: 500ms; }
+  .brief-card { animation-delay: 580ms; }
+
+  .brief-email {
+    background-size: 0 0.06em;
+    transition: background-size 420ms var(--brief-ease);
+  }
+
+  .brief-email:hover,
+  .brief-email:focus-visible {
+    background-size: 100% 0.06em;
+  }
+
+  @supports (animation-timeline: view()) {
+    .brief-statement span {
+      color: color-mix(in oklab, var(--foreground) 40%, transparent);
+      animation: brief-ink linear both;
+      animation-range: cover 20% cover 45%;
+      animation-timeline: view();
+    }
+  }
+}
+
+@keyframes brief-line-up {
+  from { transform: translateY(105%); }
+}
+
+@keyframes brief-fade {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@keyframes brief-ink {
+  to { color: var(--foreground); }
+}
+
+@media (max-width: 900px) {
+  .brief-hero,
+  .brief-section {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-section > h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .brief-competencies,
+  .brief-skills div {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-skills div {
+    gap: var(--space-2);
   }
 }

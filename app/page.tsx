@@ -49,14 +49,9 @@ export default function Home() {
             <Link className="button button-secondary" href="/platform">
               AI Platform Architecture
             </Link>
-            <a
-              className="text-link"
-              href={profile.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub <ArrowUpRight aria-hidden="true" size={15} />
-            </a>
+            <Link className="text-link recruiter-link" href="/recruiters">
+              For recruiters <ArrowRight aria-hidden="true" size={15} />
+            </Link>
           </div>
           <p className="hero-meta">
             {profile.location} · Open to remote opportunities · MLOps · AI Platform · GenAI

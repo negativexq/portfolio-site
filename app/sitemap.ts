@@ -16,6 +16,7 @@ const routeLastModified = {
   learning: "2026-08-13",
   writing: "2026-09-09",
   resume: "2026-09-03",
+  recruiters: "2026-10-23",
   projectCaseStudies: "2026-09-09",
 } as const;
 
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/learning`, lastModified: routeLastModified.learning, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/writing`, lastModified: routeLastModified.writing, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/resume`, lastModified: routeLastModified.resume, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/recruiters`, lastModified: routeLastModified.recruiters, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
