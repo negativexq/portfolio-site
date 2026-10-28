@@ -19,7 +19,7 @@ export const agenticCapabilities = [
     items: [
       "Order and ticket lookup",
       "Refund and cancellation workflows",
-      "Support-ticket creation where supported",
+      "Support-ticket creation",
       "Human escalation for high-risk work",
     ],
   },
@@ -29,15 +29,15 @@ export const agenticCapabilities = [
       "Grounded FAQ and policy answers",
       "Hybrid dense + BM25 retrieval",
       "Evidence provenance and citation validation",
-      "Bounded abstention when evidence is insufficient",
+      "Says so when the evidence is not enough",
     ],
   },
   {
     title: "Stateful workflows",
     items: [
-      "Explicit confirmation boundaries",
+      "Explicit confirmation before sensitive actions",
       "Suspend, resume and workflow replacement",
-      "Browser/backend restart recovery where supported",
+      "Recovery after a browser or backend restart",
       "Revalidation and idempotent business effects",
     ],
   },
@@ -46,35 +46,35 @@ export const agenticCapabilities = [
 export const agenticWorkflow = [
   {
     label: "Pending refund",
-    detail: "The customer asks for a refund and the system creates a confirmation-bound pending action.",
+    detail: "The customer asks for a refund and the system records it as a pending action.",
   },
   {
-    label: "Confirmation boundary",
-    detail: "The action is eligible, but no sensitive mutation can run without explicit approval.",
+    label: "Waiting for approval",
+    detail: "The refund is allowed, but it does not run until the customer approves it.",
   },
   {
-    label: "Mixed confirmation + question",
-    detail: "“Yes, but first, what is your refund policy?” is an interruption, not approval.",
+    label: "A yes with a question",
+    detail: "“Yes, but first, what is your refund policy?” is treated as a question, not as approval.",
   },
   {
     label: "Workflow suspended",
-    detail: "The refund remains pending while the knowledge question takes the conversational turn.",
+    detail: "The refund stays pending while the agent answers the question.",
   },
   {
-    label: "Grounded RAG answer",
-    detail: "Hybrid retrieval and grounding validation produce a bounded policy answer.",
+    label: "Answer from the policy",
+    detail: "The agent answers from the refund policy, with citations to the source.",
   },
   {
-    label: "Still not executed",
-    detail: "The answer does not grant authority; the refund is still waiting for an explicit resume.",
+    label: "Still pending",
+    detail: "Answering the question does not count as approval, so the refund keeps waiting.",
   },
   {
-    label: "Resume → confirm → revalidate",
-    detail: "The customer explicitly resumes, confirms the same pending action, and live state is checked again.",
+    label: "Confirm and recheck",
+    detail: "The customer confirms the same refund, and the order is checked again before anything runs.",
   },
   {
-    label: "Idempotent execution",
-    detail: "Only the typed business path can commit the effect, with replay protection around the write.",
+    label: "Runs exactly once",
+    detail: "The refund is written through the typed business path, and a retry cannot apply it twice.",
   },
 ] as const;
 
@@ -105,19 +105,19 @@ export const agenticControlPlaneRows = [
 
 export const agenticEngineeringDecisions = [
   {
-    title: "Durable workflows that survive interruption and recovery",
+    title: "Workflows that survive interruptions",
     description:
-      "Consequential actions bind confirmation to a specific persisted action. Mixed messages suspend rather than confirm; workflows can resume or be superseded; supported browser/backend recovery restores state; revalidation and replay-safe idempotency protect the final write.",
+      "Each confirmation is tied to one saved action. A message that mixes a yes with a question pauses the workflow instead of approving it. Workflows can resume or be replaced, state survives a browser or backend restart, and the final write is rechecked and protected against replays.",
   },
   {
-    title: "Customer-scoped memory, never authority",
+    title: "Memory that remembers but cannot authorize",
     description:
-      "Bounded preferences and support context may persist with consent, TTL and scope controls. DLP/redaction or rejection applies where implemented. Authority, approval and security-override claims are rejected: memory enriches context but cannot authorize work.",
+      "Preferences and support context are kept with consent, an expiry time and per-customer scope, and sensitive data is redacted or rejected. Memory adds context to the conversation; a remembered claim of approval or admin rights is rejected.",
   },
   {
-    title: "Grounded RAG with bounded abstention",
+    title: "Answers grounded in the policy documents",
     description:
-      "Hybrid retrieval selects evidence, then provenance, citation/excerpt identity and grounding checks constrain the answer. Unsupported or insufficient evidence produces bounded uncertainty. Retrieved evidence informs answers; it never grants execution authority.",
+      "Hybrid dense and BM25 retrieval picks the evidence, and the answer is checked against its sources and citations. When the evidence is not enough, the agent says so instead of guessing. Evidence shapes the answer; it never grants permission to act.",
   },
 ] as const;
 
@@ -126,7 +126,7 @@ export const agenticScreenshots = [
     src: "/projects/agentic-customer-service-platform/refund-happy-path-current.png",
     alt: "Agentic Ops showcase showing a refund request with grounded evidence, a confirmation boundary, and execution still awaiting approval.",
     caption:
-      "Controlled refund: the evidence supports the proposal, but the confirmation boundary still holds execution until explicit approval.",
+      "A refund held at the confirmation step until the customer approves it.",
     source: "docs/demo/refund-happy-path.png",
     sourceUrl:
       "https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/demo/refund-happy-path.png",
@@ -135,7 +135,7 @@ export const agenticScreenshots = [
     src: "/projects/agentic-customer-service-platform/security-boundary.png",
     alt: "Agentic Ops security-boundary view showing an instruction-override attempt denied, authority not granted, and execution not attempted.",
     caption:
-      "Security boundary: the override attempt is denied before execution; the model cannot turn an approval claim into permission.",
+      "An attempt to override the rules is denied before anything runs.",
     source: "docs/demo/security-boundary.png",
     sourceUrl:
       "https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/demo/security-boundary.png",
@@ -144,7 +144,7 @@ export const agenticScreenshots = [
     src: "/projects/agentic-customer-service-platform/rag-grounding.png",
     alt: "Agentic Ops RAG grounding view showing retrieved policy evidence, citations, a passed grounding validation, and no unsupported claims.",
     caption:
-      "Grounded answer: retrieved evidence supports the response while the execution authority remains separate.",
+      "A policy answer backed by the retrieved documents.",
     source: "docs/demo/rag-grounded-faq-conversation.png",
     sourceUrl:
       "https://github.com/negativexq/agentic-customer-service-platform/blob/main/docs/demo/rag-grounded-faq-conversation.png",
@@ -156,42 +156,42 @@ export const agenticWalkthroughSlides = [
     src: "/projects/agentic-customer-service-platform/linkedin-carousel-01-conversation.png",
     alt: "Customer-service conversation showing a refund request, an order number clarification, a confirmation boundary, and a policy question that interrupts approval.",
     caption:
-      "Conversation path: “Yes, but first…” stays a policy question, so the refund remains pending instead of being silently confirmed.",
+      "“Yes, but first…” stays a question, so the refund stays pending.",
   },
   {
     src: "/projects/agentic-customer-service-platform/linkedin-carousel-02-workflow.png",
     alt: "Agent timeline showing refund-policy intent detection, RAG retrieval, a confirmation boundary, workflow pause, grounding validation, and persisted evidence.",
     caption:
-      "Workflow evidence: the runtime records the pause, retrieval, grounding validation, and evidence persistence as separate lifecycle events.",
+      "The timeline records the pause, the retrieval and the grounding check as separate events.",
   },
   {
     src: "/projects/agentic-customer-service-platform/linkedin-carousel-03-rag-decision.png",
     alt: "Operator view showing retrieved refund and cancellation policy evidence beside a no-action decision with interrupted confirmation.",
     caption:
-      "Decision boundary: retrieved policy evidence informs the answer while the deterministic decision remains no action and execution is not applicable.",
+      "The policy evidence informs the answer, and no action is taken.",
   },
 ] as const;
 
 export const agenticEvidence = [
   {
-    area: "D2c semantic / safety validation",
+    area: "Semantic safety",
     result: "540/540 measured semantic-safety attempts",
-    detail: "0 unsafe executable survivors; 0 unsafe executions.",
+    detail: "No unsafe proposal got through, and nothing unsafe ran.",
   },
   {
-    area: "D2d operational release gate",
+    area: "Operational release gate",
     result: "18/18 scenarios, 8/8 phases, 6/6 fault classes",
-    detail: "Operational correctness under the exercised reference deployment.",
+    detail: "The deployed system behaves correctly across its release scenarios and injected faults.",
   },
   {
     area: "Deterministic resilience",
     result: "28/28",
-    detail: "Separate resilience snapshot; not merged into the semantic or real-LLM result.",
+    detail: "Deterministic resilience checks, reported on their own.",
   },
   {
     area: "Real-LLM QA",
-    result: "100 samples, 82 passed, 18 bounded warning-partials",
-    detail: "Quality-outcome breakdown, not a safety rate; no safety invariant failed.",
+    result: "100 samples, 82 passed, 18 partial passes with warnings",
+    detail: "Answer quality with real models; no safety check failed.",
   },
 ] as const;
 
@@ -250,27 +250,6 @@ export const agenticRelatedWriting = [
     title: "RAG Can Provide Evidence. It Cannot Grant Authority.",
     description:
       "How retrieval, provenance, grounding checks, and bounded abstention stay separate from execution permission.",
-  },
-] as const;
-
-export const agenticRelatedWritingFoundations = [
-  {
-    href: "/writing/production-agent-guardrails",
-    title: "Designing Guardrails for Production AI Agents",
-    description:
-      "Typed proposals, deterministic policy, durable confirmation, revalidation, idempotency, and audit around tool-using agents.",
-  },
-  {
-    href: "/writing/agent-prompt-injection-guardrails",
-    title: "How I Keep Prompt Injection Away from Agent Tools",
-    description:
-      "Why user text, retrieved documents, memory, and model output stay outside the execution authority boundary.",
-  },
-  {
-    href: "/writing/rag-citation-integrity",
-    title: "Building Citation Integrity into a Production RAG Pipeline",
-    description:
-      "How source identity, bounded context, citation validation, and evaluation keep RAG evidence traceable.",
   },
 ] as const;
 

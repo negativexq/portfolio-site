@@ -10,7 +10,6 @@ import {
   agenticEngineeringDecisions,
   agenticEvidence,
   agenticRelatedWriting,
-  agenticRelatedWritingFoundations,
   agenticScreenshots,
   agenticStackGroups,
   agenticWalkthroughSlides,
@@ -28,13 +27,11 @@ const sections = [
   ["principle", "Principle"],
   ["capabilities", "What it does"],
   ["workflow", "Workflow story"],
-  ["control-plane", "Control plane"],
-  ["direct-tooling", "Direct tools"],
+  ["evidence", "Results"],
+  ["control-plane", "Who decides"],
   ["architecture", "Architecture"],
   ["decisions", "Reliability patterns"],
-  ["showcase", "Product proof"],
-  ["walkthrough", "Workflow walkthrough"],
-  ["evidence", "Evidence"],
+  ["showcase", "Console"],
   ["observability", "Observability"],
   ["stack", "Stack"],
   ["in-short", "In short"],
@@ -53,13 +50,12 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
         </Link>
         <div className="agentic-hero-meta">
           <p>{project.category}</p>
-          <span className="agentic-release-badge">Ready with warnings</span>
         </div>
         <h1>{project.title}</h1>
         <p className="project-detail-summary">
-          Production-oriented Agentic AI Control Plane for customer-support workflows. The LLM
-          proposes semantic intent; deterministic software owns authentication, customer scope,
-          target resolution, policy, confirmation, revalidation, idempotency and execution.
+          A customer-support agent that looks up orders, handles refunds and cancellations and
+          escalates to a human. The model reads the request and suggests the action; server code
+          checks the customer, applies the policy, asks for confirmation and runs it exactly once.
         </p>
         <blockquote className="agentic-hero-principle">
           The LLM proposes. Deterministic software decides what may execute.
@@ -68,7 +64,6 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Reference implementation, not unrestricted production certification</span>
         </div>
       </header>
 
@@ -77,23 +72,19 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
 
         <div className="detail-content">
           <section id="principle" className="detail-section agentic-principle-section">
-            <h2>Natural-language understanding and execution authority stay separate</h2>
+            <h2>What the model can and cannot do</h2>
             <p>
-              The model can interpret a request and propose a semantic action. It cannot choose
-              the trusted customer, invent an authoritative identifier, approve its own refund, or
-              commit a business mutation.
-            </p>
-            <p>
-              The model is intentionally treated as an untrusted semantic component, not an
-              authorization or transaction engine.
+              The model reads what the customer wants and proposes an action. It cannot pick which
+              customer it is serving, make up an order number, approve its own refund or change
+              account data. Those decisions live in code that can be tested.
             </p>
           </section>
 
           <section id="capabilities" className="detail-section">
-            <h2>What the platform does</h2>
+            <h2>Support work, end to end</h2>
             <p>
-              This is a customer-service agent platform with a bounded knowledge path and a
-              controlled business-action path.
+              The agent answers policy questions from a knowledge base and carries out account
+              actions through a separate, controlled path.
             </p>
             <div className="agentic-capability-grid">
               {agenticCapabilities.map((group) => (
@@ -108,10 +99,10 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
           </section>
 
           <section id="workflow" className="detail-section">
-            <h2>One workflow, interrupted safely</h2>
+            <h2>One refund, interrupted halfway</h2>
             <p>
-              A refund request makes the authority boundary concrete. A question that sounds like
-              approval still has to remain a question.
+              The agent asks the customer to confirm a refund, and the customer replies with a
+              question instead. This is how the platform handles it.
             </p>
             <ol className="agentic-workflow">
               {agenticWorkflow.map((step, index) => (
@@ -124,15 +115,35 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
                 </li>
               ))}
             </ol>
-            <p className="detail-muted">
-              This is why natural-language understanding and execution authority are separate:
-              conversational fluency can interrupt a workflow without silently satisfying its
-              approval boundary.
+          </section>
+
+          <section id="evidence" className="detail-section">
+            <h2>Results</h2>
+            <p>
+              Safety, operations, resilience and answer quality are tested separately, so each
+              result stands on its own.
+            </p>
+            <div className="agentic-evidence-table" role="region" aria-label="Selected evaluation evidence" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Test</th><th scope="col">Result</th><th scope="col">What it means</th></tr>
+                </thead>
+                <tbody>
+                  {agenticEvidence.map((item) => (
+                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="agentic-evidence-note">
+              Across the release test runs: no safety check failed, and there were no
+              unauthorized changes, skipped confirmations, duplicate actions, memory writes that
+              granted permission or customer-data leaks.
             </p>
           </section>
 
           <section id="control-plane" className="detail-section">
-            <h2>Model vs deterministic control plane</h2>
+            <h2>Who decides what</h2>
             <div className="agentic-comparison" role="region" aria-label="Model and deterministic control plane responsibilities" tabIndex={0}>
               <table>
                 <thead>
@@ -154,12 +165,9 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
                 </tbody>
               </table>
             </div>
-          </section>
-
-          <section id="direct-tooling" className="detail-section">
-            <h2>Why not direct tool calling?</h2>
             <p>
-              A tool argument or identifier is not trusted simply because the model emitted it.
+              In a typical agent, the order number the model writes goes straight into the tool.
+              Here the server checks it first:
             </p>
             <div className="agentic-flow-compare">
               <div>
@@ -175,18 +183,17 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
 
           {architecture ? (
             <section id="architecture" className="detail-section">
-              <h2>Architecture</h2>
+              <h2>From request to action</h2>
               <p>
-                Identity is resolved before the agent runs. A model proposal reaches a business
-                tool only after server-owned checks. Knowledge and memory provide context,
-                never execution authority.
+                The server knows who the customer is before the agent runs. Knowledge and memory
+                help the answer, but only the server&apos;s checks can let an action through.
               </p>
               <AgenticArchitecture architecture={architecture} />
             </section>
           ) : null}
 
           <section id="decisions" className="detail-section">
-            <h2>Three reliability patterns</h2>
+            <h2>Three reliability decisions</h2>
             <div className="agentic-decision-list">
               {agenticEngineeringDecisions.map((decision) => (
                 <article key={decision.title}>
@@ -198,10 +205,9 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
           </section>
 
           <section id="showcase" className="detail-section">
-            <h2>Product proof from the current console</h2>
+            <h2>The operator console</h2>
             <p>
-              These are curated repository captures of the bounded runtime and operator
-              projections, not live production telemetry or certification.
+              Screens from the running demo. Open any image for the full-size view.
             </p>
             <div className="agentic-screenshot-grid">
               {agenticScreenshots.map((screenshot) => (
@@ -220,19 +226,10 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
                     <a className="agentic-screenshot-link" href={screenshot.sourceUrl} target="_blank" rel="noreferrer">
                       Open full-size image on GitHub <ArrowUpRight aria-hidden="true" size={13} />
                     </a>
-                    <span>Source: {screenshot.source}</span>
                   </figcaption>
                 </figure>
               ))}
             </div>
-          </section>
-
-          <section id="walkthrough" className="detail-section">
-            <h2>Workflow walkthrough</h2>
-            <p>
-              Three focused captures make the interruption, durable workflow state, and bounded
-              RAG decision visible at a glance. Open any image for its full-size local view.
-            </p>
             <div className="agentic-walkthrough-grid">
               {agenticWalkthroughSlides.map((slide) => (
                 <figure key={slide.src}>
@@ -251,38 +248,11 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
             </div>
           </section>
 
-          <section id="evidence" className="detail-section">
-            <h2>Selected evaluation evidence</h2>
-            <p>
-              The denominators stay separate: semantic safety, operational release behavior,
-              deterministic resilience and real-LLM quality are different claims.
-            </p>
-            <div className="agentic-evidence-table" role="region" aria-label="Selected evaluation evidence" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr><th scope="col">Evidence slice</th><th scope="col">Current result</th><th scope="col">What it means</th></tr>
-                </thead>
-                <tbody>
-                  {agenticEvidence.map((item) => (
-                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="agentic-evidence-note">
-              Across the exercised release evidence: 0 safety invariant failures, 0 unauthorized
-              mutations, 0 confirmation bypasses, 0 duplicate effects, 0 authority-bearing memory
-              writes and 0 customer-data disclosures. The 82/18 split is a quality-outcome
-              breakdown, not a safety rate.
-            </p>
-          </section>
-
           <section id="observability" className="detail-section">
-            <h2>Operator observability</h2>
+            <h2>What the operator sees</h2>
             <p>
-              The operator console shows not just what the model said, but what the system
-              decided, what authority existed, whether execution was attempted, and which evidence
-              supported the outcome.
+              For every request, the console shows what the system decided, whether it was allowed,
+              whether it ran and which evidence supported it.
             </p>
             <div className="agentic-observability-flow" aria-label="Operator investigation sequence">
               <span>Decision</span><ArrowRight aria-hidden="true" size={16} />
@@ -290,9 +260,8 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
               <span>Execution</span>
             </div>
             <p className="detail-muted">
-              It exposes workflow lifecycle, validation, policy, RAG evidence, replay/idempotency
-              outcome and trace context through bounded projections without exposing hidden
-              reasoning, raw prompts or secrets.
+              Workflow steps, policy results, retrieved evidence and traces are all there. Raw
+              prompts, hidden reasoning and secrets are not.
             </p>
           </section>
 
@@ -303,12 +272,7 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
                 <div key={area}><span>{area}</span><strong>{stack}</strong></div>
               ))}
             </div>
-            <p className="detail-muted">
-              Ollama remains optional/local compatibility tooling; it is not the main production
-              provider story.
-            </p>
           </section>
-
 
           <ProjectInShort project={project} />
 
@@ -327,16 +291,8 @@ export function AgenticProjectCaseStudy({ project }: AgenticProjectCaseStudyProp
               Open the full repository <ArrowUpRight aria-hidden="true" size={15} />
             </a>
             <div className="agentic-related-writing">
-              <span>Related writing series</span>
-              {agenticRelatedWriting.map((article) => (
-                <Link key={article.href} href={article.href}>
-                  <strong>{article.title}</strong>
-                  <small>{article.description}</small>
-                  <ArrowRight aria-hidden="true" size={16} />
-                </Link>
-              ))}
-              <span className="agentic-related-writing-subheading">Earlier foundations</span>
-              {agenticRelatedWritingFoundations.map((article) => (
+              <span>Related writing</span>
+              {agenticRelatedWriting.slice(0, 4).map((article) => (
                 <Link key={article.href} href={article.href}>
                   <strong>{article.title}</strong>
                   <small>{article.description}</small>

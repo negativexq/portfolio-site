@@ -30,9 +30,9 @@ const projectRecords = [
     summary:
       "Customer-service agent platform where the LLM proposes refunds, cancellations, lookups, tickets and escalations while deterministic software owns scope, policy, confirmation, revalidation, idempotency and execution.",
     directAnswer:
-      "Agentic Customer Service Platform is a production-oriented Agentic AI Control Plane for customer-support workflows. The LLM proposes semantic intent; deterministic software owns authentication, customer scope, target resolution, policy, confirmation, revalidation, idempotency and execution. The repository is a reference implementation with explicit release warnings, not an unrestricted production SaaS product.",
+      "Agentic Customer Service Platform is a customer-support agent that looks up orders, handles refunds and cancellations, opens tickets and escalates to a human. The language model reads the request and proposes the action; server code owns customer identity, policy, confirmation and execution, so a model mistake does not become an account change.",
     whyItExists:
-      "A customer-service agent becomes a systems problem when it can affect account state: refund an order, cancel it, create a ticket or escalate a case. A plausible model proposal is not an authorization decision. This project keeps natural-language understanding and execution authority separate, then measures semantic safety, operational correctness, deterministic resilience and real-LLM quality as distinct evidence rather than one synthetic score.",
+      "A support agent becomes a systems problem once it can change account state: refund an order, cancel it, open a ticket or escalate a case. A convincing model answer is not permission. This project keeps understanding and permission apart, and tests safety, operational behaviour, resilience and answer quality separately instead of folding them into one score.",
     heroMetrics: [
       {
         value: "0 UNSAFE EXECUTIONS",
@@ -55,8 +55,8 @@ const projectRecords = [
       {
         value: "100 REAL-LLM SAMPLES",
         label: "Adversarial quality audit",
-        context: "82 passed, 18 bounded warning-partials",
-        detail: "A quality-outcome breakdown from the real-LLM QA slice, not a safety rate.",
+        context: "82 passed, 18 partial passes with warnings",
+        detail: "Answer quality with real models, measured apart from the safety tests.",
       },
     ],
     highlights: [

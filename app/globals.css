@@ -2430,6 +2430,10 @@ a {
   border-bottom: 1px solid var(--border-strong);
 }
 
+.agentic-comparison + p {
+  margin-top: var(--space-6);
+}
+
 .agentic-comparison table,
 .agentic-evidence-table table {
   width: 100%;
