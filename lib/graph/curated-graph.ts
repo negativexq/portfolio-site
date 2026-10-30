@@ -29,7 +29,7 @@ const featuredTechnologies: Record<string, readonly string[]> = {
   "agentic-customer-service-platform": ["LangGraph", "PostgreSQL", "Qdrant", "OpenTelemetry"],
   "knowledge-base-rag": ["PydanticAI", "Qdrant", "FastAPI", "OpenTelemetry", "Langfuse"],
   "modelops-control-plane": ["PostgreSQL", "FastAPI", "scikit-learn", "Docker Compose"],
-  "decision-sql": ["DuckDB", "SQLGlot", "FastAPI", "Pydantic"],
+  "decision-sql": ["PostgreSQL", "SQLGlot", "FastAPI", "Pydantic"],
   "real-time-commerce-platform": ["Kafka", "PostgreSQL", "Redis", "Prometheus"],
 };
 

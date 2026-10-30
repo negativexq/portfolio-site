@@ -81,18 +81,18 @@ export const platformNodes = [
     architectureDescription: "Governed access to structured data",
     decision: "The model proposes SQL. Deterministic software decides what may execute.",
     evidence: [
-      "160/180 = 88.89% governed task success",
-      "28/30 authority, unauthorized relation blocked before DB access",
-      "180-case benchmark, 12 synthetic domains",
+      "76/100 on a fixed 100 of BIRD Mini-Dev 2026 (PostgreSQL)",
+      "124/126 on its own field set; 0 wrong rows with declared joins",
+      "11 deterministic checks before any SQL runs",
     ],
-    stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "counterfactual evaluation"],
+    stack: ["Python", "FastAPI", "PostgreSQL", "sqlglot", "global SQL policy", "request-scoped authority", "server-owned grain safety", "EXPLAIN cost gate", "read-only execution", "audit log", "React"],
     links: [
       { label: "GitHub", href: "https://github.com/negativexq/decision-sql" },
     ],
     details: {
-      nextGate: "M54 classifies the remaining governance, ambiguity and SQL-semantic misses by causal mechanism before the next intervention.",
-      why: "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, explainable, and safe to run, and the 180-case benchmark backs that with execution-based evidence: governance is scored apart from execution, correctness is measured against counterfactual states, and when the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
-      flow: ["schema retrieval", "semantic resolution", "SQL proposal", "sqlglot AST validation", "global policy", "request-scoped authority", "EXPLAIN cost gate", "read-only execution", "result validation"],
+      nextGate: "Authentication through SSO, so the audit log's user is no longer self-declared, and question execution on engines beyond PostgreSQL.",
+      why: "SQL that runs can still be wrong: it can read a table the user should not see, count an order once per line item, or filter on a value the column does not hold. DecisionSQL lets the model make one typed decision and leaves parsing, policy, authority, grain, cost and the read-only run to code it cannot bypass, with every question in an audit log.",
+      flow: ["governed context", "one model decision", "sqlglot parse", "policy", "request authority", "grain safety", "stored values", "EXPLAIN cost gate", "read-only execution", "audit record"],
     },
   },
   {

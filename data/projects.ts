@@ -1094,78 +1094,79 @@ const projectRecords = [
   {
     id: "decision-sql",
     slug: "decision-sql",
+    cardImage: {
+      src: "/projects/decision-sql/ask-answer.png",
+      alt: "A refund-rate question answered as a bar chart by region, with the eleven checks it passed above it",
+      width: 2880,
+      height: 1800,
+    },
     order: 6,
     title: "DecisionSQL",
     seoTitle: "DecisionSQL: Governed Text-to-SQL With Execution Guardrails",
-    metaDescription: "Governed text-to-SQL: the model proposes SQL; policy, authority and cost gates decide what runs. 160/180 governed tasks on a synthetic benchmark.",
+    metaDescription: "Ask your database in plain language: the model proposes one decision, and parsing, policy, authority, grain and cost checks decide what runs. 76/100 on BIRD Mini-Dev 2026.",
     category: "Structured Data / Governed Text-to-SQL",
     status: "current",
     flagship: true,
     showCardProof: true,
     cardProof: {
-      label: "Execution authority",
-      value: "SERVER-OWNED",
-      scope: "Model proposes SQL, deterministic admission decides",
+      label: "BIRD Mini-Dev 2026",
+      value: "76 / 100",
+      scope: "PostgreSQL, a fixed random 100 of 500",
       qualifier:
-        "An ANSWER + SQL submission crosses parse, global policy, request-scoped relation authority, grain safety, EXPLAIN and a cost gate, and only an accepted immutable QueryPlan reaches the restricted read-only executor. There is no raw unsafe fallback, and the executor never runs SQL the safety service did not admit.",
+        "Execution accuracy with gpt-6-luna on a fixed sample, 93 of the 100 questions challenging. The public leaderboard lists the same model at 51.8 on the full 500.",
     },
     summary:
-      "Governed one-shot Text-to-SQL for enterprise analytics: the model emits one typed decision, deterministic software owns SQL admission and read-only execution, and correctness is measured by execution against counterfactual database states.",
+      "A governed Text-to-SQL workspace: ask a database in plain language, get a table and a chart with the SQL that ran, and build reports, while deterministic checks decide whether any SQL runs.",
     directAnswer:
-      "DecisionSQL is a governed one-shot Text-to-SQL system and execution-based benchmark where the model proposes a single typed decision — an answer with read-only SQL, a clarification, or an authority/policy block — and deterministic software owns parsing, policy, request-scoped relation authority, grain safety, cost admission and restricted execution before any SQL reaches PostgreSQL.",
+      "DecisionSQL is a governed Text-to-SQL workspace. You pick a connected database, ask a question in plain language and get the answer as a table and a chart, with the SQL that ran one click away. The model makes one typed decision per question; parsing, policy, request authority, grain safety, cost limits and read-only execution are deterministic code it cannot bypass, and every question lands in an audit log.",
     whyItExists:
-      "A natural-language-to-SQL demo answers syntax. DecisionSQL is about whether a proposed query is authorized, bounded, semantically correct and safe to run: it keeps model proposal and execution authority separate, evaluates governance apart from query execution because some cases should refuse SQL entirely, and scores correctness by execution against counterfactual states rather than string similarity.",
+      "SQL that runs can still be wrong: it can read a table the user should not see, count an order once per line item, or filter on a value the column does not hold. DecisionSQL keeps the model's proposal apart from the decision to run it, explains every answer it gives, and gives a reason for every question it does not answer.",
     heroMetrics: [
       {
-        value: "160 / 180",
-        label: "Governed task success",
-        context: "88.89%, 180-case governed benchmark",
-        detail: "One-shot governed decisions across 12 synthetic domains.",
+        value: "76 / 100",
+        label: "BIRD Mini-Dev 2026",
+        context: "PostgreSQL, fixed random 100 of 500",
+        detail: "Execution accuracy with gpt-6-luna; 93 of the 100 questions are challenging. The public leaderboard lists the same model at 51.8 on the full 500.",
       },
       {
-        value: "28 / 30",
-        label: "Authority",
-        context: "93.33%, model governance",
-        detail: "Two cases where the model wrongly chose ANSWER on an authority-blocked request; request-scoped relation authority blocked the unauthorized relation before any database interaction.",
+        value: "124 / 126",
+        label: "Own field set",
+        context: "31 questions, 3 runs each",
+        detail: "A wholesale schema with no foreign keys and no column descriptions, checked for answers, clarifications and refusals.",
       },
       {
-        value: "108 / 122",
-        label: "Answerable runtime TSA",
-        context: "88.52%, BASE + counterfactual",
-        detail: "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state.",
+        value: "0 wrong rows",
+        label: "Answers with declared joins",
+        context: "67/69 matched the expected rows",
+        detail: "The other 2 asked for clarification instead of answering.",
       },
       {
-        value: "12 / 12",
-        label: "Policy blocks",
-        context: "100%, ambiguity 12/16 = 75.00%",
-        detail: "Policy-blocked cases were refused exactly; ambiguity recognition is the weaker governance axis. Refusing SQL is a measured outcome, not a failure.",
+        value: "11 checks",
+        label: "Before any SQL runs",
+        context: "shown live above every answer",
+        detail: "Context, model, decision, parse, policy, access, grain, values, plan, cost and run.",
       },
     ],
     highlights: [
       {
-        title: "The model proposes, deterministic software admits",
+        title: "The model proposes, code decides what runs",
         description:
-          "Problem: a model can emit plausible SQL that is unauthorized, unbounded or semantically wrong. Solution: an ANSWER + SQL submission crosses sqlglot parsing, global SQL policy, request-scoped relation authority, grain-safety validation, PostgreSQL EXPLAIN and a cost gate, and only an accepted immutable QueryPlan reaches a restricted read-only executor. There is no raw unsafe fallback, and the executor never runs SQL the safety service did not admit.",
+          "The model makes one typed decision: an answer with read-only SQL, a clarification, or a refusal on authority or policy. An answer is only a proposal; parsing, policy, request authority, grain safety, an EXPLAIN cost gate and a read-only run on a restricted role are deterministic code.",
       },
       {
-        title: "Governance is scored apart from execution",
+        title: "Answers you can check",
         description:
-          "Problem: scoring only answered queries hides whether a system knows when not to answer. Solution: the benchmark includes authority, ambiguity and policy cases where producing SQL is the wrong behaviour, so governance is scored separately — authority 28/30, policy 12/12, ambiguity 12/16. When the model wrongly answered an authority-blocked case, request-scoped relation authority blocked the unauthorized relation before any database interaction.",
+          "Every answer shows the SQL that ran, one line on what it counts and which rows it keeps, and the eleven checks it passed. A condition can be changed and rerun through every check without the model.",
       },
       {
-        title: "Correctness is execution-based, not string match",
+        title: "A reason for every non-answer",
         description:
-          "Problem: on one database state wrong SQL can accidentally return the right rows. Solution: two independent reference witnesses, a typed ResultContract and counterfactual fixtures that change distributions so wrong semantics diverge. healthcare_10 passes on the BASE state and fails a counterfactual, which is why one database state is not enough to call a query correct.",
+          "A clarification comes with the readings to choose from, and a refusal names the missing join. A question that can be read two ways runs each reading and offers the other.",
       },
       {
-        title: "Server-owned grain safety",
+        title: "Reports on the same gates",
         description:
-          "Problem: joining a parent to many children can silently triple a SUM. Solution: fanout is a server-owned semantic contract with a deliberately narrow deterministic normalizer for the supported additive-parent, declared-1:N shape that stays fail-closed outside it. Normalized SQL still re-passes parse, policy, EXPLAIN and cost, with no raw unsafe fallback.",
-      },
-      {
-        title: "One-shot by design",
-        description:
-          "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or pass@K, so model decision errors and server enforcement stay observable instead of being smoothed over by a repair loop.",
+          "Any answer becomes a chart on a shared report with filters, scheduled refresh and snapshots, and every chart reruns its SQL through the same checks.",
       },
     ],
     technologies: [
@@ -1176,6 +1177,8 @@ const projectRecords = [
       "Alembic",
       "sqlglot",
       "Pydantic",
+      "React",
+      "TypeScript",
       "pytest",
       "Ruff",
       "Mypy",
@@ -1188,62 +1191,34 @@ const projectRecords = [
       "Deterministic Admission Boundary",
       "SQL Parsing & Policy",
       "Request-Scoped Authority",
-      "Accepted QueryPlan",
       "Restricted Read-Only Execution",
       "Server-Owned Grain Safety",
-      "Grain-Safe Normalization",
-      "Execution-Based Evaluation",
-      "Counterfactual Fixtures",
       "Cost Admission Gate",
-      "One-Shot Evaluation",
-      "Authority Enforcement",
-      "Policy Enforcement",
       "Ambiguity Handling",
-      "Reproducible Benchmark",
+      "Audit Logging",
+      "Execution-Based Evaluation",
       "Observability",
     ],
     proofPoints: [
       {
-        label: "Governed task success",
-        value: "160/180 = 88.89% governed task success",
-        scope: "180-case governed benchmark, 12 synthetic domains",
+        label: "BIRD Mini-Dev 2026",
+        value: "76/100 execution accuracy",
+        scope: "PostgreSQL, a fixed random 100 of the 500 questions",
         qualifier:
-          "One-shot governed decisions across four behavior classes on one synthetic benchmark.",
+          "Measured on 2026-10-30 with gpt-6-luna; 93 of the 100 are challenging, with a median of 20 s per question. The public leaderboard lists the same model at 51.8 on the full 500.",
       },
       {
-        label: "Answerable runtime correctness",
-        value: "108/122 = 88.52% answerable runtime TSA",
-        scope: "BASE + counterfactual execution",
+        label: "Own field set",
+        value: "124/126 behaved as expected",
+        scope: "31 questions, 3 runs each, no foreign keys or column descriptions",
         qualifier:
-          "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual, which is why a single state is not enough.",
+          "All 30 join questions were refused before joins were declared. With joins declared, 67/69 answers matched the expected rows and none returned wrong rows; 12/12 ambiguous questions asked for clarification, 6/6 writes were refused, and 6/6 questions about missing data were not answered.",
       },
       {
-        label: "Authority containment",
-        value: "28/30 authority, unauthorized relation blocked before DB access",
-        scope: "model governance + runtime enforcement",
-        qualifier:
-          "Model authority decisioning is 28/30; telecom_15 is the known case where the model wrongly answered. Request-scoped relation authority returned an authorization rejection with zero database connection, EXPLAIN or execution.",
-      },
-      {
-        label: "Governance split",
-        value: "policy 12/12 = 100%, ambiguity 12/16 = 75.00%",
-        scope: "governance blocks scored separately from execution",
-        qualifier:
-          "Policy blocking is exact; ambiguity recognition is the weaker axis. Refusing to write SQL is a measured, expected outcome on the governance cases, not a failure.",
-      },
-      {
-        label: "Execution boundary",
-        value: "QueryPlan-gated execution, no raw unsafe fallback",
-        scope: "request-scoped authority + accepted QueryPlan",
-        qualifier:
-          "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
-      },
-      {
-        label: "Server-owned grain safety",
-        value: "narrow deterministic normalizer, fail-closed",
-        scope: "PARENT_MEASURE_FANOUT, supported shape only",
-        qualifier:
-          "Server-owned metadata detects the supported additive-parent, declared-1:N fanout shape and preaggregates on the child side. Outside it the normalizer stays fail-closed.",
+        label: "BIRD Mini-Dev, stratified",
+        value: "59/100 execution accuracy",
+        scope: "30 simple, 50 moderate, 20 challenging",
+        qualifier: "59/82 without the 18 questions whose gold SQL is disputed.",
       },
     ],
     roadmap: emptyRoadmap,

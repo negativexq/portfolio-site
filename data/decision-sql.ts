@@ -1,72 +1,133 @@
 export const decisionSqlProjectUrl = "https://omerfkoc.dev/projects/decision-sql";
 
+const repo = "https://github.com/negativexq/decision-sql";
+
 export const decisionSqlMeta = {
   keywords: [
     "governed text-to-SQL",
+    "natural-language analytics",
     "deterministic SQL safety",
-    "execution-based evaluation",
     "read-only execution",
     "grain safety",
-    "counterfactual fixtures",
-    "one-shot benchmark",
+    "BIRD Mini-Dev",
+    "audit log",
   ],
 } as const;
 
 export const decisionSqlCapabilities = [
   {
-    title: "Governed decision",
+    title: "Ask and check",
     items: [
-      "One typed decision per request: answer, clarification or block",
-      "Model-visible governed context, evaluator-only truth kept separate",
-      "Authority and policy blocks that never reach the SQL runtime",
+      "Ask in plain language, read the answer as a table or a chart",
+      "The SQL that ran and a one-line reading of what it counts",
+      "Follow-up questions in the same conversation",
+      "Change a condition and rerun it without the model",
     ],
   },
   {
-    title: "Deterministic SQL admission",
+    title: "Reports",
     items: [
-      "sqlglot parse, SQL / object / function policy",
-      "Server-owned grain safety with a narrow deterministic normalizer",
-      "PostgreSQL EXPLAIN, a frozen cost gate and an accepted QueryPlan",
+      "Any answer becomes a chart on a shared report",
+      "Filters, scheduled refresh and snapshots",
+      "Every chart reruns through the same checks",
+      "CSV download, print and PDF",
     ],
   },
   {
-    title: "Execution-based evaluation",
+    title: "Govern",
     items: [
-      "Two reference witnesses and a typed ResultContract",
-      "Counterfactual fixtures that make wrong semantics diverge",
-      "Restricted read-only execution under reader role and timeout",
+      "Connect PostgreSQL, MySQL, SQL Server, Trino, Snowflake or BigQuery after a preflight",
+      "Declare joins when a database has no foreign keys",
+      "An audit log of every question and what the checks decided",
+      "Questions run on PostgreSQL through a read-only role",
     ],
+  },
+] as const;
+
+export const decisionSqlScreenshots = [
+  {
+    src: "/projects/decision-sql/ask-answer.png",
+    alt: "A refund-rate question answered as a bar chart by region, with a one-line reading of the query and eleven passed checks above it.",
+    caption: "An answer with its chart, a plain reading of the query and the eleven checks it passed.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/ask-answer.png`,
+  },
+  {
+    src: "/projects/decision-sql/ambiguity.png",
+    alt: "A question about the best products, read two ways; the answer says which reading it used and offers the other.",
+    caption: "A question that can be read two ways runs both readings and lets you switch.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/ambiguity.png`,
+  },
+  {
+    src: "/projects/decision-sql/conversation.png",
+    alt: "A follow-up question in the same conversation, being added to the Sales overview report as a pie chart.",
+    caption: "A follow-up in the same conversation, added to a report as a chart.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/conversation.png`,
+  },
+  {
+    src: "/projects/decision-sql/query-that-ran.png",
+    alt: "The executed SQL shown above an answer.",
+    caption: "The SQL that ran, one click above every answer.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/query-that-ran.png`,
+  },
+] as const;
+
+export const decisionSqlWorkspaceScreenshots = [
+  {
+    src: "/projects/decision-sql/report.png",
+    height: 2000,
+    alt: "The Sales overview report with a revenue number, a text card, a monthly line chart, an order-status pie and top products.",
+    caption: "A report built from answered questions, with filters and a daily refresh.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/report.png`,
+  },
+  {
+    src: "/projects/decision-sql/report-edit.png",
+    height: 2000,
+    alt: "Editing a stacked column chart: chart type, series, number format and the run it came from.",
+    caption: "Edit mode: chart type, series, number format and the run each chart came from.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/report-edit.png`,
+  },
+  {
+    src: "/projects/decision-sql/connection-preflight.png",
+    alt: "A failed connection preflight that marks the field to fix.",
+    caption: "A connection is saved only after its preflight passes.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/connection-preflight.png`,
+  },
+  {
+    src: "/projects/decision-sql/audit-log.png",
+    alt: "The audit log listing every question with its user, outcome, rows and time.",
+    caption: "Every question, who asked it, and what the checks decided.",
+    sourceUrl: `${repo}/blob/main/docs/screenshots/audit-log.png`,
   },
 ] as const;
 
 export const decisionSqlRuntimeFlow = [
   {
-    label: "One typed decision",
-    detail: "The model receives the question plus a governed context and emits exactly one decision. Runtime routing follows the parsed submission, not evaluator truth, so only ANSWER + SQL enters the SQL runtime.",
+    label: "Governed context",
+    detail: "The model sees only the queryable tables and columns, their relationships and the SQL functions policy allows. Large schemas are narrowed by retrieval, and the tables left out are listed by name.",
   },
   {
-    label: "Parse and global policy",
-    detail: "sqlglot parses the selected SQL and the global policy enforces one read-only statement, governed object access, function restrictions and complexity limits before anything else runs.",
+    label: "One model decision",
+    detail: "One request with a strict schema returns ANSWER with read-only SQL, NEEDS_CLARIFICATION, BLOCKED_AUTHORITY or BLOCKED_POLICY. Only an answer goes further.",
   },
   {
-    label: "Request-scoped relation authority",
-    detail: "Global policy answers whether an object is queryable by the service; request-scoped authority answers whether this request may use it. An immutable relation-level ExecutionAuthority, derived from the same governed SchemaContext, rejects an unauthorized relation before any database connection, EXPLAIN or execution.",
+    label: "Parse and policy",
+    detail: "One SELECT statement, allowlisted functions, and joins only along foreign keys or joins an administrator declared.",
   },
   {
-    label: "Grain safety",
-    detail: "A GrainSafetyValidator detects parent-measure fanout, where a join to several child rows can silently multiply a SUM. Server-owned metadata, not the model, owns that contract.",
+    label: "Authority",
+    detail: "Every table the query touches must be in this request's context.",
   },
   {
-    label: "Narrow normalization, re-validated",
-    detail: "For the supported additive-parent, declared 1:N shape a deterministic normalizer preaggregates on the child side. Normalized SQL is never trusted automatically; it re-passes parse, policy and post-grain validation with no raw unsafe fallback.",
+    label: "Grain and stored values",
+    detail: "A sum that would count a parent once per child row is stopped. A filter on a value the column does not hold is respelled to the stored value or reported.",
   },
   {
-    label: "Cost admission",
-    detail: "PostgreSQL EXPLAIN runs on a deterministically analyzed state, and a frozen cost gate rejects SQL above the benchmark's max rows or max cost before execution.",
+    label: "Plan and cost",
+    detail: "EXPLAIN in a read-only transaction; a plan clearly out of scale is refused before it runs.",
   },
   {
-    label: "Accepted QueryPlan, then execution",
-    detail: "Execution requires an accepted immutable QueryPlan issued by the SQL safety service. A restricted reader runs it under a read-only transaction, reader role, statement timeout and bounded result rows.",
+    label: "Read-only run and audit",
+    detail: "Only the accepted plan runs, on a read-only role with a statement timeout and a row cap. The audit log keeps the question, the SQL and what each check decided.",
   },
 ] as const;
 
@@ -74,136 +135,87 @@ export const decisionSqlBoundaryRows = [
   {
     side: "The model owns",
     items: [
-      "The first-pass typed decision",
-      "The proposed SQL when it chooses ANSWER",
-      "Nothing about authorization or execution",
-      "No physical schema truth, relationship authority or grain semantics",
-      "No right to run the query it wrote",
+      "Understanding the question",
+      "One typed decision",
+      "The proposed SQL when it answers",
+      "A few gated probes to see how values are stored",
     ],
   },
   {
-    side: "Deterministic software owns",
+    side: "Deterministic code owns",
     items: [
-      "Typed decision validation",
-      "SQL parsing, global policy and request-scoped relation authority",
-      "Narrow grain-safe normalization",
-      "PostgreSQL EXPLAIN, cost admission and QueryPlan creation",
-      "Restricted read-only execution and result comparison",
+      "What the model is allowed to see",
+      "Parsing, policy and request authority",
+      "Grain safety and stored-value checks",
+      "Cost limits and the read-only run",
+      "The audit record",
     ],
   },
 ] as const;
 
 export const decisionSqlEngineeringDecisions = [
   {
-    title: "Submission-driven runtime, truth-driven evaluation",
+    title: "A non-answer always has a reason",
     description:
-      "Runtime routing is decided by the parsed model submission, not by evaluator truth. An ANSWER + SQL receives the full parse, policy, semantic, cost, QueryPlan and execution treatment even when the truth is AMBIGUOUS, and the harness records the runtime outcome separately instead of crashing on a wrong governed decision.",
+      "A clarification comes with the readings to choose from, and a refusal names the missing join. When a question can be read two ways, each reading runs: the same result is answered, and different results come with the other readings one click away.",
   },
   {
-    title: "Server-owned grain safety",
+    title: "A fixed budget of model calls",
     description:
-      "Joining a parent to several child rows can triple a parent measure. The model is not trusted to own that contract. Server-owned metadata describes entity and grain keys, relationship cardinality and aggregation behavior, and the normalizer stays fail-closed outside its frozen additive-parent, declared 1:N shape.",
+      "One decision per question. A rejection the model can fix, such as a parse error, an unknown column or a fan-out, gets one repair round, and an authority or write rejection is final. With the default settings a question makes at most seven model calls, and most make one.",
   },
   {
-    title: "Execution-based correctness, not string match",
+    title: "Change an answer without the model",
     description:
-      "Candidate SQL is not judged by exact text or AST equality. Two independent reference witnesses, a typed ResultContract and counterfactual fixtures that change distributions decide correctness, so SQL that accidentally returns the right rows on one state fails when the semantics actually diverge.",
+      "Edit a condition such as a date range or a status, or drop it, and the query runs again through every check with no model call. A report chart keeps the SQL that passed and reruns it through the same gates whenever the report refreshes.",
   },
   {
-    title: "One-shot, with provenance discipline",
+    title: "Joins are declared, not guessed",
     description:
-      "One benchmark case yields one semantic attempt with no retry, repair, judge, selector or pass@K, which keeps model decision errors and server enforcement observable instead of letting a repair loop smooth them over. Responses are admitted under exact provider-request fingerprinting and deterministic replay.",
-  },
-] as const;
-
-export const decisionSqlGovernedModel = [
-  {
-    behavior: "ANSWERABLE",
-    cases: "122",
-    expected: "ANSWER + one read-only SELECT",
-    result: "108 / 122 runtime TSA correct",
-  },
-  {
-    behavior: "AUTHORITY_BLOCKED",
-    cases: "30",
-    expected: "BLOCKED_AUTHORITY",
-    result: "28 / 30, runtime blocks the unauthorized relation",
-  },
-  {
-    behavior: "AMBIGUOUS",
-    cases: "16",
-    expected: "NEEDS_CLARIFICATION",
-    result: "12 / 16",
-  },
-  {
-    behavior: "POLICY_BLOCKED",
-    cases: "12",
-    expected: "BLOCKED_POLICY",
-    result: "12 / 12",
+      "When a database has no foreign keys, an administrator declares the joins questions may use, and each one is checked against the data before it is saved. Until then, a question that needs the join is refused with the join it is missing.",
   },
 ] as const;
 
 export const decisionSqlEvidence = [
   {
-    area: "Governed task success",
-    result: "160 / 180 = 88.89%",
+    area: "BIRD Mini-Dev 2026, PostgreSQL",
+    result: "76 / 100 execution accuracy",
     detail:
-      "One-shot governed decisions across four behavior classes on one 180-case benchmark spanning 12 synthetic domains. 20 governed misses overall.",
+      "A fixed random 100 of the 500 questions, 93 of them challenging, with gpt-6-luna. Median 20 s per question. The public leaderboard lists gpt-6-luna at 51.8 on the full 500.",
   },
   {
-    area: "Answerable runtime TSA",
-    result: "108 / 122 = 88.52%",
+    area: "Own field set",
+    result: "124 / 126 behaved as expected",
     detail:
-      "Answerable queries that survived the real runtime and satisfied the result contract on BASE and every required counterfactual state. healthcare_10 passes BASE but fails a counterfactual.",
+      "31 questions, 3 runs each, on a wholesale schema with no foreign keys and no column descriptions. All 30 join questions were refused before joins were declared; afterwards 67/69 answers matched and none returned wrong rows.",
   },
   {
-    area: "Authority",
-    result: "28 / 30 = 93.33%",
+    area: "Clarify, refuse, stay quiet",
+    result: "12/12, 6/6, 6/6",
     detail:
-      "Model authority decisioning. telecom_15 is the known case where the model wrongly chose ANSWER; request-scoped relation authority rejected the unauthorized relation with zero database connection, EXPLAIN or execution.",
+      "Ambiguous questions asked for clarification, write requests were refused, and questions about data the database does not hold were not answered.",
   },
   {
-    area: "Governance blocks",
-    result: "policy 12 / 12, ambiguity 12 / 16",
+    area: "BIRD Mini-Dev, stratified 100",
+    result: "59 / 100 execution accuracy",
     detail:
-      "Policy blocking is exact at 100%; ambiguity recognition is the weaker axis at 75.00%. Refusing SQL is a measured, expected outcome on these cases.",
-  },
-  {
-    area: "Execution boundary",
-    result: "QueryPlan-gated, no raw unsafe fallback",
-    detail:
-      "Accepted execution requires an immutable QueryPlan issued by the SQL safety service; raw SQL or copied plan objects cannot bypass planning, and the reader runs under a read-only transaction, reader role, statement timeout and bounded rows.",
+      "30 simple, 50 moderate, 20 challenging. 59/82 without the 18 questions whose gold SQL is disputed.",
   },
 ] as const;
 
 export const decisionSqlStackGroups = [
-  ["Runtime", "Python 3.12 + FastAPI + PostgreSQL"],
-  ["SQL safety", "sqlglot parse + global policy + request authority + grain safety + cost gate"],
-  ["Execution", "Accepted QueryPlan + restricted read-only reader"],
-  ["Data", "SQLAlchemy + Alembic + synthetic enterprise packs"],
-  ["Evaluation", "Counterfactual fixtures + reference witnesses + result contracts"],
-  ["Quality", "pytest + Ruff + mypy + OpenTelemetry"],
+  ["API", "Python 3.12 + FastAPI + Pydantic"],
+  ["SQL safety", "sqlglot parse + policy + authority + grain + EXPLAIN cost gate"],
+  ["Data", "PostgreSQL 16 + SQLAlchemy + Alembic"],
+  ["Connectors", "MySQL, SQL Server, Trino, Snowflake, BigQuery (optional drivers)"],
+  ["Frontend", "React + TypeScript + Vite"],
+  ["Observability", "OpenTelemetry + a run trace for every question"],
+  ["Runtime", "Docker Compose"],
 ] as const;
 
 export const decisionSqlDeepDiveLinks = [
-  {
-    label: "Repository README and walkthrough",
-    href: "https://github.com/negativexq/decision-sql/blob/main/README.md",
-  },
-  {
-    label: "Benchmark specification",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/SPEC.md",
-  },
-  {
-    label: "Current benchmark evaluation",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m532_post_m53_repaired_expansion_evaluation.md",
-  },
-  {
-    label: "Runtime authority safety report",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/reports/m52s_runtime_authority_execution_safety.md",
-  },
-  {
-    label: "Machine-readable evaluation manifest",
-    href: "https://github.com/negativexq/decision-sql/blob/main/benchmark/manifests/m532_post_m53_repaired_expansion_evaluation_manifest.json",
-  },
+  { label: "README", href: `${repo}/blob/main/README.md` },
+  { label: "Architecture", href: `${repo}/blob/main/docs/architecture.md` },
+  { label: "Security posture", href: `${repo}/blob/main/docs/security.md` },
+  { label: "Earlier research benchmarks", href: `${repo}/tree/archive/research/benchmark` },
 ] as const;

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/content/types";
@@ -8,9 +9,10 @@ import {
   decisionSqlDeepDiveLinks,
   decisionSqlEngineeringDecisions,
   decisionSqlEvidence,
-  decisionSqlGovernedModel,
   decisionSqlRuntimeFlow,
+  decisionSqlScreenshots,
   decisionSqlStackGroups,
+  decisionSqlWorkspaceScreenshots,
 } from "@/data/decision-sql";
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { MetricGrid } from "./metric-grid";
@@ -18,26 +20,55 @@ import { SectionIndex } from "./section-index";
 import { ProjectInShort, ProjectRelated } from "./project-related";
 
 // Reuses the rag-* visual system: DecisionSQL is the structured-data sibling of
-// Knowledge Base RAG — the same governed evidence, benchmark and boundary layout.
+// Knowledge Base RAG — the same evidence, boundary and screenshot layout.
 type DecisionSqlCaseStudyProps = {
   project: Project;
 };
 
+type Screenshot = { src: string; alt: string; caption: string; sourceUrl: string; height?: number };
+
 const sections = [
   ["principle", "Principle"],
+  ["showcase", "The workspace"],
   ["capabilities", "What it does"],
-  ["runtime", "Admission path"],
-  ["boundaries", "Trust boundaries"],
+  ["runtime", "Checks"],
+  ["evidence", "Results"],
+  ["boundaries", "Who decides"],
   ["architecture", "Architecture"],
-  ["decisions", "Reliability patterns"],
   ["grain", "Grain safety"],
-  ["governed-model", "Governed task model"],
-  ["evidence", "Evidence"],
+  ["decisions", "Design decisions"],
+  ["reports", "Reports and audit"],
   ["stack", "Stack"],
   ["in-short", "In short"],
   ["related", "Related"],
   ["deep-dive", "Deep dive"],
 ] as const;
+
+function ScreenshotGrid({ screenshots }: { screenshots: readonly Screenshot[] }) {
+  return (
+    <div className="rag-screenshot-grid">
+      {screenshots.map((screenshot) => (
+        <figure key={screenshot.src}>
+          <a
+            className="rag-screenshot-frame"
+            href={screenshot.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${screenshot.caption} Open full-size image on GitHub`}
+          >
+            <Image src={screenshot.src} alt={screenshot.alt} width={2880} height={screenshot.height ?? 1800} sizes="(max-width: 820px) 100vw, 50vw" />
+          </a>
+          <figcaption>
+            <strong>{screenshot.caption}</strong>
+            <a className="rag-screenshot-link" href={screenshot.sourceUrl} target="_blank" rel="noreferrer">
+              Open full-size image on GitHub <ArrowUpRight aria-hidden="true" size={13} />
+            </a>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
 
 export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
   const architecture = getProjectArchitecture(project.id);
@@ -50,22 +81,20 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
         </Link>
         <div className="rag-hero-meta">
           <p>{project.category}</p>
-          <span className="rag-release-badge">Governed benchmark system</span>
         </div>
         <h1>{project.title}</h1>
         <p className="project-detail-summary">
-          A governed one-shot Text-to-SQL system and execution-based benchmark where the model
-          proposes a single typed decision and deterministic software owns SQL admission and
-          read-only execution.
+          Ask questions of your database in plain language and get the answer as a table and a
+          chart, with the SQL that ran one click away. The model proposes one decision; code
+          checks it and decides whether any SQL runs.
         </p>
         <blockquote className="rag-hero-principle">
-          The model proposes. Deterministic software decides what may execute.
+          The model proposes. Deterministic code decides what runs.
         </blockquote>
         <div className="rag-hero-actions">
           <a className="button button-primary" href={project.githubUrl} target="_blank" rel="noreferrer">
             View repository <ArrowUpRight aria-hidden="true" size={15} />
           </a>
-          <span>Frozen synthetic governed benchmark, with documented limits</span>
         </div>
         {project.heroMetrics && project.heroMetrics.length > 0 ? (
           <MetricGrid metrics={project.heroMetrics} />
@@ -77,27 +106,26 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
 
         <div className="detail-content">
           <section id="principle" className="detail-section rag-principle-section">
-            <h2>A demo answers syntax; this answers whether the query may run</h2>
+            <h2>SQL that runs can still be wrong</h2>
             <p>
-              A model can produce SQL that is syntactically fine and still unauthorized, unbounded
-              or semantically wrong. DecisionSQL keeps the model’s proposal and the authority to
-              execute separate, and evaluates governance apart from query execution because some
-              requests should refuse SQL entirely.
-            </p>
-            <p>
-              Correctness is decided by running the query against changing database states, not by
-              comparing it to a reference string. The benchmark measures first-pass behavior under
-              a one-shot contract, so model decisions and server enforcement both stay visible.
+              A model can write SQL that runs and still reads a table the user should not see,
+              counts an order once per line item, or filters on a value the column does not hold.
+              DecisionSQL lets the model make one typed decision and leaves parsing, policy,
+              authority, grain, cost and the read-only run to code the model cannot bypass.
             </p>
           </section>
 
-          <section id="capabilities" className="detail-section">
-            <h2>What the system does</h2>
+          <section id="showcase" className="detail-section">
+            <h2>Answers you can check</h2>
             <p>
-              DecisionSQL covers the path from a governed request to a bounded result: one typed
-              decision, a deterministic admission chain, and execution-based scoring across
-              counterfactual states.
+              Every answer shows the SQL that ran, one line on what it counts and which rows it
+              keeps, and the eleven checks it passed, filled in live while the question runs.
             </p>
+            <ScreenshotGrid screenshots={decisionSqlScreenshots} />
+          </section>
+
+          <section id="capabilities" className="detail-section">
+            <h2>From a question to a report</h2>
             <div className="rag-capability-grid">
               {decisionSqlCapabilities.map((group) => (
                 <article key={group.title}>
@@ -111,11 +139,10 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
           </section>
 
           <section id="runtime" className="detail-section">
-            <h2>One submission, a deterministic admission chain</h2>
+            <h2>What happens before an answer</h2>
             <p>
-              Only an ANSWER + SQL submission enters the SQL runtime. The selected SQL then crosses
-              each stage below before a restricted reader runs it, and the executor never accepts
-              SQL directly from the model, the normalizer or the evaluator.
+              Only an answer with SQL goes past the model. A clarification or a refusal stops there,
+              with its reason, and no SQL runs.
             </p>
             <ol className="rag-query-flow">
               {decisionSqlRuntimeFlow.map((step, index) => (
@@ -130,13 +157,29 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
             </ol>
           </section>
 
-          <section id="boundaries" className="detail-section">
-            <h2>Proposal and execution authority stay separate</h2>
+          <section id="evidence" className="detail-section">
+            <h2>Results</h2>
             <p>
-              The model owns the first-pass decision and, when it answers, the proposed SQL. It
-              does not own authorization, physical schema truth, grain semantics or the right to
-              execute. Deterministic software owns that half.
+              Measured on 2026-10-29 and 2026-10-30 with gpt-6-luna. The field set checks behavior
+              as well as rows: whether the system refuses a join nobody declared, asks when a
+              question is ambiguous, and stays quiet about data it does not have.
             </p>
+            <div className="rag-evidence-table" role="region" aria-label="DecisionSQL results" tabIndex={0}>
+              <table>
+                <thead>
+                  <tr><th scope="col">Evaluation</th><th scope="col">Result</th><th scope="col">What it covers</th></tr>
+                </thead>
+                <tbody>
+                  {decisionSqlEvidence.map((item) => (
+                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="boundaries" className="detail-section">
+            <h2>Who decides what</h2>
             <div className="rag-comparison" role="region" aria-label="DecisionSQL ownership boundaries" tabIndex={0}>
               <table>
                 <thead>
@@ -155,50 +198,31 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
                 </tbody>
               </table>
             </div>
-            <p className="rag-inline-note">
-              Runtime routing follows the parsed submission, not evaluator truth. An ANSWER + SQL
-              runs even when the truth is AMBIGUOUS; the harness records that runtime outcome
-              separately instead of skipping the branch.
-            </p>
           </section>
 
           {architecture ? (
             <section id="architecture" className="detail-section">
               <h2>Architecture</h2>
               <p>
-                A governed context feeds one typed decision. Only ANSWER + SQL enters the admission
-                chain — parse, policy, grain safety, narrow normalization, EXPLAIN, a cost gate and
-                an accepted QueryPlan — before restricted read-only execution. A separate evaluator
-                scores the outcome off the request path against counterfactual states.
+                The model never holds credentials, authority or an execution tool. Every stage is
+                recorded in a run trace, and the UI shows eleven of them above each answer.
               </p>
               <ArchitectureDiagram architecture={architecture} />
             </section>
           ) : null}
 
-          <section id="decisions" className="detail-section">
-            <h2>Four reliability decisions</h2>
-            <div className="rag-decision-list">
-              {decisionSqlEngineeringDecisions.map((decision) => (
-                <article key={decision.title}>
-                  <h3>{decision.title}</h3>
-                  <p>{decision.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
           <section id="grain" className="detail-section">
-            <h2>Server-owned grain safety, made concrete</h2>
+            <h2>A sum that counts the parent three times</h2>
             <p>
-              Joining one parent row to several child rows can silently multiply a parent measure.
-              The model is not trusted to own this contract; server-owned metadata and a narrow
-              deterministic normalizer are.
+              Joining an order to its three line items and summing the order amount counts it three
+              times. The query runs and the number looks plausible. The grain check stops it at
+              planning time and gives the model one round to fix it.
             </p>
             <div className="decision-grain">
               <div className="decision-grain-panel" data-state="unsafe">
                 <header>
                   <span className="decision-grain-tag">Naive join</span>
-                  <h3>Fanout multiplies the measure</h3>
+                  <h3>The join multiplies the measure</h3>
                 </header>
                 <div className="decision-grain-join">
                   <div className="decision-grain-node" data-role="parent">
@@ -217,16 +241,16 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
               </div>
               <div className="decision-grain-arrow" aria-hidden="true">
                 <ArrowRight size={18} />
-                <span>normalizer</span>
+                <span>refused</span>
               </div>
               <div className="decision-grain-panel" data-state="safe">
                 <header>
-                  <span className="decision-grain-tag">Grain-safe</span>
-                  <h3>Child-side preaggregation</h3>
+                  <span className="decision-grain-tag">Repaired</span>
+                  <h3>Totals per order first</h3>
                 </header>
                 <div className="decision-grain-join">
                   <div className="decision-grain-node">
-                    <span>lines → subtotal</span><strong>preaggregated</strong>
+                    <span>lines → subtotal</span><strong>one row per order</strong>
                   </div>
                   <div className="decision-grain-node" data-role="parent">
                     <span>order #A1</span><strong>joined once</strong>
@@ -239,73 +263,33 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
               </div>
             </div>
             <p className="decision-grain-shape">
-              Additive parent measure, a declared 1:N relationship and a supported LEFT JOIN fanout
-              shape resolve to deterministic child-side preaggregation. Outside that shape the
-              normalizer stays fail-closed, and normalized SQL still re-passes parse, policy,
-              EXPLAIN and the cost gate before it can run.
-            </p>
-            <div className="decision-grain-stats">
-              <span><strong>Server-owned</strong> grain contract</span>
-              <span><strong>Narrow</strong> supported shape only</span>
-              <span><strong>Fail-closed</strong> outside it</span>
-              <span><strong>No</strong> raw unsafe fallback</span>
-            </div>
-          </section>
-
-          <section id="governed-model" className="detail-section">
-            <h2>Governance is scored apart from execution</h2>
-            <p>
-              The benchmark includes cases where producing SQL is the wrong behavior, so refusing
-              is a measured outcome, not a failure. The four behaviors are scored separately rather
-              than merged into one accuracy number.
-            </p>
-            <div className="rag-benchmark-table" role="region" aria-label="DecisionSQL governed task model" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Behavior</th>
-                    <th scope="col">Cases</th>
-                    <th scope="col">Expected decision</th>
-                    <th scope="col">Result</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {decisionSqlGovernedModel.map((row) => (
-                    <tr key={row.behavior}>
-                      <th scope="row">{row.behavior}</th>
-                      <td>{row.cases}</td>
-                      <td>{row.expected}</td>
-                      <td>{row.result}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="detail-muted">
-              The three governance residuals are all in the ambiguity category; authority held at
-              15 / 15 with no unauthorized answers.
+              Grain facts come from the source catalog: tables with a primary key are entities,
+              foreign keys are many-to-one edges, and numeric non-key columns are measures. The
+              check follows a summed column through CTEs and derived tables, and also stops
+              SUM(DISTINCT …) used to hide the repeated rows.
             </p>
           </section>
 
-          <section id="evidence" className="detail-section">
-            <h2>Selected benchmark evidence</h2>
-            <p>
-              Governed decisions, runtime admission, grain safety and semantic discrimination
-              describe different failure surfaces. They stay separate instead of collapsing into
-              one project score.
-            </p>
-            <div className="rag-evidence-table" role="region" aria-label="DecisionSQL benchmark evidence" tabIndex={0}>
-              <table>
-                <thead>
-                  <tr><th scope="col">Evidence slice</th><th scope="col">Current result</th><th scope="col">What it covers</th></tr>
-                </thead>
-                <tbody>
-                  {decisionSqlEvidence.map((item) => (
-                    <tr key={item.area}><th scope="row">{item.area}</th><td>{item.result}</td><td>{item.detail}</td></tr>
-                  ))}
-                </tbody>
-              </table>
+          <section id="decisions" className="detail-section">
+            <h2>Four design decisions</h2>
+            <div className="rag-decision-list">
+              {decisionSqlEngineeringDecisions.map((decision) => (
+                <article key={decision.title}>
+                  <h3>{decision.title}</h3>
+                  <p>{decision.description}</p>
+                </article>
+              ))}
             </div>
+          </section>
+
+          <section id="reports" className="detail-section">
+            <h2>Reports, connections and the audit log</h2>
+            <p>
+              A report is a page of charts built from answered questions. Each chart keeps the SQL
+              that passed the checks and reruns it through the same gates whenever the report
+              opens or refreshes.
+            </p>
+            <ScreenshotGrid screenshots={decisionSqlWorkspaceScreenshots} />
           </section>
 
           <section id="stack" className="detail-section">
@@ -316,7 +300,6 @@ export function DecisionSqlCaseStudy({ project }: DecisionSqlCaseStudyProps) {
               ))}
             </div>
           </section>
-
 
           <ProjectInShort project={project} />
 
