@@ -29,7 +29,7 @@ export const engineeringAreas = [
     description:
       "Event processing with explicit delivery guarantees, failure handling and measured service limits.",
     technologies: ["Kafka", "PostgreSQL", "Redis", "Prometheus", "Grafana"],
-    evidenceProjectIds: ["real-time-commerce-platform"],
+    evidenceProjectIds: ["real-time-commerce-platform", "smart-campaign-composer"],
     evidenceExperienceIds: [],
   },
   {

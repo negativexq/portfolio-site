@@ -1,8 +1,10 @@
 import type { Project, RoadmapItem } from "@/lib/content/types";
+import { smartCampaignProject } from "./smart-campaign-composer.ts";
 
 const emptyRoadmap: readonly RoadmapItem[] = [];
 
 const projectRecords = [
+  smartCampaignProject,
   {
     id: "agentic-customer-service-platform",
     slug: "agentic-customer-service-platform",

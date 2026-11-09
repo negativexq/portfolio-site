@@ -6,6 +6,7 @@ import type { EngineeringGraphData, GraphAreaId } from "./types";
 // This is a presentation projection. The complete source graph stays available
 // to machine-readable consumers; the explorer carries only the flagship work.
 const projectPositions: Record<string, { x: number; y: number }> = {
+  "smart-campaign-composer": { x: 9, y: 0.5 },
   "ml-platform-infrastructure": { x: -6, y: 5 },
   "agentic-sre": { x: 1, y: 6 },
   "agentic-customer-service-platform": { x: 7, y: 3 },
@@ -15,6 +16,7 @@ const projectPositions: Record<string, { x: number; y: number }> = {
   "modelops-control-plane": { x: -7.5, y: 0.8 },
 };
 const projectLabels: Record<string, string> = {
+  "smart-campaign-composer": "Smart Campaign",
   "ml-platform-infrastructure": "ML Platform",
   "agentic-customer-service-platform": "Agentic Customer Service",
   "agentic-sre": "Agentic SRE",
@@ -24,6 +26,7 @@ const projectLabels: Record<string, string> = {
   "real-time-commerce-platform": "Real-Time Commerce",
 };
 const featuredTechnologies: Record<string, readonly string[]> = {
+  "smart-campaign-composer": ["Go", "PostgreSQL", "Redis", "OpenTelemetry"],
   "ml-platform-infrastructure": ["Kubernetes", "Go", "Argo Workflows", "MLflow"],
   "agentic-sre": ["Kubernetes", "LangGraph", "gRPC", "OpenTelemetry"],
   "agentic-customer-service-platform": ["LangGraph", "PostgreSQL", "Qdrant", "OpenTelemetry"],

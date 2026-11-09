@@ -34,6 +34,10 @@ export const recruiterBrief = {
       purpose: "Lets an AI agent handle refunds, cancellations and support tickets safely: the model suggests the action, code checks the rules and the customer confirms before anything runs.",
     },
     {
+      id: "smart-campaign-composer",
+      purpose: "Turns a marketing brief into a checked audience and multilingual SMS and email, requires human approval, and handles queued delivery, retries and live reporting through a mock provider.",
+    },
+    {
       id: "knowledge-base-rag",
       purpose: "Answers questions from long PDFs such as annual reports, 10-K filings and manuals, and shows the exact page each answer comes from.",
     },

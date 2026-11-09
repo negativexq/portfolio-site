@@ -10,6 +10,7 @@ import { DbtFeatureLineageCaseStudy } from "@/components/content/dbt-feature-lin
 import { KnowledgeBaseRagCaseStudy } from "@/components/content/knowledge-base-rag-case-study";
 import { ModelOpsProjectCaseStudy } from "@/components/content/modelops-project-case-study";
 import { AgenticSreCaseStudy } from "@/components/content/agentic-sre-case-study";
+import { SmartCampaignCaseStudy } from "@/components/content/smart-campaign-case-study";
 import { ArchitectureDiagram } from "@/components/content/architecture-diagram";
 import { JsonLd } from "@/components/content/json-ld";
 import { MetricGrid } from "@/components/content/metric-grid";
@@ -164,6 +165,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     "@context": "https://schema.org",
     "@graph": [softwareSourceCodeJsonLd, faqJsonLd, breadcrumbJsonLd],
   };
+
+  if (project.id === "smart-campaign-composer") {
+    return <><JsonLd data={projectJsonLd} /><SmartCampaignCaseStudy project={project} /></>;
+  }
 
   if (project.id === "agentic-customer-service-platform") {
     return (

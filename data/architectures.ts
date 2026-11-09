@@ -1,6 +1,43 @@
 import type { ArchitectureDefinition } from "@/components/content/architecture-diagram";
 
 const architectures = {
+  "smart-campaign-composer": {
+    projectId: "smart-campaign-composer",
+    description: "The Go API validates model output and freezes a human-reviewed campaign in PostgreSQL. Independent workers claim durable deliveries, coordinate permits through Redis and send to a journaled mock provider. Signed reports return to the API; the browser follows progress over SSE.",
+    paths: [
+      {
+        id: "campaign-approval",
+        label: "Proposal and approval",
+        summary: "Model output passes backend validation before a person can approve a specific review revision.",
+        variant: "control",
+        layout: { type: "rows", rows: [2, 2] },
+        stages: [
+          { id: "brief", nodes: [{ id: "marketer", label: "Vue workspace", subtitle: "brief, channels and template", variant: "client" }], edge: { label: "submits" } },
+          { id: "proposal", nodes: [{ id: "model", label: "Go API + model", subtitle: "structured proposal, validation and repair", variant: "analyzer" }], edge: { label: "presents for review" } },
+          { id: "approval", nodes: [{ id: "review", label: "Human approval", subtitle: "revision check and recipient snapshot", variant: "control" }], edge: { label: "freezes" } },
+          { id: "storage", nodes: [{ id: "postgres", label: "PostgreSQL", subtitle: "immutable version, runs and durable queue", variant: "storage" }] },
+        ],
+      },
+      {
+        id: "durable-delivery",
+        label: "Delivery and reporting",
+        summary: "Sending is independent of the API process; retries keep the same delivery identity.",
+        variant: "async",
+        layout: { type: "rows", rows: [2, 2] },
+        stages: [
+          { id: "worker", nodes: [{ id: "delivery-worker", label: "Go worker", subtitle: "queue claim, consent check and lease", variant: "service" }], edge: { label: "coordinates with" } },
+          { id: "limiter", nodes: [{ id: "redis", label: "Redis permits", subtitle: "shared per-channel limit and pauses", variant: "control" }], edge: { label: "gates calls to" } },
+          { id: "provider", nodes: [{ id: "mock-provider", label: "Mock provider", subtitle: "journaled idempotency and test inbox", variant: "output" }], edge: { label: "reports through" } },
+          { id: "report", nodes: [{ id: "webhook", label: "Signed webhook → API", subtitle: "delivery history and live SSE progress", variant: "observability" }] },
+        ],
+      },
+    ],
+    notes: [
+      "The queue and delivery state share PostgreSQL; unique run/recipient/channel keys, leases and claim tokens protect recovery.",
+      "Redis grants permits before queue claims. Losing the limiter window pauses the channel for eight seconds.",
+      "Only the mock provider receives messages. Unknown outcomes remain explicit, and the report separates acceptance from simulated delivery.",
+    ],
+  },
   "agentic-customer-service-platform": {
     projectId: "agentic-customer-service-platform",
     description:

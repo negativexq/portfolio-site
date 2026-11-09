@@ -45,7 +45,7 @@ export default function ProjectsPage() {
           <SectionHeading
             id="featured-projects"
             title="Flagship systems"
-            description="Seven current projects selected for depth, engineering evidence and relevance to AI platform work."
+            description={`${flagshipProjects.length} current projects selected for depth, engineering evidence and relevance to AI platform work.`}
           />
           <div className="project-grid">
             {flagshipProjects.map((project) => (

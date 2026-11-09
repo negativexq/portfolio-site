@@ -10668,3 +10668,48 @@ a.hero-pipeline-watch-label:focus-visible {
     gap: var(--space-2);
   }
 }
+
+/* Smart Campaign Composer follows the flagship case-study layout. */
+.campaign-case-study .project-detail-hero h1 { max-width: 15ch; }
+.campaign-case-study .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.campaign-demo { display: block; width: 100%; height: auto; margin-top: 1.75rem; background: var(--surface); }
+.campaign-workflow { display: grid; gap: 1.15rem; padding-left: 1.4rem; margin-top: 2rem; }
+.campaign-workflow li { padding-left: 0.4rem; line-height: 1.65; }
+.campaign-decisions { display: grid; gap: 1.75rem; }
+.campaign-decisions h3 { margin-bottom: 0.6rem; }
+.campaign-decisions p { margin: 0; }
+.campaign-capabilities { display: grid; gap: 2rem; margin-top: 2rem; }
+.campaign-capabilities article { display: grid; grid-template-columns: minmax(10rem, 0.65fr) minmax(0, 1.35fr); gap: 1rem 2rem; }
+.campaign-capabilities h3, .campaign-capabilities p:first-child { margin-top: 0; }
+.campaign-capabilities .campaign-benefit { color: var(--accent); margin-bottom: 0; }
+.campaign-contracts { display: grid; gap: 2rem; margin-top: 2rem; }
+.campaign-contracts article { padding: 1.5rem; background: var(--surface); }
+.campaign-contracts h3 { margin-top: 0; }
+.campaign-performance { max-width: 100%; overflow-x: auto; margin: 2rem 0; }
+.campaign-performance table { width: 100%; border-collapse: collapse; font-size: 0.95rem; text-align: left; line-height: 1.55; }
+.campaign-performance th, .campaign-performance td { padding: 1rem; vertical-align: top; }
+.campaign-performance thead { background: var(--surface); }
+.campaign-performance tbody tr { border-bottom: 1px solid var(--border); }
+.campaign-performance tbody th { width: 31%; font-weight: 600; }
+.campaign-performance td:nth-child(2) { width: 28%; font-weight: 600; }
+.campaign-screenshots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1.5rem; margin-top: 2rem; }
+.campaign-screenshots figure { margin: 0; min-width: 0; }
+.campaign-screenshots a { display: block; background: var(--surface); overflow: hidden; }
+.campaign-screenshots img { display: block; width: 100%; height: auto; aspect-ratio: 1.1; object-fit: cover; object-position: top left; transition: transform 220ms ease; }
+.campaign-screenshots a:hover img { transform: scale(1.015); }
+.campaign-screenshots figcaption { margin-top: 1rem; }
+.campaign-screenshots figcaption p { margin-top: 0.5rem; font-size: 1rem; }
+.campaign-limits { margin-top: 2rem; padding: 1.75rem; background: var(--surface); }
+.campaign-limits > :last-child { margin-bottom: 0; }
+.campaign-commands { overflow-x: auto; padding: 1.5rem; background: var(--surface); font-size: 0.9rem; line-height: 1.8; }
+@media (max-width: 820px) {
+  .campaign-case-study .metric-grid, .campaign-screenshots { grid-template-columns: 1fr; }
+  .campaign-capabilities article { grid-template-columns: 1fr; gap: 0; }
+  .campaign-performance th, .campaign-performance td { padding: 0.75rem 0.5rem; overflow-wrap: anywhere; }
+  .campaign-case-study .project-detail-hero h1 { font-size: clamp(2.1rem, 8.5vw, 3.8rem); }
+  .campaign-screenshots img { aspect-ratio: 1.15; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-screenshots img { transition: none; }
+  .campaign-screenshots a:hover img { transform: none; }
+}
