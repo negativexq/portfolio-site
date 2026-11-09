@@ -1892,7 +1892,75 @@ function QuantityCalculationPathDiagram() {
   );
 }
 
+function RedisClockWindowJumpDiagram() {
+  const marker = "redis-clock-jump-arrow";
+  return (
+    <DiagramFrame
+      id="redis-clock-window-jump"
+      title="A clock correction makes a recent entry look expired"
+      description="Illustrative arithmetic, not an event trace: an entry is 950 milliseconds old in elapsed time. The wall clock jumps forward by 70.7 milliseconds, giving a timestamp difference of 1,020.7 milliseconds. A one-second wall-clock window can now remove the entry even though one real second has not passed, reopening permits early."
+      caption="Illustration: 950 ms of elapsed time plus a 70.7 ms clock correction looks like 1,020.7 ms to timestamp subtraction. Atomic cleanup still removes the entry too soon."
+      height={360}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={28} anchor="start">ONE ENTRY, TWO MEASURES OF AGE</Label>
+      <Node x={28} y={50} width={238} height={70} lines={["Elapsed age", "950 ms"]} tone="accent" />
+      <Node x={322} y={50} width={236} height={70} lines={["Wall-clock correction", "+70.7 ms"]} tone="stop" />
+      <Node x={614} y={50} width={238} height={70} lines={["Timestamp difference", "1,020.7 ms"]} tone="stop" />
+      <Arrow d="M266 85 H315" marker={marker} />
+      <Arrow d="M558 85 H607" marker={marker} />
+
+      <Label x={28} y={163} anchor="start">ELAPSED AGE</Label>
+      <rect className="diagram-node diagram-node--accent" x={190} y={146} width={570} height={25} rx="4" />
+      <Label x={28} y={204} anchor="start">APPARENT AGE</Label>
+      <rect className="diagram-node diagram-node--stop" x={190} y={187} width={612} height={25} rx="4" />
+      <path className="diagram-arrow diagram-arrow--dashed" d="M790 135 V225" />
+      <Label x={790} y={245}>1,000 ms expiry threshold</Label>
+
+      <Node x={28} y={278} width={238} height={56} lines={["Entry removed early"]} tone="stop" />
+      <Node x={322} y={278} width={236} height={56} lines={["New permits admitted"]} />
+      <Node x={614} y={278} width={238} height={56} lines={["Arrival windows overlap"]} tone="stop" />
+      <Arrow d="M266 306 H315" marker={marker} />
+      <Arrow d="M558 306 H607" marker={marker} />
+    </DiagramFrame>
+  );
+}
+
+function RateLimitArrivalBoundaryDiagram() {
+  const marker = "arrival-boundary-arrow";
+  return (
+    <DiagramFrame
+      id="rate-limit-arrival-boundary"
+      title="Count a call through its answer and the following window"
+      description="The permit is granted before the provider receives the call. The response comes after receipt. The limiter holds the call in its accounting while it is in flight, then for 1.1 seconds after the response is applied. The final 100 milliseconds are the clock-step margin. The provider separately measures a sliding second of actual arrivals, including rejected calls."
+      caption="Order, not a latency scale: a permit precedes arrival, and arrival precedes the response. The post-response window protects delayed arrivals; its extra 100 ms addresses a separate, bounded clock correction."
+      height={350}
+    >
+      <ArrowMarker id={marker} />
+      <Label x={28} y={28} anchor="start">A CALL'S ORDER OF EVENTS</Label>
+      <Node x={28} y={52} width={174} height={66} lines={["Permit granted", "worker may send"]} />
+      <Node x={244} y={52} width={174} height={66} lines={["Provider receives", "arrival is counted"]} tone="accent" />
+      <Node x={460} y={52} width={174} height={66} lines={["Answer applied", "in Redis accounting"]} />
+      <Node x={676} y={52} width={176} height={66} lines={["Entry can expire", "after the hold"]} tone="muted" />
+      <Arrow d="M202 85 H237" marker={marker} />
+      <Arrow d="M418 85 H453" marker={marker} />
+      <Arrow d="M634 85 H669" marker={marker} />
+
+      <path className="diagram-arrow" d="M115 144 V163 H547 V144" />
+      <Label x={331} y={187}>Reserve and keep counted while in flight</Label>
+      <path className="diagram-arrow" d="M547 144 V210 H764 V144" />
+      <Label x={655} y={234}>Then hold for 1.1 s</Label>
+      <Label x={655} y={256}>1 s window + 100 ms margin</Label>
+
+      <rect className="diagram-result" x={28} y={294} width={824} height={32} rx="6" />
+      <text className="diagram-result-text" x={440} y={315} textAnchor="middle">Provider compliance counts every arrival. Idempotency counts distinct accepted deliveries.</text>
+    </DiagramFrame>
+  );
+}
+
 const DIAGRAMS: Record<WritingDiagramId, () => ReactNode> = {
+  "redis-clock-window-jump": RedisClockWindowJumpDiagram,
+  "rate-limit-arrival-boundary": RateLimitArrivalBoundaryDiagram,
   "kafka-idempotency-flow": KafkaIdempotencyDiagram,
   "transactional-outbox-flow": TransactionalOutboxDiagram,
   "agent-trust-boundary": AgentTrustBoundaryDiagram,

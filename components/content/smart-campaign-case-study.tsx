@@ -6,7 +6,7 @@ import { campaignCapabilities, campaignContracts, campaignDecisions, campaignDee
 import { MetricGrid } from "./metric-grid";
 import { SectionIndex } from "./section-index";
 import { ProjectProof } from "./project-proof";
-import { ProjectInShort } from "./project-related";
+import { ProjectInShort, ProjectRelated } from "./project-related";
 import { TagList } from "./tag-list";
 import { MotionController } from "@/components/motion/motion-controller";
 import { ArchitectureDiagram } from "./architecture-diagram";
@@ -25,6 +25,7 @@ const sections = [
   ["evidence", "Evidence and limits"],
   ["stack", "Stack"],
   ["in-short", "In short"],
+  ["related", "Related writing"],
   ["deep-dive", "Deep dive"],
 ] as const;
 
@@ -191,6 +192,7 @@ export function SmartCampaignCaseStudy({ project }: { project: Project }) {
           </section>
 
           <ProjectInShort project={project} />
+          <ProjectRelated project={project} />
           <section id="deep-dive" className="detail-section" data-reveal>
             <h2>Follow the implementation.</h2>
             <div className="dbt-deep-dive">{campaignDeepDive.map(([label, path]) => <a key={path} href={campaignSource(path)} target="_blank" rel="noreferrer"><span>{label}</span><ArrowUpRight aria-hidden="true" size={15} /></a>)}</div>
