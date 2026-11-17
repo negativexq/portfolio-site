@@ -379,7 +379,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
       {area !== "all" ? <p className="atlas-area-status" role="status">{GRAPH_AREAS.find((item) => item.id === area)?.label}: {projects.filter((node) => node.metadata.areas?.includes(area)).length} {projects.filter((node) => node.metadata.areas?.includes(area)).length === 1 ? "project" : "projects"} highlighted. Other areas remain visible.</p> : null}
       <div className={`atlas-workspace${!activeProjectId ? " is-overview" : ""}${inspectedNode ? " has-selection" : ""}`}>
         <div className="atlas-stage">
-          <div ref={containerRef} className="atlas-canvas" data-layout-motion="idle" data-camera-motion="idle" role="img" aria-label={activeProject ? `${activeProject.label} with ${visibleData.nodes.length - 1} key technologies and concepts. Use the project selector or relationships panel for keyboard access.` : "Ömer Faruk Koç connected to seven core projects, with ten technology nodes linking and defining the work. Use the project selector below for keyboard access."} />
+          <div ref={containerRef} className="atlas-canvas" data-layout-motion="idle" data-camera-motion="idle" role="img" aria-label={activeProject ? `${activeProject.label} with ${visibleData.nodes.length - 1} key technologies and concepts. Use the project selector or relationships panel for keyboard access.` : "Ömer Faruk Koç connected to nine core projects, with twelve technology nodes linking and defining the work. Use the project selector below for keyboard access."} />
           <div className="atlas-stage-caption">
             {selectedEdge ? <div className="atlas-relationship" role="status"><strong>{nodeById.get(selectedEdge.source)?.canvasLabel}</strong><span>{getRelationshipVisual(selectedEdge.type).label} {getRelationshipVisual(selectedEdge.type).directed ? "→" : "↔"} {nodeById.get(selectedEdge.target)?.canvasLabel}</span></div> : <>
             <strong>{activeProject ? "One system, up close." : "My engineering network."}</strong>
@@ -408,7 +408,7 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
         {data.nodes.filter((node) => node.type === "technology" && node.metadata.overview).map((node) => <button type="button" key={node.id} aria-pressed={inspectedId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>)}
       </nav> : null}
       <p className="atlas-footnote">{activeProject ? `${visibleData.nodes.length - 1} selected foundations, evidence in the details panel` : "Built: my work. Uses: documented technology. Related: documented project relationship."} <span>Drag to pan, scroll to zoom, Esc for overview</span></p>
-      <p className="sr-only" aria-live="polite">{inspectedNode ? `${inspectedNode.label} selected.` : "Ömer Faruk Koç at the center, connected to seven core projects and twelve technologies."}</p>
+      <p className="sr-only" aria-live="polite">{inspectedNode ? `${inspectedNode.label} selected.` : "Ömer Faruk Koç at the center, connected to nine core projects and twelve technologies."}</p>
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { Project, RoadmapItem } from "@/lib/content/types";
 import { smartCampaignProject } from "./smart-campaign-composer.ts";
+import { customerJourneyProject } from "./customer-journey-composer.ts";
 
 const emptyRoadmap: readonly RoadmapItem[] = [];
 
 const projectRecords = [
   smartCampaignProject,
+  customerJourneyProject,
   {
     id: "agentic-customer-service-platform",
     slug: "agentic-customer-service-platform",
@@ -202,7 +204,7 @@ const projectRecords = [
       width: 1200,
       height: 960,
     },
-    order: 5,
+    order: 8,
     title: "ModelOps Control Plane",
     seoTitle: "ModelOps Control Plane: Canary Model Promotion and Rollback",
     metaDescription: "ML release control plane: 10→25→50→100% canary delivery, delayed-ground-truth quality gates, automatic rollback and desired-vs-observed reconciliation.",
@@ -538,7 +540,7 @@ const projectRecords = [
   {
     id: "real-time-commerce-platform",
     slug: "real-time-commerce-platform",
-    order: 7,
+    order: 9,
     title: "Real-Time Commerce Platform",
     seoTitle: "Real-Time Commerce Platform: Kafka, Outbox and Idempotency",
     metaDescription: "Event-driven commerce platform where Kafka may redeliver, but layered idempotency, a transactional outbox and bounded retries protect business effects.",
@@ -650,7 +652,7 @@ const projectRecords = [
   {
     id: "repo-context-forge",
     slug: "repo-context-forge",
-    order: 9,
+    order: 11,
     title: "Repo Context Forge",
     seoTitle: "Repo Context Forge: Read-Only MCP Code Intelligence",
     metaDescription: "Local-first MCP repository intelligence: 40 tools across six servers for deterministic, source-grounded code analysis within strict read-only boundaries.",
@@ -704,7 +706,7 @@ const projectRecords = [
   {
     id: "dbt-feature-lineage",
     slug: "dbt-feature-lineage",
-    order: 10,
+    order: 12,
     title: "dbt Feature Lineage",
     seoTitle: "dbt Feature Lineage: Column-Level Lineage and Change Impact",
     metaDescription: "Local-first dbt analysis for model dependencies, cross-model column lineage and change impact, from the manifest and static SQL, without a live warehouse.",
@@ -798,7 +800,7 @@ const projectRecords = [
   {
     id: "production-rag-platform",
     slug: "production-rag-platform",
-    order: 11,
+    order: 13,
     title: "Production RAG Platform",
     seoTitle: "Production RAG Platform: Hybrid Search, Reranking, Citations",
     metaDescription: "Single-PDF RAG foundation: hybrid search, reranking, citation-aware generation, evaluation and tracing. The groundwork that evolved into Knowledge Base RAG.",
@@ -844,7 +846,7 @@ const projectRecords = [
   {
     id: "terraform-docker-infrastructure-lab",
     slug: "terraform-docker-infrastructure-lab",
-    order: 12,
+    order: 14,
     title: "Terraform Docker Infrastructure Lab",
     seoTitle: "Terraform Docker Infrastructure Lab: State-Safe Refactoring",
     metaDescription: "Modular Terraform lab: state-safe refactoring with moved blocks (0 add, 0 change, 0 destroy), native IaC tests, CI security gates and failure validation.",
@@ -912,7 +914,7 @@ const projectRecords = [
   {
     id: "cause-tune",
     slug: "cause-tune",
-    order: 8,
+    order: 10,
     title: "CauseTune",
     seoTitle: "CauseTune: QLoRA Fine-Tuning With Blind Generalization Tests",
     metaDescription: "QLoRA fine-tuning lab: Qwen3-4B rose from 65.28% to 99.31% diagnosis accuracy on a frozen synthetic benchmark and held 98.33% on a fresh blind challenge.",
@@ -1102,7 +1104,7 @@ const projectRecords = [
       width: 2880,
       height: 1800,
     },
-    order: 6,
+    order: 5,
     title: "DecisionSQL",
     seoTitle: "DecisionSQL: Governed Text-to-SQL With Execution Guardrails",
     metaDescription: "Ask your database in plain language: the model proposes one decision, and parsing, policy, authority, grain and cost checks decide what runs. 76/100 on BIRD Mini-Dev 2026.",

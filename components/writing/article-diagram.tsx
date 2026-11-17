@@ -1937,7 +1937,7 @@ function RateLimitArrivalBoundaryDiagram() {
       height={350}
     >
       <ArrowMarker id={marker} />
-      <Label x={28} y={28} anchor="start">A CALL'S ORDER OF EVENTS</Label>
+      <Label x={28} y={28} anchor="start">A CALL&apos;S ORDER OF EVENTS</Label>
       <Node x={28} y={52} width={174} height={66} lines={["Permit granted", "worker may send"]} />
       <Node x={244} y={52} width={174} height={66} lines={["Provider receives", "arrival is counted"]} tone="accent" />
       <Node x={460} y={52} width={174} height={66} lines={["Answer applied", "in Redis accounting"]} />

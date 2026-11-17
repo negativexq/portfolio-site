@@ -7,6 +7,7 @@ import type { EngineeringGraphData, GraphAreaId } from "./types";
 // to machine-readable consumers; the explorer carries only the flagship work.
 const projectPositions: Record<string, { x: number; y: number }> = {
   "smart-campaign-composer": { x: 9, y: 0.5 },
+  "customer-journey-composer": { x: 5, y: 7 },
   "ml-platform-infrastructure": { x: -6, y: 5 },
   "agentic-sre": { x: 1, y: 6 },
   "agentic-customer-service-platform": { x: 7, y: 3 },
@@ -17,6 +18,7 @@ const projectPositions: Record<string, { x: number; y: number }> = {
 };
 const projectLabels: Record<string, string> = {
   "smart-campaign-composer": "Smart Campaign",
+  "customer-journey-composer": "Customer Journey",
   "ml-platform-infrastructure": "ML Platform",
   "agentic-customer-service-platform": "Agentic Customer Service",
   "agentic-sre": "Agentic SRE",
@@ -27,6 +29,7 @@ const projectLabels: Record<string, string> = {
 };
 const featuredTechnologies: Record<string, readonly string[]> = {
   "smart-campaign-composer": ["Go", "PostgreSQL", "Redis", "OpenTelemetry"],
+  "customer-journey-composer": ["Go", "PostgreSQL", "Vue", "OpenTelemetry"],
   "ml-platform-infrastructure": ["Kubernetes", "Go", "Argo Workflows", "MLflow"],
   "agentic-sre": ["Kubernetes", "LangGraph", "gRPC", "OpenTelemetry"],
   "agentic-customer-service-platform": ["LangGraph", "PostgreSQL", "Qdrant", "OpenTelemetry"],

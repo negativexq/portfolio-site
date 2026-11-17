@@ -34,6 +34,10 @@ export const recruiterBrief = {
       purpose: "Lets an AI agent handle refunds, cancellations and support tickets safely: the model suggests the action, code checks the rules and the customer confirms before anything runs.",
     },
     {
+      id: "customer-journey-composer",
+      purpose: "Turns a plain-language brief into a multi-day customer journey with waits, branches, email, SMS and push; AI proposes it, a person tests and publishes it, and a Go runtime on PostgreSQL runs it for each customer.",
+    },
+    {
       id: "smart-campaign-composer",
       purpose: "Turns a marketing brief into a checked audience and multilingual SMS and email, requires human approval, and handles queued delivery, retries and live reporting through a mock provider.",
     },

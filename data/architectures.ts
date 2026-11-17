@@ -1,6 +1,43 @@
 import type { ArchitectureDefinition } from "@/components/content/architecture-diagram";
 
 const architectures = {
+  "customer-journey-composer": {
+    projectId: "customer-journey-composer",
+    description: "The model proposes a journey before publishing; the Go API checks it against the schema, the behavior contract and the brief, and a person applies it. Publishing freezes a version in PostgreSQL after a passing sandbox run. Workers then carry each customer through that version with leases, fencing tokens and a transactional outbox, sending to Mailpit and mock providers.",
+    paths: [
+      {
+        id: "journey-approval",
+        label: "Proposal and publishing",
+        summary: "Model output is checked and reviewed; only a passing sandbox run of the exact workflow can be published.",
+        variant: "control",
+        layout: { type: "rows", rows: [2, 2] },
+        stages: [
+          { id: "brief", nodes: [{ id: "marketer", label: "Vue canvas", subtitle: "brief and behavior contract", variant: "client" }], edge: { label: "submits" } },
+          { id: "proposal", nodes: [{ id: "model", label: "Go API + model", subtitle: "schema, contract and brief checks, one repair", variant: "analyzer" }], edge: { label: "presents for review" } },
+          { id: "approval", nodes: [{ id: "review", label: "Human apply + Test Lab", subtitle: "draft edits and virtual-clock scenarios", variant: "control" }], edge: { label: "publishes" } },
+          { id: "storage", nodes: [{ id: "postgres", label: "PostgreSQL", subtitle: "immutable published version", variant: "storage" }] },
+        ],
+      },
+      {
+        id: "durable-execution",
+        label: "Execution and delivery",
+        summary: "Each customer stays on the version they entered; every step and send survives a worker restart.",
+        variant: "async",
+        layout: { type: "rows", rows: [2, 2] },
+        stages: [
+          { id: "worker", nodes: [{ id: "runtime-worker", label: "Go worker", subtitle: "SKIP LOCKED claims, leases and fencing", variant: "service" }], edge: { label: "checks at send time" } },
+          { id: "policy", nodes: [{ id: "send-policy", label: "Send policy", subtitle: "consent, frequency caps and global exit", variant: "control" }], edge: { label: "writes to outbox for" } },
+          { id: "provider", nodes: [{ id: "mock-provider", label: "Mailpit + mock providers", subtitle: "email, SMS and push", variant: "output" }], edge: { label: "feeds" } },
+          { id: "report", nodes: [{ id: "monitor", label: "Live monitor + analytics", subtitle: "customer paths, goals and conversion", variant: "observability" }] },
+        ],
+      },
+    ],
+    notes: [
+      "PostgreSQL holds steps, jobs, waits, the outbox and provider channel state. There is no Redis.",
+      "Pauses, credential locks and the circuit breaker are rows on the provider channel, shared by every worker.",
+      "Messages go only to Mailpit and mock providers. An unclear SMTP outcome stays UNKNOWN.",
+    ],
+  },
   "smart-campaign-composer": {
     projectId: "smart-campaign-composer",
     description: "The Go API validates model output and freezes a human-reviewed campaign in PostgreSQL. Independent workers claim durable deliveries, coordinate permits through Redis and send to a journaled mock provider. Signed reports return to the API; the browser follows progress over SSE.",

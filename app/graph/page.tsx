@@ -6,7 +6,7 @@ import { EngineeringGraphLoader } from "@/components/graph/engineering-graph-loa
 import { buildCuratedEngineeringGraph } from "@/lib/graph/curated-graph";
 
 const GRAPH_DESCRIPTION =
-  "An interactive map of seven core engineering projects, their shared foundations and scoped evidence.";
+  "An interactive map of nine core engineering projects, their shared foundations and scoped evidence.";
 
 export const metadata: Metadata = {
   title: "Engineering Graph",
@@ -22,7 +22,7 @@ export default function GraphPage() {
       <JsonLd data={buildWebPage(profile, { path: "/graph", name: "Engineering Graph", description: GRAPH_DESCRIPTION })} />
       <header className="page-hero container graph-page-hero">
 
-        <h1>Seven systems. Shared foundations.</h1>
+        <h1>Nine systems. Shared foundations.</h1>
         <p>
           Explore my core engineering projects and the foundations they share. Select a system to reveal its key technologies, engineering decisions and scoped evidence.
         </p>

@@ -6,7 +6,7 @@ export const campaignSource = (path: string) => `${repo}/blob/main/${path}`;
 export const smartCampaignProject: Project = {
   id: "smart-campaign-composer",
   slug: "smart-campaign-composer",
-  order: 8,
+  order: 7,
   title: "Smart Campaign Composer",
   seoTitle: "Smart Campaign Composer: Validated AI Campaign Delivery",
   metaDescription: "Plan, write and track multilingual SMS and email campaigns in one workspace. AI audiences, a visual email builder, human approval and reliable delivery.",

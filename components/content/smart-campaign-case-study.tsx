@@ -58,7 +58,7 @@ export function SmartCampaignCaseStudy({ project }: { project: Project }) {
 
           <section id="capabilities" className="detail-section" data-reveal>
             <h2>Built around the marketer.</h2>
-            <p>Cart reminders, new arrivals and win-back offers use the same workflow. Choose the audience, shape the message and see the result with the campaign's context still in front of you.</p>
+            <p>Cart reminders, new arrivals and win-back offers use the same workflow. Choose the audience, shape the message and see the result with the campaign&apos;s context still in front of you.</p>
             <div className="campaign-capabilities">
               {campaignCapabilities.map((capability) => (
                 <article key={capability.title} data-reveal>
@@ -110,7 +110,7 @@ export function SmartCampaignCaseStudy({ project }: { project: Project }) {
           <section id="architecture" className="detail-section" data-reveal>
             <h2>Shared state, separate workers.</h2>
             <p>The API and worker communicate through PostgreSQL rather than calling each other. Campaign state, approval, recipient snapshots, runs, delivery attempts and the send queue live in the same durable store.</p>
-            <p>PostgreSQL owns the durable business state; Redis holds the shared, short-lived delivery controls. This keeps a campaign's place in the queue and its recorded status in one transaction. The worker runs independent SMS and email loops with up to 32 calls in flight per channel, while the shared limiter determines how many calls may proceed.</p>
+            <p>PostgreSQL owns the durable business state; Redis holds the shared, short-lived delivery controls. This keeps a campaign&apos;s place in the queue and its recorded status in one transaction. The worker runs independent SMS and email loops with up to 32 calls in flight per channel, while the shared limiter determines how many calls may proceed.</p>
             {architecture ? <ArchitectureDiagram architecture={architecture} /> : null}
             <a className="text-link" href={campaignSource("docs/architecture.md")} target="_blank" rel="noreferrer">Read the architecture and data model <ArrowUpRight aria-hidden="true" size={15} /></a>
           </section>
@@ -148,7 +148,7 @@ export function SmartCampaignCaseStudy({ project }: { project: Project }) {
                   <tr><th scope="row">Worker crashes mid-send</th><td>Recover the delivery when its one-minute lease expires.</td><td>The retry uses the same idempotency key; a stale worker cannot record over the new claim.</td></tr>
                   <tr><th scope="row">Provider answer is lost</th><td>Retry with backoff and jitter. Exhausted attempts with a timeout end as UNKNOWN.</td><td>The report preserves uncertainty about whether the message was accepted.</td></tr>
                   <tr><th scope="row">Redis loses its window</th><td>Wait eight seconds before granting new permits.</td><td>The durable delivery queue remains in PostgreSQL.</td></tr>
-                  <tr><th scope="row">Campaign stops progressing</th><td>After ten minutes with retries waiting and no deliveries finishing, pause for a person's Resume.</td><td>Queued messages and their keys survive the pause.</td></tr>
+                  <tr><th scope="row">Campaign stops progressing</th><td>After ten minutes with retries waiting and no deliveries finishing, pause for a person&apos;s Resume.</td><td>Queued messages and their keys survive the pause.</td></tr>
                 </tbody>
               </table>
             </div>
