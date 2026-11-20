@@ -5,23 +5,33 @@
  * one goes stale.
  */
 export const recruiterBrief = {
-  roles: ["MLOps / ML Platform Engineer", "AI Platform Engineer", "LLM / AI Engineer", "Forward Deployed Engineer"],
+  roles: ["AI Engineer / AI Software Engineer", "AI Platform Engineer", "MLOps / ML Platform Engineer", "LLM / Agent Engineer", "Forward Deployed Engineer"],
+  // The five things the projects prove, in the order an AI product is built.
   competencies: [
     {
-      title: "ML Platform & MLOps",
-      text: "Taking models from a notebook to production: training and scoring pipelines, model serving, versioned releases, monitoring and rollback on Kubernetes.",
+      title: "Design the product",
+      text: "Decide where the model helps and where a person or code decides: review screens, human approval, typed proposals and a workflow the user can follow.",
+      evidence: ["customer-journey-composer", "smart-campaign-composer", "knowledge-base-rag"],
     },
     {
-      title: "LLM, RAG & Agents",
-      text: "AI assistants and agents that work with company documents and tools, where code checks what the model produces before anything is used.",
+      title: "Build the backend",
+      text: "Go and Python services with PostgreSQL, Redis and Kafka: data models, APIs, queues, durable workflows and agent orchestration.",
+      evidence: ["customer-journey-composer", "agentic-customer-service-platform", "real-time-commerce-platform"],
     },
     {
-      title: "AI Reliability & Observability",
-      text: "Keeping AI systems dependable in production: evaluation on fixed test sets, a trace for every model call, release gates and safe failure.",
+      title: "Take it to production",
+      text: "Kubernetes, model and LLM serving, canary releases, GitOps, access control and tracing, on cloud or on-premises GPUs.",
+      evidence: ["ml-platform-infrastructure", "agentic-sre"],
     },
     {
-      title: "Data Engineering",
-      text: "Batch and streaming pipelines with Kafka, dbt and SQL, with data quality checks and feature definitions shared across models.",
+      title: "Measure it",
+      text: "Fixed evaluation sets, benchmarks and load tests, with each result tied to a dated run that can be repeated.",
+      evidence: ["knowledge-base-rag", "decision-sql", "cause-tune"],
+    },
+    {
+      title: "Make it reliable",
+      text: "Idempotency, leases and fencing, transactional outbox, retries and circuit breakers, and deterministic limits on what a model can trigger.",
+      evidence: ["agentic-customer-service-platform", "smart-campaign-composer", "agentic-sre"],
     },
   ],
   projects: [
@@ -73,13 +83,40 @@ export const recruiterBrief = {
     "Built a centralized feature store and dimensional models across Oracle, Trino and SQL Server, with shared definitions, validation controls and data contracts reused by training, inference and analytics.",
     "Migrated validated Azure GenAI prototypes to on-premises GPU infrastructure, serving quantized open-source LLMs with llama.cpp and vLLM under data-residency constraints; contributed to 5 production LLM workflows.",
     "Built a GPU-distributed call-center pipeline: WhisperX transcription, timestamp alignment, speaker diarization and LLM summarization into structured KPI fields.",
+    "Built RAG and document-intelligence workflows combining embeddings, retrieval, grounded LLM processing, structured outputs and API integration into internal AI applications.",
     "Added Great Expectations and Deepchecks gates to Airflow pipelines and GitHub Actions delivery, so data and model regressions fail in the pipeline instead of surfacing in reports.",
   ],
+  // Categories follow the résumé; each names the projects where the skills are used.
   skills: [
-    { area: "ML platform", items: ["Kubernetes", "KServe", "Argo Workflows", "MLflow", "Helm", "Terraform", "Docker"] },
-    { area: "LLM & agents", items: ["PydanticAI", "LangGraph", "LangChain", "Qdrant", "vLLM", "Ollama", "QLoRA", "PyTorch"] },
-    { area: "Data", items: ["Kafka", "dbt", "Airflow", "PostgreSQL", "Oracle", "Redis"] },
-    { area: "Observability", items: ["OpenTelemetry", "Prometheus", "Grafana", "Langfuse", "Jaeger"] },
-    { area: "Languages & APIs", items: ["Python", "Go", "SQL", "FastAPI", "gRPC"] },
+    {
+      area: "Backend and frontend",
+      items: ["Python", "Go", "SQL", "FastAPI", "Pydantic", "SQLAlchemy", "REST APIs", "PostgreSQL", "Redis", "Kafka", "React", "Vue", "TypeScript", "Next.js"],
+      evidence: ["customer-journey-composer", "agentic-customer-service-platform", "real-time-commerce-platform"],
+    },
+    {
+      area: "Generative AI and agents",
+      items: ["LangGraph", "PydanticAI", "LangChain", "MCP / FastMCP", "Tool calling", "Human-in-the-loop", "Structured outputs", "Context engineering", "RAG", "Qdrant", "Hybrid search", "BM25", "Reranking"],
+      evidence: ["knowledge-base-rag", "agentic-customer-service-platform", "repo-context-forge"],
+    },
+    {
+      area: "LLM evaluation and ML",
+      items: ["Langfuse", "DeepEval", "LLM evaluation", "Guardrails", "Prompt injection defense", "PyTorch", "Hugging Face Transformers", "PEFT", "LoRA / QLoRA", "Fine-tuning", "WhisperX", "Speaker diarization"],
+      evidence: ["knowledge-base-rag", "cause-tune", "agentic-customer-service-platform"],
+    },
+    {
+      area: "AI platforms and MLOps",
+      items: ["Kubernetes", "Docker", "Iguazio / MLRun", "MLflow", "KServe", "Knative", "Argo Workflows", "Argo CD", "Helm", "vLLM", "Ollama", "Model registry", "Feature store", "GPU / LLM serving", "Model monitoring"],
+      evidence: ["ml-platform-infrastructure"],
+    },
+    {
+      area: "Data, DevOps and observability",
+      items: ["dbt", "Airflow", "Oracle", "Trino", "SQL Server", "Azure", "Linux", "Terraform", "GitHub Actions", "GitOps", "OpenTelemetry", "Prometheus", "Grafana", "Loki", "Tempo", "Jaeger"],
+      evidence: ["agentic-sre", "ml-platform-infrastructure", "dbt-feature-lineage"],
+    },
+    {
+      area: "Software engineering and testing",
+      items: ["Distributed systems", "Event-driven architecture", "Concurrency", "Idempotency", "Transactional outbox", "Circuit breakers", "Canary releases", "Pytest", "Playwright", "k6", "Integration, E2E and chaos testing"],
+      evidence: ["real-time-commerce-platform", "smart-campaign-composer", "customer-journey-composer"],
+    },
   ],
 } as const;

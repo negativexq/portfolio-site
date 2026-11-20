@@ -10,7 +10,7 @@ import { recruiterBrief } from "@/data/recruiter-brief";
 import { buildWebPage } from "@/lib/seo/collection";
 
 const STATEMENT =
-  "I take AI from a promising prototype to a system people rely on, inside the environment where it actually has to run.";
+  "I design AI products, build their backends, take them to production, measure them and keep them reliable.";
 
 const DESCRIPTION =
   "A one-page summary of Ömer Faruk Koç for hiring teams: what he can do, his skills, what each project is for, and recent experience.";
@@ -34,6 +34,29 @@ function resolveProjects() {
       image: project.cardImage ? { src: project.cardImage.src, alt: project.cardImage.alt } : null,
     };
   });
+}
+
+function resolveEvidence(ids: readonly string[]) {
+  return ids.map((id) => {
+    const project = projects.find((candidate) => candidate.id === id);
+    if (!project) throw new Error(`recruiter brief: missing evidence project ${id}`);
+    return { id, title: project.title, href: `/projects/${project.slug}` };
+  });
+}
+
+function Evidence({ ids, label }: { ids: readonly string[]; label: string }) {
+  const items = resolveEvidence(ids);
+  return (
+    <p className="brief-evidence">
+      {label}{" "}
+      {items.map((item, index) => (
+        <span key={item.id}>
+          <Link href={item.href}>{item.title}</Link>
+          {index < items.length - 1 ? ", " : ""}
+        </span>
+      ))}
+    </p>
+  );
 }
 
 export default function RecruitersPage() {
@@ -108,6 +131,7 @@ export default function RecruitersPage() {
             <li key={item.title}>
               <h3>{item.title}</h3>
               <p>{item.text}</p>
+              <Evidence ids={item.evidence} label="Shown in" />
             </li>
           ))}
         </ul>
@@ -119,7 +143,10 @@ export default function RecruitersPage() {
           {recruiterBrief.skills.map((group) => (
             <div key={group.area}>
               <dt>{group.area}</dt>
-              <dd><ul className="tag-list">{group.items.map((item) => <li key={item}>{item}</li>)}</ul></dd>
+              <dd>
+                <ul className="tag-list">{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                <Evidence ids={group.evidence} label="Used in" />
+              </dd>
             </div>
           ))}
         </dl>

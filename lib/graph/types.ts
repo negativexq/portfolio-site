@@ -26,7 +26,7 @@ export type GraphEdgeType =
   | "part-of"
   | "built-on";
 
-export type GraphAreaId = "ai-ml-platform" | "generative-ai-rag" | "agent-infrastructure" | "data-engineering" | "distributed-systems";
+export type GraphAreaId = "ai-ml-platform" | "generative-ai-rag" | "agent-infrastructure" | "data-engineering" | "distributed-systems" | "backend-engineering";
 
 export type GraphMetadata = {
   areas?: readonly GraphAreaId[];

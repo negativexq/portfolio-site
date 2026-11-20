@@ -4,13 +4,12 @@ import { TagList } from "./tag-list";
 
 type ExperienceStoryProps = {
   impact: ExperienceImpact;
-  index: number;
 };
 
-export function ExperienceStory({ impact, index }: ExperienceStoryProps) {
+export function ExperienceStory({ impact }: ExperienceStoryProps) {
   return (
     <article id={impact.id} className="experience-story">
-      <p className="story-index">Impact / {String(index).padStart(2, "0")}</p>
+      <p className="story-index">{impact.area}</p>
       <h3>{impact.title}</h3>
       <div className="story-body">
         <p className="story-context">{impact.context}</p>

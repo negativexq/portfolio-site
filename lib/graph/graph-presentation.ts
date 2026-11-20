@@ -5,6 +5,7 @@ export const GRAPH_AREAS: readonly { id: GraphAreaId; label: string }[] = [
   { id: "generative-ai-rag", label: "AI / RAG" },
   { id: "agent-infrastructure", label: "Agent Systems" },
   { id: "data-engineering", label: "Data Engineering" },
+  { id: "backend-engineering", label: "Backend" },
   { id: "distributed-systems", label: "Distributed Systems" },
 ];
 

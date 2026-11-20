@@ -11,15 +11,23 @@ import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
 
 const RESUME_DESCRIPTION =
-  "Resume of Ömer Faruk Koç, AI Platform & MLOps Engineer: ML platforms, agent systems, agentic RAG and Kubernetes incident analysis, with measured results.";
+  "Resume of Ömer Faruk Koç, AI Platform & MLOps Engineer: AI products with Go and Python backends, ML platforms, agent systems and RAG, with measured performance and reliability.";
 
 // Same projects, same order as "Selected Engineering Projects" in the PDF.
 const SELECTED_PROJECT_IDS = [
   "ml-platform-infrastructure",
-  "agentic-sre",
   "agentic-customer-service-platform",
+  "smart-campaign-composer",
+  "customer-journey-composer",
   "knowledge-base-rag",
+  "agentic-sre",
+  "decision-sql",
+  "real-time-commerce-platform",
+  "cause-tune",
 ] as const;
+
+// One impact from each side of the role: ML platform, GenAI, AI infrastructure and data.
+const FEATURED_IMPACT_IDS = ["ml-platform", "call-center-intelligence", "ai-infrastructure", "data-platform"] as const;
 
 export const metadata: Metadata = {
   title: "Resume",
@@ -29,7 +37,11 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   const experience = experiences[0];
-  const featuredImpacts = experience.impacts.filter((impact) => impact.proof).slice(0, 4);
+  const featuredImpacts = FEATURED_IMPACT_IDS.map((id) => {
+    const impact = experience.impacts.find((candidate) => candidate.id === id);
+    if (!impact) throw new Error(`resume: missing impact ${id}`);
+    return impact;
+  });
   const selectedProjects = SELECTED_PROJECT_IDS.map((id) => {
     const project = projects.find((candidate) => candidate.id === id);
     if (!project) throw new Error(`resume: missing project ${id}`);
@@ -70,7 +82,7 @@ export default function ResumePage() {
             <p>{experience.summary}</p>
             <ul className="resume-impact-list">
               {featuredImpacts.map((impact) => (
-                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.proof?.value}</span></li>
+                <li key={impact.id}><strong>{impact.title}</strong><span>{impact.summary}</span></li>
               ))}
             </ul>
             <Link className="section-link" href="/experience">Full experience <ArrowRight aria-hidden="true" size={14} /></Link>

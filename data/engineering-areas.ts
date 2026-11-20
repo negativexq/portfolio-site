@@ -24,6 +24,15 @@ export const engineeringAreas = [
     evidenceExperienceIds: ["fibabanka"],
   },
   {
+    id: "backend-engineering",
+    title: "Backend Engineering",
+    description:
+      "Go and Python services behind AI products: data models, APIs, durable workflows, background workers and the tests that keep them correct.",
+    technologies: ["Go", "FastAPI", "PostgreSQL", "SQLAlchemy", "TypeScript"],
+    evidenceProjectIds: ["customer-journey-composer", "smart-campaign-composer", "agentic-customer-service-platform"],
+    evidenceExperienceIds: ["fibabanka"],
+  },
+  {
     id: "distributed-systems",
     title: "Distributed Systems",
     description:

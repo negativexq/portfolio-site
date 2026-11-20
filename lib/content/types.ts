@@ -131,6 +131,8 @@ export type Project = {
 
 export type ExperienceImpact = {
   id: string;
+  /** Which side of the role the work belongs to: ML, Generative AI or the infrastructure under both. */
+  area: "ML platform" | "Generative AI" | "Infrastructure and data";
   title: string;
   /** One sentence on the situation that made this work necessary. */
   context: string;

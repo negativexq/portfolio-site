@@ -1,28 +1,29 @@
 import type { Metric } from "@/lib/content/types";
 
+// Career figures follow the résumé.
 export const metrics = [
   {
-    value: "3+ YEARS",
+    value: "3+ years",
     label: "Production AI/ML",
     context: "Experience",
-    detail: "Professional experience across ML, data and GenAI systems.",
+    detail: "Professional experience across ML, Generative AI and data systems in financial services.",
   },
   {
-    value: "75% RUNTIME REDUCTION",
-    label: "Core data workflow",
-    context: "Performance",
-    detail: "Sequential Oracle processing was re-architected into modular parallel dbt workflows, reducing end-to-end runtime by 75%.",
+    value: "10",
+    label: "Production ML models",
+    context: "ML platform",
+    detail: "Owned deployment and lifecycle on Iguazio/MLRun, Docker and Kubernetes: validation, versioning, promotion, retraining, monitoring and FastAPI serving.",
   },
   {
-    value: "END-TO-END ML",
-    label: "Lifecycle ownership",
-    context: "Production",
-    detail: "Owned validation, versioning, promotion, serving, retraining and monitoring across multiple production ML use cases.",
+    value: "5",
+    label: "Production LLM workflows",
+    context: "Generative AI",
+    detail: "Contributed to five LLM workflows running in production at the bank, alongside RAG and document-intelligence work.",
   },
   {
-    value: "PRIVATE GENAI",
-    label: "On-prem GPU serving",
-    context: "Infrastructure",
-    detail: "Adapted validated cloud prototypes to private GPU infrastructure for quantized open-source model serving under data-residency constraints.",
+    value: "25–30 min",
+    label: "Down from 2–3 hours",
+    context: "Data platform",
+    detail: "Sequential Oracle feature-engineering procedures re-architected into parallel dbt and Airflow pipelines.",
   },
 ] satisfies readonly Metric[];

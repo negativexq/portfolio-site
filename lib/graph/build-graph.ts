@@ -41,6 +41,7 @@ const domainAnchors: Record<string, { x: number; y: number }> = {
   "distributed-systems": { x: -6.6, y: -2.1 },
   "data-engineering": { x: -7, y: 2.7 },
   "agent-infrastructure": { x: 7, y: 2.7 },
+  "backend-engineering": { x: 2.4, y: -6.2 },
 };
 
 const explicitPositions: Record<string, { x: number; y: number }> = {
@@ -98,10 +99,11 @@ const canvasLabels: Readonly<Record<string, string>> = {
   "evidence:project:agentic-customer-service-platform:110-110-40-40-28-28": "110, 40, 28",
   "evidence:project:agentic-customer-service-platform:94-05-vs-82-14": "V3 vs Direct",
   "evidence:project:agentic-customer-service-platform:1-of-4-candidates-qualified": "1 of 4 Qualified",
-  "evidence:experience:data-platform:75-runtime-reduction": "75% Runtime Reduction",
-  "evidence:experience:ml-platform:end-to-end-lifecycle": "End-to-End Lifecycle",
-  "evidence:experience:data-scale:large-scale-coverage": "Large-Scale Coverage",
-  "evidence:experience:call-center-intelligence:gpu-distributed": "GPU-Distributed",
+  "evidence:experience:data-platform:2-3-hours-to-25-30-minutes": "2–3 h → 25–30 min",
+  "evidence:experience:ml-platform:10-production-models": "10 Production Models",
+  "evidence:experience:llm-workflows:5-production-llm-workflows": "5 LLM Workflows",
+  "evidence:experience:call-center-intelligence:audio-to-structured-kpis": "Audio to KPIs",
+  "evidence:experience:ai-infrastructure:on-premises-gpu-serving": "On-Prem GPU Serving",
   "evidence:experience:feature-platform:one-definition-per-feature": "Shared Features",
   "evidence:experience:quality-monitoring:checks-in-the-pipeline-not-the-report": "Pipeline Gates",
 };

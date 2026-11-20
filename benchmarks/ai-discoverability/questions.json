@@ -53,12 +53,12 @@
     }
   },
   {
-    "id": "experience-impact-data-scale",
-    "question": "What did this person do regarding data scale, and what technologies were involved?",
+    "id": "experience-impact-llm-workflows",
+    "question": "What did this person do regarding RAG and document intelligence, and what technologies were involved?",
     "source": {
       "type": "experience-impact",
       "id": "fibabanka",
-      "impactId": "data-scale"
+      "impactId": "llm-workflows"
     }
   },
   {

@@ -91,7 +91,7 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             id="areas-heading"
-            title="Platform work across five connected domains."
+            title="Engineering work across six connected domains."
             description="Capabilities are grouped by engineering evidence—not percentages or keyword counts."
           />
           <div className="area-list">

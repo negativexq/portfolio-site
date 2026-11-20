@@ -22,6 +22,7 @@ const HUMAN_ROUTES: readonly { path: string; description: string }[] = [
   { path: "/writing", description: "Engineering writing" },
   { path: "/graph", description: "Engineering graph" },
   { path: "/resume", description: "Resume overview" },
+  { path: "/recruiters", description: "One-page summary for hiring teams" },
 ];
 
 export function renderLlmsTxt(

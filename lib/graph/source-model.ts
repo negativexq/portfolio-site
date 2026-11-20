@@ -35,6 +35,21 @@ export const experienceTopicKinds: Readonly<Record<string, ExperienceTopicKind>>
   Deepchecks: "technology",
   Airflow: "technology",
   "GitHub Actions": "technology",
+  "Iguazio / MLRun": "technology",
+  Kubernetes: "technology",
+  Docker: "technology",
+  FastAPI: "technology",
+  Trino: "technology",
+  "SQL Server": "technology",
+  "Model monitoring": "concept",
+  "Data contracts": "concept",
+  RAG: "concept",
+  Embeddings: "concept",
+  "Document intelligence": "concept",
+  APIs: "concept",
+  "LLM analysis": "concept",
+  "Quantized LLMs": "concept",
+  "Inference endpoints": "concept",
 };
 
 export function experienceTopicKind(topic: string): ExperienceTopicKind {

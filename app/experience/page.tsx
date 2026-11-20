@@ -66,12 +66,12 @@ export default function ExperiencePage() {
       <section className="section-shell" aria-labelledby="impact-stories">
         <div className="container">
           <header className="editorial-heading">
-            <h2 id="impact-stories">Platform work through outcomes.</h2>
-            <p>Stories are organized around engineering changes and measurable effects rather than a conventional responsibility list.</p>
+            <h2 id="impact-stories">ML, Generative AI and the infrastructure under both.</h2>
+            <p>Each piece of work names the problem, what changed and the result, grouped by the side of the role it belongs to.</p>
           </header>
           <div className="experience-story-grid">
-            {experience.impacts.map((impact, index) => (
-              <ExperienceStory key={impact.id} impact={impact} index={index + 1} />
+            {experience.impacts.map((impact) => (
+              <ExperienceStory key={impact.id} impact={impact} />
             ))}
           </div>
         </div>
