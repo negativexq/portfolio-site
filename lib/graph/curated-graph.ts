@@ -50,7 +50,7 @@ const bridgePositions: Record<string, { x: number; y: number }> = {
   Kafka: { x: -8.4, y: -6.3 },
   Prometheus: { x: -5.2, y: -1.8 },
   MLflow: { x: -4.4, y: 7.7 },
-  Go: { x: -7.5, y: 7.3 },
+  Go: { x: -1.5, y: 8.6 },
   Langfuse: { x: 8.6, y: -5.4 },
   PydanticAI: { x: 9.2, y: -1.4 },
 };

@@ -22,6 +22,8 @@ const projectColors: Record<string, string> = {
   "project:knowledge-base-rag": "#c8b5d9",
   "project:decision-sql": "#c8b5d9",
   "project:real-time-commerce-platform": "#dab992",
+  "project:customer-journey-composer": "#d9a79f",
+  "project:smart-campaign-composer": "#d9a79f",
 };
 
 // Centered, bounded labels keep text attached to its node. Space is reserved
@@ -173,25 +175,31 @@ export default function EngineeringGraph({ data }: { data: EngineeringGraphData 
           }
         }
       } else if (narrow) {
+        // Two project lanes with shared technologies between them, so no
+        // label has to share a row with a wider neighbour on a phone.
         const overviewPositions: Record<string, { x: number; y: number }> = {
-          "person:omer-faruk-koc": { x: 0, y: 0 },
-          "project:ml-platform-infrastructure": { x: -9, y: 12 },
-          "project:agentic-sre": { x: 9, y: 12 },
-          "project:modelops-control-plane": { x: -9, y: 2 },
-          "project:agentic-customer-service-platform": { x: 9, y: 2 },
-          "project:real-time-commerce-platform": { x: -9, y: -9 },
-          "project:decision-sql": { x: 9, y: -9 },
-          "project:knowledge-base-rag": { x: 0, y: -16 },
-          "technology:kubernetes": { x: -3, y: 10 },
-          "technology:langgraph": { x: 9, y: 7 },
-          "technology:opentelemetry": { x: 0, y: 5 },
-          "technology:postgresql": { x: -9, y: -3 },
-          "technology:fastapi": { x: 9, y: -3 },
-          "technology:qdrant": { x: 0, y: -11 },
-          "technology:go": { x: -9, y: 17 },
-          "technology:mlflow": { x: 1, y: 17 },
-          "technology:prometheus": { x: -2, y: -6 },
-          "technology:kafka": { x: -9, y: -14 },
+          "person:omer-faruk-koc": { x: 0, y: 2.5 },
+          "project:ml-platform-infrastructure": { x: -9, y: 16 },
+          "project:agentic-sre": { x: 9, y: 16 },
+          "project:modelops-control-plane": { x: -9, y: 7 },
+          "project:agentic-customer-service-platform": { x: 9, y: 7 },
+          "project:customer-journey-composer": { x: -9, y: -2 },
+          "project:smart-campaign-composer": { x: 9, y: -2 },
+          "project:real-time-commerce-platform": { x: -9, y: -11 },
+          "project:decision-sql": { x: 9, y: -11 },
+          "project:knowledge-base-rag": { x: 0, y: -18.5 },
+          "technology:kubernetes": { x: 0, y: 16.5 },
+          "technology:mlflow": { x: -4.5, y: 12 },
+          "technology:langgraph": { x: 4.5, y: 12 },
+          "technology:opentelemetry": { x: 0, y: 8 },
+          "technology:go": { x: -4.5, y: -6 },
+          "technology:postgresql": { x: 0.5, y: -5.5 },
+          "technology:prometheus": { x: -4, y: -9 },
+          "technology:fastapi": { x: 4.5, y: -9 },
+          "technology:kafka": { x: -9, y: -15.5 },
+          "technology:qdrant": { x: 0, y: -13.5 },
+          "technology:pydanticai": { x: -5, y: -17.5 },
+          "technology:langfuse": { x: 5, y: -17.5 },
         };
         position = overviewPositions[node.id] ?? position;
       }
