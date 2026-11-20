@@ -978,19 +978,36 @@ a {
 }
 
 .project-card {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(13rem, 18rem);
   gap: clamp(1.5rem, 4vw, 4rem);
   min-width: 0;
   border-bottom: 1px solid var(--border);
   padding-block: clamp(2rem, 4.5vw, 3.75rem);
-  transition: background-color var(--motion-normal) ease, border-color var(--motion-normal) ease;
+  transition: border-color var(--motion-normal) ease;
+}
+
+/* The hover plate reaches past the text column so the copy never sits on its edge. */
+.project-card::before {
+  position: absolute;
+  inset: 0 calc(-1 * clamp(1rem, 2vw, 1.5rem));
+  z-index: -1;
+  background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+  content: "";
+  opacity: 0;
+  transition: opacity var(--motion-normal) ease;
 }
 
 .project-card:hover,
 .project-card:focus-within {
   border-color: var(--border-strong);
-  background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+}
+
+.project-card:hover::before,
+.project-card:focus-within::before {
+  opacity: 1;
 }
 
 .project-card-meta {
@@ -2323,6 +2340,7 @@ a {
 
 .agentic-principle-section {
   background: color-mix(in srgb, var(--accent-soft) 26%, transparent);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
 }
 
 .agentic-capability-grid {
@@ -2425,6 +2443,7 @@ a {
 .agentic-comparison,
 .agentic-evidence-table {
   max-width: 100%;
+  margin-top: var(--space-6);
   overflow-x: auto;
   border-top: 1px solid var(--border-strong);
   border-bottom: 1px solid var(--border-strong);
@@ -2845,6 +2864,7 @@ a {
 
 .commerce-principle-section {
   background: color-mix(in srgb, var(--accent-soft) 26%, transparent);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
 }
 
 .commerce-capability-grid {
@@ -4959,6 +4979,7 @@ a {
 
 .modelops-principle-section {
   background: color-mix(in srgb, var(--accent-soft) 26%, transparent);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
 }
 
 .modelops-capability-grid {
@@ -5461,6 +5482,7 @@ a {
 
 .rag-principle-section {
   background: color-mix(in srgb, var(--accent-soft) 26%, transparent);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
 }
 
 .rag-capability-grid {
@@ -10386,6 +10408,36 @@ a.hero-pipeline-watch-label:focus-visible {
   line-height: 1.6;
 }
 
+.brief-competencies li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.brief-competencies .brief-evidence {
+  margin-top: var(--space-4);
+}
+
+.brief-evidence {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.brief-evidence a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 0.2em;
+}
+
+.brief-evidence a:hover {
+  color: var(--accent);
+}
+
+.brief-evidence a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .brief-skills {
   display: grid;
   gap: var(--space-4);
@@ -10394,7 +10446,7 @@ a.hero-pipeline-watch-label:focus-visible {
 
 .brief-skills div {
   display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr);
+  grid-template-columns: 13rem minmax(0, 1fr);
   align-items: baseline;
   gap: var(--space-4);
 }
@@ -10410,6 +10462,10 @@ a.hero-pipeline-watch-label:focus-visible {
 
 .brief-skills .tag-list {
   margin: 0;
+}
+
+.brief-skills .brief-evidence {
+  margin: var(--space-2) 0 0;
 }
 
 /* Project index with a preview frame anchored to the hovered row. */
@@ -10712,4 +10768,31 @@ a.hero-pipeline-watch-label:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .campaign-screenshots img { transition: none; }
   .campaign-screenshots a:hover img { transform: none; }
+}
+
+/* A bordered block (table, metric grid, decision list, command, link list)
+   that follows running text gets the same breathing room as a new block. */
+.detail-content :is(p, ul, ol, dl, h3) + :is(
+  :has(> table),
+  .metric-grid,
+  [class*="-decision-list"],
+  [class*="-deep-dive"],
+  [class*="-evidence-table"],
+  [class*="-comparison"],
+  pre
+) {
+  margin-top: var(--space-6);
+}
+
+/* A flagship card without a screenshot keeps its links under the body,
+   not floating alone in an empty second column. */
+.project-card:not(.project-card-media):not(.project-card-compact) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Narrow screens scroll a wide comparison table instead of crushing its columns. */
+@media (max-width: 640px) {
+  .campaign-performance table {
+    min-width: 36rem;
+  }
 }

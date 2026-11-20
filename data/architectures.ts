@@ -25,8 +25,8 @@ const architectures = {
         variant: "async",
         layout: { type: "rows", rows: [2, 2] },
         stages: [
-          { id: "worker", nodes: [{ id: "runtime-worker", label: "Go worker", subtitle: "SKIP LOCKED claims, leases and fencing", variant: "service" }], edge: { label: "checks at send time" } },
-          { id: "policy", nodes: [{ id: "send-policy", label: "Send policy", subtitle: "consent, frequency caps and global exit", variant: "control" }], edge: { label: "writes to outbox for" } },
+          { id: "worker", nodes: [{ id: "runtime-worker", label: "Go worker", subtitle: "SKIP LOCKED claims, leases and fencing", variant: "service" }], edge: { label: "checks policy" } },
+          { id: "policy", nodes: [{ id: "send-policy", label: "Send policy", subtitle: "consent, frequency caps and global exit", variant: "control" }], edge: { label: "sends via outbox" } },
           { id: "provider", nodes: [{ id: "mock-provider", label: "Mailpit + mock providers", subtitle: "email, SMS and push", variant: "output" }], edge: { label: "feeds" } },
           { id: "report", nodes: [{ id: "monitor", label: "Live monitor + analytics", subtitle: "customer paths, goals and conversion", variant: "observability" }] },
         ],
